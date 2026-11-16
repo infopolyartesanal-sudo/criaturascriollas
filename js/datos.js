@@ -1,0 +1,538 @@
+'use strict';
+// ===== Tipos =====
+// Los 18 tipos (como en el diseño de Felipe)
+const COLOR_TIPO = {
+  NORMAL: '#a8a878', FUEGO: '#f08030', AGUA: '#6890f0', PLANTA: '#78c850', ELECTRICO: '#e0b820', HIELO: '#88d0d0',
+  LUCHA: '#c03028', VENENO: '#a040a0', TIERRA: '#d8b050', VOLADOR: '#a890f0', PSIQUICO: '#f85888', BICHO: '#a8b820',
+  ROCA: '#b8a038', FANTASMA: '#705898', DRAGON: '#7038f8', SINIESTRO: '#705848', ACERO: '#a0a0c0', HADA: '#e898c8',
+};
+const NOMBRE_TIPO = {
+  NORMAL: 'NORMAL', FUEGO: 'FUEGO', AGUA: 'AGUA', PLANTA: 'PLANTA', ELECTRICO: 'ELÉCTRICO', HIELO: 'HIELO',
+  LUCHA: 'LUCHA', VENENO: 'VENENO', TIERRA: 'TIERRA', VOLADOR: 'VOLADOR', PSIQUICO: 'PSÍQUICO', BICHO: 'BICHO',
+  ROCA: 'ROCA', FANTASMA: 'FANTASMA', DRAGON: 'DRAGÓN', SINIESTRO: 'SINIESTRO', ACERO: 'ACERO', HADA: 'HADA',
+};
+function nombreTipo(t) { return NOMBRE_TIPO[t] || t; }
+// EFIC[atacante][defensor] (lo que no figura vale 1)
+const EFIC = {
+  NORMAL: { ROCA: 0.5, ACERO: 0.5, FANTASMA: 0 },
+  FUEGO: { PLANTA: 2, HIELO: 2, BICHO: 2, ACERO: 2, FUEGO: 0.5, AGUA: 0.5, ROCA: 0.5, DRAGON: 0.5 },
+  AGUA: { FUEGO: 2, TIERRA: 2, ROCA: 2, AGUA: 0.5, PLANTA: 0.5, DRAGON: 0.5 },
+  PLANTA: { AGUA: 2, TIERRA: 2, ROCA: 2, FUEGO: 0.5, PLANTA: 0.5, VENENO: 0.5, VOLADOR: 0.5, BICHO: 0.5, DRAGON: 0.5, ACERO: 0.5 },
+  ELECTRICO: { AGUA: 2, VOLADOR: 2, ELECTRICO: 0.5, PLANTA: 0.5, DRAGON: 0.5, TIERRA: 0 },
+  HIELO: { PLANTA: 2, TIERRA: 2, VOLADOR: 2, DRAGON: 2, FUEGO: 0.5, AGUA: 0.5, HIELO: 0.5, ACERO: 0.5 },
+  LUCHA: { NORMAL: 2, HIELO: 2, ROCA: 2, SINIESTRO: 2, ACERO: 2, VENENO: 0.5, VOLADOR: 0.5, PSIQUICO: 0.5, BICHO: 0.5, HADA: 0.5, FANTASMA: 0 },
+  VENENO: { PLANTA: 2, HADA: 2, VENENO: 0.5, TIERRA: 0.5, ROCA: 0.5, FANTASMA: 0.5, ACERO: 0 },
+  TIERRA: { FUEGO: 2, ELECTRICO: 2, VENENO: 2, ROCA: 2, ACERO: 2, PLANTA: 0.5, BICHO: 0.5, VOLADOR: 0 },
+  VOLADOR: { PLANTA: 2, LUCHA: 2, BICHO: 2, ELECTRICO: 0.5, ROCA: 0.5, ACERO: 0.5 },
+  PSIQUICO: { LUCHA: 2, VENENO: 2, PSIQUICO: 0.5, ACERO: 0.5, SINIESTRO: 0 },
+  BICHO: { PLANTA: 2, PSIQUICO: 2, SINIESTRO: 2, FUEGO: 0.5, LUCHA: 0.5, VENENO: 0.5, VOLADOR: 0.5, FANTASMA: 0.5, ACERO: 0.5, HADA: 0.5 },
+  ROCA: { FUEGO: 2, HIELO: 2, VOLADOR: 2, BICHO: 2, LUCHA: 0.5, TIERRA: 0.5, ACERO: 0.5 },
+  FANTASMA: { PSIQUICO: 2, FANTASMA: 2, SINIESTRO: 0.5, NORMAL: 0 },
+  DRAGON: { DRAGON: 2, ACERO: 0.5, HADA: 0 },
+  SINIESTRO: { PSIQUICO: 2, FANTASMA: 2, LUCHA: 0.5, SINIESTRO: 0.5, HADA: 0.5 },
+  ACERO: { HIELO: 2, ROCA: 2, HADA: 2, FUEGO: 0.5, AGUA: 0.5, ELECTRICO: 0.5, ACERO: 0.5 },
+  HADA: { LUCHA: 2, DRAGON: 2, SINIESTRO: 2, FUEGO: 0.5, VENENO: 0.5, ACERO: 0.5 },
+};
+function eficacia(tipoAtaque, tiposDefensor) {
+  return tiposDefensor.reduce((a, d) => a * ((EFIC[tipoAtaque] || {})[d] ?? 1), 1);
+}
+
+// ===== Movimientos =====
+// ef: 'atk-' baja ataque rival, 'def-' baja defensa rival, 'def+' sube defensa propia, 'cura' recupera 50%
+const MOVS = {
+  embestida: { nombre: 'Embestida', tipo: 'NORMAL', pot: 40, prec: 100, pp: 35 },
+  aranazo: { nombre: 'Arañazo', tipo: 'NORMAL', pot: 40, prec: 100, pp: 35 },
+  pique: { nombre: 'Pique', tipo: 'NORMAL', pot: 40, prec: 100, pp: 30, prio: 1 },
+  grunido: { nombre: 'Gruñido', tipo: 'NORMAL', pot: 0, prec: 100, pp: 40, ef: 'atk-' },
+  coletazo: { nombre: 'Coletazo', tipo: 'NORMAL', pot: 0, prec: 100, pp: 30, ef: 'def-' },
+  chillido: { nombre: 'Chillido', tipo: 'NORMAL', pot: 0, prec: 100, pp: 40, ef: 'atk-' },
+  bolita: { nombre: 'Bolita', tipo: 'NORMAL', pot: 0, prec: 100, pp: 30, ef: 'def+' },
+  matecito: { nombre: 'Matecito', tipo: 'PLANTA', pot: 0, prec: 100, pp: 10, ef: 'cura' },
+  yerbazo: { nombre: 'Yerbazo', tipo: 'PLANTA', pot: 40, prec: 100, pp: 25 },
+  hojarasca: { nombre: 'Hojarasca', tipo: 'PLANTA', pot: 60, prec: 95, pp: 20 },
+  brasita: { nombre: 'Brasita', tipo: 'FUEGO', pot: 40, prec: 100, pp: 25 },
+  fogon: { nombre: 'Fogón', tipo: 'FUEGO', pot: 60, prec: 95, pp: 20 },
+  burbujas: { nombre: 'Burbujas', tipo: 'AGUA', pot: 40, prec: 100, pp: 25 },
+  chapuzon: { nombre: 'Chapuzón', tipo: 'AGUA', pot: 60, prec: 95, pp: 20 },
+  revolcon: { nombre: 'Revolcón', tipo: 'TIERRA', pot: 40, prec: 100, pp: 25 },
+  picotazo: { nombre: 'Picotazo', tipo: 'VOLADOR', pot: 35, prec: 100, pp: 35 },
+  rasante: { nombre: 'Rasante', tipo: 'VOLADOR', pot: 55, prec: 95, pp: 20 },
+  mordisco: { nombre: 'Mordisco', tipo: 'SINIESTRO', pot: 60, prec: 100, pp: 25 },
+  // --- nuevos (v2) ---
+  semillazo: { nombre: 'Semillazo', tipo: 'PLANTA', pot: 80, prec: 100, pp: 15 },
+  raizon: { nombre: 'Raizón', tipo: 'PLANTA', pot: 100, prec: 90, pp: 10 },
+  chispa: { nombre: 'Chispa', tipo: 'FUEGO', pot: 40, prec: 100, pp: 25 },
+  lavazo: { nombre: 'Lavazo', tipo: 'FUEGO', pot: 85, prec: 100, pp: 15 },
+  erupcion: { nombre: 'Erupción', tipo: 'FUEGO', pot: 100, prec: 85, pp: 5 },
+  coletazo_agua: { nombre: 'Remolino', tipo: 'AGUA', pot: 80, prec: 100, pp: 15 },
+  torrente: { nombre: 'Torrente', tipo: 'AGUA', pot: 100, prec: 85, pp: 5 },
+  aliento: { nombre: 'Aliento', tipo: 'DRAGON', pot: 60, prec: 100, pp: 20 },
+  garra_dragon: { nombre: 'Zarpazo', tipo: 'DRAGON', pot: 80, prec: 100, pp: 15 },
+  furia_dragon: { nombre: 'Furia', tipo: 'DRAGON', pot: 100, prec: 90, pp: 5 },
+  mareo: { nombre: 'Mareo', tipo: 'PSIQUICO', pot: 50, prec: 100, pp: 25 },
+  vision: { nombre: 'Visión', tipo: 'PSIQUICO', pot: 80, prec: 100, pp: 15 },
+  barrazo: { nombre: 'Barrazo', tipo: 'TIERRA', pot: 65, prec: 95, pp: 20 },
+  adobe: { nombre: 'Adobe', tipo: 'ROCA', pot: 0, prec: 100, pp: 20, ef: 'def+' },
+  pedrada: { nombre: 'Pedrada', tipo: 'ROCA', pot: 50, prec: 90, pp: 15 },
+  derrumbe: { nombre: 'Derrumbe', tipo: 'ROCA', pot: 75, prec: 90, pp: 10 },
+  vuelo_alto: { nombre: 'Picada', tipo: 'VOLADOR', pot: 80, prec: 95, pp: 15 },
+  forcejeo: { nombre: 'Forcejeo', tipo: 'NORMAL', pot: 40, prec: 100, pp: 1 },
+};
+
+// ===== Objetos =====
+const OBJETOS = {
+  boleadora: { nombre: 'BOLEADORA', desc: 'Sirve para atrapar criaturas salvajes.' },
+  mate: { nombre: 'MATE', desc: 'Bien cebado. Recupera 20 PS.', cura: 20 },
+  alfajor: { nombre: 'ALFAJOR', desc: 'De dulce de leche. Recupera 50 PS.', cura: 50 },
+};
+
+// ===== Especies =====
+// base: ps, atk, def, vel
+const ESPECIES = {
+  cuisito: {
+    nombre: 'Cuisito', tipos: ['PLANTA'], base: { ps: 45, atk: 49, def: 49, vel: 45 }, captura: 45, exp: 64,
+    desc: 'el cuis de la yerba', evo: { nivel: 16, a: 'cuison' },
+    movs: [[1, 'embestida'], [1, 'grunido'], [5, 'yerbazo'], [10, 'pique'], [13, 'matecito'], [18, 'hojarasca']],
+    sprite: [
+      ['p', [[16, 9], [10, 1], [15, 5]], '#4a9e3f'],
+      ['p', [[16, 9], [22, 1], [17, 5]], '#5cb85c'],
+      ['e', 16, 4.5, 1.6, 3.5, '#78d860'],
+      ['e', 10, 9.5, 2.5, 2.5, '#b08868'], ['e', 22, 9.5, 2.5, 2.5, '#b08868'],
+      ['e', 10, 9.5, 1.2, 1.2, '#e8a0a0', 's'], ['e', 22, 9.5, 1.2, 1.2, '#e8a0a0', 's'],
+      ['e', 16, 22, 10, 7.5, '#a07850'],
+      ['e', 16, 25, 6, 4, '#e8d4b0'],
+      ['e', 16, 14, 7.5, 6, '#b08a60'],
+      ['r', 12, 13, 2, 2, '#201810'], ['r', 18, 13, 2, 2, '#201810'],
+      ['d', 12, 13, '#ffffff'], ['d', 18, 13, '#ffffff'],
+      ['r', 15, 16, 2, 1, '#e07080'],
+      ['e', 11, 29, 3, 1.6, '#806048'], ['e', 21, 29, 3, 1.6, '#806048'],
+    ],
+  },
+  cuison: {
+    nombre: 'Cuisón', tipos: ['PLANTA'], base: { ps: 62, atk: 63, def: 64, vel: 58 }, captura: 45, exp: 142,
+    desc: 'el guardián del yerbal',
+    movs: [[1, 'embestida'], [1, 'grunido'], [5, 'yerbazo'], [10, 'pique'], [13, 'matecito'], [18, 'hojarasca']],
+    sprite: [
+      ['p', [[27, 22], [31, 13], [30, 25]], '#4a9e3f'],
+      ['e', 16, 6, 9, 5, '#3e8e3a'],
+      ['e', 11, 4, 4, 3, '#5cb85c'], ['e', 21, 4, 4, 3, '#4aa84a'], ['e', 16, 2.5, 3, 2, '#78d860'],
+      ['e', 7.5, 11, 3, 3, '#9a7450'], ['e', 24.5, 11, 3, 3, '#9a7450'],
+      ['e', 16, 22, 12.5, 8, '#8a6440'],
+      ['e', 16, 25, 8, 4.5, '#e0c8a0'],
+      ['e', 16, 14, 9, 6.5, '#9a7450'],
+      ['r', 11, 13, 2, 2, '#201810'], ['r', 19, 13, 2, 2, '#201810'],
+      ['d', 11, 13, '#ffffff'], ['d', 19, 13, '#ffffff'],
+      ['r', 10, 11, 4, 1, '#5a3a20'], ['r', 18, 11, 4, 1, '#5a3a20'],
+      ['r', 15, 16, 2, 1, '#e07080'],
+      ['e', 8, 29, 4, 2, '#6a4a30'], ['e', 24, 29, 4, 2, '#6a4a30'],
+    ],
+  },
+  zorrito: {
+    nombre: 'Zorrito', tipos: ['FUEGO'], base: { ps: 39, atk: 52, def: 43, vel: 65 }, captura: 45, exp: 62,
+    desc: 'el zorro de la cola encendida', evo: { nivel: 16, a: 'zorrazo' },
+    movs: [[1, 'aranazo'], [1, 'grunido'], [5, 'brasita'], [10, 'pique'], [13, 'mordisco'], [18, 'fogon']],
+    sprite: [
+      ['p', [[22, 18], [27, 3], [30, 17]], '#ffb02e'],
+      ['e', 25.5, 17, 5, 7, '#ff7a1a'],
+      ['e', 25.5, 15, 2.5, 4, '#ffd23a', 's'],
+      ['r', 10, 25, 3, 5, '#8a3a1a'], ['r', 18, 25, 3, 5, '#8a3a1a'],
+      ['e', 15, 22, 8, 5.5, '#d9622b'],
+      ['e', 13, 24, 4, 2.5, '#f5e6c8'],
+      ['p', [[7, 12], [6, 3], [11, 9]], '#e0702f'],
+      ['p', [[13, 9], [16, 2], [17, 11]], '#e0702f'],
+      ['p', [[8, 10], [7, 6], [10, 9]], '#3a1a10'],
+      ['p', [[14, 9], [15.5, 5], [16, 10]], '#3a1a10'],
+      ['e', 11.5, 14, 6, 5, '#e0702f'],
+      ['p', [[7, 14], [1, 17], [9, 19]], '#f5e6c8'],
+      ['r', 1, 16, 2, 2, '#201010'],
+      ['r', 10, 12, 2, 2, '#201010'], ['d', 10, 12, '#ffffff'],
+    ],
+  },
+  zorrazo: {
+    nombre: 'Zorrazo', tipos: ['FUEGO'], base: { ps: 58, atk: 66, def: 58, vel: 80 }, captura: 45, exp: 142,
+    desc: 'el zorro de la melena de fuego',
+    movs: [[1, 'aranazo'], [1, 'grunido'], [5, 'brasita'], [10, 'pique'], [13, 'mordisco'], [18, 'fogon']],
+    sprite: [
+      ['p', [[20, 20], [26, 1.5], [31, 16]], '#ffb02e'],
+      ['e', 25, 15, 6, 9, '#ff7a1a'],
+      ['e', 25, 13, 3, 5, '#ffe060', 's'],
+      ['r', 8, 24, 3, 6, '#8a3a1a'], ['r', 19, 24, 3, 6, '#8a3a1a'], ['r', 13, 25, 2, 5, '#7a2a10'],
+      ['e', 15, 21, 10, 6, '#c9521b'],
+      ['e', 12, 23, 5, 3, '#f5e6c8'],
+      ['e', 13, 12, 7.5, 6.5, '#ff9a2a'],
+      ['p', [[8, 9], [10, 1.5], [13, 7]], '#ffd23a'], ['p', [[14, 7], [17, 1], [19, 9]], '#ffb02e'],
+      ['p', [[7, 10], [5, 2], [11, 7]], '#d9622b'],
+      ['e', 11, 13, 6, 5, '#d9622b'],
+      ['p', [[6, 13], [1, 17], [9, 18]], '#f5e6c8'],
+      ['r', 1, 16, 2, 2, '#201010'],
+      ['r', 9, 11, 3, 2, '#201010'], ['d', 9, 11, '#ffffff'],
+    ],
+  },
+  carpinchu: {
+    nombre: 'Carpinchú', tipos: ['AGUA'], base: { ps: 50, atk: 48, def: 55, vel: 40 }, captura: 45, exp: 63,
+    desc: 'el carpincho bebé del estero', evo: { nivel: 16, a: 'carpinchon' },
+    movs: [[1, 'embestida'], [1, 'coletazo'], [5, 'burbujas'], [10, 'revolcon'], [13, 'bolita'], [18, 'chapuzon']],
+    sprite: [
+      ['r', 8, 25, 3, 5, '#6a4020'], ['r', 22, 25, 3, 5, '#6a4020'],
+      ['e', 18, 21, 11, 7.5, '#9a6b3f'],
+      ['e', 17, 25, 7, 3, '#b88a5a', 's'],
+      ['e', 21, 11.5, 2.6, 2.6, '#4aa8ff'],
+      ['p', [[18.6, 11], [21, 4.5], [23.4, 11]], '#4aa8ff'],
+      ['d', 20, 10, '#ffffff'],
+      ['e', 9, 17, 6.5, 5.5, '#a87848'],
+      ['e', 4.5, 19, 3.5, 3.5, '#8a5a32'],
+      ['d', 2, 18, '#201010'],
+      ['e', 11, 12, 2, 2, '#7a4a22'],
+      ['r', 7, 15, 2, 2, '#201010'], ['d', 7, 15, '#ffffff'],
+      ['r', 4, 22, 3, 1, '#5a3a1a'],
+    ],
+  },
+  carpinchon: {
+    nombre: 'Carpinchón', tipos: ['AGUA', 'TIERRA'], base: { ps: 75, atk: 68, def: 72, vel: 48 }, captura: 45, exp: 142,
+    desc: 'el señor de los esteros',
+    movs: [[1, 'embestida'], [1, 'coletazo'], [5, 'burbujas'], [10, 'revolcon'], [13, 'bolita'], [18, 'chapuzon']],
+    sprite: [
+      ['r', 6, 25, 4, 5, '#5a3418'], ['r', 23, 25, 4, 5, '#5a3418'],
+      ['e', 18, 20, 13, 8.5, '#8a5b32'],
+      ['e', 18, 25, 9, 3, '#a87a4a', 's'],
+      ['e', 22, 18, 3, 2, '#6a4220', 'c'], ['e', 15, 16, 2, 1.5, '#6a4220', 'c'],
+      ['e', 8, 15, 7.5, 6.5, '#9a6b3f'],
+      ['e', 3.5, 18, 3.5, 4, '#7a4a28'],
+      ['d', 1, 17, '#201010'],
+      ['e', 11, 9.5, 2.2, 2.2, '#6a3a18'],
+      ['r', 7, 13, 2, 2, '#201010'], ['r', 6, 12, 4, 1, '#4a2a10'],
+      ['e', 8, 8.5, 5, 1.6, '#3aa050'],
+      ['e', 8, 7, 1.8, 1.5, '#ff88c8'],
+    ],
+  },
+  terito: {
+    nombre: 'Terito', tipos: ['NORMAL', 'VOLADOR'], base: { ps: 40, atk: 45, def: 40, vel: 56 }, captura: 255, exp: 50,
+    desc: 'el centinela de la pampa',
+    movs: [[1, 'picotazo'], [1, 'chillido'], [6, 'pique'], [11, 'rasante']],
+    sprite: [
+      ['r', 14, 24, 1, 6, '#d05050'], ['r', 18, 24, 1, 6, '#d05050'],
+      ['p', [[22, 17], [30, 20], [22, 22]], '#2a2a2a'],
+      ['e', 17, 19, 7, 6, '#a0a6ae'],
+      ['e', 19.5, 17.5, 5, 3.5, '#6a7078'],
+      ['e', 16, 23, 4, 2, '#f4f4f4', 's'],
+      ['e', 12.5, 21, 3, 3, '#2a2a2a', 's'],
+      ['p', [[13, 8], [21, 4], [14, 10]], '#2a2a2a'],
+      ['e', 12, 11.5, 4.5, 4.5, '#a8aeb6'],
+      ['r', 9, 14, 6, 1, '#2a2a2a', 'c'],
+      ['e', 10.5, 13, 2, 1, '#f4f4f4', 'sc'],
+      ['p', [[8, 10.5], [2, 12], [8, 13]], '#e06060'],
+      ['r', 10, 9, 2, 2, '#e02020'], ['d', 10, 9, '#000000'],
+    ],
+  },
+  peludin: {
+    nombre: 'Peludín', tipos: ['TIERRA'], base: { ps: 45, atk: 45, def: 62, vel: 30 }, captura: 200, exp: 55,
+    desc: 'el peludo que se hace bolita',
+    movs: [[1, 'embestida'], [1, 'bolita'], [6, 'revolcon'], [12, 'mordisco']],
+    sprite: [
+      ['p', [[26, 21], [31, 27], [25, 25]], '#b0905a'],
+      ['r', 9, 25, 3, 4, '#8a6a3a'], ['r', 21, 25, 3, 4, '#8a6a3a'],
+      ['e', 17, 19, 11, 8, '#b8985e'],
+      ['r', 10, 10, 1, 18, '#8a6a3a', 'c'], ['r', 14, 10, 1, 18, '#8a6a3a', 'c'],
+      ['r', 18, 10, 1, 18, '#8a6a3a', 'c'], ['r', 22, 10, 1, 18, '#8a6a3a', 'c'],
+      ['p', [[8, 19], [1, 23], [9, 26]], '#d0b080'],
+      ['e', 7.5, 17, 1.6, 2.6, '#d0b080'],
+      ['r', 5, 21, 1, 1, '#201010'],
+      ['d', 1, 23, '#e08080'],
+    ],
+  },
+  vizcachita: {
+    nombre: 'Vizcachita', tipos: ['NORMAL'], base: { ps: 38, atk: 50, def: 38, vel: 60 }, captura: 255, exp: 45,
+    desc: 'la vizcacha curiosa',
+    movs: [[1, 'aranazo'], [1, 'coletazo'], [5, 'pique'], [10, 'mordisco']],
+    sprite: [
+      ['p', [[24, 23], [31, 13], [27, 25]], '#6a6a6a'],
+      ['e', 10, 6, 2, 4, '#8a8a8a'], ['e', 16, 6, 2, 4, '#8a8a8a'],
+      ['e', 17, 21, 9, 8, '#8c8c8c'],
+      ['e', 15, 24.5, 5, 4, '#d8d8d8'],
+      ['e', 13, 13.5, 7, 6, '#9c9c9c'],
+      ['r', 6, 14, 14, 1, '#222222', 'c'],
+      ['r', 6, 15, 14, 2, '#f4f4f4', 'c'],
+      ['r', 9, 11, 2, 2, '#101010'], ['r', 15, 11, 2, 2, '#101010'],
+      ['d', 9, 11, '#ffffff'], ['d', 15, 11, '#ffffff'],
+      ['r', 12, 17, 2, 1, '#444444'],
+      ['e', 12, 29, 3, 1.6, '#6a6a6a'], ['e', 20, 29, 3, 1.6, '#6a6a6a'],
+    ],
+  },
+  hornerito: {
+    nombre: 'Hornerito', tipos: ['VOLADOR', 'TIERRA'], base: { ps: 40, atk: 50, def: 45, vel: 50 }, captura: 200, exp: 52,
+    desc: 'el pajarito albañil', evo: { nivel: 18, a: 'arquineo' },
+    movs: [[1, 'picotazo'], [1, 'grunido'], [6, 'revolcon'], [11, 'rasante'], [15, 'adobe'], [20, 'barrazo'], [26, 'pedrada'], [32, 'vuelo_alto'], [40, 'derrumbe']],
+    sprite: [
+      ['r', 14, 25, 1, 5, '#c8a070'], ['r', 17, 25, 1, 5, '#c8a070'],
+      ['p', [[21, 20], [30, 26], [23, 24]], '#c86a34'],
+      ['e', 16, 19.5, 7, 6, '#b87444'],
+      ['e', 14.5, 21.5, 4, 4, '#ecd0a8', 's'],
+      ['e', 19, 18, 5, 4, '#8a5228'],
+      ['e', 11, 12, 5, 5, '#a86838'],
+      ['r', 8, 9, 5, 1, '#ecd0a8', 'c'],
+      ['p', [[6.5, 11.5], [1.5, 13], [6.5, 14]], '#3a2a1a'],
+      ['r', 8, 11, 2, 2, '#201010'], ['d', 8, 11, '#ffffff'],
+    ],
+  },
+  // ======== v2: criaturas de Felipe ========
+  // --- Inicial de PLANTA ---
+  piquibrote: {
+    nombre: 'Piquibrote', tipos: ['PLANTA'], base: { ps: 45, atk: 49, def: 55, vel: 43 }, captura: 45, exp: 64,
+    desc: 'el brote del monte', evo: { nivel: 16, a: 'piquibrasa' },
+    movs: [[1, 'embestida'], [1, 'grunido'], [5, 'yerbazo'], [10, 'pique'], [13, 'matecito'], [17, 'hojarasca'], [21, 'chispa'], [26, 'semillazo'], [32, 'fogon'], [40, 'raizon'], [46, 'lavazo']],
+    sprite: [
+      ['r', 15, 4, 2, 7, '#3a8a30'],
+      ['e', 10, 5, 5, 2.5, '#5cc050'], ['e', 22, 4, 5, 2.5, '#4aa840'],
+      ['e', 16, 3, 1.8, 1.8, '#f05030'],
+      ['e', 16, 21, 10, 9, '#c89060'],
+      ['e', 16, 24, 6, 4.5, '#ecd0a0', 's'],
+      ['r', 11, 17, 2, 3, '#201810'], ['r', 19, 17, 2, 3, '#201810'],
+      ['d', 11, 17, '#ffffff'], ['d', 19, 17, '#ffffff'],
+      ['r', 15, 21, 2, 1, '#7a3a20'],
+      ['e', 9, 20, 1.5, 1, '#f0a0a0', 's'], ['e', 23, 20, 1.5, 1, '#f0a0a0', 's'],
+      ['e', 11, 30, 3, 1.5, '#8a6040'], ['e', 21, 30, 3, 1.5, '#8a6040'],
+    ],
+  },
+  piquibrasa: {
+    nombre: 'Piquibrasa', tipos: ['PLANTA'], base: { ps: 60, atk: 63, def: 70, vel: 58 }, captura: 45, exp: 142,
+    desc: 'el arbusto que guarda brasas', evo: { nivel: 36, a: 'piquillonco' },
+    movs: [[1, 'embestida'], [1, 'grunido'], [5, 'yerbazo'], [10, 'pique'], [13, 'matecito'], [17, 'hojarasca'], [21, 'chispa'], [26, 'semillazo'], [32, 'fogon'], [40, 'raizon'], [46, 'lavazo']],
+    sprite: [
+      ['p', [[24, 20], [31, 10], [29, 24]], '#4aa840'],
+      ['e', 29, 11, 2, 2, '#ff8a2a'],
+      ['r', 14, 2, 4, 8, '#3a8a30'],
+      ['e', 8, 5, 6, 3, '#5cc050'], ['e', 24, 5, 6, 3, '#4aa840'],
+      ['e', 3, 5, 2, 1.5, '#ff8a2a', 's'], ['e', 29, 5, 2, 1.5, '#ff8a2a', 's'],
+      ['e', 16, 2.5, 2.5, 2, '#ff5a20'],
+      ['e', 16, 20, 11, 9.5, '#a88050'],
+      ['e', 16, 24, 7, 5, '#e8cc98', 's'],
+      ['r', 10, 15, 3, 3, '#201810'], ['r', 19, 15, 3, 3, '#201810'],
+      ['d', 10, 15, '#ffffff'], ['d', 19, 15, '#ffffff'],
+      ['r', 9, 13, 4, 1, '#5a3a20'], ['r', 19, 13, 4, 1, '#5a3a20'],
+      ['r', 14, 20, 4, 1, '#7a3a20'],
+      ['e', 10, 30, 3.5, 1.6, '#7a5030'], ['e', 22, 30, 3.5, 1.6, '#7a5030'],
+    ],
+  },
+  piquillonco: {
+    nombre: 'Piquillonco', tipos: ['PLANTA', 'FUEGO'], base: { ps: 80, atk: 90, def: 90, vel: 75 }, captura: 45, exp: 236,
+    desc: 'el monte que arde sin quemarse',
+    movs: [[1, 'embestida'], [1, 'grunido'], [5, 'yerbazo'], [10, 'pique'], [13, 'matecito'], [17, 'hojarasca'], [21, 'chispa'], [26, 'semillazo'], [32, 'fogon'], [40, 'raizon'], [46, 'lavazo']],
+    sprite: [
+      ['e', 16, 8, 13, 7, '#2e8a3a'],
+      ['e', 8, 6, 5, 4, '#4aa840'], ['e', 24, 6, 5, 4, '#3a9a40'], ['e', 16, 3, 5, 3, '#5cc050'],
+      ['p', [[6, 4], [8, -1], [10, 4]], '#ff8a2a'],
+      ['p', [[14, 2], [16, -3], [18, 2]], '#ffb02e'],
+      ['p', [[22, 4], [24, -1], [26, 4]], '#ff5a20'],
+      ['e', 8, 4, 1.5, 1.5, '#ffe060', 's'], ['e', 16, 1.5, 1.5, 1.2, '#ffe060', 's'], ['e', 24, 4, 1.5, 1.5, '#ffe060', 's'],
+      ['r', 6, 25, 4, 6, '#6a4020'], ['r', 22, 25, 4, 6, '#6a4020'],
+      ['e', 16, 20, 13, 9, '#8a6038'],
+      ['e', 16, 24, 8, 5, '#d8b880', 's'],
+      ['r', 9, 15, 3, 3, '#201810'], ['r', 20, 15, 3, 3, '#201810'],
+      ['d', 9, 15, '#ff8a2a'], ['d', 20, 15, '#ff8a2a'],
+      ['r', 8, 13, 5, 1, '#4a2a10'], ['r', 19, 13, 5, 1, '#4a2a10'],
+      ['p', [[12, 20], [20, 20], [16, 23]], '#5a2a10'],
+      ['d', 13, 20, '#ffffff'], ['d', 19, 20, '#ffffff'],
+    ],
+  },
+  // --- Inicial de FUEGO ---
+  chispuna: {
+    nombre: 'Chispuna', tipos: ['FUEGO'], base: { ps: 39, atk: 56, def: 40, vel: 65 }, captura: 45, exp: 62,
+    desc: 'la chispa de la Puna', evo: { nivel: 16, a: 'volcarin' },
+    movs: [[1, 'aranazo'], [1, 'grunido'], [5, 'chispa'], [10, 'pique'], [14, 'mordisco'], [18, 'fogon'], [24, 'aliento'], [30, 'lavazo'], [38, 'garra_dragon'], [44, 'erupcion'], [50, 'furia_dragon']],
+    sprite: [
+      ['p', [[22, 16], [30, 8], [29, 20]], '#ff7a1a'],
+      ['e', 28, 11, 2, 3, '#ffd23a', 's'],
+      ['r', 10, 24, 2, 6, '#a0602a'], ['r', 14, 24, 2, 6, '#a0602a'], ['r', 19, 24, 2, 6, '#a0602a'], ['r', 23, 24, 2, 6, '#a0602a'],
+      ['e', 17, 21, 8, 5, '#d89a50'],
+      ['e', 13, 22, 4, 3, '#f8ecd8', 's'],
+      ['r', 9, 8, 5, 13, '#d89a50'],
+      ['e', 10, 9, 5, 4, '#e0a458'],
+      ['p', [[9, 5], [10, 1], [12, 5]], '#c08040'], ['p', [[12, 5], [14, 1], [14, 6]], '#c08040'],
+      ['p', [[10, 5], [12, -1], [15, 5]], '#ff7a1a'],
+      ['e', 12, 3, 1, 1.5, '#ffd23a', 's'],
+      ['e', 5.5, 10.5, 2.5, 2, '#f0d8b8'],
+      ['d', 4, 10, '#201010'],
+      ['r', 8, 8, 2, 2, '#201010'], ['d', 8, 8, '#ffffff'],
+    ],
+  },
+  volcarin: {
+    nombre: 'Volcarín', tipos: ['FUEGO'], base: { ps: 58, atk: 72, def: 58, vel: 80 }, captura: 45, exp: 142,
+    desc: 'lleva un volcán en el lomo', evo: { nivel: 36, a: 'andragon' },
+    movs: [[1, 'aranazo'], [1, 'grunido'], [5, 'chispa'], [10, 'pique'], [14, 'mordisco'], [18, 'fogon'], [24, 'aliento'], [30, 'lavazo'], [38, 'garra_dragon'], [44, 'erupcion'], [50, 'furia_dragon']],
+    sprite: [
+      ['p', [[16, 14], [20, 4], [26, 4], [30, 14]], '#5a4a48'],
+      ['r', 20, 4, 6, 2, '#ff7a1a'], ['p', [[21, 4], [23, -1], [25, 4]], '#ffb02e'],
+      ['r', 8, 24, 3, 6, '#5a3a2a'], ['r', 13, 24, 3, 6, '#5a3a2a'], ['r', 21, 24, 3, 6, '#5a3a2a'], ['r', 26, 24, 3, 6, '#5a3a2a'],
+      ['e', 19, 19, 11, 6, '#a8683a'],
+      ['r', 16, 14, 1, 8, '#ff7a1a', 'c'], ['r', 24, 15, 1, 7, '#ff7a1a', 'c'],
+      ['e', 13, 21, 4, 3, '#f0dcc0', 's'],
+      ['r', 7, 6, 6, 14, '#b8743e'],
+      ['e', 8, 7, 5.5, 4.5, '#c07c44'],
+      ['p', [[6, 3], [7, -1], [9, 3]], '#8a5228'], ['p', [[9, 3], [11, -1], [11, 4]], '#8a5228'],
+      ['p', [[7, 3], [10, -3], [13, 3]], '#ff5a20'],
+      ['e', 3, 9, 2.5, 2, '#f0d8b8'],
+      ['d', 1, 8, '#201010'],
+      ['r', 6, 6, 2, 2, '#201010'], ['d', 6, 6, '#ffe060'],
+    ],
+  },
+  andragon: {
+    nombre: 'Andragón', tipos: ['FUEGO', 'DRAGON'], base: { ps: 78, atk: 100, def: 78, vel: 98 }, captura: 45, exp: 240,
+    desc: 'el dragón de los Andes',
+    movs: [[1, 'aranazo'], [1, 'grunido'], [5, 'chispa'], [10, 'pique'], [14, 'mordisco'], [18, 'fogon'], [24, 'aliento'], [30, 'lavazo'], [38, 'garra_dragon'], [44, 'erupcion'], [50, 'furia_dragon']],
+    sprite: [
+      ['p', [[14, 10], [30, 0], [28, 14], [22, 18]], '#c83a20'],
+      ['p', [[18, 12], [29, 3], [27, 13]], '#ff8a3a', 'c'],
+      ['p', [[24, 22], [31, 30], [22, 27]], '#c84a20'],
+      ['p', [[29, 26], [31, 22], [31, 30]], '#ffb02e'],
+      ['r', 11, 25, 4, 6, '#8a2a10'], ['r', 20, 25, 4, 6, '#8a2a10'],
+      ['e', 17, 21, 9, 7, '#e0602a'],
+      ['e', 15, 23, 5, 4, '#f8d090', 's'],
+      ['r', 7, 9, 6, 12, '#e0602a'],
+      ['e', 8, 8, 6, 5, '#f07030'],
+      ['p', [[8, 4], [11, -1], [11, 5]], '#f8e0b0'], ['p', [[11, 4], [15, 0], [13, 6]], '#f8e0b0'],
+      ['e', 3, 10, 3, 2.5, '#f08040'],
+      ['d', 1, 9, '#201010'],
+      ['r', 6, 7, 2, 2, '#201010'], ['d', 6, 7, '#ffe060'],
+      ['r', 2, 12, 4, 1, '#8a2a10'],
+    ],
+  },
+  // --- Inicial de AGUA ---
+  yacarelito: {
+    nombre: 'Yacarelito', tipos: ['AGUA'], base: { ps: 50, atk: 52, def: 58, vel: 42 }, captura: 45, exp: 63,
+    desc: 'el yacaré bebé del Iberá', evo: { nivel: 16, a: 'yacarextro' },
+    movs: [[1, 'embestida'], [1, 'coletazo'], [5, 'burbujas'], [10, 'mordisco'], [14, 'bolita'], [18, 'chapuzon'], [22, 'aliento'], [28, 'coletazo_agua'], [34, 'garra_dragon'], [42, 'torrente'], [48, 'furia_dragon']],
+    sprite: [
+      ['p', [[22, 20], [31, 24], [22, 26]], '#4a8a50'],
+      ['r', 9, 25, 3, 4, '#3a7040'], ['r', 19, 25, 3, 4, '#3a7040'],
+      ['e', 16, 22, 8, 5, '#5aa060'],
+      ['e', 15, 25, 6, 2.5, '#e8e0a0', 's'],
+      ['r', 12, 17, 1, 3, '#3a7040', 'c'], ['r', 16, 17, 1, 3, '#3a7040', 'c'], ['r', 20, 17, 1, 3, '#3a7040', 'c'],
+      ['e', 9, 17, 6, 4.5, '#68b070'],
+      ['r', 1, 17, 8, 4, '#68b070'],
+      ['r', 1, 20, 8, 1, '#e8e0a0'],
+      ['e', 10, 13, 2.5, 2.5, '#68b070'],
+      ['r', 9, 12, 2, 2, '#201010'], ['d', 9, 12, '#ffffff'],
+      ['d', 1, 17, '#2a5030'],
+      ['e', 14, 10, 2, 2, '#6cc0ff'],
+      ['p', [[12.5, 10], [14, 6], [15.5, 10]], '#6cc0ff'],
+    ],
+  },
+  yacarextro: {
+    nombre: 'Yacarextro', tipos: ['AGUA', 'DRAGON'], base: { ps: 65, atk: 70, def: 78, vel: 58 }, captura: 45, exp: 142,
+    desc: 'el yacaré de aleta de dragón', evo: { nivel: 36, a: 'iberadraco' },
+    movs: [[1, 'embestida'], [1, 'coletazo'], [5, 'burbujas'], [10, 'mordisco'], [14, 'bolita'], [18, 'chapuzon'], [22, 'aliento'], [28, 'coletazo_agua'], [34, 'garra_dragon'], [42, 'torrente'], [48, 'furia_dragon']],
+    sprite: [
+      ['p', [[22, 18], [31, 26], [22, 25]], '#2a7a70'],
+      ['p', [[10, 14], [14, 6], [18, 13], [22, 6], [25, 15]], '#4ab0e0'],
+      ['r', 7, 24, 4, 6, '#205a50'], ['r', 20, 24, 4, 6, '#205a50'],
+      ['e', 16, 20, 10, 6, '#3a9a88'],
+      ['e', 15, 24, 7, 2.5, '#e8e0a0', 's'],
+      ['e', 8, 15, 6, 5, '#48aa98'],
+      ['r', 0, 15, 8, 5, '#48aa98'],
+      ['r', 0, 19, 8, 1, '#e8e0a0'],
+      ['p', [[9, 10], [11, 6], [12, 11]], '#d8d0a0'],
+      ['r', 7, 12, 2, 2, '#201010'], ['d', 7, 12, '#ffe060'],
+    ],
+  },
+  iberadraco: {
+    nombre: 'Iberadraco', tipos: ['AGUA', 'DRAGON'], base: { ps: 90, atk: 92, def: 95, vel: 72 }, captura: 45, exp: 239,
+    desc: 'el dragón de los esteros',
+    movs: [[1, 'embestida'], [1, 'coletazo'], [5, 'burbujas'], [10, 'mordisco'], [14, 'bolita'], [18, 'chapuzon'], [22, 'aliento'], [28, 'coletazo_agua'], [34, 'garra_dragon'], [42, 'torrente'], [48, 'furia_dragon']],
+    sprite: [
+      ['p', [[14, 12], [28, 0], [30, 12], [22, 16]], '#2a5ab0'],
+      ['p', [[18, 12], [27, 3], [28, 11]], '#5a9ae0', 'c'],
+      ['p', [[22, 20], [31, 30], [20, 27]], '#1a4a80'],
+      ['r', 8, 24, 4, 7, '#1a3a6a'], ['r', 20, 24, 4, 7, '#1a3a6a'],
+      ['e', 16, 20, 11, 7, '#2a6aa8'],
+      ['e', 15, 24, 8, 3, '#d8e8f0', 's'],
+      ['e', 8, 13, 6.5, 5, '#3a7ab8'],
+      ['r', 0, 13, 8, 5, '#3a7ab8'],
+      ['r', 0, 17, 8, 1, '#d8e8f0'],
+      ['p', [[7, 9], [9, 3], [11, 9]], '#e8e0b0'], ['p', [[10, 9], [14, 4], [13, 10]], '#e8e0b0'],
+      ['r', 6, 10, 2, 2, '#201010'], ['d', 6, 10, '#80f0ff'],
+    ],
+  },
+  // --- Línea del Hornerito ---
+  arquineo: {
+    nombre: 'Arquineo', tipos: ['VOLADOR', 'TIERRA'], base: { ps: 60, atk: 70, def: 65, vel: 65 }, captura: 90, exp: 120,
+    desc: 'el hornero constructor', evo: { nivel: 36, a: 'arquitemplillo' },
+    movs: [[1, 'picotazo'], [1, 'grunido'], [6, 'revolcon'], [11, 'rasante'], [15, 'adobe'], [20, 'barrazo'], [26, 'pedrada'], [32, 'vuelo_alto'], [40, 'derrumbe']],
+    sprite: [
+      ['r', 13, 25, 1, 5, '#c8a070'], ['r', 17, 25, 1, 5, '#c8a070'],
+      ['p', [[22, 18], [31, 25], [23, 24]], '#b85a2a'],
+      ['e', 16, 19, 9, 7, '#b06a38'],
+      ['e', 14, 21, 5, 4.5, '#ecd0a8', 's'],
+      ['e', 20, 17, 6, 4.5, '#7a4820'],
+      ['e', 10, 11, 6, 5.5, '#a86838'],
+      ['e', 10, 6, 6, 3, '#8a5a30'],
+      ['r', 5, 6, 10, 1, '#6a4020', 'c'],
+      ['r', 6, 9, 6, 1, '#ecd0a8', 'c'],
+      ['p', [[5, 10], [0, 12], [5, 13]], '#3a2a1a'],
+      ['r', 7, 10, 2, 2, '#201010'], ['d', 7, 10, '#ffffff'],
+    ],
+  },
+  arquitemplillo: {
+    nombre: 'Arquitemplillo', tipos: ['TIERRA', 'VOLADOR'], base: { ps: 80, atk: 85, def: 95, vel: 75 }, captura: 45, exp: 200,
+    desc: 'el hornero que lleva su templo',
+    movs: [[1, 'picotazo'], [1, 'grunido'], [6, 'revolcon'], [11, 'rasante'], [15, 'adobe'], [20, 'barrazo'], [26, 'pedrada'], [32, 'vuelo_alto'], [40, 'derrumbe']],
+    sprite: [
+      ['e', 22, 14, 8, 9, '#a0603a'],
+      ['e', 22, 16, 3, 4, '#3a2010', 's'],
+      ['r', 15, 22, 14, 2, '#7a4420'],
+      ['r', 12, 26, 1, 5, '#c8a070'], ['r', 17, 26, 1, 5, '#c8a070'],
+      ['e', 14, 21, 8, 6, '#b87444'],
+      ['e', 12, 23, 5, 4, '#ecd0a8', 's'],
+      ['e', 9, 11, 6, 6, '#b06c3a'],
+      ['p', [[5, 6], [9, 1], [13, 6]], '#c8884a'],
+      ['r', 5, 8, 6, 1, '#ecd0a8', 'c'],
+      ['p', [[4, 10], [-1, 12], [4, 13]], '#3a2a1a'],
+      ['r', 6, 9, 2, 2, '#201010'], ['d', 6, 9, '#ffd040'],
+    ],
+  },
+  // --- Rara de la Ruta 1 ---
+  condorito: {
+    nombre: 'Condorito', tipos: ['VOLADOR', 'PSIQUICO'], base: { ps: 45, atk: 48, def: 40, vel: 70 }, captura: 45, exp: 70,
+    desc: 'el pichón de cóndor que baja de los riscos',
+    movs: [[1, 'picotazo'], [1, 'chillido'], [7, 'mareo'], [11, 'rasante'], [18, 'vision'], [26, 'vuelo_alto']],
+    sprite: [
+      ['p', [[16, 12], [31, 6], [28, 20], [18, 22]], '#2a2a30'],
+      ['p', [[22, 14], [31, 9], [29, 15]], '#f0f0f0', 'c'],
+      ['r', 13, 25, 2, 5, '#8a8a8a'], ['r', 18, 25, 2, 5, '#8a8a8a'],
+      ['e', 16, 20, 8, 7, '#2a2a30'],
+      ['e', 11, 13, 6, 2.5, '#f8f8f8'],
+      ['e', 9, 9, 4.5, 4, '#c89090'],
+      ['p', [[5, 8], [1, 10], [5, 11]], '#e8d8c0'],
+      ['d', 1, 10, '#3a3a3a'],
+      ['r', 7, 7, 2, 2, '#201010'], ['d', 7, 7, '#f85888'],
+      ['e', 10, 5, 1.5, 1.5, '#f85888', 's'],
+    ],
+  },
+};
+
+// ===== Criaturas individuales =====
+function expPara(nivel) { return nivel * nivel * nivel; }
+function recalcular(m) {
+  const b = ESPECIES[m.id].base, L = m.nivel;
+  m.psMax = Math.floor(2 * b.ps * L / 100) + L + 10;
+  m.atk = Math.floor(2 * b.atk * L / 100) + 5;
+  m.def = Math.floor(2 * b.def * L / 100) + 5;
+  m.vel = Math.floor(2 * b.vel * L / 100) + 5;
+}
+function crearCriatura(id, nivel) {
+  const m = { id, nivel, exp: expPara(nivel), movs: [] };
+  recalcular(m);
+  m.ps = m.psMax;
+  for (const [nv, mv] of ESPECIES[id].movs) {
+    if (nv > nivel || m.movs.some(x => x.id === mv)) continue;
+    m.movs.push({ id: mv, pp: MOVS[mv].pp });
+    if (m.movs.length > 4) m.movs.shift();
+  }
+  return m;
+}
+function curarCriatura(m) {
+  m.ps = m.psMax;
+  for (const mv of m.movs) mv.pp = MOVS[mv.id].pp;
+}
+function nombreDe(m) { return ESPECIES[m.id].nombre.toUpperCase(); }
+function tiposDe(m) { return ESPECIES[m.id].tipos; }
+

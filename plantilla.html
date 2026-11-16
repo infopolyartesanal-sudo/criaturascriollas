@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#2b2140">
+<title>Criaturas Criollas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  background: #2b2140;
+  color: #e8e0ff;
+  font-family: "Press Start 2P", monospace;
+  overflow: hidden;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+#consola {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 14px;
+  padding: 8px;
+}
+#marco {
+  padding: 6px;
+  background: #141020;
+  border-radius: 10px;
+  box-shadow: 0 0 0 3px #4a3a6a, 0 8px 24px #0008;
+}
+canvas {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+#controles {
+  display: none;
+  width: 100%;
+  max-width: 520px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+}
+body.tactil #controles { display: flex; }
+body.tactil #ayuda { display: none; }
+@media (pointer: coarse) {
+  #controles { display: flex; }
+  #ayuda { display: none; }
+}
+.cruz {
+  display: grid;
+  grid-template-columns: repeat(3, 54px);
+  grid-template-rows: repeat(3, 54px);
+}
+.cruz .arriba { grid-area: 1 / 2; }
+.cruz .izq { grid-area: 2 / 1; }
+.cruz .der { grid-area: 2 / 3; }
+.cruz .abajo { grid-area: 3 / 2; }
+button {
+  background: #3a3054;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  box-shadow: 0 4px 0 #1a1428;
+  touch-action: none;
+}
+button.on { transform: translateY(3px); box-shadow: 0 1px 0 #1a1428; }
+.ab { display: flex; gap: 14px; align-items: center; }
+.ab button { width: 66px; height: 66px; border-radius: 50%; font-size: 18px; }
+.ab .a { background: #c83a4a; margin-bottom: 30px; }
+.ab .b { background: #8a3a6a; margin-top: 30px; }
+.start { padding: 10px 12px; font-size: 9px; border-radius: 14px; }
+#ayuda { font-size: 9px; opacity: .7; text-align: center; line-height: 1.8; }
+</style>
+</head>
+<body>
+<div id="consola">
+  <div id="marco"><canvas id="pantalla" width="240" height="160"></canvas></div>
+  <div id="controles">
+    <div class="cruz">
+      <button data-k="up" class="arriba">▲</button>
+      <button data-k="left" class="izq">◀</button>
+      <button data-k="right" class="der">▶</button>
+      <button data-k="down" class="abajo">▼</button>
+    </div>
+    <div class="centro"><button data-k="start" class="start">MENÚ</button></div>
+    <div class="ab">
+      <button data-k="b" class="b">B</button>
+      <button data-k="a" class="a">A</button>
+    </div>
+  </div>
+  <p id="ayuda">Flechas: caminar &nbsp;·&nbsp; Z / Enter: A &nbsp;·&nbsp; X: B (mantener para correr) &nbsp;·&nbsp; M: menú</p>
+</div>
+<!--JS:sprites.js-->
+<!--JS:datos.js-->
+<!--JS:mapas.js-->
+<!--JS:juego.js-->
+</body>
+</html>
