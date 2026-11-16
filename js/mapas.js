@@ -186,7 +186,7 @@ const MAPAS = {
       c: 'La compu de la Profe. Dice: "REGISTRO DE CRIATURAS CRIOLLAS: en construcción".',
       p: 'Un helecho gigante de la selva misionera.',
     },
-    boleadoras: [{ x: 4, y: 3, id: 'piquibrote' }, { x: 5, y: 3, id: 'chispuna' }, { x: 6, y: 3, id: 'yacarelito' }],
+    boleadoras: [{ x: 4, y: 3, id: 'ramoa' }, { x: 5, y: 3, id: 'flamartija' }, { x: 6, y: 3, id: 'ajolodo' }],
     npcs: [
       {
         id: 'ceibo', x: 5, y: 2, dir: 0, pal: PAL.ceibo,
@@ -228,7 +228,7 @@ const MAPAS = {
 
 // ===== Escenas de la historia =====
 // Tomi siempre se queda con el inicial que le gana al tuyo
-const CONTRA = { piquibrote: 'chispuna', chispuna: 'yacarelito', yacarelito: 'piquibrote' };
+const CONTRA = { ramoa: 'flamartija', flamartija: 'ajolodo', ajolodo: 'ramoa' };
 
 async function mirarBoleadora(b) {
   const tomada = S.flags.inicial === b.id || S.flags.inicialTomi === b.id;

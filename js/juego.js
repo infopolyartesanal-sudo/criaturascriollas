@@ -547,9 +547,9 @@ function dibujarFondoCampo(ctx) {
 function dibujarTitulo() {
   dibujarFondoCampo(b);
   const s = Math.sin(tick / 20) * 2;
-  b.drawImage(spriteCriatura('piquibrote'), 14, 96 + s, 64, 64);
-  b.drawImage(spriteCriatura('chispuna'), 88, 92 - s, 64, 64);
-  b.drawImage(spriteCriatura('yacarelito'), 162, 96 + s, 64, 64);
+  b.drawImage(spriteCriatura('ramoa'), 14, 96 + s, 64, 64);
+  b.drawImage(spriteCriatura('flamartija'), 88, 92 - s, 64, 64);
+  b.drawImage(spriteCriatura('ajolodo'), 162, 96 + s, 64, 64);
 }
 function uiTitulo() {
   txt('CRIATURAS', 120, 14, { t: 18, c: '#f8d030', sombra: '#a04020', al: 'center' });

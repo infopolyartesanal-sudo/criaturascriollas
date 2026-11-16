@@ -76,6 +76,13 @@ const MOVS = {
   pedrada: { nombre: 'Pedrada', tipo: 'ROCA', pot: 50, prec: 90, pp: 15 },
   derrumbe: { nombre: 'Derrumbe', tipo: 'ROCA', pot: 75, prec: 90, pp: 10 },
   vuelo_alto: { nombre: 'Picada', tipo: 'VOLADOR', pot: 80, prec: 95, pp: 15 },
+  acido: { nombre: 'Ácido', tipo: 'VENENO', pot: 40, prec: 100, pp: 30 },
+  toxibomba: { nombre: 'Toxibomba', tipo: 'VENENO', pot: 80, prec: 100, pp: 10 },
+  estallido: { nombre: 'Estallido', tipo: 'VENENO', pot: 100, prec: 85, pp: 5 },
+  punetazo: { nombre: 'Puñetazo', tipo: 'LUCHA', pot: 50, prec: 100, pp: 25 },
+  troncazo: { nombre: 'Troncazo', tipo: 'LUCHA', pot: 85, prec: 95, pp: 15 },
+  rugido: { nombre: 'Rugido', tipo: 'PLANTA', pot: 90, prec: 100, pp: 10 },
+  magma: { nombre: 'Magma', tipo: 'FUEGO', pot: 100, prec: 90, pp: 5 },
   forcejeo: { nombre: 'Forcejeo', tipo: 'NORMAL', pot: 40, prec: 100, pp: 1 },
 };
 
@@ -274,7 +281,83 @@ const ESPECIES = {
       ['r', 8, 11, 2, 2, '#201010'], ['d', 8, 11, '#ffffff'],
     ],
   },
-  // ======== v2: criaturas de Felipe ========
+  // ======== Iniciales elegidos por Felipe (sus dibujos en img/) ========
+  // --- PLANTA: Ramoa → Lianaco → Carayárbore ---
+  ramoa: {
+    nombre: 'Ramoa', tipos: ['PLANTA'], base: { ps: 45, atk: 52, def: 45, vel: 60 }, captura: 45, exp: 64,
+    desc: 'el trepador del monte', evo: { nivel: 16, a: 'lianaco' },
+    movs: [[1, 'aranazo'], [1, 'grunido'], [5, 'yerbazo'], [9, 'pique'], [13, 'matecito'], [17, 'punetazo'], [21, 'hojarasca'], [27, 'troncazo'], [33, 'semillazo'], [40, 'rugido'], [46, 'raizon']],
+    sprite: [['e', 16, 20, 9, 9, '#6b401a'], ['e', 16, 12, 7, 6, '#7fb700'], ['r', 12, 11, 2, 2, '#201810'], ['r', 18, 11, 2, 2, '#201810']],
+  },
+  lianaco: {
+    nombre: 'Lianaco', tipos: ['PLANTA'], base: { ps: 60, atk: 72, def: 58, vel: 75 }, captura: 45, exp: 142,
+    desc: 'la liana del monte', evo: { nivel: 36, a: 'carayarbore' },
+    movs: [[1, 'aranazo'], [1, 'grunido'], [5, 'yerbazo'], [9, 'pique'], [13, 'matecito'], [17, 'punetazo'], [21, 'hojarasca'], [27, 'troncazo'], [33, 'semillazo'], [40, 'rugido'], [46, 'raizon']],
+    sprite: [['e', 16, 20, 10, 10, '#714b19'], ['e', 16, 10, 8, 6, '#87a900'], ['r', 12, 10, 2, 2, '#201810'], ['r', 18, 10, 2, 2, '#201810']],
+  },
+  carayarbore: {
+    nombre: 'Carayárbore', tipos: ['PLANTA', 'LUCHA'], base: { ps: 85, atk: 105, def: 85, vel: 85 }, captura: 45, exp: 236,
+    desc: 'el guardián de la selva',
+    movs: [[1, 'aranazo'], [1, 'grunido'], [5, 'yerbazo'], [9, 'pique'], [13, 'matecito'], [17, 'punetazo'], [21, 'hojarasca'], [27, 'troncazo'], [33, 'semillazo'], [40, 'rugido'], [46, 'raizon']],
+    sprite: [['e', 16, 19, 12, 11, '#804e12'], ['e', 16, 8, 10, 6, '#9cae00'], ['r', 11, 9, 2, 2, '#201810'], ['r', 19, 9, 2, 2, '#201810']],
+  },
+  // --- FUEGO: Flamartija → Dracobrasa → Ignidraxx ---
+  flamartija: {
+    nombre: 'Flamartija', tipos: ['FUEGO'], base: { ps: 39, atk: 52, def: 43, vel: 65 }, captura: 45, exp: 62,
+    desc: 'la lagartija volcánica', evo: { nivel: 16, a: 'dracobrasa' },
+    movs: [[1, 'aranazo'], [1, 'grunido'], [5, 'chispa'], [9, 'pique'], [13, 'mordisco'], [17, 'fogon'], [22, 'aliento'], [28, 'lavazo'], [34, 'garra_dragon'], [40, 'magma'], [46, 'furia_dragon']],
+    sprite: [['e', 16, 21, 9, 7, '#ff6d15'], ['e', 13, 11, 7, 6, '#ff812f'], ['r', 10, 10, 2, 2, '#201010'], ['r', 16, 10, 2, 2, '#201010']],
+  },
+  dracobrasa: {
+    nombre: 'Dracobrasa', tipos: ['FUEGO', 'DRAGON'], base: { ps: 58, atk: 70, def: 58, vel: 80 }, captura: 45, exp: 142,
+    desc: 'el dragón de brasas', evo: { nivel: 36, a: 'ignidraxx' },
+    movs: [[1, 'aranazo'], [1, 'grunido'], [5, 'chispa'], [9, 'pique'], [13, 'mordisco'], [17, 'fogon'], [22, 'aliento'], [28, 'lavazo'], [34, 'garra_dragon'], [40, 'magma'], [46, 'furia_dragon']],
+    sprite: [['e', 16, 20, 9, 8, '#ea6f30'], ['e', 12, 9, 6, 5, '#f25a2a'], ['r', 10, 8, 2, 2, '#201010']],
+  },
+  ignidraxx: {
+    nombre: 'Ignidraxx', tipos: ['FUEGO', 'DRAGON'], base: { ps: 78, atk: 95, def: 78, vel: 100 }, captura: 45, exp: 240,
+    desc: 'el guardián ígneo',
+    movs: [[1, 'aranazo'], [1, 'grunido'], [5, 'chispa'], [9, 'pique'], [13, 'mordisco'], [17, 'fogon'], [22, 'aliento'], [28, 'lavazo'], [34, 'garra_dragon'], [40, 'magma'], [46, 'furia_dragon']],
+    sprite: [
+      ['p', [[14, 10], [30, 0], [28, 14], [22, 18]], '#7a1a10'],
+      ['p', [[18, 12], [29, 3], [27, 13]], '#ff7a1a', 'c'],
+      ['p', [[24, 22], [31, 30], [22, 27]], '#8a2010'],
+      ['p', [[29, 26], [31, 22], [31, 30]], '#ffb02e'],
+      ['r', 11, 25, 4, 6, '#3a1008'], ['r', 20, 25, 4, 6, '#3a1008'],
+      ['e', 17, 21, 9, 7, '#b0301a'],
+      ['e', 15, 23, 5, 4, '#f8d090', 's'],
+      ['r', 18, 17, 1, 8, '#ffb02e', 'c'], ['r', 22, 19, 1, 6, '#ffb02e', 'c'],
+      ['r', 7, 9, 6, 12, '#b0301a'],
+      ['e', 8, 8, 6, 5, '#c83a20'],
+      ['p', [[8, 4], [11, -1], [11, 5]], '#3a2a2a'], ['p', [[11, 4], [15, 0], [13, 6]], '#3a2a2a'],
+      ['e', 3, 10, 3, 2.5, '#c84a20'],
+      ['p', [[0, 9], [-3, 6], [0, 12]], '#ffb02e'],
+      ['d', 1, 9, '#201010'],
+      ['r', 6, 7, 2, 2, '#201010'], ['d', 6, 7, '#ffe060'],
+      ['r', 2, 12, 4, 1, '#3a1008'],
+    ],
+  },
+  // --- AGUA: Ajolodo → Branquiotox → Iberáxolot ---
+  ajolodo: {
+    nombre: 'Ajolodo', tipos: ['AGUA'], base: { ps: 50, atk: 48, def: 55, vel: 45 }, captura: 45, exp: 63,
+    desc: 'el ajolote del estero', evo: { nivel: 16, a: 'branquiotox' },
+    movs: [[1, 'embestida'], [1, 'coletazo'], [5, 'burbujas'], [9, 'acido'], [13, 'bolita'], [17, 'chapuzon'], [22, 'toxibomba'], [28, 'coletazo_agua'], [34, 'estallido'], [42, 'torrente']],
+    sprite: [['e', 16, 20, 10, 8, '#3a56ac'], ['e', 16, 13, 8, 6, '#5685d8'], ['r', 12, 12, 2, 2, '#101830'], ['r', 19, 12, 2, 2, '#101830']],
+  },
+  branquiotox: {
+    nombre: 'Branquiotox', tipos: ['AGUA', 'VENENO'], base: { ps: 68, atk: 62, def: 72, vel: 55 }, captura: 45, exp: 142,
+    desc: 'el anfibio tóxico del Litoral', evo: { nivel: 36, a: 'iberaxolot' },
+    movs: [[1, 'embestida'], [1, 'coletazo'], [5, 'burbujas'], [9, 'acido'], [13, 'bolita'], [17, 'chapuzon'], [22, 'toxibomba'], [28, 'coletazo_agua'], [34, 'estallido'], [42, 'torrente']],
+    sprite: [['e', 16, 20, 11, 8, '#255392'], ['e', 16, 12, 9, 6, '#3470bd'], ['r', 12, 11, 2, 2, '#101830'], ['r', 19, 11, 2, 2, '#101830']],
+  },
+  iberaxolot: {
+    nombre: 'Iberáxolot', tipos: ['AGUA', 'VENENO'], base: { ps: 95, atk: 80, def: 95, vel: 60 }, captura: 45, exp: 239,
+    desc: 'el guardián de los humedales',
+    movs: [[1, 'embestida'], [1, 'coletazo'], [5, 'burbujas'], [9, 'acido'], [13, 'bolita'], [17, 'chapuzon'], [22, 'toxibomba'], [28, 'coletazo_agua'], [34, 'estallido'], [42, 'torrente']],
+    sprite: [['e', 16, 20, 13, 9, '#4d4b94'], ['e', 16, 11, 10, 6, '#791495'], ['r', 11, 11, 2, 2, '#101830'], ['r', 20, 11, 2, 2, '#101830']],
+  },
+  // ======== Otras criaturas (iniciales anteriores, hoy fuera del juego) ========
+  // ======== Diseños de Felipe ========
   // --- Inicial de PLANTA ---
   piquibrote: {
     nombre: 'Piquibrote', tipos: ['PLANTA'], base: { ps: 45, atk: 49, def: 55, vel: 43 }, captura: 45, exp: 64,
