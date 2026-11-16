@@ -40,6 +40,11 @@ def construir():
     salida = os.path.join(RAIZ, 'dist', 'index.html')
     with open(salida, 'w', encoding='utf-8') as fh:
         fh.write(html)
+    # Copia para GitHub Pages (Settings → Pages → rama main, carpeta /docs)
+    os.makedirs(os.path.join(RAIZ, 'docs'), exist_ok=True)
+    with open(os.path.join(RAIZ, 'docs', 'index.html'), 'w', encoding='utf-8') as fh:
+        fh.write(html)
+    open(os.path.join(RAIZ, 'docs', '.nojekyll'), 'w').close()
     print(f'Listo: dist/index.html ({len(html) // 1024} KB, {n} dibujos)')
 
 

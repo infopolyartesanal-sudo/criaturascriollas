@@ -2,7 +2,9 @@
 
 Juego estilo GBA 2D de criaturas argentinas, diseñado por Felipe.
 
-Jugar: https://criaturascriollas.netlify.app
+Jugar: https://infopolyartesanal-sudo.github.io/criaturascriollas/ (GitHub Pages)
+
+Antes: https://criaturascriollas.netlify.app
 
 ## Cómo está armado
 
@@ -20,4 +22,4 @@ Jugar: https://criaturascriollas.netlify.app
 python3 construir.py
 ```
 
-Arma `dist/index.html`. En Netlify: **Deploys** → arrastrar ese archivo.
+Arma `dist/index.html` y `docs/index.html`. GitHub Pages publica `docs/` solo al hacer push a `main`.
