@@ -19,6 +19,7 @@ const PAL = {
   rocio: { id: 'rocio', piel: '#d8a070', pelo: '#3a2a1a', peloLargo: true, gorra: '#f0c030', remera: '#c8603a', pant: '#4a4a5a' },
   tala: { id: 'tala', piel: '#c89060', pelo: '#2a1a10', sombrero: '#3a3030', remera: '#c83a2a', raya: '#f0e0b0', pant: '#3a3a3a' },
   coplera: { id: 'coplera', piel: '#c89060', pelo: '#2a1a10', peloLargo: true, sombrero: '#5a4a3a', remera: '#3a8ac8', pant: '#c83a5a' },
+  nieve: { id: 'nieve', piel: '#e8c0a0', pelo: '#f0f0f8', peloLargo: true, gorra: '#3a7ab0', remera: '#e8f4ff', raya: '#3a7ab0', pant: '#2a3a5a' },
   nena: { id: 'nena', piel: '#f4c8a0', pelo: '#c08040', peloLargo: true, remera: '#f070a0', pant: '#4a6aa8' },
 };
 
@@ -318,6 +319,67 @@ const TILCARA = [
   'CC--------==----------CC',
   'CC--------==----------CC',
   'CCCCCCCCCC==CCCCCCCCCCCC',
+];
+
+// Grillas de la Puna (w salina · N cerro nevado)
+const RUTA6 = [
+  'NNNNNNNNNN==NNNNNNNNNN',
+  'NN--uuuu--==--uuuu--NN',
+  'NN--uuuu--==--uuuu--NN',
+  'NN-K------==-S----K-NN',
+  'NNNN--wwwwwwwwww--NNNN',
+  'NN----wwwwwwwwww----NN',
+  'NN-uu-ww~~ww~~ww-uu-NN',
+  'NN-uu-ww~~ww~~ww-uu-NN',
+  'NN----wwwwwwwwww----NN',
+  'NN--K-wwwwwwwwww-K--NN',
+  'NN--------==--------NN',
+  'NNNN-uuuuu==uuuuu-NNNN',
+  'NNNN-uuuuu==uuuuu-NNNN',
+  'NN------CC==CC------NN',
+  'NN-K----CC==CC----K-NN',
+  'NN--uuu---==---uuu--NN',
+  'NN--uuu---==---uuu--NN',
+  'NN--uuu-========uuu-NN',
+  'NN------=------K----NN',
+  'NNNN----=-uuuuuu--NNNN',
+  'NNNN-K--=-uuuuuu--NNNN',
+  'NN------=-uuuuuu----NN',
+  'NN--=====S----------NN',
+  'NN--=---------CCC---NN',
+  'NN--=--uuuuu--CCC-K-NN',
+  'NN--=--uuuuu--------NN',
+  'NN--=======---uuuu--NN',
+  'NN-K------=---uuuu--NN',
+  'NN--uuuu--=---uuuu--NN',
+  'NN--uuuu--=====-----NN',
+  'NN------------=-----NN',
+  'NN-K--uuuu--===-K---NN',
+  'NN----uuuu--==------NN',
+  'NN--------S-==--uu--NN',
+  'NN--uuuu----==--uu--NN',
+  'NNNNNNNNNNNN==NNNNNNNN',
+];
+const SUSQUES = [
+  'NNNNNNNNNN==NNNNNNNNNNNN',
+  'NN--------==S---------NN',
+  'NN--K-----==-------K--NN',
+  'NN--------==----------NN',
+  'NN------------.......-NN',
+  'NN-.....------.......-NN',
+  'NN-.....------.......-NN',
+  'NN-.....------.......-NN',
+  'NN-.....--==--.......-NN',
+  'NN---=--S-==-----=-S--NN',
+  'NN-=================--NN',
+  'NN--------==----------NN',
+  'NN--wwww--==--.....---NN',
+  'NN--wwww--==--.....---NN',
+  'NN--wwww--==--.....---NN',
+  'NN--------==--.....---NN',
+  'NN--S-----==----------NN',
+  'NN--------==------K---NN',
+  'NNNNNNNNNN==NNNNNNNNNNNN',
 ];
 
 // Casa del Mate (se puede repetir en cada pueblo)
@@ -689,7 +751,7 @@ const MAPAS = {
           await decir('LUNA: Hola, Felipe. Te estaba esperando... lo vi en el reflejo del agua.');
           await decir('Soy LUNA, líder del GIMNASIO CAMALOTE. Mis criaturas sienten lo que pensás antes de que te muevas.');
           await decir('Si me ganás, te llevás la INSIGNIA ESPEJO. ¿Empezamos?');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER LUNA', pal: PAL.luna, equipo: [['lechucita', 13], ['condorito', 14], ['lechuzonte', 16]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER LUNA', pal: PAL.luna, equipo: [['condorito', 13], ['lechucita', 13], ['condorito', 14], ['lechucita', 15], ['lechuzonte', 16]] } });
           if (r === 'gana') {
             S.flags.insignia1 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 1);
@@ -884,7 +946,7 @@ const MAPAS = {
           await decir('ROCÍO: ¡Bienvenido a las profundidades de Puerto Wanda!');
           await decir('Soy ROCÍO, líder del GIMNASIO WANDA. Mis criaturas nacieron entre cristales y tierra colorada.');
           await decir('¡Si querés la INSIGNIA AMATISTA, vas a tener que romper la piedra!');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER ROCÍO', pal: PAL.rocio, equipo: [['piedrin', 21], ['geodin', 22], ['micalonco', 24]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER ROCÍO', pal: PAL.rocio, equipo: [['piedrin', 21], ['geodin', 22], ['piedrin', 22], ['geodin', 23], ['micalonco', 24]] } });
           if (r === 'gana') {
             S.flags.insignia2 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 2);
@@ -1042,22 +1104,15 @@ const MAPAS = {
       { x: 11, y: 21, a: 'ruta5', ax: 11, ay: 1, dir: 0 },
       { x: 5, y: 8, a: 'centro4', ax: 4, ay: 6, dir: 1 },
       { x: 17, y: 8, a: 'gimnasio3', ax: 5, ay: 10, dir: 1 },
+      { x: 10, y: 0, a: 'ruta6', ax: 12, ay: 34, dir: 1 },
+      { x: 11, y: 0, a: 'ruta6', ax: 13, ay: 34, dir: 1 },
     ],
     carteles: {
-      '12,1': 'RUTA 6. Hacia LA PUNA... (¡todavía en construcción!)',
+      '12,1': 'RUTA 6. Hacia LA PUNA y las SALINAS GRANDES.',
       '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis.',
       '19,9': 'GIMNASIO DE TILCARA. Líder: TALA, guardián del jardín de cardones. Tipo PLANTA y TIERRA.',
       '4,18': 'TILCARA. Casas de adobe y cerros de siete colores.',
     },
-    disparadores: [
-      {
-        prueba: (x, y) => y === 0,
-        accion: async () => {
-          await decir('El camino hacia LA PUNA todavía está en construcción. ¡Muy pronto vas a poder seguir viaje!');
-          await pasoForzado(0);
-        },
-      },
-    ],
     npcs: [
       {
         id: 'artesana', x: 7, y: 11, dir: 0, pal: PAL.coplera,
@@ -1128,7 +1183,7 @@ const MAPAS = {
           await decir('TALA: Bienvenido a mi jardín, Felipe. Acá todo crece despacio, pero crece fuerte.');
           await decir('Soy TALA, líder del GIMNASIO TILCARA. Mis criaturas aguantan el sol, el viento y la sequía.');
           await decir('Si me ganás, te llevás la INSIGNIA CARDÓN. ¡Vamos!');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER TALA', pal: PAL.tala, equipo: [['cuison', 33], ['piquibrasa', 34], ['rodcardo', 34], ['rodcardo', 36]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER TALA', pal: PAL.tala, equipo: [['cuison', 33], ['peludin', 34], ['cardito', 34], ['piquibrasa', 35], ['rodcardo', 36]] } });
           if (r === 'gana') {
             S.flags.insignia3 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 3);
@@ -1137,6 +1192,166 @@ const MAPAS = {
             S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 4;
             S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
             await decir('TALA: Llevate estos ALFAJORES y BOLEADORAS. En la Puna te van a hacer falta.');
+            guardar();
+          }
+        },
+      },
+    ],
+  },
+  // ================= LA PUNA =================
+  ruta6: {
+    nombre: 'RUTA 6 · SALINAS GRANDES',
+    exterior: true,
+    grilla: desdeTexto(RUTA6),
+    edificios: [],
+    salidas: [
+      { x: 12, y: 35, a: 'tilcara', ax: 10, ay: 1, dir: 0 },
+      { x: 13, y: 35, a: 'tilcara', ax: 11, ay: 1, dir: 0 },
+      { x: 10, y: 0, a: 'susques', ax: 10, ay: 17, dir: 1 },
+      { x: 11, y: 0, a: 'susques', ax: 11, ay: 17, dir: 1 },
+    ],
+    carteles: {
+      '13,3': 'SALINAS GRANDES. Un mar de sal blanca a 3.400 metros de altura.',
+      '9,22': 'RUTA 6 · LA PUNA. ¡Abrigate! De noche hace muchísimo frío.',
+      '10,33': 'Al norte: SUSQUES y el GIMNASIO DE HIELO.',
+    },
+    encuentros: { lista: [['nevuki', 20], ['glaciolito', 16], ['pinguinoide', 14], ['chispuna', 12], ['condorito', 10], ['vizcachita', 10], ['micalonco', 6], ['farolito', 6], ['nevulon', 4], ['volcarin', 4]], min: 35, max: 39 },
+    npcs: [
+      entrenadorNPC({
+        id: 'salinero', x: 8, y: 10, dir: 3, pal: PAL.beto, nombre: 'SALINERO BRAULIO',
+        equipo: [['glaciolito', 36], ['micalonco', 36], ['vizcachita', 37]],
+        antes: ['SALINERO BRAULIO: Corto bloques de sal todo el día. ¡Mis criaturas son duras como la sal!'],
+        gana: 'SALINERO BRAULIO: ¡Me dejaste salado! Ja, ja.',
+        despues: 'SALINERO BRAULIO: Los GLACIOLITOS bajan de los cerros nevados. Cuando crecen se vuelven MORENACOLOSOS, ¡gigantes!',
+      }),
+      entrenadorNPC({
+        id: 'llamera', x: 7, y: 17, dir: 3, pal: PAL.coplera, nombre: 'PASTORA DE LLAMAS ROSA',
+        equipo: [['nevuki', 37], ['condorito', 37], ['farolito', 38]],
+        antes: ['PASTORA ROSA: Mis llamas se asustan con los forasteros. ¡Demostrame que sos buena gente con un duelo!'],
+        gana: 'PASTORA ROSA: Ya sé que sos de confianza. Pasá, pasá.',
+        despues: 'PASTORA ROSA: El NEVUKI esconde su carita en la cola cuando hay tormenta. ¡Es lo más tierno que hay!',
+      }),
+      entrenadorNPC({
+        id: 'vulcanologo', x: 9, y: 27, dir: 3, pal: PAL.ayudante, nombre: 'VULCANÓLOGO TINCHO',
+        equipo: [['chispuna', 37], ['volcarin', 38], ['pinguinoide', 38]],
+        antes: ['VULCANÓLOGO TINCHO: ¡En la Puna hay volcanes y nieve al mismo tiempo! ¿Fuego o hielo? ¡Probemos!'],
+        gana: 'VULCANÓLOGO TINCHO: Mi teoría falló... ¡Hay que repetir el experimento!',
+        despues: 'VULCANÓLOGO TINCHO: Contra el HIELO y la ROCA de NIEVE, usá LUCHA, ACERO, AGUA o PLANTA.',
+      }),
+      entrenadorNPC({
+        id: 'tomi3', x: 14, y: 30, dir: 2, pal: PAL.tomi, nombre: 'TOMI',
+        equipo: [['arquineo', 38], ['micalonco', 38], ['nevuki', 38], ['dracobrasa', 40]],
+        antes: ['TOMI: ¡Felipe! ¡Esta vez sí que te gano! Entrené todo el camino desde Tilcara.'],
+        gana: 'TOMI: ¡Nooo! Bueno... la insignia de hielo es tuya, seguro. ¡Pero algún día te gano!',
+        despues: 'TOMI: Voy a seguir entrenando. ¡Nos vemos en el próximo gimnasio!',
+      }),
+    ],
+  },
+
+  susques: {
+    nombre: 'SUSQUES',
+    exterior: true,
+    grilla: desdeTexto(SUSQUES),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: true },
+      { x: 14, y: 4, w: 7, h: 5, tipo: 'gimnasio4', puerta: 3, abre: true },
+      { x: 14, y: 12, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 10, y: 18, a: 'ruta6', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 18, a: 'ruta6', ax: 11, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro5', ax: 4, ay: 6, dir: 1 },
+      { x: 17, y: 8, a: 'gimnasio4', ax: 5, ay: 10, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'RUTA 7. Hacia la CORDILLERA... (¡todavía en construcción!)',
+      '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis. ¡Con un mate de coca para la altura!',
+      '19,9': 'GIMNASIO DE SUSQUES. Líder: NIEVE, la reina de la cordillera. Tipo HIELO y ROCA.',
+      '4,16': 'SUSQUES. Un pueblito de adobe en el medio de la Puna.',
+    },
+    objetos: { w: 'Un piletón de sal. ¡Brilla con el sol!' },
+    disparadores: [
+      {
+        prueba: (x, y) => y === 0,
+        accion: async () => {
+          await decir('El camino hacia la CORDILLERA todavía está en construcción. ¡Muy pronto vas a poder seguir viaje!');
+          await pasoForzado(0);
+        },
+      },
+    ],
+    npcs: [
+      {
+        id: 'abuelo_susques', x: 8, y: 13, dir: 0, pal: PAL.abuelo,
+        hablar: async () => {
+          await decir('ABUELO: En la Puna el sol quema y el viento congela. Las criaturas de acá son muy fuertes.');
+          await decir('Dicen que NIEVE, la líder, entrena con su MORENACOLOSO en el medio de las tormentas.');
+        },
+      },
+    ],
+  },
+
+  centro5: crearCentro('susques', 5, 9, 'centro5'),
+
+  gimnasio4: {
+    nombre: 'GIMNASIO SUSQUES',
+    grilla: desdeTexto([
+      '###########',
+      '#a-------a#',
+      '#wwRwwwRww#',
+      '#wwwwwwwww#',
+      '#RwwRwRwwR#',
+      '#wwwwwwwww#',
+      '#wRRwwwRRw#',
+      '#wwwwwwwww#',
+      '#awwRwRwwa#',
+      '#wwwwwwwww#',
+      '#wwwwwwwww#',
+      '#####m#####',
+    ]),
+    edificios: [],
+    salidas: [{ x: 5, y: 11, a: 'susques', ax: 17, ay: 9, dir: 0 }],
+    objetos: {
+      R: 'Un bloque de hielo milenario con piedras adentro.',
+      a: 'Cristales de hielo que nunca se derriten.',
+    },
+    npcs: [
+      entrenadorNPC({
+        id: 'gim4_a', x: 2, y: 7, dir: 3, pal: PAL.nieve, nombre: 'ESQUIADORA LU',
+        equipo: [['pinguinoide', 39], ['glaciolito', 39], ['pinguinoide', 40]],
+        antes: ['ESQUIADORA LU: ¡Este piso resbala! Pero mis criaturas no se caen nunca. ¡Duelo!'],
+        gana: 'ESQUIADORA LU: ¡Me resbalé! Bueno, pasá.',
+        despues: 'ESQUIADORA LU: El HIELO sufre con el FUEGO, la LUCHA, la ROCA y el ACERO.',
+      }),
+      entrenadorNPC({
+        id: 'gim4_b', x: 8, y: 5, dir: 2, pal: PAL.beto, nombre: 'ANDINISTA BRUNO',
+        equipo: [['glaciolito', 40], ['morenacoloso', 41]],
+        antes: ['ANDINISTA BRUNO: Subí el Aconcagua tres veces. ¡Tu equipo no me asusta!'],
+        gana: 'ANDINISTA BRUNO: Ganaste la cumbre, Felipe.',
+        despues: 'ANDINISTA BRUNO: NIEVE es durísima. Su MORENACOLOSO aguanta golpes como una montaña.',
+      }),
+      {
+        id: 'nieve', x: 5, y: 1, dir: 0, pal: PAL.nieve,
+        hablar: async () => {
+          if (S.flags.insignia4) {
+            await decir('NIEVE: Derretiste mi hielo, Felipe. Seguí subiendo, la cordillera te espera.');
+            return;
+          }
+          if (!S.flags.insignia3) {
+            await decir('NIEVE: Primero conseguí la INSIGNIA CARDÓN de TALA, en Tilcara. Después te espero.');
+            return;
+          }
+          await decir('NIEVE: Llegaste hasta la Puna... Pocos aguantan el frío de este lugar.');
+          await decir('Soy NIEVE, líder del GIMNASIO SUSQUES. Mis criaturas nacieron entre la nieve y la roca de la cordillera.');
+          await decir('Si me ganás, te llevás la INSIGNIA GLACIAR. ¡Preparate para congelarte!');
+          const r = await batalla({ entrenador: { nombre: 'LÍDER NIEVE', pal: PAL.nieve, equipo: [['pinguinoide', 39], ['glaciolito', 40], ['pinguinoide', 41], ['morenacoloso', 41], ['morenacoloso', 43]] } });
+          if (r === 'gana') {
+            S.flags.insignia4 = true;
+            S.flags.insignias = Math.max(S.flags.insignias || 0, 4);
+            await decir('NIEVE: Tu fuego es más fuerte que mi hielo. Te lo ganaste.');
+            await decir('¡Felipe recibió la INSIGNIA GLACIAR!');
+            S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 5;
+            S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
+            await decir('NIEVE: Llevate estos ALFAJORES y BOLEADORAS. ¡Ya tenés cuatro insignias, la mitad del camino!');
             guardar();
           }
         },

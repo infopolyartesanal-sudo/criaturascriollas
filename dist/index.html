@@ -471,6 +471,16 @@ function crearTiles() {
     sobre(x, [['r', 6, 2, 4, 13, '#3a8a4a'], ['r', 2, 6, 3, 6, '#3a8a4a'], ['r', 2, 6, 2, 2, '#3a8a4a'], ['r', 11, 4, 3, 6, '#3a8a4a'],
       ['r', 7, 3, 1, 11, '#5aaa60', 'c'], ['d', 7, 1, '#f0f0a0'], ['d', 12, 3, '#f0f0a0']]);
   });
+  // Puna: salinas y cerros nevados
+  t['w'] = mk(x => {
+    R(x, 0, 0, 16, 16, '#f4f6f8');
+    R(x, 0, 7, 16, 1, '#d8dee6'); R(x, 7, 0, 1, 7, '#d8dee6'); R(x, 3, 8, 1, 8, '#d8dee6'); R(x, 12, 8, 1, 8, '#d8dee6');
+    R(x, 2, 2, 1, 1, '#ffffff'); R(x, 11, 12, 1, 1, '#ffffff');
+  });
+  t['N'] = mk(x => {
+    R(x, 0, 0, 16, 16, '#e0c890');
+    sobre(x, [['p', [[0, 16], [8, 1], [16, 16]], '#7a6a6a'], ['p', [[5, 7], [8, 1], [11, 7], [9, 6], [8, 8], [6, 6]], '#ffffff'], ['p', [[8, 1], [16, 16], [12, 16], [10, 8]], '#5a4a4a', 'c']]);
+  });
   // Interiores
   t['_'] = mk(piso);
   t['#'] = mk(x => {
@@ -516,7 +526,7 @@ function crearEdificio(tipo, w, h, puerta) {
   const pared = tipo === 'lab' ? '#eef2f6' : tipo.startsWith('gimnasio') ? '#ece4f4' : tipo === 'adobe' ? '#e0c08a' : '#f6eedc';
   R(2, techoH - 4, ancho - 4, alto - techoH + 4, pared);
   R(2, alto - 3, ancho - 4, 3, '#a89878');
-  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#e08a2a', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', adobe: '#9a6a3a' };
+  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#e08a2a', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', gimnasio4: '#3a7ab0', adobe: '#9a6a3a' };
   const tc = TECHOS[tipo] || '#c8553a';
   R(0, 0, ancho, techoH, tc);
   let fila = 0;
@@ -695,6 +705,12 @@ const MOVS = {
   silbido: { nombre: 'Silbido', tipo: 'FANTASMA', pot: 0, prec: 100, pp: 20, ef: 'atk-' },
   fuego_fatuo: { nombre: 'Fuego Fatuo', tipo: 'FUEGO', pot: 65, prec: 100, pp: 15 },
   payada: { nombre: 'Payada Espectral', tipo: 'FANTASMA', pot: 85, prec: 100, pp: 10 },
+  // --- Puna (v6) ---
+  escarcha: { nombre: 'Escarcha', tipo: 'HIELO', pot: 40, prec: 100, pp: 25 },
+  granizo: { nombre: 'Granizo', tipo: 'HIELO', pot: 65, prec: 100, pp: 15 },
+  rayo_hielo: { nombre: 'Rayo Hielo', tipo: 'HIELO', pot: 90, prec: 100, pp: 10 },
+  ventisca: { nombre: 'Ventisca', tipo: 'HIELO', pot: 110, prec: 75, pp: 5 },
+  nevada: { nombre: 'Nevada', tipo: 'HIELO', pot: 0, prec: 100, pp: 20, ef: 'def-' },
   forcejeo: { nombre: 'Forcejeo', tipo: 'NORMAL', pot: 40, prec: 100, pp: 1 },
 };
 
@@ -1474,6 +1490,124 @@ const ESPECIES = {
       ['d', 2, 4, '#f85888'], ['d', 29, 5, '#f85888'], ['d', 3, 28, '#f85888'], ['d', 29, 29, '#f85888'],
     ],
   },
+  // --- Puna y cordillera: diseños de Felipe ---
+  pinguinoide: {
+    nombre: 'Pinguinoide', tipos: ['HIELO'], base: { ps: 45, atk: 50, def: 45, vel: 55 }, captura: 120, exp: 66,
+    desc: 'el pichón de pingüino que sueña con volar', evo: { nivel: 25, a: 'vientuino' },
+    movs: [[1, 'picotazo'], [1, 'escarcha'], [7, 'nevada'], [13, 'granizo'], [20, 'rasante'], [28, 'rayo_hielo'], [36, 'vuelo_alto'], [44, 'ventisca']],
+    sprite: [
+      ['e', 11, 29, 3, 1.5, '#f0a030'], ['e', 21, 29, 3, 1.5, '#f0a030'],
+      ['e', 16, 19, 10, 10, '#c0c8d8'],
+      ['e', 16, 21, 6, 7, '#ffffff', 's'],
+      ['e', 6, 19, 3, 6, '#a0a8b8'], ['e', 26, 19, 3, 6, '#a0a8b8'],
+      ['e', 16, 9, 7, 6, '#c0c8d8'],
+      ['r', 12, 8, 2, 3, '#201010'], ['r', 18, 8, 2, 3, '#201010'], ['d', 12, 8, '#ffffff'], ['d', 18, 8, '#ffffff'],
+      ['p', [[14, 11], [18, 11], [16, 14]], '#f0a030'],
+      ['d', 16, 3, '#a0e0ff'],
+    ],
+  },
+  vientuino: {
+    nombre: 'Vientüino', tipos: ['VOLADOR', 'HIELO'], base: { ps: 62, atk: 70, def: 60, vel: 82 }, captura: 45, exp: 145,
+    desc: 'el planeador austral con alas de hielo', evo: { nivel: 42, a: 'glaciperador' },
+    movs: [[1, 'picotazo'], [1, 'escarcha'], [7, 'nevada'], [13, 'granizo'], [20, 'rasante'], [28, 'rayo_hielo'], [36, 'vuelo_alto'], [44, 'ventisca']],
+    sprite: [
+      ['p', [[10, 14], [0, 24], [10, 20]], '#a0e0ff'], ['p', [[22, 14], [32, 24], [22, 20]], '#a0e0ff'],
+      ['e', 11, 30, 3, 1.5, '#f0a030'], ['e', 21, 30, 3, 1.5, '#f0a030'],
+      ['e', 16, 19, 8, 11, '#1a2a5a'],
+      ['e', 16, 21, 5, 8, '#ffffff', 's'],
+      ['e', 16, 7, 6, 5, '#1a2a5a'],
+      ['r', 12, 6, 2, 2, '#a0e0ff'], ['r', 18, 6, 2, 2, '#a0e0ff'],
+      ['p', [[14, 9], [18, 9], [16, 12]], '#f0a030'],
+    ],
+  },
+  glaciperador: {
+    nombre: 'Glaciperador', tipos: ['VOLADOR', 'HIELO'], base: { ps: 85, atk: 95, def: 80, vel: 92 }, captura: 45, exp: 230,
+    desc: 'el pingüino emperador de los glaciares',
+    movs: [[1, 'picotazo'], [1, 'escarcha'], [7, 'nevada'], [13, 'granizo'], [20, 'rasante'], [28, 'rayo_hielo'], [36, 'vuelo_alto'], [44, 'ventisca']],
+    sprite: [
+      ['p', [[8, 10], [0, 26], [8, 22]], '#c0f0ff'], ['p', [[24, 10], [32, 26], [24, 22]], '#c0f0ff'],
+      ['e', 11, 30, 3, 1.5, '#f0a030'], ['e', 21, 30, 3, 1.5, '#f0a030'],
+      ['e', 16, 19, 9, 12, '#101a40'],
+      ['e', 16, 21, 6, 9, '#ffffff', 's'],
+      ['e', 11, 12, 2, 2, '#f0c030', 's'], ['e', 21, 12, 2, 2, '#f0c030', 's'],
+      ['e', 16, 7, 6, 5, '#101a40'],
+      ['p', [[11, 3], [13, 0], [15, 3], [17, 0], [19, 3], [21, 0], [21, 4], [11, 4]], '#a0e0ff'],
+      ['r', 12, 7, 2, 2, '#a0e0ff'], ['r', 18, 7, 2, 2, '#a0e0ff'],
+      ['p', [[14, 9], [18, 9], [16, 12]], '#f0a030'],
+    ],
+  },
+  glaciolito: {
+    nombre: 'Glaciolito', tipos: ['ROCA', 'HIELO'], base: { ps: 55, atk: 65, def: 85, vel: 30 }, captura: 90, exp: 70,
+    desc: 'el cubo de hielo y piedra de la cordillera', evo: { nivel: 34, a: 'morenacoloso' },
+    movs: [[1, 'embestida'], [1, 'escarcha'], [7, 'adobe'], [13, 'pedrada'], [20, 'granizo'], [28, 'derrumbe'], [36, 'rayo_hielo'], [44, 'ventisca']],
+    sprite: [
+      ['r', 7, 24, 4, 6, '#6a6a6a'], ['r', 21, 24, 4, 6, '#6a6a6a'], ['r', 12, 25, 3, 5, '#5a5a5a'], ['r', 17, 25, 3, 5, '#5a5a5a'],
+      ['r', 6, 9, 20, 16, '#b0e0f0'],
+      ['r', 6, 18, 9, 7, '#8a8a8a', 'c'], ['r', 19, 9, 7, 6, '#8a8a8a', 'c'],
+      ['r', 8, 10, 4, 2, '#e8f8ff'],
+      ['e', 12, 15, 1.8, 1.8, '#40a0ff', 's'], ['e', 20, 15, 1.8, 1.8, '#40a0ff', 's'],
+    ],
+  },
+  morenacoloso: {
+    nombre: 'Morenacoloso', tipos: ['ROCA', 'HIELO'], base: { ps: 95, atk: 110, def: 125, vel: 35 }, captura: 45, exp: 225,
+    desc: 'el coloso acorazado con hielo del Perito Moreno',
+    movs: [[1, 'embestida'], [1, 'escarcha'], [7, 'adobe'], [13, 'pedrada'], [20, 'granizo'], [28, 'derrumbe'], [36, 'rayo_hielo'], [44, 'ventisca']],
+    sprite: [
+      ['p', [[9, 14], [11, 3], [14, 14]], '#c0f0ff'], ['p', [[14, 14], [17, 1], [20, 14]], '#e8f8ff'], ['p', [[20, 14], [24, 5], [26, 15]], '#c0f0ff'],
+      ['r', 7, 25, 5, 6, '#5a5a62'], ['r', 22, 25, 5, 6, '#5a5a62'],
+      ['e', 17, 21, 14, 8, '#6a6a72'],
+      ['r', 6, 16, 22, 4, '#a0d8f0', 'c'],
+      ['e', 5, 21, 5, 4, '#6a6a72'],
+      ['p', [[1, 18], [3, 15], [5, 18]], '#c0f0ff'],
+      ['r', 3, 20, 2, 2, '#40a0ff'],
+    ],
+  },
+  nevuki: {
+    nombre: 'Nevuki', tipos: ['NORMAL', 'HIELO'], base: { ps: 45, atk: 50, def: 42, vel: 65 }, captura: 120, exp: 62,
+    desc: 'el zorrito de nieve que juega en las tormentas', evo: { nivel: 18, a: 'nevulon' },
+    movs: [[1, 'aranazo'], [1, 'escarcha'], [6, 'pique'], [11, 'nevada'], [16, 'mordisco'], [22, 'granizo'], [30, 'rayo_hielo'], [40, 'ventisca']],
+    sprite: [
+      ['e', 25, 15, 7, 8, '#f8f8ff', 's'], ['e', 26, 13, 4, 4, '#ffffff', 's'],
+      ['r', 10, 23, 3, 6, '#e8e8f8'], ['r', 16, 23, 3, 6, '#e8e8f8'],
+      ['e', 14, 20, 8, 6, '#f0f0fa'],
+      ['p', [[6, 6], [8, 0], [11, 6]], '#f0f0fa'], ['p', [[14, 6], [17, 0], [19, 6]], '#f0f0fa'],
+      ['e', 12, 11, 7, 6, '#f0f0fa'],
+      ['p', [[11, 5], [12, 3], [13, 5], [12, 7]], '#60c0ff'],
+      ['r', 9, 10, 2, 2, '#201010'], ['r', 14, 10, 2, 2, '#201010'],
+      ['d', 6, 13, '#201010'],
+    ],
+  },
+  nevulon: {
+    nombre: 'Nevulon', tipos: ['NORMAL', 'HIELO'], base: { ps: 65, atk: 72, def: 60, vel: 88 }, captura: 60, exp: 145,
+    desc: 'el zorro de las tres colas de nieve', evo: { nivel: 36, a: 'nevukhan' },
+    movs: [[1, 'aranazo'], [1, 'escarcha'], [6, 'pique'], [11, 'nevada'], [16, 'mordisco'], [22, 'granizo'], [30, 'rayo_hielo'], [40, 'ventisca']],
+    sprite: [
+      ['e', 26, 8, 5, 6, '#f8f8ff', 's'], ['e', 28, 16, 5, 6, '#f8f8ff', 's'], ['e', 25, 23, 5, 5, '#f8f8ff', 's'],
+      ['r', 9, 22, 3, 8, '#c0e0f8'], ['r', 16, 22, 3, 8, '#c0e0f8'],
+      ['e', 14, 19, 9, 6, '#f0f0fa'],
+      ['p', [[5, 7], [7, 0], [10, 7]], '#c0e0f8'], ['p', [[13, 7], [16, 0], [18, 7]], '#c0e0f8'],
+      ['e', 11, 11, 7, 6, '#f0f0fa'],
+      ['p', [[10, 5], [11, 2], [12, 5], [11, 8]], '#60c0ff'],
+      ['r', 8, 10, 2, 2, '#2040a0'], ['r', 13, 10, 2, 2, '#2040a0'],
+      ['d', 5, 13, '#201010'],
+    ],
+  },
+  nevukhan: {
+    nombre: 'Nevukhan', tipos: ['NORMAL', 'HIELO'], base: { ps: 90, atk: 100, def: 82, vel: 105 }, captura: 45, exp: 235,
+    desc: 'la bestia de seis colas con corona de cristales',
+    movs: [[1, 'aranazo'], [1, 'escarcha'], [6, 'pique'], [11, 'nevada'], [16, 'mordisco'], [22, 'granizo'], [30, 'rayo_hielo'], [40, 'ventisca']],
+    sprite: [
+      ['e', 24, 5, 4, 5, '#e0f0ff', 's'], ['e', 28, 11, 4, 5, '#e0f0ff', 's'], ['e', 29, 18, 3, 5, '#e0f0ff', 's'],
+      ['e', 27, 25, 4, 4, '#e0f0ff', 's'], ['e', 21, 3, 3, 3, '#e0f0ff', 's'], ['e', 22, 27, 3, 3, '#e0f0ff', 's'],
+      ['r', 8, 22, 4, 9, '#a0d0f0'], ['r', 17, 22, 4, 9, '#a0d0f0'],
+      ['e', 14, 19, 10, 7, '#f0f0fa'],
+      ['r', 6, 18, 16, 1, '#60c0ff', 'c'],
+      ['e', 10, 11, 8, 6, '#f0f0fa'],
+      ['p', [[4, 5], [6, 1], [8, 4], [10, 0], [12, 4], [14, 1], [16, 5]], '#60c0ff'],
+      ['r', 7, 10, 2, 2, '#2040a0'], ['r', 12, 10, 2, 2, '#2040a0'],
+      ['d', 3, 13, '#201010'],
+    ],
+  },
   // --- Rara de la Ruta 1 ---
   condorito: {
     nombre: 'Condorito', tipos: ['VOLADOR', 'PSIQUICO'], base: { ps: 45, atk: 48, def: 40, vel: 70 }, captura: 45, exp: 70,
@@ -1545,6 +1679,7 @@ const PAL = {
   rocio: { id: 'rocio', piel: '#d8a070', pelo: '#3a2a1a', peloLargo: true, gorra: '#f0c030', remera: '#c8603a', pant: '#4a4a5a' },
   tala: { id: 'tala', piel: '#c89060', pelo: '#2a1a10', sombrero: '#3a3030', remera: '#c83a2a', raya: '#f0e0b0', pant: '#3a3a3a' },
   coplera: { id: 'coplera', piel: '#c89060', pelo: '#2a1a10', peloLargo: true, sombrero: '#5a4a3a', remera: '#3a8ac8', pant: '#c83a5a' },
+  nieve: { id: 'nieve', piel: '#e8c0a0', pelo: '#f0f0f8', peloLargo: true, gorra: '#3a7ab0', remera: '#e8f4ff', raya: '#3a7ab0', pant: '#2a3a5a' },
   nena: { id: 'nena', piel: '#f4c8a0', pelo: '#c08040', peloLargo: true, remera: '#f070a0', pant: '#4a6aa8' },
 };
 
@@ -1844,6 +1979,67 @@ const TILCARA = [
   'CC--------==----------CC',
   'CC--------==----------CC',
   'CCCCCCCCCC==CCCCCCCCCCCC',
+];
+
+// Grillas de la Puna (w salina · N cerro nevado)
+const RUTA6 = [
+  'NNNNNNNNNN==NNNNNNNNNN',
+  'NN--uuuu--==--uuuu--NN',
+  'NN--uuuu--==--uuuu--NN',
+  'NN-K------==-S----K-NN',
+  'NNNN--wwwwwwwwww--NNNN',
+  'NN----wwwwwwwwww----NN',
+  'NN-uu-ww~~ww~~ww-uu-NN',
+  'NN-uu-ww~~ww~~ww-uu-NN',
+  'NN----wwwwwwwwww----NN',
+  'NN--K-wwwwwwwwww-K--NN',
+  'NN--------==--------NN',
+  'NNNN-uuuuu==uuuuu-NNNN',
+  'NNNN-uuuuu==uuuuu-NNNN',
+  'NN------CC==CC------NN',
+  'NN-K----CC==CC----K-NN',
+  'NN--uuu---==---uuu--NN',
+  'NN--uuu---==---uuu--NN',
+  'NN--uuu-========uuu-NN',
+  'NN------=------K----NN',
+  'NNNN----=-uuuuuu--NNNN',
+  'NNNN-K--=-uuuuuu--NNNN',
+  'NN------=-uuuuuu----NN',
+  'NN--=====S----------NN',
+  'NN--=---------CCC---NN',
+  'NN--=--uuuuu--CCC-K-NN',
+  'NN--=--uuuuu--------NN',
+  'NN--=======---uuuu--NN',
+  'NN-K------=---uuuu--NN',
+  'NN--uuuu--=---uuuu--NN',
+  'NN--uuuu--=====-----NN',
+  'NN------------=-----NN',
+  'NN-K--uuuu--===-K---NN',
+  'NN----uuuu--==------NN',
+  'NN--------S-==--uu--NN',
+  'NN--uuuu----==--uu--NN',
+  'NNNNNNNNNNNN==NNNNNNNN',
+];
+const SUSQUES = [
+  'NNNNNNNNNN==NNNNNNNNNNNN',
+  'NN--------==S---------NN',
+  'NN--K-----==-------K--NN',
+  'NN--------==----------NN',
+  'NN------------.......-NN',
+  'NN-.....------.......-NN',
+  'NN-.....------.......-NN',
+  'NN-.....------.......-NN',
+  'NN-.....--==--.......-NN',
+  'NN---=--S-==-----=-S--NN',
+  'NN-=================--NN',
+  'NN--------==----------NN',
+  'NN--wwww--==--.....---NN',
+  'NN--wwww--==--.....---NN',
+  'NN--wwww--==--.....---NN',
+  'NN--------==--.....---NN',
+  'NN--S-----==----------NN',
+  'NN--------==------K---NN',
+  'NNNNNNNNNN==NNNNNNNNNNNN',
 ];
 
 // Casa del Mate (se puede repetir en cada pueblo)
@@ -2215,7 +2411,7 @@ const MAPAS = {
           await decir('LUNA: Hola, Felipe. Te estaba esperando... lo vi en el reflejo del agua.');
           await decir('Soy LUNA, líder del GIMNASIO CAMALOTE. Mis criaturas sienten lo que pensás antes de que te muevas.');
           await decir('Si me ganás, te llevás la INSIGNIA ESPEJO. ¿Empezamos?');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER LUNA', pal: PAL.luna, equipo: [['lechucita', 13], ['condorito', 14], ['lechuzonte', 16]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER LUNA', pal: PAL.luna, equipo: [['condorito', 13], ['lechucita', 13], ['condorito', 14], ['lechucita', 15], ['lechuzonte', 16]] } });
           if (r === 'gana') {
             S.flags.insignia1 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 1);
@@ -2410,7 +2606,7 @@ const MAPAS = {
           await decir('ROCÍO: ¡Bienvenido a las profundidades de Puerto Wanda!');
           await decir('Soy ROCÍO, líder del GIMNASIO WANDA. Mis criaturas nacieron entre cristales y tierra colorada.');
           await decir('¡Si querés la INSIGNIA AMATISTA, vas a tener que romper la piedra!');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER ROCÍO', pal: PAL.rocio, equipo: [['piedrin', 21], ['geodin', 22], ['micalonco', 24]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER ROCÍO', pal: PAL.rocio, equipo: [['piedrin', 21], ['geodin', 22], ['piedrin', 22], ['geodin', 23], ['micalonco', 24]] } });
           if (r === 'gana') {
             S.flags.insignia2 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 2);
@@ -2568,22 +2764,15 @@ const MAPAS = {
       { x: 11, y: 21, a: 'ruta5', ax: 11, ay: 1, dir: 0 },
       { x: 5, y: 8, a: 'centro4', ax: 4, ay: 6, dir: 1 },
       { x: 17, y: 8, a: 'gimnasio3', ax: 5, ay: 10, dir: 1 },
+      { x: 10, y: 0, a: 'ruta6', ax: 12, ay: 34, dir: 1 },
+      { x: 11, y: 0, a: 'ruta6', ax: 13, ay: 34, dir: 1 },
     ],
     carteles: {
-      '12,1': 'RUTA 6. Hacia LA PUNA... (¡todavía en construcción!)',
+      '12,1': 'RUTA 6. Hacia LA PUNA y las SALINAS GRANDES.',
       '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis.',
       '19,9': 'GIMNASIO DE TILCARA. Líder: TALA, guardián del jardín de cardones. Tipo PLANTA y TIERRA.',
       '4,18': 'TILCARA. Casas de adobe y cerros de siete colores.',
     },
-    disparadores: [
-      {
-        prueba: (x, y) => y === 0,
-        accion: async () => {
-          await decir('El camino hacia LA PUNA todavía está en construcción. ¡Muy pronto vas a poder seguir viaje!');
-          await pasoForzado(0);
-        },
-      },
-    ],
     npcs: [
       {
         id: 'artesana', x: 7, y: 11, dir: 0, pal: PAL.coplera,
@@ -2654,7 +2843,7 @@ const MAPAS = {
           await decir('TALA: Bienvenido a mi jardín, Felipe. Acá todo crece despacio, pero crece fuerte.');
           await decir('Soy TALA, líder del GIMNASIO TILCARA. Mis criaturas aguantan el sol, el viento y la sequía.');
           await decir('Si me ganás, te llevás la INSIGNIA CARDÓN. ¡Vamos!');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER TALA', pal: PAL.tala, equipo: [['cuison', 33], ['piquibrasa', 34], ['rodcardo', 34], ['rodcardo', 36]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER TALA', pal: PAL.tala, equipo: [['cuison', 33], ['peludin', 34], ['cardito', 34], ['piquibrasa', 35], ['rodcardo', 36]] } });
           if (r === 'gana') {
             S.flags.insignia3 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 3);
@@ -2663,6 +2852,166 @@ const MAPAS = {
             S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 4;
             S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
             await decir('TALA: Llevate estos ALFAJORES y BOLEADORAS. En la Puna te van a hacer falta.');
+            guardar();
+          }
+        },
+      },
+    ],
+  },
+  // ================= LA PUNA =================
+  ruta6: {
+    nombre: 'RUTA 6 · SALINAS GRANDES',
+    exterior: true,
+    grilla: desdeTexto(RUTA6),
+    edificios: [],
+    salidas: [
+      { x: 12, y: 35, a: 'tilcara', ax: 10, ay: 1, dir: 0 },
+      { x: 13, y: 35, a: 'tilcara', ax: 11, ay: 1, dir: 0 },
+      { x: 10, y: 0, a: 'susques', ax: 10, ay: 17, dir: 1 },
+      { x: 11, y: 0, a: 'susques', ax: 11, ay: 17, dir: 1 },
+    ],
+    carteles: {
+      '13,3': 'SALINAS GRANDES. Un mar de sal blanca a 3.400 metros de altura.',
+      '9,22': 'RUTA 6 · LA PUNA. ¡Abrigate! De noche hace muchísimo frío.',
+      '10,33': 'Al norte: SUSQUES y el GIMNASIO DE HIELO.',
+    },
+    encuentros: { lista: [['nevuki', 20], ['glaciolito', 16], ['pinguinoide', 14], ['chispuna', 12], ['condorito', 10], ['vizcachita', 10], ['micalonco', 6], ['farolito', 6], ['nevulon', 4], ['volcarin', 4]], min: 35, max: 39 },
+    npcs: [
+      entrenadorNPC({
+        id: 'salinero', x: 8, y: 10, dir: 3, pal: PAL.beto, nombre: 'SALINERO BRAULIO',
+        equipo: [['glaciolito', 36], ['micalonco', 36], ['vizcachita', 37]],
+        antes: ['SALINERO BRAULIO: Corto bloques de sal todo el día. ¡Mis criaturas son duras como la sal!'],
+        gana: 'SALINERO BRAULIO: ¡Me dejaste salado! Ja, ja.',
+        despues: 'SALINERO BRAULIO: Los GLACIOLITOS bajan de los cerros nevados. Cuando crecen se vuelven MORENACOLOSOS, ¡gigantes!',
+      }),
+      entrenadorNPC({
+        id: 'llamera', x: 7, y: 17, dir: 3, pal: PAL.coplera, nombre: 'PASTORA DE LLAMAS ROSA',
+        equipo: [['nevuki', 37], ['condorito', 37], ['farolito', 38]],
+        antes: ['PASTORA ROSA: Mis llamas se asustan con los forasteros. ¡Demostrame que sos buena gente con un duelo!'],
+        gana: 'PASTORA ROSA: Ya sé que sos de confianza. Pasá, pasá.',
+        despues: 'PASTORA ROSA: El NEVUKI esconde su carita en la cola cuando hay tormenta. ¡Es lo más tierno que hay!',
+      }),
+      entrenadorNPC({
+        id: 'vulcanologo', x: 9, y: 27, dir: 3, pal: PAL.ayudante, nombre: 'VULCANÓLOGO TINCHO',
+        equipo: [['chispuna', 37], ['volcarin', 38], ['pinguinoide', 38]],
+        antes: ['VULCANÓLOGO TINCHO: ¡En la Puna hay volcanes y nieve al mismo tiempo! ¿Fuego o hielo? ¡Probemos!'],
+        gana: 'VULCANÓLOGO TINCHO: Mi teoría falló... ¡Hay que repetir el experimento!',
+        despues: 'VULCANÓLOGO TINCHO: Contra el HIELO y la ROCA de NIEVE, usá LUCHA, ACERO, AGUA o PLANTA.',
+      }),
+      entrenadorNPC({
+        id: 'tomi3', x: 14, y: 30, dir: 2, pal: PAL.tomi, nombre: 'TOMI',
+        equipo: [['arquineo', 38], ['micalonco', 38], ['nevuki', 38], ['dracobrasa', 40]],
+        antes: ['TOMI: ¡Felipe! ¡Esta vez sí que te gano! Entrené todo el camino desde Tilcara.'],
+        gana: 'TOMI: ¡Nooo! Bueno... la insignia de hielo es tuya, seguro. ¡Pero algún día te gano!',
+        despues: 'TOMI: Voy a seguir entrenando. ¡Nos vemos en el próximo gimnasio!',
+      }),
+    ],
+  },
+
+  susques: {
+    nombre: 'SUSQUES',
+    exterior: true,
+    grilla: desdeTexto(SUSQUES),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: true },
+      { x: 14, y: 4, w: 7, h: 5, tipo: 'gimnasio4', puerta: 3, abre: true },
+      { x: 14, y: 12, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 10, y: 18, a: 'ruta6', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 18, a: 'ruta6', ax: 11, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro5', ax: 4, ay: 6, dir: 1 },
+      { x: 17, y: 8, a: 'gimnasio4', ax: 5, ay: 10, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'RUTA 7. Hacia la CORDILLERA... (¡todavía en construcción!)',
+      '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis. ¡Con un mate de coca para la altura!',
+      '19,9': 'GIMNASIO DE SUSQUES. Líder: NIEVE, la reina de la cordillera. Tipo HIELO y ROCA.',
+      '4,16': 'SUSQUES. Un pueblito de adobe en el medio de la Puna.',
+    },
+    objetos: { w: 'Un piletón de sal. ¡Brilla con el sol!' },
+    disparadores: [
+      {
+        prueba: (x, y) => y === 0,
+        accion: async () => {
+          await decir('El camino hacia la CORDILLERA todavía está en construcción. ¡Muy pronto vas a poder seguir viaje!');
+          await pasoForzado(0);
+        },
+      },
+    ],
+    npcs: [
+      {
+        id: 'abuelo_susques', x: 8, y: 13, dir: 0, pal: PAL.abuelo,
+        hablar: async () => {
+          await decir('ABUELO: En la Puna el sol quema y el viento congela. Las criaturas de acá son muy fuertes.');
+          await decir('Dicen que NIEVE, la líder, entrena con su MORENACOLOSO en el medio de las tormentas.');
+        },
+      },
+    ],
+  },
+
+  centro5: crearCentro('susques', 5, 9, 'centro5'),
+
+  gimnasio4: {
+    nombre: 'GIMNASIO SUSQUES',
+    grilla: desdeTexto([
+      '###########',
+      '#a-------a#',
+      '#wwRwwwRww#',
+      '#wwwwwwwww#',
+      '#RwwRwRwwR#',
+      '#wwwwwwwww#',
+      '#wRRwwwRRw#',
+      '#wwwwwwwww#',
+      '#awwRwRwwa#',
+      '#wwwwwwwww#',
+      '#wwwwwwwww#',
+      '#####m#####',
+    ]),
+    edificios: [],
+    salidas: [{ x: 5, y: 11, a: 'susques', ax: 17, ay: 9, dir: 0 }],
+    objetos: {
+      R: 'Un bloque de hielo milenario con piedras adentro.',
+      a: 'Cristales de hielo que nunca se derriten.',
+    },
+    npcs: [
+      entrenadorNPC({
+        id: 'gim4_a', x: 2, y: 7, dir: 3, pal: PAL.nieve, nombre: 'ESQUIADORA LU',
+        equipo: [['pinguinoide', 39], ['glaciolito', 39], ['pinguinoide', 40]],
+        antes: ['ESQUIADORA LU: ¡Este piso resbala! Pero mis criaturas no se caen nunca. ¡Duelo!'],
+        gana: 'ESQUIADORA LU: ¡Me resbalé! Bueno, pasá.',
+        despues: 'ESQUIADORA LU: El HIELO sufre con el FUEGO, la LUCHA, la ROCA y el ACERO.',
+      }),
+      entrenadorNPC({
+        id: 'gim4_b', x: 8, y: 5, dir: 2, pal: PAL.beto, nombre: 'ANDINISTA BRUNO',
+        equipo: [['glaciolito', 40], ['morenacoloso', 41]],
+        antes: ['ANDINISTA BRUNO: Subí el Aconcagua tres veces. ¡Tu equipo no me asusta!'],
+        gana: 'ANDINISTA BRUNO: Ganaste la cumbre, Felipe.',
+        despues: 'ANDINISTA BRUNO: NIEVE es durísima. Su MORENACOLOSO aguanta golpes como una montaña.',
+      }),
+      {
+        id: 'nieve', x: 5, y: 1, dir: 0, pal: PAL.nieve,
+        hablar: async () => {
+          if (S.flags.insignia4) {
+            await decir('NIEVE: Derretiste mi hielo, Felipe. Seguí subiendo, la cordillera te espera.');
+            return;
+          }
+          if (!S.flags.insignia3) {
+            await decir('NIEVE: Primero conseguí la INSIGNIA CARDÓN de TALA, en Tilcara. Después te espero.');
+            return;
+          }
+          await decir('NIEVE: Llegaste hasta la Puna... Pocos aguantan el frío de este lugar.');
+          await decir('Soy NIEVE, líder del GIMNASIO SUSQUES. Mis criaturas nacieron entre la nieve y la roca de la cordillera.');
+          await decir('Si me ganás, te llevás la INSIGNIA GLACIAR. ¡Preparate para congelarte!');
+          const r = await batalla({ entrenador: { nombre: 'LÍDER NIEVE', pal: PAL.nieve, equipo: [['pinguinoide', 39], ['glaciolito', 40], ['pinguinoide', 41], ['morenacoloso', 41], ['morenacoloso', 43]] } });
+          if (r === 'gana') {
+            S.flags.insignia4 = true;
+            S.flags.insignias = Math.max(S.flags.insignias || 0, 4);
+            await decir('NIEVE: Tu fuego es más fuerte que mi hielo. Te lo ganaste.');
+            await decir('¡Felipe recibió la INSIGNIA GLACIAR!');
+            S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 5;
+            S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
+            await decir('NIEVE: Llevate estos ALFAJORES y BOLEADORAS. ¡Ya tenés cuatro insignias, la mitad del camino!');
             guardar();
           }
         },
@@ -2968,7 +3317,7 @@ function npcEn(x, y) { return npcsVisibles().find(n => n.x === x && n.y === y); 
 function edificioEn(m, x, y) {
   return (m.edificios || []).find(e => x >= e.x && x < e.x + e.w && y >= e.y && y < e.y + e.h);
 }
-const CAMINABLE = new Set(['.', ',', '=', 'F', '_', 'm', 'r', 'h', 'v', 'q', ':', '-', 'u']);
+const CAMINABLE = new Set(['.', ',', '=', 'F', '_', 'm', 'r', 'h', 'v', 'q', ':', '-', 'u', 'w']);
 function transitable(x, y) {
   const m = mapa();
   if (y < 0 || x < 0 || y >= m.grilla.length || x >= m.grilla[0].length) return false;

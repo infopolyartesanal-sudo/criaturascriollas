@@ -11,7 +11,7 @@ Antes: https://criaturascriollas.netlify.app
 - `plantilla.html`: la página (estilos, pantalla y botones táctiles).
 - `js/sprites.js`: motor de pixel-art, personajes, baldosas y edificios.
 - `js/datos.js`: los 18 tipos, movimientos, objetos y especies.
-- `js/mapas.js`: todos los lugares (Pueblo Tero, Ruta 1, Ruta 2, Villa Camalote, Gimnasio 1, Ruta 3 · Selva Misionera, Minas de Wanda, Puerto Wanda, Gimnasio 2, Ruta 4 · Yungas, Calilegua, Ruta 5 · Quebrada, Tilcara, Gimnasio 3) e historia.
+- `js/mapas.js`: todos los lugares (Pueblo Tero, Ruta 1, Ruta 2, Villa Camalote, Gimnasio 1, Ruta 3 · Selva Misionera, Minas de Wanda, Puerto Wanda, Gimnasio 2, Ruta 4 · Yungas, Calilegua, Ruta 5 · Quebrada, Tilcara, Gimnasio 3, Ruta 6 · Salinas Grandes, Susques, Gimnasio 4) e historia.
 
 ## Cómo agregar un lugar nuevo
 
