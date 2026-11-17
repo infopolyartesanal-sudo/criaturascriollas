@@ -421,6 +421,29 @@ function crearTiles() {
     for (const y of [3, 7, 11, 15]) R(x, 1, y, 14, 1, '#7a4a22');
     R(x, 0, 0, 1, 16, '#6a3a1a'); R(x, 15, 0, 1, 16, '#6a3a1a');
   });
+  // Selva Misionera: árbol de selva, tierra colorada; cueva: roca, piso de cueva, amatistas
+  t['Y'] = mk(x => {
+    R(x, 0, 0, 16, 16, '#3a8a3a');
+    sobre(x, [['r', 6, 10, 4, 6, '#5a3414'], ['e', 8, 6, 7.6, 6.4, '#1e6a2a'], ['e', 5, 4, 3, 2.2, '#3a9a40', 's'], ['e', 12, 8, 2.4, 2, '#145020', 's']]);
+    R(x, 3, 9, 1, 6, '#2a7a2a'); R(x, 13, 7, 1, 7, '#2a7a2a');
+  });
+  t['q'] = mk(x => {
+    R(x, 0, 0, 16, 16, '#c8603a');
+    for (const [a, b] of [[3, 2], [11, 5], [6, 12], [13, 13], [1, 8], [8, 7]]) R(x, a, b, 1, 1, '#a84828');
+    R(x, 9, 2, 2, 1, '#d87a50'); R(x, 2, 13, 2, 1, '#d87a50');
+  });
+  t['R'] = mk(x => {
+    R(x, 0, 0, 16, 16, '#6a5a4a');
+    sobre(x, [['e', 5, 5, 5, 4, '#8a7a68'], ['e', 12, 11, 5, 4.5, '#7a6a58'], ['e', 4, 13, 3.5, 2.5, '#8a7a68']], { borde: false });
+  });
+  t[':'] = mk(x => {
+    R(x, 0, 0, 16, 16, '#9a8670');
+    for (const [a, b] of [[3, 2], [11, 5], [6, 12], [13, 13], [1, 8], [8, 7]]) R(x, a, b, 1, 1, '#7a6852');
+  });
+  t['a'] = mk(x => {
+    R(x, 0, 0, 16, 16, '#9a8670');
+    sobre(x, [['p', [[2, 15], [5, 3], [8, 15]], '#a050e0'], ['p', [[7, 15], [10, 6], [13, 15]], '#d8a0ff'], ['p', [[11, 15], [14, 9], [15, 15]], '#a050e0']]);
+  });
   // Interiores
   t['_'] = mk(piso);
   t['#'] = mk(x => {
@@ -463,10 +486,10 @@ function crearEdificio(tipo, w, h, puerta) {
   const R = (a, b, ww, hh, col) => { x.fillStyle = col; x.fillRect(a, b, ww, hh); };
   const ancho = w * 16, alto = h * 16;
   const techoH = (h - 2) * 16 + 4;
-  const pared = tipo === 'lab' ? '#eef2f6' : tipo === 'gimnasio' ? '#ece4f4' : '#f6eedc';
+  const pared = tipo === 'lab' ? '#eef2f6' : tipo.startsWith('gimnasio') ? '#ece4f4' : '#f6eedc';
   R(2, techoH - 4, ancho - 4, alto - techoH + 4, pared);
   R(2, alto - 3, ancho - 4, 3, '#a89878');
-  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#e08a2a', gimnasio: '#7a4aa8' };
+  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#e08a2a', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a' };
   const tc = TECHOS[tipo] || '#c8553a';
   R(0, 0, ancho, techoH, tc);
   let fila = 0;
@@ -481,13 +504,13 @@ function crearEdificio(tipo, w, h, puerta) {
     // Cartel con un mate
     R(ancho / 2 - 8, 5, 16, 13, '#f8f0e0'); R(ancho / 2 - 8, 5, 16, 1, '#a06a3a');
     R(ancho / 2 - 4, 9, 8, 7, '#8a5a2a'); R(ancho / 2 - 3, 8, 6, 2, '#58a848'); R(ancho / 2 + 1, 6, 1, 4, '#c0c0c8');
-  } else if (tipo === 'gimnasio') {
+  } else if (tipo.startsWith('gimnasio')) {
     // Cartel con una estrella (insignia)
     const cx = ancho / 2;
     R(cx - 9, 4, 18, 15, '#f8f0ff'); R(cx - 9, 4, 18, 1, '#4a2a6a');
     R(cx - 1, 6, 2, 11, '#f0c030'); R(cx - 5, 10, 10, 2, '#f0c030'); R(cx - 3, 8, 6, 6, '#f0c030'); R(cx - 1, 10, 2, 2, '#f85888');
   } else { R(ancho - 14, 3, 6, 8, '#8a6a5a'); R(ancho - 15, 2, 8, 2, '#6a4a3a'); }
-  const ventanas = tipo === 'lab' ? [1, 4] : tipo === 'gimnasio' ? [1, 5] : [1, 3];
+  const ventanas = tipo === 'lab' ? [1, 4] : tipo.startsWith('gimnasio') ? [1, 5] : [1, 3];
   for (const i of ventanas) {
     if (i === puerta) continue;
     const vx = i * 16 + 2, vy = alto - 26;
@@ -495,7 +518,7 @@ function crearEdificio(tipo, w, h, puerta) {
     R(vx + 1, vy + 1, 4, 3, '#c0e4ff'); R(vx + 6, vy + 1, 1, 9, '#6a4a2a'); R(vx + 1, vy + 5, 10, 1, '#6a4a2a');
   }
   const dx = puerta * 16;
-  if (tipo === 'lab' || tipo === 'gimnasio' || tipo === 'centro') {
+  if (tipo === 'lab' || tipo.startsWith('gimnasio') || tipo === 'centro') {
     R(dx + 2, alto - 17, 12, 15, '#5a6a7a'); R(dx + 3, alto - 16, 10, 14, '#90d0f0'); R(dx + 7, alto - 16, 2, 14, '#5a6a7a'); R(dx + 4, alto - 15, 2, 4, '#d0f0ff');
   } else {
     R(dx + 3, alto - 16, 10, 14, '#5a3214'); R(dx + 4, alto - 15, 8, 13, '#9a6232'); R(dx + 10, alto - 9, 1, 2, '#f0d060');
@@ -633,6 +656,11 @@ const MOVS = {
   picadura: { nombre: 'Picadura', tipo: 'BICHO', pot: 60, prec: 100, pp: 20 },
   zumbido: { nombre: 'Zumbido', tipo: 'BICHO', pot: 0, prec: 100, pp: 30, ef: 'def-' },
   latigo_totora: { nombre: 'Látigo Totora', tipo: 'PLANTA', pot: 85, prec: 100, pp: 10 },
+  // --- Selva Misionera (v4) ---
+  seda: { nombre: 'Hilo de Seda', tipo: 'BICHO', pot: 0, prec: 95, pp: 40, ef: 'def-' },
+  polvo_toxico: { nombre: 'Polvo Tóxico', tipo: 'VENENO', pot: 65, prec: 100, pp: 15 },
+  filo_mica: { nombre: 'Filo de Mica', tipo: 'ROCA', pot: 90, prec: 95, pp: 10 },
+  estallido_prisma: { nombre: 'Estallido Prisma', tipo: 'ROCA', pot: 90, prec: 100, pp: 10 },
   forcejeo: { nombre: 'Forcejeo', tipo: 'NORMAL', pot: 40, prec: 100, pp: 1 },
 };
 
@@ -1208,6 +1236,102 @@ const ESPECIES = {
       ['r', 0, 17, 5, 1, '#202020'],
     ],
   },
+  // --- Selva Misionera: diseños de Felipe (Ruta 3, Minas de Wanda, Puerto Wanda) ---
+  peluchin: {
+    nombre: 'Peluchín', tipos: ['BICHO'], base: { ps: 40, atk: 35, def: 60, vel: 35 }, captura: 255, exp: 40,
+    desc: 'la oruga peluda que pica si la tocás', evo: { nivel: 10, a: 'capullon' },
+    movs: [[1, 'embestida'], [1, 'seda'], [5, 'aguijon'], [8, 'bolita'], [12, 'acido'], [16, 'picadura'], [22, 'polvo_toxico'], [30, 'toxibomba']],
+    sprite: [
+      ['e', 10, 28, 3, 1.5, '#8a5a2a'], ['e', 16, 29, 3, 1.5, '#8a5a2a'], ['e', 22, 28, 3, 1.5, '#8a5a2a'],
+      ['e', 16, 20, 12, 9, '#e0b040'],
+      ['e', 10, 20, 2.5, 8, '#8a5a2a', 'c'], ['e', 22, 20, 2.5, 8, '#8a5a2a', 'c'],
+      ['d', 6, 13, '#f0d070'], ['d', 26, 14, '#f0d070'], ['d', 16, 10, '#f0d070'], ['d', 12, 11, '#f0d070'], ['d', 20, 11, '#f0d070'],
+      ['r', 13, 17, 2, 3, '#201010'], ['r', 18, 17, 2, 3, '#201010'], ['d', 13, 17, '#ffffff'], ['d', 18, 17, '#ffffff'],
+      ['r', 15, 22, 3, 1, '#a07020'],
+    ],
+  },
+  capullon: {
+    nombre: 'Capullón', tipos: ['BICHO', 'VENENO'], base: { ps: 55, atk: 40, def: 85, vel: 25 }, captura: 120, exp: 100,
+    desc: 'el capullo de seda que no hay que tocar', evo: { nivel: 20, a: 'polillaca' },
+    movs: [[1, 'embestida'], [1, 'seda'], [5, 'aguijon'], [8, 'bolita'], [12, 'acido'], [16, 'picadura'], [22, 'polvo_toxico'], [30, 'toxibomba']],
+    sprite: [
+      ['r', 15, 0, 2, 6, '#e8e8e8'],
+      ['e', 16, 18, 8, 13, '#f0ecd8'],
+      ['r', 6, 10, 20, 1, '#c8c0a0', 'c'], ['r', 6, 15, 20, 1, '#c8c0a0', 'c'], ['r', 6, 24, 20, 1, '#c8c0a0', 'c'], ['r', 6, 28, 20, 1, '#c8c0a0', 'c'],
+      ['e', 12, 12, 1.5, 1.5, '#a040a0', 's'], ['e', 21, 22, 1.5, 1.5, '#a040a0', 's'], ['e', 11, 26, 1.2, 1.2, '#a040a0', 's'],
+      ['r', 12, 18, 8, 4, '#5a4a3a'], ['r', 13, 19, 2, 2, '#f0f040'], ['r', 17, 19, 2, 2, '#f0f040'],
+    ],
+  },
+  polillaca: {
+    nombre: 'Polillaca', tipos: ['BICHO', 'VENENO'], base: { ps: 70, atk: 80, def: 65, vel: 88 }, captura: 45, exp: 180,
+    desc: 'la polilla bruja con ojos de yaguareté en las alas',
+    movs: [[1, 'aguijon'], [1, 'seda'], [8, 'rasante'], [12, 'acido'], [16, 'picadura'], [22, 'polvo_toxico'], [30, 'toxibomba'], [38, 'estallido']],
+    sprite: [
+      ['e', 8, 13, 8, 10, '#5a3a1a'], ['e', 24, 13, 8, 10, '#5a3a1a'],
+      ['e', 9, 24, 5, 5, '#4a2a10'], ['e', 23, 24, 5, 5, '#4a2a10'],
+      ['e', 8, 12, 4, 4, '#e0b030', 'c'], ['e', 24, 12, 4, 4, '#e0b030', 'c'],
+      ['e', 8, 12, 1.8, 1.8, '#201010', 's'], ['e', 24, 12, 1.8, 1.8, '#201010', 's'],
+      ['e', 16, 18, 3, 9, '#7a5a3a'],
+      ['p', [[14, 6], [10, 0], [11, 0], [15, 6]], '#5a3a1a'], ['p', [[18, 6], [22, 0], [21, 0], [17, 6]], '#5a3a1a'],
+      ['e', 16, 8, 3.5, 3, '#8a6a4a'],
+      ['d', 15, 8, '#f0f040'], ['d', 17, 8, '#f0f040'],
+      ['d', 2, 26, '#60e0f0'], ['d', 29, 28, '#60e0f0'], ['d', 4, 30, '#60e0f0'], ['d', 27, 3, '#60e0f0'],
+    ],
+  },
+  piedrin: {
+    nombre: 'Piedrín', tipos: ['ROCA'], base: { ps: 45, atk: 58, def: 72, vel: 30 }, captura: 150, exp: 60,
+    desc: 'el guijarro que camina entre las piedras', evo: { nivel: 25, a: 'micalonco' },
+    movs: [[1, 'embestida'], [1, 'adobe'], [6, 'pedrada'], [11, 'revolcon'], [16, 'barrazo'], [21, 'derrumbe'], [28, 'filo_mica']],
+    sprite: [
+      ['e', 11, 29, 3, 1.5, '#6a6a6a'], ['e', 21, 29, 3, 1.5, '#6a6a6a'],
+      ['e', 16, 21, 10, 8, '#9a9a9a'],
+      ['e', 12, 17, 3, 2, '#c8c8c8', 's'],
+      ['p', [[20, 14], [22, 18], [21, 18]], '#6a6a6a'],
+      ['r', 12, 20, 2, 3, '#201010'], ['r', 18, 20, 2, 3, '#201010'], ['d', 12, 20, '#ffffff'], ['d', 18, 20, '#ffffff'],
+    ],
+  },
+  micalonco: {
+    nombre: 'Micalonco', tipos: ['ROCA', 'VOLADOR'], base: { ps: 75, atk: 92, def: 95, vel: 72 }, captura: 45, exp: 175,
+    desc: 'la lagartija de piedra que planea con alas de mica',
+    movs: [[1, 'embestida'], [1, 'adobe'], [6, 'pedrada'], [11, 'rasante'], [16, 'barrazo'], [21, 'derrumbe'], [28, 'filo_mica'], [36, 'vuelo_alto']],
+    sprite: [
+      ['p', [[6, 16], [16, 4], [26, 16], [16, 20]], '#d8d0b0'],
+      ['d', 12, 10, '#ffffff'], ['d', 19, 9, '#ffffff'], ['d', 16, 13, '#ffffff'], ['d', 22, 13, '#ffffff'],
+      ['p', [[22, 22], [31, 28], [30, 30], [20, 25]], '#6a6058'],
+      ['r', 9, 24, 3, 5, '#5a5048'], ['r', 20, 24, 3, 5, '#5a5048'],
+      ['e', 16, 21, 9, 5, '#7a7068'],
+      ['e', 6, 18, 5, 4, '#7a7068'],
+      ['r', 2, 17, 2, 2, '#201010'], ['d', 2, 17, '#f0e060'],
+      ['d', 13, 19, '#e8e8f0'], ['d', 18, 20, '#e8e8f0'], ['d', 15, 23, '#e8e8f0'],
+    ],
+  },
+  geodin: {
+    nombre: 'Geodín', tipos: ['ROCA'], base: { ps: 50, atk: 62, def: 82, vel: 25 }, captura: 75, exp: 65,
+    desc: 'la geoda con ojitos de amatista', evo: { nivel: 34, a: 'wandacoloso' },
+    movs: [[1, 'embestida'], [1, 'adobe'], [7, 'pedrada'], [13, 'barrazo'], [19, 'derrumbe'], [26, 'mordisco'], [34, 'estallido_prisma']],
+    sprite: [
+      ['r', 9, 25, 3, 5, '#6a6a6a'], ['r', 15, 26, 3, 5, '#6a6a6a'], ['r', 21, 25, 3, 5, '#6a6a6a'],
+      ['e', 16, 18, 11, 10, '#8a8a8a'],
+      ['p', [[9, 15], [23, 15], [21, 22], [11, 22]], '#2a2a3a'],
+      ['e', 13, 18, 1.8, 1.8, '#b060f0', 's'], ['e', 19, 18, 1.8, 1.8, '#b060f0', 's'],
+      ['d', 12, 17, '#f0d0ff'], ['d', 18, 17, '#f0d0ff'],
+      ['e', 11, 11, 3, 2, '#b0b0b0', 's'],
+    ],
+  },
+  wandacoloso: {
+    nombre: 'Wandacoloso', tipos: ['ROCA'], base: { ps: 90, atk: 112, def: 120, vel: 40 }, captura: 45, exp: 220,
+    desc: 'el coloso de las Minas de Wanda con cristales en el lomo',
+    movs: [[1, 'embestida'], [1, 'adobe'], [7, 'pedrada'], [13, 'barrazo'], [19, 'derrumbe'], [26, 'mordisco'], [34, 'estallido_prisma']],
+    sprite: [
+      ['p', [[10, 16], [12, 4], [15, 16]], '#a050e0'], ['p', [[14, 16], [17, 1], [20, 16]], '#d8a0ff'],
+      ['p', [[19, 16], [23, 6], [25, 16]], '#a050e0'], ['p', [[24, 17], [28, 10], [29, 18]], '#80d0e0'],
+      ['r', 8, 25, 4, 6, '#2a2a34'], ['r', 22, 25, 4, 6, '#2a2a34'],
+      ['e', 17, 21, 13, 7, '#3a3a44'],
+      ['e', 5, 21, 5, 4, '#3a3a44'],
+      ['p', [[1, 24], [4, 24], [2, 27]], '#d8a0ff'],
+      ['r', 3, 19, 2, 2, '#201010'], ['d', 3, 19, '#e0a0ff'],
+    ],
+  },
   // --- Rara de la Ruta 1 ---
   condorito: {
     nombre: 'Condorito', tipos: ['VOLADOR', 'PSIQUICO'], base: { ps: 45, atk: 48, def: 40, vel: 70 }, captura: 45, exp: 70,
@@ -1276,6 +1400,7 @@ const PAL = {
   rosa: { id: 'rosa', piel: '#e8b890', pelo: '#a8a8a8', peloLargo: true, remera: '#e08a2a', guardapolvo: true, pant: '#5a4a3a' },
   luna: { id: 'luna', piel: '#f0c8a8', pelo: '#e8e8f8', peloLargo: true, remera: '#7a4aa8', guardapolvo: true, pant: '#3a2a5a' },
   vidente: { id: 'vidente', piel: '#e0b088', pelo: '#2a2a2a', boina: '#f85888', remera: '#9a6ac8', pant: '#3a2a5a' },
+  rocio: { id: 'rocio', piel: '#d8a070', pelo: '#3a2a1a', peloLargo: true, gorra: '#f0c030', remera: '#c8603a', pant: '#4a4a5a' },
   nena: { id: 'nena', piel: '#f4c8a0', pelo: '#c08040', peloLargo: true, remera: '#f070a0', pant: '#4a6aa8' },
 };
 
@@ -1373,6 +1498,132 @@ const VILLA = [
   'TT........==.........Tj~',
   'TTTTTTTTTT==TTTTTTTTTTTT',
 ];
+
+// Grillas de Misiones (Y árbol de selva · q tierra colorada · R roca · : piso de cueva · a amatistas)
+const RUTA3 = [
+  'YYYYYYYYYYqqYYYYYYYYYY',
+  'YY,,,,,,..qq..,,,,,,YY',
+  'YY,,YY,,..qq..,,YY,,YY',
+  'YY,,YY,,..qq....YY..YY',
+  'YY........qqqqqq....YY',
+  'YYYY..,,,,,,..qq,,..YY',
+  'YYYY..,,,,,,..qq,,..YY',
+  'YY~~~~~~~~~~~~hh~~~~YY',
+  'YY~~~~~~~~~~~~hh~~~~YY',
+  'YY....,,,,....qq....YY',
+  'YY....,,,,....qq,,,,YY',
+  'YY..YYYY..qqqqqq,,,,YY',
+  'YY..YYYY..qq....,,,,YY',
+  'YY,,,,....qq..YYYY..YY',
+  'YY,,,,....qq..YYYY..YY',
+  'YY,,,,..S.qq........YY',
+  'YYYY......qqqqqqq...YY',
+  'YYYY,,,,,,,,,,..q...YY',
+  'YY..,,,,,,,,,,..q,,,YY',
+  'YY..,,,,YY,,,,..q,,,YY',
+  'YY......YY......q,,,YY',
+  'YY..qqqqqqqqqqqqq...YY',
+  'YY..q.....YYYY......YY',
+  'YY..q,,,,,YYYY,,,,..YY',
+  'YY..q,,,,,....,,,,..YY',
+  'YY..qqqqqqqq..,,,,..YY',
+  'YY,,,,,,..qq..YY....YY',
+  'YY,,,,,,..qq..YY,,,,YY',
+  'YYYY......qq....,,,,YY',
+  'YY....F...qq..S.,,,,YY',
+  'YY,,,,....qq........YY',
+  'YY,,,,....qq..,,,,..YY',
+  'YY,,,,....qq..,,,,..YY',
+  'YYYYYYYYYYqqYYYYYYYYYY',
+];
+const MINAS = [
+  'RRRRRRRRRqqRRRRRRRRR',
+  'RR::::::::::::::::RR',
+  'RR::RRRR::::RRRR::RR',
+  'RR::RaaR::::RaaR::RR',
+  'RR::::::::RR::::::RR',
+  'RRRRRR::::RR::RRRRRR',
+  'RR::::::::::::::::RR',
+  'RR::RRRRRRRR::RR::RR',
+  'RR::::::::RR::RR::RR',
+  'RRRRRR::::RR::::::RR',
+  'RRa:::::::RRRRRR::RR',
+  'RRa:::RR::::::::::RR',
+  'RR::::RR::RRRRRRRRRR',
+  'RR::::RR::::::::::RR',
+  'RRRR::RRRRRRRR::::RR',
+  'RR::::::::::::::a:RR',
+  'RR::RRRRRR::RRRR::RR',
+  'RR::RaaaaR::RRRR::RR',
+  'RR::::::::::::::::RR',
+  'RRRRRRRR::RRRRRRRRRR',
+  'RR::::::::::::::::RR',
+  'RR::::::::::::::::RR',
+  'RRRRRRRRRqqRRRRRRRRR',
+];
+const PUERTO = [
+  'YYYYYYYYYYqqYYYYYYYYYYYY',
+  'YY........qqS.........YY',
+  'YY..F.....qq.......F..YY',
+  'YY........qq..........YY',
+  'YY....................YY',
+  'YY....................YY',
+  'YY....................YY',
+  'YY....................YY',
+  'YY........qq..........YY',
+  'YY...q..S.qq.....q.S..YY',
+  'YY.qqqqqqqqqqqqqqqqq..YY',
+  'YY........qq..........YY',
+  'YY..F.....qq....F.....YY',
+  'YY........qq..........YY',
+  'YY........qq..........YY',
+  'YY........qq..........YY',
+  'YY........qq..........YY',
+  'YY........qq..........YY',
+  'YY..S.....qq......F...YY',
+  'YY........qq..........YY',
+  'YY........qq..........YY',
+  'YYYYYYYYYYqqYYYYYYYYYYYY',
+];
+
+// Casa del Mate (se puede repetir en cada pueblo)
+function crearCentro(destino, ax, ay, idCentro) {
+  return {
+    nombre: 'CASA DEL MATE',
+    grilla: desdeTexto([
+      '#########',
+      '#k_x_x_p#',
+      '#tt___tt#',
+      '#_______#',
+      '#_______#',
+      '#p_____p#',
+      '#_______#',
+      '####m####',
+    ]),
+    edificios: [],
+    salidas: [{ x: 4, y: 7, a: destino, ax, ay, dir: 0 }],
+    objetos: {
+      k: 'Un estante lleno de termos, yerbas y bombillas de todos los colores.',
+      x: 'Un cuadro del río Paraná al atardecer.',
+      t: 'El mostrador de la Casa del Mate.',
+      p: 'Una planta de mburucuyá con flores violetas.',
+    },
+    npcs: [
+      {
+        id: 'rosa', x: 4, y: 2, dir: 0, pal: PAL.rosa,
+        hablar: async () => {
+          await decir('DOÑA ROSA: ¡Bienvenido a la CASA DEL MATE! ¿Tus criaturas están cansadas?');
+          if (!S.equipo.length) { await decir('Ah, todavía no tenés criaturas. ¡Volvé cuando tengas!'); return; }
+          curarEquipo();
+          S.flags.centro = { mapa: idCentro, x: 4, y: 4, dir: 1 };
+          await decir('Unos mates bien cebados y... ¡listo! Tus criaturas recuperaron toda su energía.');
+          await decir('DOÑA ROSA: Si pierden una pelea, te traemos acá a descansar. ¡Volvé cuando quieras!');
+          guardar();
+        },
+      },
+    ],
+  };
+}
 
 // Entrenador que pelea una sola vez (queda anotado en S.flags.ent_<id>)
 function entrenadorNPC(o) {
@@ -1626,22 +1877,15 @@ const MAPAS = {
       { x: 11, y: 23, a: 'ruta2', ax: 11, ay: 1, dir: 0 },
       { x: 5, y: 8, a: 'centro', ax: 4, ay: 6, dir: 1 },
       { x: 17, y: 8, a: 'gimnasio', ax: 5, ay: 10, dir: 1 },
+      { x: 10, y: 0, a: 'ruta3', ax: 10, ay: 32, dir: 1 },
+      { x: 11, y: 0, a: 'ruta3', ax: 11, ay: 32, dir: 1 },
     ],
     carteles: {
-      '12,1': 'RUTA 3. Hacia la SELVA MISIONERA... (¡todavía en construcción!)',
+      '12,1': 'RUTA 3. Hacia la SELVA MISIONERA y las MINAS DE WANDA.',
       '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis. ¡Siempre hay agua caliente!',
       '19,9': 'GIMNASIO DE VILLA CAMALOTE. Líder: LUNA, la que ve más allá del agua. Tipo PSÍQUICO.',
       '4,20': 'VILLA CAMALOTE. Donde el río trae flores flotantes.',
     },
-    disparadores: [
-      {
-        prueba: (x, y) => y === 0,
-        accion: async () => {
-          await decir('El camino hacia la SELVA MISIONERA todavía está en construcción. ¡Muy pronto vas a poder seguir viaje!');
-          await pasoForzado(0);
-        },
-      },
-    ],
     npcs: [
       {
         id: 'nene_villa', x: 7, y: 18, dir: 0, pal: PAL.nene,
@@ -1663,41 +1907,7 @@ const MAPAS = {
     ],
   },
 
-  centro: {
-    nombre: 'CASA DEL MATE',
-    grilla: desdeTexto([
-      '#########',
-      '#k_x_x_p#',
-      '#tt___tt#',
-      '#_______#',
-      '#_______#',
-      '#p_____p#',
-      '#_______#',
-      '####m####',
-    ]),
-    edificios: [],
-    salidas: [{ x: 4, y: 7, a: 'villa', ax: 5, ay: 9, dir: 0 }],
-    objetos: {
-      k: 'Un estante lleno de termos, yerbas y bombillas de todos los colores.',
-      x: 'Un cuadro del río Paraná al atardecer.',
-      t: 'El mostrador de la Casa del Mate.',
-      p: 'Una planta de mburucuyá con flores violetas.',
-    },
-    npcs: [
-      {
-        id: 'rosa', x: 4, y: 2, dir: 0, pal: PAL.rosa,
-        hablar: async () => {
-          await decir('DOÑA ROSA: ¡Bienvenido a la CASA DEL MATE! ¿Tus criaturas están cansadas?');
-          if (!S.equipo.length) { await decir('Ah, todavía no tenés criaturas. ¡Volvé cuando tengas!'); return; }
-          curarEquipo();
-          S.flags.centro = { mapa: 'centro', x: 4, y: 4, dir: 1 };
-          await decir('Unos mates bien cebados y... ¡listo! Tus criaturas recuperaron toda su energía.');
-          await decir('DOÑA ROSA: Si pierden una pelea, te traemos acá a descansar. ¡Volvé cuando quieras!');
-          guardar();
-        },
-      },
-    ],
-  },
+  centro: crearCentro('villa', 5, 9, 'centro'),
 
   gimnasio: {
     nombre: 'GIMNASIO CAMALOTE',
@@ -1753,6 +1963,209 @@ const MAPAS = {
             await decir('¡Felipe recibió la INSIGNIA ESPEJO!');
             S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 3;
             await decir('LUNA: Y llevate estos ALFAJORES para el viaje. ¡Te vas a encontrar con criaturas cada vez más fuertes!');
+            guardar();
+          }
+        },
+      },
+    ],
+  },
+  // ================= SELVA MISIONERA =================
+  ruta3: {
+    nombre: 'RUTA 3 · SELVA MISIONERA',
+    exterior: true,
+    grilla: desdeTexto(RUTA3),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 33, a: 'villa', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 33, a: 'villa', ax: 11, ay: 1, dir: 0 },
+      { x: 10, y: 0, a: 'minas', ax: 9, ay: 21, dir: 1 },
+      { x: 11, y: 0, a: 'minas', ax: 10, ay: 21, dir: 1 },
+    ],
+    carteles: {
+      '8,15': 'RUTA 3 · SELVA MISIONERA. La tierra es colorada por el hierro de las piedras.',
+      '14,29': 'Al norte: MINAS DE WANDA y PUERTO WANDA. ¡Llevá mates!',
+    },
+    encuentros: { lista: [['peluchin', 26], ['cuisito', 20], ['hornerito', 16], ['piedrin', 16], ['larvin', 10], ['zorrito', 8], ['ceibito', 4]], min: 11, max: 15 },
+    npcs: [
+      entrenadorNPC({
+        id: 'guardaparque_selva', x: 12, y: 13, dir: 2, pal: PAL.guarda, nombre: 'GUARDAPARQUE ANA',
+        equipo: [['cuisito', 13], ['hornerito', 14]],
+        antes: ['GUARDAPARQUE ANA: ¡Alto ahí! En la selva hay que saber cuidarse.', '¡A ver si tus criaturas están preparadas!'],
+        gana: 'GUARDAPARQUE ANA: ¡Muy bien! Estás listo para seguir.',
+        despues: 'GUARDAPARQUE ANA: Si ves un PELUCHÍN, no lo toques con la mano. ¡Pica muchísimo!',
+      }),
+      entrenadorNPC({
+        id: 'cazabichos', x: 6, y: 18, dir: 0, pal: PAL.nene, nombre: 'CAZABICHOS JUANI',
+        equipo: [['peluchin', 12], ['capullon', 14], ['larvin', 13]],
+        antes: ['CAZABICHOS JUANI: ¡Mirá todos los bichos que atrapé! ¿Peleamos?'],
+        gana: 'CAZABICHOS JUANI: ¡Nooo! Mis bichitos...',
+        despues: 'CAZABICHOS JUANI: Los PELUCHINES se hacen capullo y después... ¡POLILLACA! Dicen que tiene ojos de yaguareté en las alas.',
+      }),
+      entrenadorNPC({
+        id: 'mochilera', x: 13, y: 25, dir: 2, pal: PAL.chica, nombre: 'MOCHILERA FLOR',
+        equipo: [['junquito', 14], ['piedrin', 15]],
+        antes: ['MOCHILERA FLOR: ¡Vengo de las Cataratas! ¿Me das un duelo para despedirme de la selva?'],
+        gana: 'MOCHILERA FLOR: ¡Qué bien peleás! Me voy contenta.',
+        despues: 'MOCHILERA FLOR: En las MINAS DE WANDA hay piedras preciosas... ¡y criaturas que parecen piedras!',
+      }),
+    ],
+  },
+
+  minas: {
+    nombre: 'MINAS DE WANDA',
+    exterior: true,
+    cueva: true,
+    grilla: desdeTexto(MINAS),
+    edificios: [],
+    salidas: [
+      { x: 9, y: 22, a: 'ruta3', ax: 10, ay: 1, dir: 0 },
+      { x: 10, y: 22, a: 'ruta3', ax: 11, ay: 1, dir: 0 },
+      { x: 9, y: 0, a: 'puerto', ax: 10, ay: 20, dir: 1 },
+      { x: 10, y: 0, a: 'puerto', ax: 11, ay: 20, dir: 1 },
+    ],
+    objetos: {
+      a: '¡Cristales de amatista violeta! Brillan con luz propia.',
+    },
+    encuentros: { lista: [['piedrin', 32], ['geodin', 22], ['peludin', 20], ['condorito', 8], ['capullon', 10], ['vizcachita', 8]], min: 14, max: 18 },
+    npcs: [
+      entrenadorNPC({
+        id: 'minero1', x: 14, y: 13, dir: 2, pal: PAL.beto, nombre: 'MINERO HUGO',
+        equipo: [['piedrin', 16], ['geodin', 17]],
+        antes: ['MINERO HUGO: ¡Eh, pibe! Esta mina es peligrosa.', '¡Te muestro cómo pelean las criaturas de piedra!'],
+        gana: 'MINERO HUGO: ¡Uf! Me dejaste más molido que una piedra.',
+        despues: 'MINERO HUGO: Los GEODINES tienen cristales adentro. Cuando crecen se vuelven WANDACOLOSOS, ¡enormes!',
+      }),
+      entrenadorNPC({
+        id: 'minero2', x: 12, y: 6, dir: 2, pal: PAL.abuelo, nombre: 'MINERO DON PEDRO',
+        equipo: [['peludin', 17], ['piedrin', 18], ['hornerito', 17]],
+        antes: ['MINERO DON PEDRO: Cuarenta años picando piedra, m\'hijo. ¡A ver qué traés!'],
+        gana: 'MINERO DON PEDRO: Bien, bien. Tenés pasta de campeón.',
+        despues: 'MINERO DON PEDRO: Contra las criaturas de ROCA, usá AGUA, PLANTA o LUCHA. ¡No falla!',
+      }),
+    ],
+  },
+
+  puerto: {
+    nombre: 'PUERTO WANDA',
+    exterior: true,
+    grilla: desdeTexto(PUERTO),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 14, y: 4, w: 7, h: 5, tipo: 'gimnasio2', puerta: 3, abre: true },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'casa', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 10, y: 21, a: 'minas', ax: 9, ay: 1, dir: 0 },
+      { x: 11, y: 21, a: 'minas', ax: 10, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro2', ax: 4, ay: 6, dir: 1 },
+      { x: 17, y: 8, a: 'gimnasio2', ax: 5, ay: 10, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'RUTA 4. Hacia el NORTE ARGENTINO... (¡todavía en construcción!)',
+      '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis.',
+      '19,9': 'GIMNASIO DE PUERTO WANDA. Líder: ROCÍO, la minera de corazón de piedra. Tipo ROCA.',
+      '4,18': 'PUERTO WANDA. Tierra colorada, yerba mate y piedras preciosas.',
+    },
+    disparadores: [
+      {
+        prueba: (x, y) => y === 0,
+        accion: async () => {
+          await decir('El camino hacia el NORTE ARGENTINO todavía está en construcción. ¡Muy pronto vas a poder seguir viaje!');
+          await pasoForzado(0);
+        },
+      },
+    ],
+    npcs: [
+      {
+        id: 'tarefero', x: 7, y: 11, dir: 0, pal: PAL.guarda,
+        hablar: async () => {
+          await decir('TAREFERO: Yo cosecho yerba mate en los yerbales. ¡Los CUISITOS siempre andan escondidos entre las plantas!');
+        },
+      },
+      {
+        id: 'tomi2', x: 13, y: 18, dir: 2, pal: PAL.tomi,
+        hablar: async () => {
+          if (S.flags.tomi2) { await decir('TOMI: ¡La próxima te gano seguro! Voy a entrenar en las minas.'); return; }
+          await decir('TOMI: ¡Felipe! ¡Sabía que te iba a encontrar acá!');
+          await decir('TOMI: Yo también vengo por la insignia de ROCÍO. ¡Pero primero te gano a vos!');
+          const fuerte = { flamartija: 'dracobrasa', ajolodo: 'branquiotox', ramoa: 'lianaco' };
+          const mio = S.flags.inicialTomi || 'ramoa';
+          const r = await batalla({ entrenador: { nombre: 'TOMI', pal: PAL.tomi, equipo: [['terito', 17], ['piedrin', 17], [fuerte[mio] || mio, 19]] } });
+          if (r === 'gana') {
+            S.flags.tomi2 = true;
+            await decir('TOMI: ¡Otra vez! ¿Cómo hacés? Bueno... tomá, por ganarme.');
+            S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 2;
+            await decir('¡Felipe recibió 2 ALFAJORES!');
+            guardar();
+          }
+        },
+      },
+    ],
+  },
+
+  centro2: crearCentro('puerto', 5, 9, 'centro2'),
+
+  gimnasio2: {
+    nombre: 'GIMNASIO WANDA',
+    grilla: desdeTexto([
+      '###########',
+      '#R_______R#',
+      '#__RR_RR__#',
+      '#a_______a#',
+      '#RR_R_R_RR#',
+      '#_________#',
+      '#__RR_RR__#',
+      '#_________#',
+      '#R__R_R__R#',
+      '#_________#',
+      '#_________#',
+      '#####m#####',
+    ]),
+    edificios: [],
+    salidas: [{ x: 5, y: 11, a: 'puerto', ax: 17, ay: 9, dir: 0 }],
+    objetos: {
+      R: 'Una roca enorme traída de las minas.',
+      a: 'Cristales de amatista. ¡Son el orgullo de Puerto Wanda!',
+    },
+    npcs: [
+      entrenadorNPC({
+        id: 'gim2_a', x: 2, y: 7, dir: 3, pal: PAL.beto, nombre: 'PICAPEDRERO LUCAS',
+        equipo: [['piedrin', 20], ['geodin', 21]],
+        antes: ['PICAPEDRERO LUCAS: ¡Para llegar a ROCÍO tenés que pasar por mí!'],
+        gana: 'PICAPEDRERO LUCAS: Me partiste como a una piedra...',
+        despues: 'PICAPEDRERO LUCAS: Las criaturas de ROCÍO son durísimas. ¡Golpeá con AGUA o PLANTA!',
+      }),
+      entrenadorNPC({
+        id: 'gim2_b', x: 8, y: 5, dir: 2, pal: PAL.abuelo, nombre: 'GEÓLOGO ÁLVARO',
+        equipo: [['peludin', 21], ['micalonco', 22]],
+        antes: ['GEÓLOGO ÁLVARO: Estas rocas tienen millones de años. ¡Y mis criaturas también son duras como ellas!'],
+        gana: 'GEÓLOGO ÁLVARO: Interesante... Muy interesante.',
+        despues: 'GEÓLOGO ÁLVARO: MICALONCO tiene escamas de mica que brillan como espejos. ¡Es mi favorito!',
+      }),
+      {
+        id: 'rocio', x: 5, y: 1, dir: 0, pal: PAL.rocio,
+        hablar: async () => {
+          if (S.flags.insignia2) {
+            await decir('ROCÍO: Tenés la fuerza de una montaña, Felipe. ¡El norte te espera!');
+            return;
+          }
+          if (!S.flags.insignia1) {
+            await decir('ROCÍO: ¿Todavía no tenés la INSIGNIA ESPEJO? Primero ganale a LUNA en Villa Camalote.');
+            return;
+          }
+          await decir('ROCÍO: ¡Bienvenido a las profundidades de Puerto Wanda!');
+          await decir('Soy ROCÍO, líder del GIMNASIO WANDA. Mis criaturas nacieron entre cristales y tierra colorada.');
+          await decir('¡Si querés la INSIGNIA AMATISTA, vas a tener que romper la piedra!');
+          const r = await batalla({ entrenador: { nombre: 'LÍDER ROCÍO', pal: PAL.rocio, equipo: [['piedrin', 21], ['geodin', 22], ['micalonco', 24]] } });
+          if (r === 'gana') {
+            S.flags.insignia2 = true;
+            S.flags.insignias = Math.max(S.flags.insignias || 0, 2);
+            await decir('ROCÍO: ¡Increíble! Rompiste mi defensa de piedra.');
+            await decir('¡Felipe recibió la INSIGNIA AMATISTA!');
+            S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 3;
+            S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
+            await decir('ROCÍO: Y llevate estos ALFAJORES y BOLEADORAS. ¡En el norte hay criaturas que todavía nadie atrapó!');
             guardar();
           }
         },
@@ -2058,7 +2471,7 @@ function npcEn(x, y) { return npcsVisibles().find(n => n.x === x && n.y === y); 
 function edificioEn(m, x, y) {
   return (m.edificios || []).find(e => x >= e.x && x < e.x + e.w && y >= e.y && y < e.y + e.h);
 }
-const CAMINABLE = new Set(['.', ',', '=', 'F', '_', 'm', 'r', 'h', 'v']);
+const CAMINABLE = new Set(['.', ',', '=', 'F', '_', 'm', 'r', 'h', 'v', 'q', ':']);
 function transitable(x, y) {
   const m = mapa();
   if (y < 0 || x < 0 || y >= m.grilla.length || x >= m.grilla[0].length) return false;
@@ -2113,7 +2526,9 @@ function alPisar() {
   for (const d of m.disparadores || []) {
     if (d.prueba(S.x, S.y)) { correr(d.accion()); return; }
   }
-  if (m.grilla[S.y][S.x] === ',' && S.equipo.some(c => c.ps > 0) && m.encuentros && Math.random() < 0.11) {
+  const pisada = m.grilla[S.y][S.x];
+  const prob = pisada === ',' ? 0.11 : (m.cueva && pisada === ':') ? 0.07 : 0;
+  if (prob && S.equipo.some(c => c.ps > 0) && m.encuentros && Math.random() < prob) {
     correr(encuentroSalvaje());
   }
 }

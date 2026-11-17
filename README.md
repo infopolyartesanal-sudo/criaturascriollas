@@ -11,13 +11,14 @@ Antes: https://criaturascriollas.netlify.app
 - `plantilla.html`: la página (estilos, pantalla y botones táctiles).
 - `js/sprites.js`: motor de pixel-art, personajes, baldosas y edificios.
 - `js/datos.js`: los 18 tipos, movimientos, objetos y especies.
-- `js/mapas.js`: todos los lugares (Pueblo Tero, Ruta 1, casa, laboratorio, Ruta 2, Villa Camalote, Casa del Mate, Gimnasio 1) e historia.
+- `js/mapas.js`: todos los lugares (Pueblo Tero, Ruta 1, Ruta 2, Villa Camalote, Gimnasio 1, Ruta 3 · Selva Misionera, Minas de Wanda, Puerto Wanda, Gimnasio 2) e historia.
 
 ## Cómo agregar un lugar nuevo
 
 1. En `js/mapas.js`, dibujá la grilla con letras (una fila por línea, todas del mismo largo):
    `T` árbol · `.` pasto · `,` pasto alto (criaturas salvajes) · `=` camino · `~` agua · `j` juncos · `h` puente · `S` cartel · `F` flores.
    Interiores: `#` pared · `_` piso · `v` piso violeta · `m` alfombra de salida · `g` esfera.
+   Selva y cueva: `Y` árbol de selva · `q` tierra colorada · `R` roca · `:` piso de cueva (con `cueva: true` salen criaturas) · `a` amatistas.
 2. Agregá una entrada en `MAPAS` con `nombre`, `grilla`, `edificios`, `salidas`, `carteles`, `encuentros` y `npcs`.
 3. Conectalo: una `salida` es una baldosa que te lleva a otro mapa (`a`, `ax`, `ay`, `dir`). Hace falta una de ida y otra de vuelta.
 4. Entrenadores: `entrenadorNPC({...})` pelea una sola vez y recuerda que le ganaste.

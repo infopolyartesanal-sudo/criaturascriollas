@@ -247,7 +247,7 @@ function npcEn(x, y) { return npcsVisibles().find(n => n.x === x && n.y === y); 
 function edificioEn(m, x, y) {
   return (m.edificios || []).find(e => x >= e.x && x < e.x + e.w && y >= e.y && y < e.y + e.h);
 }
-const CAMINABLE = new Set(['.', ',', '=', 'F', '_', 'm', 'r', 'h', 'v']);
+const CAMINABLE = new Set(['.', ',', '=', 'F', '_', 'm', 'r', 'h', 'v', 'q', ':']);
 function transitable(x, y) {
   const m = mapa();
   if (y < 0 || x < 0 || y >= m.grilla.length || x >= m.grilla[0].length) return false;
@@ -302,7 +302,9 @@ function alPisar() {
   for (const d of m.disparadores || []) {
     if (d.prueba(S.x, S.y)) { correr(d.accion()); return; }
   }
-  if (m.grilla[S.y][S.x] === ',' && S.equipo.some(c => c.ps > 0) && m.encuentros && Math.random() < 0.11) {
+  const pisada = m.grilla[S.y][S.x];
+  const prob = pisada === ',' ? 0.11 : (m.cueva && pisada === ':') ? 0.07 : 0;
+  if (prob && S.equipo.some(c => c.ps > 0) && m.encuentros && Math.random() < prob) {
     correr(encuentroSalvaje());
   }
 }

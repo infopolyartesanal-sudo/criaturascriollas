@@ -16,6 +16,7 @@ const PAL = {
   rosa: { id: 'rosa', piel: '#e8b890', pelo: '#a8a8a8', peloLargo: true, remera: '#e08a2a', guardapolvo: true, pant: '#5a4a3a' },
   luna: { id: 'luna', piel: '#f0c8a8', pelo: '#e8e8f8', peloLargo: true, remera: '#7a4aa8', guardapolvo: true, pant: '#3a2a5a' },
   vidente: { id: 'vidente', piel: '#e0b088', pelo: '#2a2a2a', boina: '#f85888', remera: '#9a6ac8', pant: '#3a2a5a' },
+  rocio: { id: 'rocio', piel: '#d8a070', pelo: '#3a2a1a', peloLargo: true, gorra: '#f0c030', remera: '#c8603a', pant: '#4a4a5a' },
   nena: { id: 'nena', piel: '#f4c8a0', pelo: '#c08040', peloLargo: true, remera: '#f070a0', pant: '#4a6aa8' },
 };
 
@@ -113,6 +114,132 @@ const VILLA = [
   'TT........==.........Tj~',
   'TTTTTTTTTT==TTTTTTTTTTTT',
 ];
+
+// Grillas de Misiones (Y árbol de selva · q tierra colorada · R roca · : piso de cueva · a amatistas)
+const RUTA3 = [
+  'YYYYYYYYYYqqYYYYYYYYYY',
+  'YY,,,,,,..qq..,,,,,,YY',
+  'YY,,YY,,..qq..,,YY,,YY',
+  'YY,,YY,,..qq....YY..YY',
+  'YY........qqqqqq....YY',
+  'YYYY..,,,,,,..qq,,..YY',
+  'YYYY..,,,,,,..qq,,..YY',
+  'YY~~~~~~~~~~~~hh~~~~YY',
+  'YY~~~~~~~~~~~~hh~~~~YY',
+  'YY....,,,,....qq....YY',
+  'YY....,,,,....qq,,,,YY',
+  'YY..YYYY..qqqqqq,,,,YY',
+  'YY..YYYY..qq....,,,,YY',
+  'YY,,,,....qq..YYYY..YY',
+  'YY,,,,....qq..YYYY..YY',
+  'YY,,,,..S.qq........YY',
+  'YYYY......qqqqqqq...YY',
+  'YYYY,,,,,,,,,,..q...YY',
+  'YY..,,,,,,,,,,..q,,,YY',
+  'YY..,,,,YY,,,,..q,,,YY',
+  'YY......YY......q,,,YY',
+  'YY..qqqqqqqqqqqqq...YY',
+  'YY..q.....YYYY......YY',
+  'YY..q,,,,,YYYY,,,,..YY',
+  'YY..q,,,,,....,,,,..YY',
+  'YY..qqqqqqqq..,,,,..YY',
+  'YY,,,,,,..qq..YY....YY',
+  'YY,,,,,,..qq..YY,,,,YY',
+  'YYYY......qq....,,,,YY',
+  'YY....F...qq..S.,,,,YY',
+  'YY,,,,....qq........YY',
+  'YY,,,,....qq..,,,,..YY',
+  'YY,,,,....qq..,,,,..YY',
+  'YYYYYYYYYYqqYYYYYYYYYY',
+];
+const MINAS = [
+  'RRRRRRRRRqqRRRRRRRRR',
+  'RR::::::::::::::::RR',
+  'RR::RRRR::::RRRR::RR',
+  'RR::RaaR::::RaaR::RR',
+  'RR::::::::RR::::::RR',
+  'RRRRRR::::RR::RRRRRR',
+  'RR::::::::::::::::RR',
+  'RR::RRRRRRRR::RR::RR',
+  'RR::::::::RR::RR::RR',
+  'RRRRRR::::RR::::::RR',
+  'RRa:::::::RRRRRR::RR',
+  'RRa:::RR::::::::::RR',
+  'RR::::RR::RRRRRRRRRR',
+  'RR::::RR::::::::::RR',
+  'RRRR::RRRRRRRR::::RR',
+  'RR::::::::::::::a:RR',
+  'RR::RRRRRR::RRRR::RR',
+  'RR::RaaaaR::RRRR::RR',
+  'RR::::::::::::::::RR',
+  'RRRRRRRR::RRRRRRRRRR',
+  'RR::::::::::::::::RR',
+  'RR::::::::::::::::RR',
+  'RRRRRRRRRqqRRRRRRRRR',
+];
+const PUERTO = [
+  'YYYYYYYYYYqqYYYYYYYYYYYY',
+  'YY........qqS.........YY',
+  'YY..F.....qq.......F..YY',
+  'YY........qq..........YY',
+  'YY....................YY',
+  'YY....................YY',
+  'YY....................YY',
+  'YY....................YY',
+  'YY........qq..........YY',
+  'YY...q..S.qq.....q.S..YY',
+  'YY.qqqqqqqqqqqqqqqqq..YY',
+  'YY........qq..........YY',
+  'YY..F.....qq....F.....YY',
+  'YY........qq..........YY',
+  'YY........qq..........YY',
+  'YY........qq..........YY',
+  'YY........qq..........YY',
+  'YY........qq..........YY',
+  'YY..S.....qq......F...YY',
+  'YY........qq..........YY',
+  'YY........qq..........YY',
+  'YYYYYYYYYYqqYYYYYYYYYYYY',
+];
+
+// Casa del Mate (se puede repetir en cada pueblo)
+function crearCentro(destino, ax, ay, idCentro) {
+  return {
+    nombre: 'CASA DEL MATE',
+    grilla: desdeTexto([
+      '#########',
+      '#k_x_x_p#',
+      '#tt___tt#',
+      '#_______#',
+      '#_______#',
+      '#p_____p#',
+      '#_______#',
+      '####m####',
+    ]),
+    edificios: [],
+    salidas: [{ x: 4, y: 7, a: destino, ax, ay, dir: 0 }],
+    objetos: {
+      k: 'Un estante lleno de termos, yerbas y bombillas de todos los colores.',
+      x: 'Un cuadro del río Paraná al atardecer.',
+      t: 'El mostrador de la Casa del Mate.',
+      p: 'Una planta de mburucuyá con flores violetas.',
+    },
+    npcs: [
+      {
+        id: 'rosa', x: 4, y: 2, dir: 0, pal: PAL.rosa,
+        hablar: async () => {
+          await decir('DOÑA ROSA: ¡Bienvenido a la CASA DEL MATE! ¿Tus criaturas están cansadas?');
+          if (!S.equipo.length) { await decir('Ah, todavía no tenés criaturas. ¡Volvé cuando tengas!'); return; }
+          curarEquipo();
+          S.flags.centro = { mapa: idCentro, x: 4, y: 4, dir: 1 };
+          await decir('Unos mates bien cebados y... ¡listo! Tus criaturas recuperaron toda su energía.');
+          await decir('DOÑA ROSA: Si pierden una pelea, te traemos acá a descansar. ¡Volvé cuando quieras!');
+          guardar();
+        },
+      },
+    ],
+  };
+}
 
 // Entrenador que pelea una sola vez (queda anotado en S.flags.ent_<id>)
 function entrenadorNPC(o) {
@@ -366,22 +493,15 @@ const MAPAS = {
       { x: 11, y: 23, a: 'ruta2', ax: 11, ay: 1, dir: 0 },
       { x: 5, y: 8, a: 'centro', ax: 4, ay: 6, dir: 1 },
       { x: 17, y: 8, a: 'gimnasio', ax: 5, ay: 10, dir: 1 },
+      { x: 10, y: 0, a: 'ruta3', ax: 10, ay: 32, dir: 1 },
+      { x: 11, y: 0, a: 'ruta3', ax: 11, ay: 32, dir: 1 },
     ],
     carteles: {
-      '12,1': 'RUTA 3. Hacia la SELVA MISIONERA... (¡todavía en construcción!)',
+      '12,1': 'RUTA 3. Hacia la SELVA MISIONERA y las MINAS DE WANDA.',
       '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis. ¡Siempre hay agua caliente!',
       '19,9': 'GIMNASIO DE VILLA CAMALOTE. Líder: LUNA, la que ve más allá del agua. Tipo PSÍQUICO.',
       '4,20': 'VILLA CAMALOTE. Donde el río trae flores flotantes.',
     },
-    disparadores: [
-      {
-        prueba: (x, y) => y === 0,
-        accion: async () => {
-          await decir('El camino hacia la SELVA MISIONERA todavía está en construcción. ¡Muy pronto vas a poder seguir viaje!');
-          await pasoForzado(0);
-        },
-      },
-    ],
     npcs: [
       {
         id: 'nene_villa', x: 7, y: 18, dir: 0, pal: PAL.nene,
@@ -403,41 +523,7 @@ const MAPAS = {
     ],
   },
 
-  centro: {
-    nombre: 'CASA DEL MATE',
-    grilla: desdeTexto([
-      '#########',
-      '#k_x_x_p#',
-      '#tt___tt#',
-      '#_______#',
-      '#_______#',
-      '#p_____p#',
-      '#_______#',
-      '####m####',
-    ]),
-    edificios: [],
-    salidas: [{ x: 4, y: 7, a: 'villa', ax: 5, ay: 9, dir: 0 }],
-    objetos: {
-      k: 'Un estante lleno de termos, yerbas y bombillas de todos los colores.',
-      x: 'Un cuadro del río Paraná al atardecer.',
-      t: 'El mostrador de la Casa del Mate.',
-      p: 'Una planta de mburucuyá con flores violetas.',
-    },
-    npcs: [
-      {
-        id: 'rosa', x: 4, y: 2, dir: 0, pal: PAL.rosa,
-        hablar: async () => {
-          await decir('DOÑA ROSA: ¡Bienvenido a la CASA DEL MATE! ¿Tus criaturas están cansadas?');
-          if (!S.equipo.length) { await decir('Ah, todavía no tenés criaturas. ¡Volvé cuando tengas!'); return; }
-          curarEquipo();
-          S.flags.centro = { mapa: 'centro', x: 4, y: 4, dir: 1 };
-          await decir('Unos mates bien cebados y... ¡listo! Tus criaturas recuperaron toda su energía.');
-          await decir('DOÑA ROSA: Si pierden una pelea, te traemos acá a descansar. ¡Volvé cuando quieras!');
-          guardar();
-        },
-      },
-    ],
-  },
+  centro: crearCentro('villa', 5, 9, 'centro'),
 
   gimnasio: {
     nombre: 'GIMNASIO CAMALOTE',
@@ -493,6 +579,209 @@ const MAPAS = {
             await decir('¡Felipe recibió la INSIGNIA ESPEJO!');
             S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 3;
             await decir('LUNA: Y llevate estos ALFAJORES para el viaje. ¡Te vas a encontrar con criaturas cada vez más fuertes!');
+            guardar();
+          }
+        },
+      },
+    ],
+  },
+  // ================= SELVA MISIONERA =================
+  ruta3: {
+    nombre: 'RUTA 3 · SELVA MISIONERA',
+    exterior: true,
+    grilla: desdeTexto(RUTA3),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 33, a: 'villa', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 33, a: 'villa', ax: 11, ay: 1, dir: 0 },
+      { x: 10, y: 0, a: 'minas', ax: 9, ay: 21, dir: 1 },
+      { x: 11, y: 0, a: 'minas', ax: 10, ay: 21, dir: 1 },
+    ],
+    carteles: {
+      '8,15': 'RUTA 3 · SELVA MISIONERA. La tierra es colorada por el hierro de las piedras.',
+      '14,29': 'Al norte: MINAS DE WANDA y PUERTO WANDA. ¡Llevá mates!',
+    },
+    encuentros: { lista: [['peluchin', 26], ['cuisito', 20], ['hornerito', 16], ['piedrin', 16], ['larvin', 10], ['zorrito', 8], ['ceibito', 4]], min: 11, max: 15 },
+    npcs: [
+      entrenadorNPC({
+        id: 'guardaparque_selva', x: 12, y: 13, dir: 2, pal: PAL.guarda, nombre: 'GUARDAPARQUE ANA',
+        equipo: [['cuisito', 13], ['hornerito', 14]],
+        antes: ['GUARDAPARQUE ANA: ¡Alto ahí! En la selva hay que saber cuidarse.', '¡A ver si tus criaturas están preparadas!'],
+        gana: 'GUARDAPARQUE ANA: ¡Muy bien! Estás listo para seguir.',
+        despues: 'GUARDAPARQUE ANA: Si ves un PELUCHÍN, no lo toques con la mano. ¡Pica muchísimo!',
+      }),
+      entrenadorNPC({
+        id: 'cazabichos', x: 6, y: 18, dir: 0, pal: PAL.nene, nombre: 'CAZABICHOS JUANI',
+        equipo: [['peluchin', 12], ['capullon', 14], ['larvin', 13]],
+        antes: ['CAZABICHOS JUANI: ¡Mirá todos los bichos que atrapé! ¿Peleamos?'],
+        gana: 'CAZABICHOS JUANI: ¡Nooo! Mis bichitos...',
+        despues: 'CAZABICHOS JUANI: Los PELUCHINES se hacen capullo y después... ¡POLILLACA! Dicen que tiene ojos de yaguareté en las alas.',
+      }),
+      entrenadorNPC({
+        id: 'mochilera', x: 13, y: 25, dir: 2, pal: PAL.chica, nombre: 'MOCHILERA FLOR',
+        equipo: [['junquito', 14], ['piedrin', 15]],
+        antes: ['MOCHILERA FLOR: ¡Vengo de las Cataratas! ¿Me das un duelo para despedirme de la selva?'],
+        gana: 'MOCHILERA FLOR: ¡Qué bien peleás! Me voy contenta.',
+        despues: 'MOCHILERA FLOR: En las MINAS DE WANDA hay piedras preciosas... ¡y criaturas que parecen piedras!',
+      }),
+    ],
+  },
+
+  minas: {
+    nombre: 'MINAS DE WANDA',
+    exterior: true,
+    cueva: true,
+    grilla: desdeTexto(MINAS),
+    edificios: [],
+    salidas: [
+      { x: 9, y: 22, a: 'ruta3', ax: 10, ay: 1, dir: 0 },
+      { x: 10, y: 22, a: 'ruta3', ax: 11, ay: 1, dir: 0 },
+      { x: 9, y: 0, a: 'puerto', ax: 10, ay: 20, dir: 1 },
+      { x: 10, y: 0, a: 'puerto', ax: 11, ay: 20, dir: 1 },
+    ],
+    objetos: {
+      a: '¡Cristales de amatista violeta! Brillan con luz propia.',
+    },
+    encuentros: { lista: [['piedrin', 32], ['geodin', 22], ['peludin', 20], ['condorito', 8], ['capullon', 10], ['vizcachita', 8]], min: 14, max: 18 },
+    npcs: [
+      entrenadorNPC({
+        id: 'minero1', x: 14, y: 13, dir: 2, pal: PAL.beto, nombre: 'MINERO HUGO',
+        equipo: [['piedrin', 16], ['geodin', 17]],
+        antes: ['MINERO HUGO: ¡Eh, pibe! Esta mina es peligrosa.', '¡Te muestro cómo pelean las criaturas de piedra!'],
+        gana: 'MINERO HUGO: ¡Uf! Me dejaste más molido que una piedra.',
+        despues: 'MINERO HUGO: Los GEODINES tienen cristales adentro. Cuando crecen se vuelven WANDACOLOSOS, ¡enormes!',
+      }),
+      entrenadorNPC({
+        id: 'minero2', x: 12, y: 6, dir: 2, pal: PAL.abuelo, nombre: 'MINERO DON PEDRO',
+        equipo: [['peludin', 17], ['piedrin', 18], ['hornerito', 17]],
+        antes: ['MINERO DON PEDRO: Cuarenta años picando piedra, m\'hijo. ¡A ver qué traés!'],
+        gana: 'MINERO DON PEDRO: Bien, bien. Tenés pasta de campeón.',
+        despues: 'MINERO DON PEDRO: Contra las criaturas de ROCA, usá AGUA, PLANTA o LUCHA. ¡No falla!',
+      }),
+    ],
+  },
+
+  puerto: {
+    nombre: 'PUERTO WANDA',
+    exterior: true,
+    grilla: desdeTexto(PUERTO),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 14, y: 4, w: 7, h: 5, tipo: 'gimnasio2', puerta: 3, abre: true },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'casa', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 10, y: 21, a: 'minas', ax: 9, ay: 1, dir: 0 },
+      { x: 11, y: 21, a: 'minas', ax: 10, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro2', ax: 4, ay: 6, dir: 1 },
+      { x: 17, y: 8, a: 'gimnasio2', ax: 5, ay: 10, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'RUTA 4. Hacia el NORTE ARGENTINO... (¡todavía en construcción!)',
+      '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis.',
+      '19,9': 'GIMNASIO DE PUERTO WANDA. Líder: ROCÍO, la minera de corazón de piedra. Tipo ROCA.',
+      '4,18': 'PUERTO WANDA. Tierra colorada, yerba mate y piedras preciosas.',
+    },
+    disparadores: [
+      {
+        prueba: (x, y) => y === 0,
+        accion: async () => {
+          await decir('El camino hacia el NORTE ARGENTINO todavía está en construcción. ¡Muy pronto vas a poder seguir viaje!');
+          await pasoForzado(0);
+        },
+      },
+    ],
+    npcs: [
+      {
+        id: 'tarefero', x: 7, y: 11, dir: 0, pal: PAL.guarda,
+        hablar: async () => {
+          await decir('TAREFERO: Yo cosecho yerba mate en los yerbales. ¡Los CUISITOS siempre andan escondidos entre las plantas!');
+        },
+      },
+      {
+        id: 'tomi2', x: 13, y: 18, dir: 2, pal: PAL.tomi,
+        hablar: async () => {
+          if (S.flags.tomi2) { await decir('TOMI: ¡La próxima te gano seguro! Voy a entrenar en las minas.'); return; }
+          await decir('TOMI: ¡Felipe! ¡Sabía que te iba a encontrar acá!');
+          await decir('TOMI: Yo también vengo por la insignia de ROCÍO. ¡Pero primero te gano a vos!');
+          const fuerte = { flamartija: 'dracobrasa', ajolodo: 'branquiotox', ramoa: 'lianaco' };
+          const mio = S.flags.inicialTomi || 'ramoa';
+          const r = await batalla({ entrenador: { nombre: 'TOMI', pal: PAL.tomi, equipo: [['terito', 17], ['piedrin', 17], [fuerte[mio] || mio, 19]] } });
+          if (r === 'gana') {
+            S.flags.tomi2 = true;
+            await decir('TOMI: ¡Otra vez! ¿Cómo hacés? Bueno... tomá, por ganarme.');
+            S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 2;
+            await decir('¡Felipe recibió 2 ALFAJORES!');
+            guardar();
+          }
+        },
+      },
+    ],
+  },
+
+  centro2: crearCentro('puerto', 5, 9, 'centro2'),
+
+  gimnasio2: {
+    nombre: 'GIMNASIO WANDA',
+    grilla: desdeTexto([
+      '###########',
+      '#R_______R#',
+      '#__RR_RR__#',
+      '#a_______a#',
+      '#RR_R_R_RR#',
+      '#_________#',
+      '#__RR_RR__#',
+      '#_________#',
+      '#R__R_R__R#',
+      '#_________#',
+      '#_________#',
+      '#####m#####',
+    ]),
+    edificios: [],
+    salidas: [{ x: 5, y: 11, a: 'puerto', ax: 17, ay: 9, dir: 0 }],
+    objetos: {
+      R: 'Una roca enorme traída de las minas.',
+      a: 'Cristales de amatista. ¡Son el orgullo de Puerto Wanda!',
+    },
+    npcs: [
+      entrenadorNPC({
+        id: 'gim2_a', x: 2, y: 7, dir: 3, pal: PAL.beto, nombre: 'PICAPEDRERO LUCAS',
+        equipo: [['piedrin', 20], ['geodin', 21]],
+        antes: ['PICAPEDRERO LUCAS: ¡Para llegar a ROCÍO tenés que pasar por mí!'],
+        gana: 'PICAPEDRERO LUCAS: Me partiste como a una piedra...',
+        despues: 'PICAPEDRERO LUCAS: Las criaturas de ROCÍO son durísimas. ¡Golpeá con AGUA o PLANTA!',
+      }),
+      entrenadorNPC({
+        id: 'gim2_b', x: 8, y: 5, dir: 2, pal: PAL.abuelo, nombre: 'GEÓLOGO ÁLVARO',
+        equipo: [['peludin', 21], ['micalonco', 22]],
+        antes: ['GEÓLOGO ÁLVARO: Estas rocas tienen millones de años. ¡Y mis criaturas también son duras como ellas!'],
+        gana: 'GEÓLOGO ÁLVARO: Interesante... Muy interesante.',
+        despues: 'GEÓLOGO ÁLVARO: MICALONCO tiene escamas de mica que brillan como espejos. ¡Es mi favorito!',
+      }),
+      {
+        id: 'rocio', x: 5, y: 1, dir: 0, pal: PAL.rocio,
+        hablar: async () => {
+          if (S.flags.insignia2) {
+            await decir('ROCÍO: Tenés la fuerza de una montaña, Felipe. ¡El norte te espera!');
+            return;
+          }
+          if (!S.flags.insignia1) {
+            await decir('ROCÍO: ¿Todavía no tenés la INSIGNIA ESPEJO? Primero ganale a LUNA en Villa Camalote.');
+            return;
+          }
+          await decir('ROCÍO: ¡Bienvenido a las profundidades de Puerto Wanda!');
+          await decir('Soy ROCÍO, líder del GIMNASIO WANDA. Mis criaturas nacieron entre cristales y tierra colorada.');
+          await decir('¡Si querés la INSIGNIA AMATISTA, vas a tener que romper la piedra!');
+          const r = await batalla({ entrenador: { nombre: 'LÍDER ROCÍO', pal: PAL.rocio, equipo: [['piedrin', 21], ['geodin', 22], ['micalonco', 24]] } });
+          if (r === 'gana') {
+            S.flags.insignia2 = true;
+            S.flags.insignias = Math.max(S.flags.insignias || 0, 2);
+            await decir('ROCÍO: ¡Increíble! Rompiste mi defensa de piedra.');
+            await decir('¡Felipe recibió la INSIGNIA AMATISTA!');
+            S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 3;
+            S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
+            await decir('ROCÍO: Y llevate estos ALFAJORES y BOLEADORAS. ¡En el norte hay criaturas que todavía nadie atrapó!');
             guardar();
           }
         },
