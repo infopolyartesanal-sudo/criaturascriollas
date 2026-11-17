@@ -711,6 +711,11 @@ const MOVS = {
   rayo_hielo: { nombre: 'Rayo Hielo', tipo: 'HIELO', pot: 90, prec: 100, pp: 10 },
   ventisca: { nombre: 'Ventisca', tipo: 'HIELO', pot: 110, prec: 75, pp: 5 },
   nevada: { nombre: 'Nevada', tipo: 'HIELO', pot: 0, prec: 100, pp: 20, ef: 'def-' },
+  // --- Gimnasios variados (v7) ---
+  garra_metal: { nombre: 'Garra Metal', tipo: 'ACERO', pot: 50, prec: 95, pp: 30 },
+  reflejo: { nombre: 'Reflejo', tipo: 'ACERO', pot: 75, prec: 100, pp: 15 },
+  cabeza_hierro: { nombre: 'Cabeza de Hierro', tipo: 'ACERO', pot: 90, prec: 100, pp: 10 },
+  alarido: { nombre: 'Alarido', tipo: 'FANTASMA', pot: 70, prec: 100, pp: 15 },
   forcejeo: { nombre: 'Forcejeo', tipo: 'NORMAL', pot: 40, prec: 100, pp: 1 },
 };
 
@@ -1608,6 +1613,219 @@ const ESPECIES = {
       ['d', 3, 13, '#201010'],
     ],
   },
+  // --- Para los gimnasios: Espejito (diseñado con Poly), Faeve/Mythfae, Mimetit, Rocorí, Garkol y Venomin (de Felipe) ---
+  espejito: {
+    nombre: 'Espejito', tipos: ['ACERO', 'PSIQUICO'], base: { ps: 45, atk: 45, def: 65, vel: 45 }, captura: 90, exp: 64,
+    desc: 'el espejo de bronce que muestra el futuro', evo: { nivel: 16, a: 'espejon' },
+    movs: [[1, 'embestida'], [1, 'mareo'], [6, 'garra_metal'], [10, 'bolita'], [14, 'reflejo'], [20, 'vision'], [30, 'cabeza_hierro']],
+    sprite: [
+      ['r', 15, 24, 2, 4, '#a07030'], ['e', 16, 29, 4, 1.5, '#a07030'],
+      ['e', 16, 14, 11, 11, '#c08a3a'],
+      ['e', 16, 14, 8.5, 8.5, '#b8e0f8'],
+      ['p', [[10, 9], [14, 7], [11, 13]], '#ffffff', 'c'],
+      ['e', 13, 14, 1.5, 2, '#201010', 's'], ['e', 19, 14, 1.5, 2, '#201010', 's'],
+      ['d', 3, 6, '#f85888'], ['d', 29, 8, '#f85888'],
+    ],
+  },
+  espejon: {
+    nombre: 'Espejón', tipos: ['ACERO', 'PSIQUICO'], base: { ps: 65, atk: 65, def: 90, vel: 60 }, captura: 45, exp: 150,
+    desc: 'el espejo de pie de las casonas coloniales', evo: { nivel: 36, a: 'espejonte' },
+    movs: [[1, 'embestida'], [1, 'mareo'], [6, 'garra_metal'], [10, 'bolita'], [14, 'reflejo'], [20, 'vision'], [30, 'cabeza_hierro']],
+    sprite: [
+      ['r', 9, 27, 4, 4, '#8a6020'], ['r', 19, 27, 4, 4, '#8a6020'],
+      ['r', 8, 2, 16, 26, '#c08a3a'],
+      ['r', 10, 4, 12, 22, '#b8e0f8'],
+      ['p', [[11, 6], [16, 5], [12, 12]], '#ffffff', 'c'],
+      ['e', 3, 15, 3, 2, '#c08a3a'], ['e', 29, 15, 3, 2, '#c08a3a'],
+      ['e', 13, 13, 1.6, 2.2, '#201010', 's'], ['e', 19, 13, 1.6, 2.2, '#201010', 's'],
+      ['r', 14, 19, 4, 1, '#5a7a9a'],
+      ['d', 2, 4, '#f85888'], ['d', 29, 5, '#f85888'],
+    ],
+  },
+  espejonte: {
+    nombre: 'Espejonte', tipos: ['ACERO', 'PSIQUICO'], base: { ps: 85, atk: 90, def: 115, vel: 70 }, captura: 45, exp: 230,
+    desc: 'el gran espejo coronado que ve todos los futuros',
+    movs: [[1, 'embestida'], [1, 'mareo'], [6, 'garra_metal'], [10, 'bolita'], [14, 'reflejo'], [20, 'vision'], [30, 'cabeza_hierro']],
+    sprite: [
+      ['p', [[9, 6], [11, 0], [14, 4], [16, 0], [18, 4], [21, 0], [23, 6]], '#f0c030'],
+      ['r', 7, 27, 5, 4, '#8a6020'], ['r', 20, 27, 5, 4, '#8a6020'],
+      ['e', 16, 17, 11, 12, '#d0a040'],
+      ['e', 16, 17, 8.5, 9.5, '#c8a0f0'],
+      ['p', [[10, 12], [15, 9], [11, 17]], '#ffffff', 'c'],
+      ['e', 2, 16, 3, 5, '#d0a040'], ['e', 30, 16, 3, 5, '#d0a040'],
+      ['e', 12, 16, 2, 2.5, '#f85888', 's'], ['e', 20, 16, 2, 2.5, '#f85888', 's'],
+      ['d', 16, 3, '#f85888'],
+    ],
+  },
+  faeve: {
+    nombre: 'Faeve', tipos: ['HADA'], base: { ps: 50, atk: 40, def: 45, vel: 60 }, captura: 75, exp: 62,
+    desc: 'el duendecillo de orejas como pétalos', evo: { nivel: 20, a: 'mythfae' },
+    movs: [[1, 'aranazo'], [1, 'encanto'], [6, 'brillo'], [12, 'mareo'], [18, 'polvo_lunar'], [24, 'vision']],
+    sprite: [
+      ['e', 25, 20, 6, 5, '#ffffff', 's'],
+      ['r', 11, 23, 3, 6, '#f4f0f0'], ['r', 17, 23, 3, 6, '#f4f0f0'],
+      ['e', 15, 20, 8, 6, '#f4f0f0'],
+      ['e', 8, 11, 3, 7, '#f8b8d0'], ['e', 22, 11, 3, 7, '#f8b8d0'],
+      ['e', 15, 11, 7, 6, '#f4f0f0'],
+      ['r', 9, 16, 12, 2, '#f878a8'],
+      ['e', 12, 11, 1.6, 2, '#3080f0', 's'], ['e', 18, 11, 1.6, 2, '#3080f0', 's'],
+      ['d', 15, 14, '#c06080'],
+    ],
+  },
+  mythfae: {
+    nombre: 'Mythfae', tipos: ['HADA', 'PSIQUICO'], base: { ps: 70, atk: 65, def: 70, vel: 85 }, captura: 45, exp: 165,
+    desc: 'el oráculo de tercer ojo que siempre levita',
+    movs: [[1, 'aranazo'], [1, 'encanto'], [6, 'brillo'], [12, 'mareo'], [18, 'polvo_lunar'], [24, 'vision']],
+    sprite: [
+      ['e', 16, 30, 9, 1.5, '#f0b0e0', 's'],
+      ['e', 25, 19, 6, 5, '#d8c0f0', 's'],
+      ['e', 16, 20, 8, 6, '#c8b0e8'],
+      ['e', 8, 7, 3, 6, '#c8b0e8'], ['e', 24, 7, 3, 6, '#c8b0e8'],
+      ['e', 16, 11, 7, 6, '#c8b0e8'],
+      ['p', [[16, 5], [18, 7], [16, 9], [14, 7]], '#f85888'],
+      ['e', 13, 12, 1.5, 1.8, '#4020a0', 's'], ['e', 19, 12, 1.5, 1.8, '#4020a0', 's'],
+      ['d', 3, 14, '#f85888'], ['d', 29, 26, '#f85888'], ['d', 5, 26, '#ffe0f0'],
+    ],
+  },
+  mimetit: {
+    nombre: 'Mimetit', tipos: ['DRAGON', 'PSIQUICO'], base: { ps: 50, atk: 55, def: 48, vel: 68 }, captura: 45, exp: 70,
+    desc: 'el dragoncito que se vuelve transparente', evo: { nivel: 35, a: 'espectradraco' },
+    movs: [[1, 'aranazo'], [1, 'mareo'], [7, 'aliento'], [12, 'pique'], [18, 'vision'], [26, 'garra_dragon'], [38, 'furia_dragon']],
+    sprite: [
+      ['p', [[22, 20], [31, 26], [22, 24]], '#a8e0c8'],
+      ['r', 11, 23, 3, 5, '#88c8b0'], ['r', 18, 23, 3, 5, '#88c8b0'],
+      ['e', 16, 19, 8, 7, '#a8e0c8'],
+      ['e', 16, 21, 4, 4, '#e0f8f0', 's'],
+      ['p', [[11, 6], [9, 0], [14, 5]], '#f0e080'], ['p', [[21, 6], [23, 0], [18, 5]], '#f0e080'],
+      ['e', 16, 10, 7, 6, '#a8e0c8'],
+      ['e', 13, 10, 2, 2.4, '#e040a0', 's'], ['e', 19, 10, 2, 2.4, '#e040a0', 's'],
+      ['d', 5, 9, '#ffffff'], ['d', 27, 13, '#ffffff'],
+    ],
+  },
+  espectradraco: {
+    nombre: 'Espectradraco', tipos: ['DRAGON', 'PSIQUICO'], base: { ps: 75, atk: 85, def: 70, vel: 110 }, captura: 45, exp: 235,
+    desc: 'el dragón que cambia de forma con la luz',
+    movs: [[1, 'aranazo'], [1, 'mareo'], [7, 'aliento'], [12, 'pique'], [18, 'vision'], [26, 'garra_dragon'], [38, 'furia_dragon']],
+    sprite: [
+      ['p', [[10, 12], [0, 2], [2, 18]], '#90d0f0'], ['p', [[22, 12], [32, 2], [30, 18]], '#d0a0f0'],
+      ['p', [[20, 22], [32, 30], [20, 26]], '#80c8b0'],
+      ['r', 10, 24, 4, 7, '#70b8a0'], ['r', 18, 24, 4, 7, '#70b8a0'],
+      ['e', 16, 19, 9, 8, '#80c8b0'],
+      ['e', 16, 8, 6, 5, '#80c8b0'],
+      ['p', [[12, 4], [10, 0], [14, 3]], '#f0e080'], ['p', [[20, 4], [22, 0], [18, 3]], '#f0e080'],
+      ['r', 12, 7, 3, 2, '#e040a0'], ['r', 17, 7, 3, 2, '#e040a0'],
+      ['r', 9, 17, 14, 1, '#e0f8f0', 'c'],
+    ],
+  },
+  rocori: {
+    nombre: 'Rocorí', tipos: ['ROCA', 'NORMAL'], base: { ps: 50, atk: 55, def: 70, vel: 35 }, captura: 150, exp: 60,
+    desc: 'el bichito que se encierra en su caparazón de piedra', evo: { nivel: 20, a: 'rocamonte' },
+    movs: [[1, 'embestida'], [1, 'bolita'], [6, 'pedrada'], [11, 'adobe'], [16, 'pique'], [22, 'derrumbe'], [32, 'barrazo']],
+    sprite: [
+      ['e', 10, 28, 3, 1.5, '#8a7050'], ['e', 22, 28, 3, 1.5, '#8a7050'],
+      ['e', 16, 20, 11, 8, '#9a8a78'],
+      ['e', 11, 15, 3, 2.5, '#b0a090'], ['e', 18, 13, 3.5, 3, '#8a7a68'], ['e', 23, 17, 3, 2.5, '#b0a090'],
+      ['e', 6, 23, 4, 3.5, '#d8b890'],
+      ['r', 4, 22, 2, 2, '#201010'],
+    ],
+  },
+  rocamonte: {
+    nombre: 'Rocamonte', tipos: ['ROCA', 'NORMAL'], base: { ps: 70, atk: 78, def: 95, vel: 45 }, captura: 90, exp: 140,
+    desc: 'lleva pequeñas montañas en el lomo', evo: { nivel: 39, a: 'rocantour' },
+    movs: [[1, 'embestida'], [1, 'bolita'], [6, 'pedrada'], [11, 'adobe'], [16, 'pique'], [22, 'derrumbe'], [32, 'barrazo']],
+    sprite: [
+      ['r', 8, 25, 4, 5, '#7a6a50'], ['r', 21, 25, 4, 5, '#7a6a50'],
+      ['e', 16, 21, 12, 7, '#8a7a68'],
+      ['p', [[8, 17], [12, 6], [16, 17]], '#9a8a78'], ['p', [[14, 17], [19, 3], [24, 17]], '#7a6a58'],
+      ['p', [[11, 9], [12, 6], [13, 9]], '#ffffff'], ['p', [[18, 6], [19, 3], [20, 6]], '#ffffff'],
+      ['e', 5, 22, 4.5, 4, '#d8b890'],
+      ['r', 3, 21, 2, 2, '#201010'],
+    ],
+  },
+  rocantour: {
+    nombre: 'Rocantour', tipos: ['ROCA', 'NORMAL'], base: { ps: 95, atk: 105, def: 120, vel: 50 }, captura: 45, exp: 225,
+    desc: 'el guardián de las montañas',
+    movs: [[1, 'embestida'], [1, 'bolita'], [6, 'pedrada'], [11, 'adobe'], [16, 'pique'], [22, 'derrumbe'], [32, 'barrazo']],
+    sprite: [
+      ['r', 6, 25, 5, 6, '#6a5a40'], ['r', 22, 25, 5, 6, '#6a5a40'],
+      ['e', 16, 21, 14, 8, '#7a6a58'],
+      ['p', [[4, 18], [10, 4], [16, 18]], '#8a7a68'], ['p', [[12, 18], [19, 0], [27, 18]], '#6a5a48'], ['p', [[22, 18], [27, 8], [31, 18]], '#8a7a68'],
+      ['p', [[9, 7], [10, 4], [11, 7]], '#ffffff'], ['p', [[18, 3], [19, 0], [20, 3]], '#ffffff'],
+      ['e', 4, 22, 4, 4, '#c8a880'],
+      ['r', 2, 21, 2, 2, '#f0c030'],
+    ],
+  },
+  garkol: {
+    nombre: 'Garkol', tipos: ['ROCA', 'FANTASMA'], base: { ps: 55, atk: 70, def: 75, vel: 45 }, captura: 90, exp: 70,
+    desc: 'la gárgola de las casas abandonadas', evo: { nivel: 35, a: 'gargorrupt' },
+    movs: [[1, 'aranazo'], [1, 'susto'], [6, 'pedrada'], [12, 'silbido'], [17, 'alarido'], [23, 'derrumbe'], [32, 'payada']],
+    sprite: [
+      ['p', [[10, 12], [1, 6], [4, 20]], '#6a6878'], ['p', [[22, 12], [31, 6], [28, 20]], '#6a6878'],
+      ['r', 10, 24, 4, 6, '#5a5868'], ['r', 18, 24, 4, 6, '#5a5868'],
+      ['e', 16, 20, 8, 7, '#7a7888'],
+      ['e', 16, 10, 7, 6, '#7a7888'],
+      ['p', [[10, 6], [9, 0], [13, 4]], '#5a5868'], ['p', [[22, 6], [23, 0], [19, 4]], '#5a5868'],
+      ['r', 12, 9, 3, 2, '#a060f0'], ['r', 17, 9, 3, 2, '#a060f0'],
+      ['r', 13, 13, 6, 1, '#3a3848'],
+    ],
+  },
+  gargorrupt: {
+    nombre: 'Gargorrupt', tipos: ['ROCA', 'FANTASMA'], base: { ps: 80, atk: 105, def: 100, vel: 60 }, captura: 45, exp: 215,
+    desc: 'la gárgola maldita que cobra vida de noche',
+    movs: [[1, 'aranazo'], [1, 'susto'], [6, 'pedrada'], [12, 'silbido'], [17, 'alarido'], [23, 'derrumbe'], [32, 'payada']],
+    sprite: [
+      ['p', [[9, 14], [0, 2], [2, 24]], '#4a4858'], ['p', [[23, 14], [32, 2], [30, 24]], '#4a4858'],
+      ['r', 9, 24, 5, 7, '#3a3848'], ['r', 18, 24, 5, 7, '#3a3848'],
+      ['e', 16, 20, 9, 8, '#5a5868'],
+      ['r', 10, 17, 12, 1, '#a060f0', 'c'], ['r', 10, 21, 12, 1, '#a060f0', 'c'],
+      ['e', 16, 9, 7, 6, '#5a5868'],
+      ['p', [[10, 5], [8, 0], [13, 3]], '#3a3848'], ['p', [[22, 5], [24, 0], [19, 3]], '#3a3848'],
+      ['r', 12, 8, 3, 2, '#e060ff'], ['r', 17, 8, 3, 2, '#e060ff'],
+      ['p', [[12, 12], [20, 12], [16, 14]], '#f0f0f0'],
+    ],
+  },
+  venomin: {
+    nombre: 'Venomin', tipos: ['VENENO', 'HIELO'], base: { ps: 45, atk: 55, def: 45, vel: 55 }, captura: 120, exp: 62,
+    desc: 'la viborita de veneno helado', evo: { nivel: 16, a: 'glacivenom' },
+    movs: [[1, 'acido'], [1, 'escarcha'], [8, 'mordisco'], [14, 'granizo'], [20, 'toxibomba'], [28, 'rayo_hielo'], [38, 'estallido']],
+    sprite: [
+      ['e', 18, 25, 11, 4, '#8050b0'],
+      ['e', 22, 25, 5, 2, '#a0e0ff', 'c'],
+      ['e', 10, 18, 4, 7, '#8050b0'],
+      ['e', 11, 10, 6, 5, '#9060c0'],
+      ['r', 8, 9, 2, 2, '#a0e0ff'], ['r', 13, 9, 2, 2, '#a0e0ff'],
+      ['r', 11, 14, 1, 3, '#f0f0f0'],
+      ['p', [[28, 23], [31, 20], [30, 26]], '#a0e0ff'],
+    ],
+  },
+  glacivenom: {
+    nombre: 'Glacivénom', tipos: ['VENENO', 'HIELO'], base: { ps: 65, atk: 78, def: 62, vel: 75 }, captura: 60, exp: 150,
+    desc: 'el depredador de veneno que congela', evo: { nivel: 36, a: 'glacivenom_supremo' },
+    movs: [[1, 'acido'], [1, 'escarcha'], [8, 'mordisco'], [14, 'granizo'], [20, 'toxibomba'], [28, 'rayo_hielo'], [38, 'estallido']],
+    sprite: [
+      ['e', 18, 26, 13, 4, '#6a3a9a'],
+      ['p', [[10, 24], [14, 20], [18, 24], [22, 20], [26, 24]], '#a0e0ff'],
+      ['e', 9, 17, 5, 9, '#6a3a9a'],
+      ['e', 10, 8, 7, 5, '#7a4aaa'],
+      ['p', [[5, 4], [7, 0], [9, 4]], '#a0e0ff'], ['p', [[12, 4], [14, 0], [16, 4]], '#a0e0ff'],
+      ['r', 6, 7, 3, 2, '#60f0a0'], ['r', 12, 7, 3, 2, '#60f0a0'],
+      ['r', 8, 11, 1, 3, '#f0f0f0'], ['r', 12, 11, 1, 3, '#f0f0f0'],
+    ],
+  },
+  glacivenom_supremo: {
+    nombre: 'Glacivénom Supremo', tipos: ['VENENO', 'HIELO'], base: { ps: 85, atk: 105, def: 80, vel: 95 }, captura: 45, exp: 235,
+    desc: 'el rey de las montañas heladas',
+    movs: [[1, 'acido'], [1, 'escarcha'], [8, 'mordisco'], [14, 'granizo'], [20, 'toxibomba'], [28, 'rayo_hielo'], [38, 'estallido']],
+    sprite: [
+      ['e', 18, 27, 14, 4, '#4a2a7a'],
+      ['p', [[6, 25], [10, 18], [14, 25], [18, 18], [22, 25], [26, 18], [30, 25]], '#c0f0ff'],
+      ['e', 9, 16, 6, 10, '#4a2a7a'],
+      ['e', 10, 7, 8, 6, '#5a3a8a'],
+      ['p', [[3, 3], [5, 0], [7, 3], [10, 0], [12, 3], [15, 0], [17, 3]], '#c0f0ff'],
+      ['r', 5, 6, 3, 2, '#60f0a0'], ['r', 12, 6, 3, 2, '#60f0a0'],
+      ['r', 7, 10, 1, 4, '#f0f0f0'], ['r', 12, 10, 1, 4, '#f0f0f0'],
+    ],
+  },
   // --- Rara de la Ruta 1 ---
   condorito: {
     nombre: 'Condorito', tipos: ['VOLADOR', 'PSIQUICO'], base: { ps: 45, atk: 48, def: 40, vel: 70 }, captura: 45, exp: 70,
@@ -2293,7 +2511,7 @@ const MAPAS = {
       '12,3': 'VILLA CAMALOTE, acá nomás al norte. ¡Cuidado con los mosquitos!',
       '13,32': 'RUTA 2 · LOS ESTEROS. Por el puente de madera se cruza la laguna.',
     },
-    encuentros: { lista: [['larvin', 26], ['carpinchu', 22], ['junquito', 22], ['terito', 14], ['yacarelito', 10], ['ceibito', 6], ['lechucita', 5]], min: 6, max: 9 },
+    encuentros: { lista: [['larvin', 26], ['carpinchu', 22], ['junquito', 22], ['terito', 14], ['yacarelito', 10], ['ceibito', 6], ['lechucita', 5], ['faeve', 4], ['espejito', 3]], min: 6, max: 9 },
     npcs: [
       entrenadorNPC({
         id: 'pescador', x: 12, y: 16, dir: 2, pal: PAL.pescador, nombre: 'PESCADOR RAÚL',
@@ -2339,7 +2557,7 @@ const MAPAS = {
     carteles: {
       '12,1': 'RUTA 3. Hacia la SELVA MISIONERA y las MINAS DE WANDA.',
       '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis. ¡Siempre hay agua caliente!',
-      '19,9': 'GIMNASIO DE VILLA CAMALOTE. Líder: LUNA, la que ve más allá del agua. Tipo PSÍQUICO y VOLADOR.',
+      '19,9': 'GIMNASIO DE VILLA CAMALOTE. Líder: LUNA, la que ve más allá del agua. Tipo PSÍQUICO.',
       '4,20': 'VILLA CAMALOTE. Donde el río trae flores flotantes.',
     },
     npcs: [
@@ -2355,8 +2573,8 @@ const MAPAS = {
         hablar: async () => {
           if (S.flags.insignia1) await decir('PESCADOR: ¡Así que le ganaste a LUNA! Ahora sí que sos un baqueano del Litoral.');
           else {
-            await decir('PESCADOR: Las criaturas de LUNA son PSÍQUICAS y VOLADORAS. Les ganan las de ROCA, ELÉCTRICO, HIELO, FANTASMA y SINIESTRO.');
-            await decir('¿Sabías que el PELUDÍN aprende MORDISCO, un ataque SINIESTRO? ¡Pensalo antes de entrar al gimnasio!');
+            await decir('PESCADOR: Las criaturas de LUNA son PSÍQUICAS. Les ganan los BICHOS, los FANTASMAS y los SINIESTROS.');
+            await decir('Pero ojo: cada una tiene un segundo tipo distinto. ¡Llevá un equipo variado!');
           }
         },
       },
@@ -2389,14 +2607,14 @@ const MAPAS = {
     npcs: [
       entrenadorNPC({
         id: 'vidente1', x: 3, y: 8, dir: 3, pal: PAL.vidente, nombre: 'ADIVINO TITO',
-        equipo: [['condorito', 12], ['lechucita', 12]],
+        equipo: [['lechucita', 12], ['espejito', 12]],
         antes: ['ADIVINO TITO: Ya sabía que ibas a venir...', '¡Y también sé que vas a perder!'],
         gana: 'ADIVINO TITO: Eso... eso no lo vi venir.',
         despues: 'ADIVINO TITO: LUNA te espera al fondo. Sus lechuzas ven todo, ¡hasta de noche!',
       }),
       entrenadorNPC({
         id: 'vidente2', x: 7, y: 4, dir: 2, pal: PAL.vidente, nombre: 'ADIVINA MARGA',
-        equipo: [['lechucita', 13], ['condorito', 13]],
+        equipo: [['mimetit', 13], ['lechucita', 13]],
         antes: ['ADIVINA MARGA: Las cartas dicen que hoy hay pelea. ¡Las cartas nunca fallan!'],
         gana: 'ADIVINA MARGA: Mmm... Tendría que haber mezclado mejor las cartas.',
         despues: 'ADIVINA MARGA: Las criaturas de LUNA son rápidas. ¡Llevá mates por las dudas!',
@@ -2411,7 +2629,7 @@ const MAPAS = {
           await decir('LUNA: Hola, Felipe. Te estaba esperando... lo vi en el reflejo del agua.');
           await decir('Soy LUNA, líder del GIMNASIO CAMALOTE. Mis criaturas sienten lo que pensás antes de que te muevas.');
           await decir('Si me ganás, te llevás la INSIGNIA ESPEJO. ¿Empezamos?');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER LUNA', pal: PAL.luna, equipo: [['condorito', 13], ['lechucita', 13], ['condorito', 14], ['lechucita', 15], ['lechuzonte', 16]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER LUNA', pal: PAL.luna, equipo: [['condorito', 13], ['mythfae', 14], ['mimetit', 14], ['lechuzonte', 15], ['espejon', 16]] } });
           if (r === 'gana') {
             S.flags.insignia1 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 1);
@@ -2441,7 +2659,7 @@ const MAPAS = {
       '8,15': 'RUTA 3 · SELVA MISIONERA. La tierra es colorada por el hierro de las piedras.',
       '14,29': 'Al norte: MINAS DE WANDA y PUERTO WANDA. ¡Llevá mates!',
     },
-    encuentros: { lista: [['peluchin', 26], ['cuisito', 20], ['hornerito', 16], ['piedrin', 16], ['larvin', 10], ['zorrito', 8], ['ceibito', 4]], min: 11, max: 15 },
+    encuentros: { lista: [['peluchin', 26], ['cuisito', 20], ['hornerito', 16], ['piedrin', 16], ['larvin', 10], ['zorrito', 8], ['ceibito', 4], ['mimetit', 3]], min: 11, max: 15 },
     npcs: [
       entrenadorNPC({
         id: 'guardaparque_selva', x: 12, y: 13, dir: 2, pal: PAL.guarda, nombre: 'GUARDAPARQUE ANA',
@@ -2482,7 +2700,7 @@ const MAPAS = {
     objetos: {
       a: '¡Cristales de amatista violeta! Brillan con luz propia.',
     },
-    encuentros: { lista: [['piedrin', 32], ['geodin', 22], ['peludin', 20], ['condorito', 8], ['capullon', 10], ['vizcachita', 8]], min: 14, max: 18 },
+    encuentros: { lista: [['piedrin', 32], ['geodin', 22], ['peludin', 20], ['condorito', 8], ['capullon', 10], ['vizcachita', 8], ['rocori', 14], ['garkol', 5]], min: 14, max: 18 },
     npcs: [
       entrenadorNPC({
         id: 'minero1', x: 14, y: 13, dir: 2, pal: PAL.beto, nombre: 'MINERO HUGO',
@@ -2522,7 +2740,7 @@ const MAPAS = {
     carteles: {
       '12,1': 'RUTA 4. Hacia las YUNGAS y el NORTE ARGENTINO.',
       '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis.',
-      '19,9': 'GIMNASIO DE PUERTO WANDA. Líder: ROCÍO, la minera de corazón de piedra. Tipo ROCA y VOLADOR.',
+      '19,9': 'GIMNASIO DE PUERTO WANDA. Líder: ROCÍO, la minera de corazón de piedra. Tipo ROCA.',
       '4,18': 'PUERTO WANDA. Tierra colorada, yerba mate y piedras preciosas.',
     },
     npcs: [
@@ -2580,14 +2798,14 @@ const MAPAS = {
     npcs: [
       entrenadorNPC({
         id: 'gim2_a', x: 2, y: 7, dir: 3, pal: PAL.beto, nombre: 'PICAPEDRERO LUCAS',
-        equipo: [['piedrin', 20], ['geodin', 21]],
+        equipo: [['piedrin', 20], ['rocamonte', 21]],
         antes: ['PICAPEDRERO LUCAS: ¡Para llegar a ROCÍO tenés que pasar por mí!'],
         gana: 'PICAPEDRERO LUCAS: Me partiste como a una piedra...',
         despues: 'PICAPEDRERO LUCAS: Las criaturas de ROCÍO son durísimas. ¡Golpeá con AGUA o PLANTA!',
       }),
       entrenadorNPC({
         id: 'gim2_b', x: 8, y: 5, dir: 2, pal: PAL.abuelo, nombre: 'GEÓLOGO ÁLVARO',
-        equipo: [['geodin', 21], ['micalonco', 22]],
+        equipo: [['geodin', 21], ['garkol', 22]],
         antes: ['GEÓLOGO ÁLVARO: Estas rocas tienen millones de años. ¡Y mis criaturas también son duras como ellas!'],
         gana: 'GEÓLOGO ÁLVARO: Interesante... Muy interesante.',
         despues: 'GEÓLOGO ÁLVARO: MICALONCO tiene escamas de mica que brillan como espejos. ¡Es mi favorito!',
@@ -2606,7 +2824,7 @@ const MAPAS = {
           await decir('ROCÍO: ¡Bienvenido a las profundidades de Puerto Wanda!');
           await decir('Soy ROCÍO, líder del GIMNASIO WANDA. Mis criaturas nacieron entre cristales y tierra colorada.');
           await decir('¡Si querés la INSIGNIA AMATISTA, vas a tener que romper la piedra!');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER ROCÍO', pal: PAL.rocio, equipo: [['piedrin', 21], ['geodin', 22], ['piedrin', 22], ['geodin', 23], ['micalonco', 24]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER ROCÍO', pal: PAL.rocio, equipo: [['rocamonte', 21], ['garkol', 22], ['geodin', 22], ['glaciolito', 23], ['micalonco', 24]] } });
           if (r === 'gana') {
             S.flags.insignia2 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 2);
@@ -2770,7 +2988,7 @@ const MAPAS = {
     carteles: {
       '12,1': 'RUTA 6. Hacia LA PUNA y las SALINAS GRANDES.',
       '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis.',
-      '19,9': 'GIMNASIO DE TILCARA. Líder: TALA, guardián del jardín de cardones. Tipo PLANTA y TIERRA.',
+      '19,9': 'GIMNASIO DE TILCARA. Líder: TALA, guardián del jardín de cardones. Tipo PLANTA.',
       '4,18': 'TILCARA. Casas de adobe y cerros de siete colores.',
     },
     npcs: [
@@ -2817,7 +3035,7 @@ const MAPAS = {
     npcs: [
       entrenadorNPC({
         id: 'gim3_a', x: 2, y: 7, dir: 3, pal: PAL.chica, nombre: 'JARDINERA PAZ',
-        equipo: [['cuison', 32], ['cardito', 32]],
+        equipo: [['cuison', 32], ['totorarca', 32]],
         antes: ['JARDINERA PAZ: ¡Cuidado con pisar las plantas! Si querés pasar, primero ganame.'],
         gana: 'JARDINERA PAZ: Ay, mis plantitas... Bueno, pasá.',
         despues: 'JARDINERA PAZ: TALA riega los cardones una vez por mes. ¡Con eso les alcanza!',
@@ -2843,7 +3061,7 @@ const MAPAS = {
           await decir('TALA: Bienvenido a mi jardín, Felipe. Acá todo crece despacio, pero crece fuerte.');
           await decir('Soy TALA, líder del GIMNASIO TILCARA. Mis criaturas aguantan el sol, el viento y la sequía.');
           await decir('Si me ganás, te llevás la INSIGNIA CARDÓN. ¡Vamos!');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER TALA', pal: PAL.tala, equipo: [['cuison', 33], ['peludin', 34], ['cardito', 34], ['piquibrasa', 35], ['rodcardo', 36]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER TALA', pal: PAL.tala, equipo: [['totorarca', 33], ['anahisa', 34], ['cuison', 34], ['piquillonco', 35], ['rodcardo', 36]] } });
           if (r === 'gana') {
             S.flags.insignia3 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 3);
@@ -2875,7 +3093,7 @@ const MAPAS = {
       '9,22': 'RUTA 6 · LA PUNA. ¡Abrigate! De noche hace muchísimo frío.',
       '10,33': 'Al norte: SUSQUES y el GIMNASIO DE HIELO.',
     },
-    encuentros: { lista: [['nevuki', 20], ['glaciolito', 16], ['pinguinoide', 14], ['chispuna', 12], ['condorito', 10], ['vizcachita', 10], ['micalonco', 6], ['farolito', 6], ['nevulon', 4], ['volcarin', 4]], min: 35, max: 39 },
+    encuentros: { lista: [['nevuki', 20], ['glaciolito', 16], ['pinguinoide', 14], ['chispuna', 12], ['condorito', 10], ['vizcachita', 10], ['micalonco', 6], ['farolito', 6], ['nevulon', 4], ['volcarin', 4], ['venomin', 10]], min: 35, max: 39 },
     npcs: [
       entrenadorNPC({
         id: 'salinero', x: 8, y: 10, dir: 3, pal: PAL.beto, nombre: 'SALINERO BRAULIO',
@@ -2896,7 +3114,7 @@ const MAPAS = {
         equipo: [['chispuna', 37], ['volcarin', 38], ['pinguinoide', 38]],
         antes: ['VULCANÓLOGO TINCHO: ¡En la Puna hay volcanes y nieve al mismo tiempo! ¿Fuego o hielo? ¡Probemos!'],
         gana: 'VULCANÓLOGO TINCHO: Mi teoría falló... ¡Hay que repetir el experimento!',
-        despues: 'VULCANÓLOGO TINCHO: Contra el HIELO y la ROCA de NIEVE, usá LUCHA, ACERO, AGUA o PLANTA.',
+        despues: 'VULCANÓLOGO TINCHO: Contra el HIELO usá FUEGO, LUCHA, ROCA o ACERO. ¡Pero NIEVE mezcla tipos para cubrirse!',
       }),
       entrenadorNPC({
         id: 'tomi3', x: 14, y: 30, dir: 2, pal: PAL.tomi, nombre: 'TOMI',
@@ -2926,7 +3144,7 @@ const MAPAS = {
     carteles: {
       '12,1': 'RUTA 7. Hacia la CORDILLERA... (¡todavía en construcción!)',
       '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis. ¡Con un mate de coca para la altura!',
-      '19,9': 'GIMNASIO DE SUSQUES. Líder: NIEVE, la reina de la cordillera. Tipo HIELO y ROCA.',
+      '19,9': 'GIMNASIO DE SUSQUES. Líder: NIEVE, la reina de la cordillera. Tipo HIELO.',
       '4,16': 'SUSQUES. Un pueblito de adobe en el medio de la Puna.',
     },
     objetos: { w: 'Un piletón de sal. ¡Brilla con el sol!' },
@@ -2977,17 +3195,17 @@ const MAPAS = {
     npcs: [
       entrenadorNPC({
         id: 'gim4_a', x: 2, y: 7, dir: 3, pal: PAL.nieve, nombre: 'ESQUIADORA LU',
-        equipo: [['pinguinoide', 39], ['glaciolito', 39], ['pinguinoide', 40]],
+        equipo: [['pinguinoide', 39], ['nevulon', 39], ['glacivenom', 40]],
         antes: ['ESQUIADORA LU: ¡Este piso resbala! Pero mis criaturas no se caen nunca. ¡Duelo!'],
         gana: 'ESQUIADORA LU: ¡Me resbalé! Bueno, pasá.',
         despues: 'ESQUIADORA LU: El HIELO sufre con el FUEGO, la LUCHA, la ROCA y el ACERO.',
       }),
       entrenadorNPC({
         id: 'gim4_b', x: 8, y: 5, dir: 2, pal: PAL.beto, nombre: 'ANDINISTA BRUNO',
-        equipo: [['glaciolito', 40], ['morenacoloso', 41]],
+        equipo: [['glaciolito', 40], ['vientuino', 41]],
         antes: ['ANDINISTA BRUNO: Subí el Aconcagua tres veces. ¡Tu equipo no me asusta!'],
         gana: 'ANDINISTA BRUNO: Ganaste la cumbre, Felipe.',
-        despues: 'ANDINISTA BRUNO: NIEVE es durísima. Su MORENACOLOSO aguanta golpes como una montaña.',
+        despues: 'ANDINISTA BRUNO: NIEVE es durísima. Su NEVUKHAN, el zorro de seis colas, es imparable.',
       }),
       {
         id: 'nieve', x: 5, y: 1, dir: 0, pal: PAL.nieve,
@@ -3003,7 +3221,7 @@ const MAPAS = {
           await decir('NIEVE: Llegaste hasta la Puna... Pocos aguantan el frío de este lugar.');
           await decir('Soy NIEVE, líder del GIMNASIO SUSQUES. Mis criaturas nacieron entre la nieve y la roca de la cordillera.');
           await decir('Si me ganás, te llevás la INSIGNIA GLACIAR. ¡Preparate para congelarte!');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER NIEVE', pal: PAL.nieve, equipo: [['pinguinoide', 39], ['glaciolito', 40], ['pinguinoide', 41], ['morenacoloso', 41], ['morenacoloso', 43]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER NIEVE', pal: PAL.nieve, equipo: [['glacivenom', 40], ['morenacoloso', 41], ['nevulon', 41], ['vientuino', 42], ['nevukhan', 43]] } });
           if (r === 'gana') {
             S.flags.insignia4 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 4);
