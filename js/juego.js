@@ -234,8 +234,19 @@ function cargar() {
     const d = JSON.parse(localStorage.getItem(CLAVE_GUARDADO));
     if (!d) return false;
     Object.assign(S, d);
+    acomodarPosicion();
     return true;
   } catch (e) { return false; }
+}
+// Si el mapa cambió desde la última partida guardada, lleva a Felipe a un lugar seguro
+function acomodarPosicion() {
+  const m = MAPAS[S.mapa];
+  const ok = m && m.grilla[S.y] && CAMINABLE.has(m.grilla[S.y][S.x]) &&
+    !((m.edificios || []).some(e => S.x >= e.x && S.x < e.x + e.w && S.y >= e.y && S.y < e.y + e.h));
+  if (ok) return;
+  const c = S.flags && S.flags.centro;
+  if (c && MAPAS[c.mapa]) { S.mapa = c.mapa; S.x = c.x; S.y = c.y; S.dir = c.dir; }
+  else { S.mapa = 'casa'; S.x = 4; S.y = 4; S.dir = 1; }
 }
 function curarEquipo() { S.equipo.forEach(curarCriatura); }
 
@@ -742,7 +753,7 @@ async function batalla(op) {
     curarEquipo();
     S.escena = 'mundo';
     await fundido(0, 14);
-    if (S.mapa === 'centro') await decir('DOÑA ROSA: ¡Ay, Felipe! Tomaron unos mates y ya están como nuevas.');
+    if (S.mapa.startsWith('centro')) await decir('ENFERMERA ROSA: ¡Ay, Felipe! En el CEMIC las curamos y ya están como nuevas.');
     else await decir('MAMÁ: ¡Ay, Felipe! Descansen un poquito. Ya están como nuevas.');
     guardar();
     return resultado;

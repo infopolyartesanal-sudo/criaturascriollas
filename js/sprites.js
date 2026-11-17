@@ -421,7 +421,7 @@ function crearEdificio(tipo, w, h, puerta) {
   const pared = tipo === 'lab' ? '#eef2f6' : tipo.startsWith('gimnasio') ? '#ece4f4' : tipo === 'adobe' ? '#e0c08a' : '#f6eedc';
   R(2, techoH - 4, ancho - 4, alto - techoH + 4, pared);
   R(2, alto - 3, ancho - 4, 3, '#a89878');
-  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#e08a2a', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', gimnasio4: '#3a7ab0', adobe: '#9a6a3a' };
+  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#d84848', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', gimnasio4: '#3a7ab0', adobe: '#9a6a3a' };
   const tc = TECHOS[tipo] || '#c8553a';
   R(0, 0, ancho, techoH, tc);
   let fila = 0;
@@ -433,9 +433,9 @@ function crearEdificio(tipo, w, h, puerta) {
   R(0, techoH - 2, ancho, 2, tono(tc, 0.6));
   if (tipo === 'lab') { R(ancho / 2 - 6, 6, 12, 10, '#f8f8f8'); R(ancho / 2 - 1, 8, 2, 6, '#40a050'); R(ancho / 2 - 4, 10, 8, 2, '#40a050'); }
   else if (tipo === 'centro') {
-    // Cartel con un mate
-    R(ancho / 2 - 8, 5, 16, 13, '#f8f0e0'); R(ancho / 2 - 8, 5, 16, 1, '#a06a3a');
-    R(ancho / 2 - 4, 9, 8, 7, '#8a5a2a'); R(ancho / 2 - 3, 8, 6, 2, '#58a848'); R(ancho / 2 + 1, 6, 1, 4, '#c0c0c8');
+    // Cartel del CEMIC: cruz roja sobre fondo blanco
+    R(ancho / 2 - 8, 5, 16, 13, '#ffffff'); R(ancho / 2 - 8, 5, 16, 1, '#c03030'); R(ancho / 2 - 8, 17, 16, 1, '#c03030');
+    R(ancho / 2 - 2, 7, 4, 9, '#e03a3a'); R(ancho / 2 - 5, 10, 10, 3, '#e03a3a');
   } else if (tipo.startsWith('gimnasio')) {
     // Cartel con una estrella (insignia)
     const cx = ancho / 2;

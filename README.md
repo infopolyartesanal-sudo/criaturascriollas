@@ -11,7 +11,9 @@ Antes: https://criaturascriollas.netlify.app
 - `plantilla.html`: la página (estilos, pantalla y botones táctiles).
 - `js/sprites.js`: motor de pixel-art, personajes, baldosas y edificios.
 - `js/datos.js`: los 18 tipos, movimientos, objetos y especies.
-- `js/mapas.js`: todos los lugares (Pueblo Tero, Ruta 1, Ruta 2, Villa Camalote, Gimnasio 1, Ruta 3 · Selva Misionera, Minas de Wanda, Puerto Wanda, Gimnasio 2, Ruta 4 · Yungas, Calilegua, Ruta 5 · Quebrada, Tilcara, Gimnasio 3, Ruta 6 · Salinas Grandes, Susques, Gimnasio 4) e historia.
+- `js/mapas.js`: todos los lugares e historia. Recorrido: Pueblo Tero → Llanura Pampeana → Villa Serrana (Córdoba) → Sierras → Travesía → Valle Fértil (Gimnasio 1, Psíquico) → Talampaya → Valles Calchaquíes → Tafí del Valle (Gimnasio 2, Roca, en la cueva La Salamanca) → Yungas → Calilegua (desvío al norte: Quebrada, Tilcara, Salinas Grandes, Susques) → El Impenetrable → Esteros del Iberá → Villa Camalote → Selva Misionera → Minas de Wanda → Puerto Wanda (Gimnasio 3, Planta) → Caldenal Pampeano → Estepa Patagónica → Bariloche (Gimnasio 4, Hielo).
+- Cada pueblo tiene un CEMIC (`crearCentro`), donde curan a las criaturas.
+- Gimnasios 1 a 4: el líder lleva 5 criaturas. Gimnasios 5 a 8: 6 criaturas.
 
 ## Cómo agregar un lugar nuevo
 
@@ -20,7 +22,7 @@ Antes: https://criaturascriollas.netlify.app
    Interiores: `#` pared · `_` piso · `v` piso violeta · `m` alfombra de salida · `g` esfera.
    Selva y cueva: `Y` árbol de selva · `q` tierra colorada · `R` roca · `:` piso de cueva (con `cueva: true` salen criaturas) · `a` amatistas.
    Norte: `-` arena · `u` paja brava (con criaturas) · `C` cerros de colores · `K` cardón.
-2. Agregá una entrada en `MAPAS` con `nombre`, `grilla`, `edificios`, `salidas`, `carteles`, `encuentros` y `npcs`.
+2. Para rutas nuevas podés usar `tools/gen.py` (genera la grilla). Agregá una entrada en `MAPAS` con `nombre`, `grilla`, `edificios`, `salidas`, `carteles`, `encuentros` y `npcs`.
 3. Conectalo: una `salida` es una baldosa que te lleva a otro mapa (`a`, `ax`, `ay`, `dir`). Hace falta una de ida y otra de vuelta.
 4. Entrenadores: `entrenadorNPC({...})` pelea una sola vez y recuerda que le ganaste.
 5. Criaturas nuevas van en `js/datos.js` (`ESPECIES`), y su dibujo en `img/<id>.png`.
