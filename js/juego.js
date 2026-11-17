@@ -247,7 +247,7 @@ function npcEn(x, y) { return npcsVisibles().find(n => n.x === x && n.y === y); 
 function edificioEn(m, x, y) {
   return (m.edificios || []).find(e => x >= e.x && x < e.x + e.w && y >= e.y && y < e.y + e.h);
 }
-const CAMINABLE = new Set(['.', ',', '=', 'F', '_', 'm', 'r', 'h', 'v', 'q', ':']);
+const CAMINABLE = new Set(['.', ',', '=', 'F', '_', 'm', 'r', 'h', 'v', 'q', ':', '-', 'u']);
 function transitable(x, y) {
   const m = mapa();
   if (y < 0 || x < 0 || y >= m.grilla.length || x >= m.grilla[0].length) return false;
@@ -303,7 +303,7 @@ function alPisar() {
     if (d.prueba(S.x, S.y)) { correr(d.accion()); return; }
   }
   const pisada = m.grilla[S.y][S.x];
-  const prob = pisada === ',' ? 0.11 : (m.cueva && pisada === ':') ? 0.07 : 0;
+  const prob = (pisada === ',' || pisada === 'u') ? 0.11 : (m.cueva && pisada === ':') ? 0.07 : 0;
   if (prob && S.equipo.some(c => c.ps > 0) && m.encuentros && Math.random() < prob) {
     correr(encuentroSalvaje());
   }
@@ -526,8 +526,8 @@ function dibujarMundo() {
   for (const e of entes) {
     const bob = e.yo && frame ? -1 : 0;
     dibujarPersonaje(e.pal, e.dir, e.f, e.x - cx, e.y - cy - 3 + bob);
-    const enPasto = m.grilla[e.ty] && m.grilla[e.ty][e.tx] === ',' && !(e.yo && S.moviendo && S.prog < 8);
-    if (enPasto) b.drawImage(TILES[','], 0, 9, 16, 7, e.x - cx, e.y - cy + 9, 16, 7);
+    const enPasto = m.grilla[e.ty] && (m.grilla[e.ty][e.tx] === ',' || m.grilla[e.ty][e.tx] === 'u') && !(e.yo && S.moviendo && S.prog < 8);
+    if (enPasto) b.drawImage(TILES[m.grilla[e.ty][e.tx]], 0, 9, 16, 7, e.x - cx, e.y - cy + 9, 16, 7);
   }
   // Nombre del lugar al entrar
   if (S.cartelLugar && S.cartelLugar.t > 0) S.cartelLugar.t--;

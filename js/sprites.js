@@ -339,6 +339,33 @@ function crearTiles() {
     R(x, 0, 0, 16, 16, '#9a8670');
     sobre(x, [['p', [[2, 15], [5, 3], [8, 15]], '#a050e0'], ['p', [[7, 15], [10, 6], [13, 15]], '#d8a0ff'], ['p', [[11, 15], [14, 9], [15, 15]], '#a050e0']]);
   });
+  // Norte: arena, paja brava (con criaturas), cerros de colores y cardones
+  const arena = x => {
+    R(x, 0, 0, 16, 16, '#e0c890');
+    for (const [a, b] of [[3, 2], [11, 5], [6, 12], [13, 13], [1, 8], [8, 7]]) R(x, a, b, 1, 1, '#c8a870');
+  };
+  t['-'] = mk(arena);
+  t['u'] = mk(x => {
+    arena(x);
+    for (let k = 0; k < 4; k++) {
+      const bx = (k % 2) * 8, by = (k >> 1) * 8;
+      for (const [o, hh] of [[1, 6], [3, 7], [5, 5], [6, 6]]) {
+        R(x, bx + o, by + 8 - hh, 1, hh, '#a08838');
+        R(x, bx + o, by + 8 - hh, 1, 1, '#d8c060');
+      }
+    }
+  });
+  t['C'] = mk(x => {
+    const fr = ['#c84a3a', '#e08a3a', '#9a5aa8', '#d8b050', '#6a9a5a', '#c86a5a'];
+    for (let i = 0; i < 6; i++) { R(x, 0, i * 3 - 1, 16, 3, fr[i]); }
+    R(x, 0, 15, 16, 1, '#7a3a2a');
+    R(x, 3, 4, 2, 1, '#f0b080'); R(x, 10, 10, 3, 1, '#c090d0');
+  });
+  t['K'] = mk(x => {
+    arena(x);
+    sobre(x, [['r', 6, 2, 4, 13, '#3a8a4a'], ['r', 2, 6, 3, 6, '#3a8a4a'], ['r', 2, 6, 2, 2, '#3a8a4a'], ['r', 11, 4, 3, 6, '#3a8a4a'],
+      ['r', 7, 3, 1, 11, '#5aaa60', 'c'], ['d', 7, 1, '#f0f0a0'], ['d', 12, 3, '#f0f0a0']]);
+  });
   // Interiores
   t['_'] = mk(piso);
   t['#'] = mk(x => {
@@ -381,10 +408,10 @@ function crearEdificio(tipo, w, h, puerta) {
   const R = (a, b, ww, hh, col) => { x.fillStyle = col; x.fillRect(a, b, ww, hh); };
   const ancho = w * 16, alto = h * 16;
   const techoH = (h - 2) * 16 + 4;
-  const pared = tipo === 'lab' ? '#eef2f6' : tipo.startsWith('gimnasio') ? '#ece4f4' : '#f6eedc';
+  const pared = tipo === 'lab' ? '#eef2f6' : tipo.startsWith('gimnasio') ? '#ece4f4' : tipo === 'adobe' ? '#e0c08a' : '#f6eedc';
   R(2, techoH - 4, ancho - 4, alto - techoH + 4, pared);
   R(2, alto - 3, ancho - 4, 3, '#a89878');
-  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#e08a2a', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a' };
+  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#e08a2a', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', adobe: '#9a6a3a' };
   const tc = TECHOS[tipo] || '#c8553a';
   R(0, 0, ancho, techoH, tc);
   let fila = 0;

@@ -444,6 +444,33 @@ function crearTiles() {
     R(x, 0, 0, 16, 16, '#9a8670');
     sobre(x, [['p', [[2, 15], [5, 3], [8, 15]], '#a050e0'], ['p', [[7, 15], [10, 6], [13, 15]], '#d8a0ff'], ['p', [[11, 15], [14, 9], [15, 15]], '#a050e0']]);
   });
+  // Norte: arena, paja brava (con criaturas), cerros de colores y cardones
+  const arena = x => {
+    R(x, 0, 0, 16, 16, '#e0c890');
+    for (const [a, b] of [[3, 2], [11, 5], [6, 12], [13, 13], [1, 8], [8, 7]]) R(x, a, b, 1, 1, '#c8a870');
+  };
+  t['-'] = mk(arena);
+  t['u'] = mk(x => {
+    arena(x);
+    for (let k = 0; k < 4; k++) {
+      const bx = (k % 2) * 8, by = (k >> 1) * 8;
+      for (const [o, hh] of [[1, 6], [3, 7], [5, 5], [6, 6]]) {
+        R(x, bx + o, by + 8 - hh, 1, hh, '#a08838');
+        R(x, bx + o, by + 8 - hh, 1, 1, '#d8c060');
+      }
+    }
+  });
+  t['C'] = mk(x => {
+    const fr = ['#c84a3a', '#e08a3a', '#9a5aa8', '#d8b050', '#6a9a5a', '#c86a5a'];
+    for (let i = 0; i < 6; i++) { R(x, 0, i * 3 - 1, 16, 3, fr[i]); }
+    R(x, 0, 15, 16, 1, '#7a3a2a');
+    R(x, 3, 4, 2, 1, '#f0b080'); R(x, 10, 10, 3, 1, '#c090d0');
+  });
+  t['K'] = mk(x => {
+    arena(x);
+    sobre(x, [['r', 6, 2, 4, 13, '#3a8a4a'], ['r', 2, 6, 3, 6, '#3a8a4a'], ['r', 2, 6, 2, 2, '#3a8a4a'], ['r', 11, 4, 3, 6, '#3a8a4a'],
+      ['r', 7, 3, 1, 11, '#5aaa60', 'c'], ['d', 7, 1, '#f0f0a0'], ['d', 12, 3, '#f0f0a0']]);
+  });
   // Interiores
   t['_'] = mk(piso);
   t['#'] = mk(x => {
@@ -486,10 +513,10 @@ function crearEdificio(tipo, w, h, puerta) {
   const R = (a, b, ww, hh, col) => { x.fillStyle = col; x.fillRect(a, b, ww, hh); };
   const ancho = w * 16, alto = h * 16;
   const techoH = (h - 2) * 16 + 4;
-  const pared = tipo === 'lab' ? '#eef2f6' : tipo.startsWith('gimnasio') ? '#ece4f4' : '#f6eedc';
+  const pared = tipo === 'lab' ? '#eef2f6' : tipo.startsWith('gimnasio') ? '#ece4f4' : tipo === 'adobe' ? '#e0c08a' : '#f6eedc';
   R(2, techoH - 4, ancho - 4, alto - techoH + 4, pared);
   R(2, alto - 3, ancho - 4, 3, '#a89878');
-  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#e08a2a', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a' };
+  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#e08a2a', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', adobe: '#9a6a3a' };
   const tc = TECHOS[tipo] || '#c8553a';
   R(0, 0, ancho, techoH, tc);
   let fila = 0;
@@ -661,6 +688,13 @@ const MOVS = {
   polvo_toxico: { nombre: 'Polvo Tóxico', tipo: 'VENENO', pot: 65, prec: 100, pp: 15 },
   filo_mica: { nombre: 'Filo de Mica', tipo: 'ROCA', pot: 90, prec: 95, pp: 10 },
   estallido_prisma: { nombre: 'Estallido Prisma', tipo: 'ROCA', pot: 90, prec: 100, pp: 10 },
+  // --- Norte (v5) ---
+  espinas: { nombre: 'Espinas', tipo: 'PLANTA', pot: 55, prec: 100, pp: 20 },
+  remolino: { nombre: 'Remolino de Polvo', tipo: 'TIERRA', pot: 75, prec: 95, pp: 15 },
+  susto: { nombre: 'Susto', tipo: 'FANTASMA', pot: 40, prec: 100, pp: 25 },
+  silbido: { nombre: 'Silbido', tipo: 'FANTASMA', pot: 0, prec: 100, pp: 20, ef: 'atk-' },
+  fuego_fatuo: { nombre: 'Fuego Fatuo', tipo: 'FUEGO', pot: 65, prec: 100, pp: 15 },
+  payada: { nombre: 'Payada Espectral', tipo: 'FANTASMA', pot: 85, prec: 100, pp: 10 },
   forcejeo: { nombre: 'Forcejeo', tipo: 'NORMAL', pot: 40, prec: 100, pp: 1 },
 };
 
@@ -1332,6 +1366,78 @@ const ESPECIES = {
       ['r', 3, 19, 2, 2, '#201010'], ['d', 3, 19, '#e0a0ff'],
     ],
   },
+  // --- Norte: diseños de Felipe (Yungas y Quebrada de Humahuaca) ---
+  cardito: {
+    nombre: 'Cardito', tipos: ['PLANTA'], base: { ps: 50, atk: 60, def: 55, vel: 55 }, captura: 120, exp: 70,
+    desc: 'el brote con espinas de los campos secos', evo: { nivel: 30, a: 'rodcardo' },
+    movs: [[1, 'yerbazo'], [1, 'grunido'], [8, 'espinas'], [15, 'revolcon'], [22, 'hojarasca'], [28, 'barrazo'], [32, 'remolino'], [38, 'semillazo']],
+    sprite: [
+      ['r', 15, 22, 2, 8, '#6a8a3a'],
+      ['e', 16, 15, 9, 9, '#7aa848'],
+      ['p', [[7, 13], [2, 11], [7, 16]], '#c8d880'], ['p', [[25, 13], [30, 11], [25, 16]], '#c8d880'],
+      ['p', [[12, 7], [10, 2], [14, 6]], '#c8d880'], ['p', [[20, 7], [22, 2], [18, 6]], '#c8d880'],
+      ['e', 16, 7, 4, 3, '#b060c0'],
+      ['r', 12, 14, 2, 3, '#201010'], ['r', 18, 14, 2, 3, '#201010'], ['d', 12, 14, '#ffffff'], ['d', 18, 14, '#ffffff'],
+      ['e', 11, 29, 5, 1.5, '#a08050', 's'], ['e', 21, 29, 5, 1.5, '#a08050', 's'],
+    ],
+  },
+  rodcardo: {
+    nombre: 'Rodcardo', tipos: ['PLANTA', 'TIERRA'], base: { ps: 80, atk: 98, def: 80, vel: 90 }, captura: 45, exp: 190,
+    desc: 'el cardo seco que rueda con el viento por las rutas',
+    movs: [[1, 'yerbazo'], [1, 'grunido'], [8, 'espinas'], [15, 'revolcon'], [22, 'hojarasca'], [28, 'barrazo'], [32, 'remolino'], [38, 'semillazo']],
+    sprite: [
+      ['e', 16, 17, 13, 13, '#c8a860'],
+      ['r', 3, 10, 26, 1, '#8a6a30', 'c'], ['r', 3, 17, 26, 1, '#8a6a30', 'c'], ['r', 3, 24, 26, 1, '#8a6a30', 'c'],
+      ['r', 9, 4, 1, 26, '#8a6a30', 'c'], ['r', 16, 4, 1, 26, '#8a6a30', 'c'], ['r', 23, 4, 1, 26, '#8a6a30', 'c'],
+      ['p', [[3, 8], [0, 4], [5, 7]], '#e0d090'], ['p', [[29, 8], [32, 4], [27, 7]], '#e0d090'], ['p', [[4, 27], [0, 31], [6, 28]], '#e0d090'],
+      ['e', 16, 17, 6, 4, '#5a4020'],
+      ['r', 12, 16, 3, 2, '#f0e040'], ['r', 18, 16, 3, 2, '#f0e040'],
+    ],
+  },
+  farolito: {
+    nombre: 'Farolito', tipos: ['FUEGO', 'FANTASMA'], base: { ps: 40, atk: 55, def: 40, vel: 60 }, captura: 90, exp: 65,
+    desc: 'la lucecita que engaña a los viajeros de noche', evo: { nivel: 28, a: 'candilejo' },
+    movs: [[1, 'brasita'], [1, 'silbido'], [6, 'susto'], [12, 'chispa'], [18, 'fuego_fatuo'], [26, 'mordisco'], [34, 'payada']],
+    sprite: [
+      ['e', 16, 17, 9, 10, '#40e080'],
+      ['e', 16, 18, 6, 7, '#a0ffc0', 's'],
+      ['p', [[8, 22], [6, 30], [12, 25]], '#40e080'], ['p', [[24, 22], [26, 30], [20, 25]], '#40e080'], ['p', [[14, 26], [16, 31], [18, 26]], '#40e080'],
+      ['p', [[12, 9], [16, 1], [20, 9]], '#40e080'],
+      ['e', 13, 16, 1.6, 2.2, '#103020', 's'], ['e', 19, 16, 1.6, 2.2, '#103020', 's'],
+      ['r', 14, 21, 4, 1, '#103020'],
+    ],
+  },
+  candilejo: {
+    nombre: 'Candilejo', tipos: ['FUEGO', 'FANTASMA'], base: { ps: 60, atk: 75, def: 58, vel: 78 }, captura: 45, exp: 150,
+    desc: 'el farol fantasma que silba en la oscuridad', evo: { nivel: 40, a: 'animaura' },
+    movs: [[1, 'brasita'], [1, 'silbido'], [6, 'susto'], [12, 'chispa'], [18, 'fuego_fatuo'], [26, 'mordisco'], [34, 'payada'], [44, 'lavazo']],
+    sprite: [
+      ['r', 15, 0, 2, 4, '#4a4a4a'],
+      ['p', [[9, 6], [23, 6], [21, 9], [11, 9]], '#3a3a3a'],
+      ['r', 10, 9, 12, 16, '#2a2a2a'],
+      ['r', 11, 10, 10, 14, '#40e080'],
+      ['e', 16, 17, 4, 5, '#c0ffd0', 's'],
+      ['r', 15, 10, 2, 14, '#2a2a2a', 'c'], ['r', 11, 16, 10, 1, '#2a2a2a', 'c'],
+      ['p', [[9, 25], [23, 25], [21, 28], [11, 28]], '#3a3a3a'],
+      ['e', 5, 18, 3, 6, '#40e080', 's'], ['e', 27, 18, 3, 6, '#40e080', 's'],
+      ['d', 13, 13, '#103020'], ['d', 19, 13, '#103020'],
+    ],
+  },
+  animaura: {
+    nombre: 'Ánimaura', tipos: ['FUEGO', 'FANTASMA'], base: { ps: 75, atk: 100, def: 72, vel: 98 }, captura: 45, exp: 230,
+    desc: 'el alma de fuego verde que recita versos malditos',
+    movs: [[1, 'brasita'], [1, 'silbido'], [6, 'susto'], [12, 'chispa'], [18, 'fuego_fatuo'], [26, 'mordisco'], [34, 'payada'], [44, 'lavazo']],
+    sprite: [
+      ['p', [[4, 30], [16, 10], [28, 30]], '#20a060'],
+      ['p', [[6, 30], [10, 20], [12, 31]], '#40e080'], ['p', [[26, 30], [22, 20], [20, 31]], '#40e080'],
+      ['e', 16, 10, 7, 7, '#40e080'],
+      ['p', [[9, 6], [7, 0], [13, 4]], '#40e080'], ['p', [[23, 6], [25, 0], [19, 4]], '#40e080'], ['p', [[14, 3], [16, 0], [18, 3]], '#a0ffc0'],
+      ['e', 16, 11, 5, 4, '#a0ffc0', 's'],
+      ['r', 12, 9, 3, 2, '#103020'], ['r', 17, 9, 3, 2, '#103020'],
+      ['p', [[13, 13], [19, 13], [16, 15]], '#103020'],
+      ['d', 2, 14, '#a0ffc0'], ['d', 29, 12, '#a0ffc0'], ['d', 5, 4, '#a0ffc0'],
+    ],
+  },
   // --- Rara de la Ruta 1 ---
   condorito: {
     nombre: 'Condorito', tipos: ['VOLADOR', 'PSIQUICO'], base: { ps: 45, atk: 48, def: 40, vel: 70 }, captura: 45, exp: 70,
@@ -1401,6 +1507,8 @@ const PAL = {
   luna: { id: 'luna', piel: '#f0c8a8', pelo: '#e8e8f8', peloLargo: true, remera: '#7a4aa8', guardapolvo: true, pant: '#3a2a5a' },
   vidente: { id: 'vidente', piel: '#e0b088', pelo: '#2a2a2a', boina: '#f85888', remera: '#9a6ac8', pant: '#3a2a5a' },
   rocio: { id: 'rocio', piel: '#d8a070', pelo: '#3a2a1a', peloLargo: true, gorra: '#f0c030', remera: '#c8603a', pant: '#4a4a5a' },
+  tala: { id: 'tala', piel: '#c89060', pelo: '#2a1a10', sombrero: '#3a3030', remera: '#c83a2a', raya: '#f0e0b0', pant: '#3a3a3a' },
+  coplera: { id: 'coplera', piel: '#c89060', pelo: '#2a1a10', peloLargo: true, sombrero: '#5a4a3a', remera: '#3a8ac8', pant: '#c83a5a' },
   nena: { id: 'nena', piel: '#f4c8a0', pelo: '#c08040', peloLargo: true, remera: '#f070a0', pant: '#4a6aa8' },
 };
 
@@ -1584,6 +1692,122 @@ const PUERTO = [
   'YY........qq..........YY',
   'YY........qq..........YY',
   'YYYYYYYYYYqqYYYYYYYYYYYY',
+];
+
+// Grillas del Norte (- arena · u paja brava (criaturas) · C cerros de colores · K cardón)
+const RUTA4 = [
+  'YYYYYYYYYY==YYYYYYYYYY',
+  'YY,,,,,,..==..,,,,,,YY',
+  'YY,,YYYY..==..YYYY,,YY',
+  'YY,,YYYY..==..YYYY,,YY',
+  'YY........======....YY',
+  'YY..,,,,,,,,..==,,..YY',
+  'YY..,,,,,,,,..==,,..YY',
+  'YYYY,,,,YY,,..==,,YYYY',
+  'YYYY....YY....==..YYYY',
+  'YY~~~~~~~~~~~~hh~~~~YY',
+  'YY~~~~~~~~~~~~hh~~~~YY',
+  'YY....,,,,....==....YY',
+  'YY..============S...YY',
+  'YY..==..,,,,,,,,,,..YY',
+  'YY..==..,,,,,,,,,,..YY',
+  'YY..==..YYYY..YYYY..YY',
+  'YY..==..YYYY..YYYY..YY',
+  'YY..==========......YY',
+  'YY,,,,,,,,,,==,,,,..YY',
+  'YY,,,,,,,,,,==,,,,..YY',
+  'YY,,YYYY,,,,==YYYY..YY',
+  'YY..YYYY....==YYYY..YY',
+  'YY..........==......YY',
+  'YY...=========..,,,,YY',
+  'YY...=..,,,,....,,,,YY',
+  'YY...=..,,,,..YY,,,,YY',
+  'YY...=..,,,,..YY....YY',
+  'YY...======.........YY',
+  'YY,,,,,,..==..,,,,,,YY',
+  'YY,,,,,,..==..,,,,,,YY',
+  'YY....F...==.S..F...YY',
+  'YY,,,,....==....,,,,YY',
+  'YY,,,,....==....,,,,YY',
+  'YYYYYYYYYY==YYYYYYYYYY',
+];
+const CALILEGUA = [
+  'YYYYYYYYYY==YYYYYYYYYY',
+  'YY........==S.......YY',
+  'YY..F.....==....F...YY',
+  'YY........==........YY',
+  'YY........==........YY',
+  'YY........==........YY',
+  'YY........==........YY',
+  'YY...=..S.==...=....YY',
+  'YY..=========.......YY',
+  'YY........==........YY',
+  'YY..F.....==...~~~..YY',
+  'YY........==..~~~~~.YY',
+  'YY..S.....==...~~~..YY',
+  'YY........==........YY',
+  'YYYYYYYYYY==YYYYYYYYYY',
+];
+const RUTA5 = [
+  'CCCCCCCCCC==CCCCCCCCCC',
+  'CC--uuuu--==--uuuu--CC',
+  'CC--uuuu--==--uuuu--CC',
+  'CC-K------==------K-CC',
+  'CCCC--K---======--CCCC',
+  'CCCC------uuu-==--CCCC',
+  'CC--uuuuu-uuu-==K---CC',
+  'CC--uuuuu-----==----CC',
+  'CC-K---CCCC---==-uu-CC',
+  'CC-----CCCC---==Suu-CC',
+  'CC--============-uu-CC',
+  'CC--=---------------CC',
+  'CC--=--K--uuuuuu--K-CC',
+  'CC--=-----uuuuuu----CC',
+  'CCC-=---CCCuuuuu--CCCC',
+  'CCC-=---CCC-------CCCC',
+  'CC--==========------CC',
+  'CC---uuuuu---=--K---CC',
+  'CC-K-uuuuu---=------CC',
+  'CC---uuuuu---=-CCC--CC',
+  'CC-----------=-CCC--CC',
+  'CCCC--K---====------CC',
+  'CCCC------=----uuu--CC',
+  'CC--uuuu--=----uuu--CC',
+  'CC--uuuu--=--K-uuu--CC',
+  'CC--------=---------CC',
+  'CC-K--CCC-====--K---CC',
+  'CC----CCC----=------CC',
+  'CC--uuuu-----=-uuuu-CC',
+  'CC--uuuu--====-uuuu-CC',
+  'CC--------==---uuuu-CC',
+  'CC-K------==-S------CC',
+  'CC--uuuu--==---uuu--CC',
+  'CC--uuuu--==---uuu--CC',
+  'CCCCCCCCCC==CCCCCCCCCC',
+];
+const TILCARA = [
+  'CCCCCCCCCC==CCCCCCCCCCCC',
+  'CC--------==S---------CC',
+  'CC--K-----==-------K--CC',
+  'CC--------==----------CC',
+  'CC------------.......-CC',
+  'CC-.....------.......-CC',
+  'CC-.....------.......-CC',
+  'CC-.....------.......-CC',
+  'CC-.....--==--.......-CC',
+  'CC---=--S-==-----=-S--CC',
+  'CC-=================--CC',
+  'CC--------==----------CC',
+  'CC--K-----==----K-----CC',
+  'CC-.....--==--.....---CC',
+  'CC-.....--==--.....---CC',
+  'CC-.....--==--.....---CC',
+  'CC-.....--==--.....---CC',
+  'CC--------==----------CC',
+  'CC--S-----==------K---CC',
+  'CC--------==----------CC',
+  'CC--------==----------CC',
+  'CCCCCCCCCC==CCCCCCCCCCCC',
 ];
 
 // Casa del Mate (se puede repetir en cada pueblo)
@@ -2060,22 +2284,15 @@ const MAPAS = {
       { x: 11, y: 21, a: 'minas', ax: 10, ay: 1, dir: 0 },
       { x: 5, y: 8, a: 'centro2', ax: 4, ay: 6, dir: 1 },
       { x: 17, y: 8, a: 'gimnasio2', ax: 5, ay: 10, dir: 1 },
+      { x: 10, y: 0, a: 'ruta4', ax: 10, ay: 32, dir: 1 },
+      { x: 11, y: 0, a: 'ruta4', ax: 11, ay: 32, dir: 1 },
     ],
     carteles: {
-      '12,1': 'RUTA 4. Hacia el NORTE ARGENTINO... (¡todavía en construcción!)',
+      '12,1': 'RUTA 4. Hacia las YUNGAS y el NORTE ARGENTINO.',
       '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis.',
       '19,9': 'GIMNASIO DE PUERTO WANDA. Líder: ROCÍO, la minera de corazón de piedra. Tipo ROCA.',
       '4,18': 'PUERTO WANDA. Tierra colorada, yerba mate y piedras preciosas.',
     },
-    disparadores: [
-      {
-        prueba: (x, y) => y === 0,
-        accion: async () => {
-          await decir('El camino hacia el NORTE ARGENTINO todavía está en construcción. ¡Muy pronto vas a poder seguir viaje!');
-          await pasoForzado(0);
-        },
-      },
-    ],
     npcs: [
       {
         id: 'tarefero', x: 7, y: 11, dir: 0, pal: PAL.guarda,
@@ -2166,6 +2383,250 @@ const MAPAS = {
             S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 3;
             S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
             await decir('ROCÍO: Y llevate estos ALFAJORES y BOLEADORAS. ¡En el norte hay criaturas que todavía nadie atrapó!');
+            guardar();
+          }
+        },
+      },
+    ],
+  },
+  // ================= NORTE ARGENTINO =================
+  ruta4: {
+    nombre: 'RUTA 4 · YUNGAS',
+    exterior: true,
+    grilla: desdeTexto(RUTA4),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 33, a: 'puerto', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 33, a: 'puerto', ax: 11, ay: 1, dir: 0 },
+      { x: 10, y: 0, a: 'calilegua', ax: 10, ay: 13, dir: 1 },
+      { x: 11, y: 0, a: 'calilegua', ax: 11, ay: 13, dir: 1 },
+    ],
+    carteles: {
+      '16,12': 'RUTA 4 · YUNGAS. La selva de las nubes: siempre hay neblina entre los árboles.',
+      '13,30': 'Al norte: CALILEGUA. Después, la QUEBRADA DE HUMAHUACA.',
+    },
+    encuentros: { lista: [['cuison', 18], ['capullon', 14], ['mosquillon', 12], ['arquineo', 12], ['carpinchon', 10], ['condorito', 10], ['cardito', 8], ['zorrazo', 8], ['polillaca', 3]], min: 22, max: 26 },
+    npcs: [
+      entrenadorNPC({
+        id: 'pajarera', x: 12, y: 2, dir: 2, pal: PAL.chica, nombre: 'OBSERVADORA MECHI',
+        equipo: [['arquineo', 24], ['condorito', 25]],
+        antes: ['OBSERVADORA MECHI: ¡Shhh! Estoy mirando pájaros...', '¡Bueno, ya los espantaste! ¡Ahora peleamos!'],
+        gana: 'OBSERVADORA MECHI: Ganaste, pero yo vi un tucán. Así que estamos a mano.',
+        despues: 'OBSERVADORA MECHI: En las Yungas hay más de 500 tipos de aves. ¡Y criaturas que todavía no tienen nombre!',
+      }),
+      entrenadorNPC({
+        id: 'biologo', x: 14, y: 18, dir: 2, pal: PAL.ayudante, nombre: 'BIÓLOGO NICO',
+        equipo: [['capullon', 23], ['mosquillon', 24], ['cuison', 25]],
+        antes: ['BIÓLOGO NICO: Estoy estudiando a los bichos de la selva. ¿Me ayudás con un experimento? ¡Un duelo!'],
+        gana: 'BIÓLOGO NICO: ¡Fascinante! Voy a anotar todo esto.',
+        despues: 'BIÓLOGO NICO: Los CAPULLONES que viven acá se vuelven POLILLACAS. Hay muy poquitas... ¡si ves una, atrapala!',
+      }),
+      entrenadorNPC({
+        id: 'guarda_yungas', x: 6, y: 25, dir: 3, pal: PAL.guarda, nombre: 'GUARDAPARQUE TATA',
+        equipo: [['carpinchon', 25], ['zorrazo', 26]],
+        antes: ['GUARDAPARQUE TATA: ¡Bienvenido al Parque Calilegua! Antes de pasar, mostrame que sabés pelear.'],
+        gana: 'GUARDAPARQUE TATA: ¡Muy bien! Cuidá la selva, ¿eh?',
+        despues: 'GUARDAPARQUE TATA: Más arriba la selva se termina y empiezan los cerros de colores. ¡Es otro mundo!',
+      }),
+    ],
+  },
+
+  calilegua: {
+    nombre: 'CALILEGUA',
+    exterior: true,
+    grilla: desdeTexto(CALILEGUA),
+    edificios: [
+      { x: 3, y: 3, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 13, y: 3, w: 5, h: 4, tipo: 'casa', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 10, y: 14, a: 'ruta4', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 14, a: 'ruta4', ax: 11, ay: 1, dir: 0 },
+      { x: 5, y: 6, a: 'centro3', ax: 4, ay: 6, dir: 1 },
+      { x: 10, y: 0, a: 'ruta5', ax: 10, ay: 33, dir: 1 },
+      { x: 11, y: 0, a: 'ruta5', ax: 11, ay: 33, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'RUTA 5 · QUEBRADA DE HUMAHUACA. Hacia TILCARA.',
+      '8,7': 'CASA DEL MATE. Tus criaturas descansan gratis.',
+      '4,12': 'CALILEGUA. Al pie de las Yungas.',
+    },
+    npcs: [
+      {
+        id: 'abuela_cali', x: 15, y: 9, dir: 2, pal: PAL.coplera,
+        hablar: async () => {
+          await decir('ABUELA: ¿Vas para la Quebrada, m\'hijito? Tené cuidado de noche...');
+          await decir('Dicen que aparece una LUZ MALA, una lucecita verde que te hace perder el camino.');
+          await decir('Le dicen FAROLITO. ¡Pero si lo atrapás, dicen que es buen compañero!');
+        },
+      },
+      {
+        id: 'nene_cali', x: 6, y: 10, dir: 0, pal: PAL.nene,
+        hablar: async () => {
+          if (S.flags.regaloCali) { await decir('NENE: ¡Usalos bien! En la Quebrada hay criaturas fuertes.'); return; }
+          await decir('NENE: ¡Hola! Mi mamá hace los mejores alfajores de maicena del norte. ¡Tomá!');
+          S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 3;
+          S.flags.regaloCali = true;
+          await decir('¡Felipe recibió 3 ALFAJORES!');
+          guardar();
+        },
+      },
+    ],
+  },
+
+  centro3: crearCentro('calilegua', 5, 7, 'centro3'),
+
+  ruta5: {
+    nombre: 'RUTA 5 · QUEBRADA',
+    exterior: true,
+    grilla: desdeTexto(RUTA5),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 34, a: 'calilegua', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 34, a: 'calilegua', ax: 11, ay: 1, dir: 0 },
+      { x: 10, y: 0, a: 'tilcara', ax: 10, ay: 20, dir: 1 },
+      { x: 11, y: 0, a: 'tilcara', ax: 11, ay: 20, dir: 1 },
+    ],
+    carteles: {
+      '16,9': 'QUEBRADA DE HUMAHUACA. Los cerros tienen siete colores. ¡Contalos!',
+      '13,31': 'RUTA 5. Cuidado con la PAJA BRAVA: ahí se esconden las criaturas.',
+    },
+    encuentros: { lista: [['cardito', 22], ['chispuna', 18], ['piedrin', 14], ['farolito', 14], ['condorito', 12], ['vizcachita', 10], ['geodin', 6], ['volcarin', 4]], min: 27, max: 31 },
+    npcs: [
+      entrenadorNPC({
+        id: 'coplera', x: 7, y: 29, dir: 3, pal: PAL.coplera, nombre: 'COPLERA DOÑA ELBA',
+        equipo: [['farolito', 28], ['vizcachita', 29], ['cardito', 29]],
+        antes: ['COPLERA DOÑA ELBA: ♪ Vengo de la Quebrada, traigo mi caja y mi voz... ♪', '♪ ¡Si me ganás en el duelo, te canto una copla a vos! ♪'],
+        gana: 'COPLERA DOÑA ELBA: ♪ Me ganaste, gurisito, ¡qué bien que peleaste vos! ♪',
+        despues: 'COPLERA DOÑA ELBA: Mi FAROLITO me acompaña de noche. Cuando crezca va a ser CANDILEJO.',
+      }),
+      entrenadorNPC({
+        id: 'arriero', x: 15, y: 21, dir: 2, pal: PAL.beto, nombre: 'ARRIERO RAMÓN',
+        equipo: [['condorito', 29], ['piedrin', 30], ['cardito', 30]],
+        antes: ['ARRIERO RAMÓN: ¡Epa! Llevo mis llamas a Tilcara. ¿Peleamos mientras descansan?'],
+        gana: 'ARRIERO RAMÓN: Sos más rápido que una vicuña, gurí.',
+        despues: 'ARRIERO RAMÓN: La líder de Tilcara cuida un jardín de cardones. ¡Las criaturas de FUEGO y VOLADOR le ganan!',
+      }),
+      entrenadorNPC({
+        id: 'andinista', x: 12, y: 5, dir: 2, pal: PAL.chica, nombre: 'ANDINISTA CAMI',
+        equipo: [['chispuna', 29], ['geodin', 30], ['volcarin', 31]],
+        antes: ['ANDINISTA CAMI: ¡Subí todos estos cerros! Ahora quiero subir de nivel con un duelo.'],
+        gana: 'ANDINISTA CAMI: ¡Uf! Me quedé sin aire... será la altura.',
+        despues: 'ANDINISTA CAMI: Más al norte está la PUNA. Allá hace un frío que congela hasta las piedras.',
+      }),
+    ],
+  },
+
+  tilcara: {
+    nombre: 'TILCARA',
+    exterior: true,
+    grilla: desdeTexto(TILCARA),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 14, y: 4, w: 7, h: 5, tipo: 'gimnasio3', puerta: 3, abre: true },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 10, y: 21, a: 'ruta5', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 21, a: 'ruta5', ax: 11, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro4', ax: 4, ay: 6, dir: 1 },
+      { x: 17, y: 8, a: 'gimnasio3', ax: 5, ay: 10, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'RUTA 6. Hacia LA PUNA... (¡todavía en construcción!)',
+      '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis.',
+      '19,9': 'GIMNASIO DE TILCARA. Líder: TALA, guardián del jardín de cardones. Tipo PLANTA.',
+      '4,18': 'TILCARA. Casas de adobe y cerros de siete colores.',
+    },
+    disparadores: [
+      {
+        prueba: (x, y) => y === 0,
+        accion: async () => {
+          await decir('El camino hacia LA PUNA todavía está en construcción. ¡Muy pronto vas a poder seguir viaje!');
+          await pasoForzado(0);
+        },
+      },
+    ],
+    npcs: [
+      {
+        id: 'artesana', x: 7, y: 11, dir: 0, pal: PAL.coplera,
+        hablar: async () => {
+          await decir('ARTESANA: Tejo ponchos con lana de llama. Los colores los saco de los cerros.');
+          await decir('¿Sabías que los cardones crecen apenas unos centímetros por año? ¡Algunos tienen cientos de años!');
+        },
+      },
+      {
+        id: 'nene_tilcara', x: 18, y: 19, dir: 2, pal: PAL.nene,
+        hablar: async () => {
+          if (S.flags.insignia3) await decir('NENE: ¡Le ganaste a TALA! ¡Sos un campeón!');
+          else await decir('NENE: TALA nunca perdió con nadie de acá. ¡Dicen que su RODCARDO rueda más rápido que el viento!');
+        },
+      },
+    ],
+  },
+
+  centro4: crearCentro('tilcara', 5, 9, 'centro4'),
+
+  gimnasio3: {
+    nombre: 'GIMNASIO TILCARA',
+    grilla: desdeTexto([
+      '###########',
+      '#K-------K#',
+      '#--KK-KK--#',
+      '#---------#',
+      '#K-K---K-K#',
+      '#---------#',
+      '#-KK---KK-#',
+      '#---------#',
+      '#K--K-K--K#',
+      '#---------#',
+      '#---------#',
+      '#####m#####',
+    ]),
+    edificios: [],
+    salidas: [{ x: 5, y: 11, a: 'tilcara', ax: 17, ay: 9, dir: 0 }],
+    objetos: {
+      K: 'Un cardón gigante. ¡Tiene flores blancas arriba de todo!',
+    },
+    npcs: [
+      entrenadorNPC({
+        id: 'gim3_a', x: 2, y: 7, dir: 3, pal: PAL.chica, nombre: 'JARDINERA PAZ',
+        equipo: [['cuison', 32], ['junquito', 32]],
+        antes: ['JARDINERA PAZ: ¡Cuidado con pisar las plantas! Si querés pasar, primero ganame.'],
+        gana: 'JARDINERA PAZ: Ay, mis plantitas... Bueno, pasá.',
+        despues: 'JARDINERA PAZ: TALA riega los cardones una vez por mes. ¡Con eso les alcanza!',
+      }),
+      entrenadorNPC({
+        id: 'gim3_b', x: 8, y: 5, dir: 2, pal: PAL.ayudante, nombre: 'BOTÁNICO EZE',
+        equipo: [['lianaco', 33], ['cardito', 33], ['ceibito', 32]],
+        antes: ['BOTÁNICO EZE: Conozco cada planta de la Quebrada. ¡Y cada debilidad de tus criaturas!'],
+        gana: 'BOTÁNICO EZE: Mmm, eso no estaba en mis libros.',
+        despues: 'BOTÁNICO EZE: Las PLANTAS sufren con el FUEGO, el HIELO, el VENENO, los BICHOS y los VOLADORES.',
+      }),
+      {
+        id: 'tala', x: 5, y: 1, dir: 0, pal: PAL.tala,
+        hablar: async () => {
+          if (S.flags.insignia3) {
+            await decir('TALA: Llevás la fuerza del cardón: paciente y firme. ¡Buen viaje a la Puna, Felipe!');
+            return;
+          }
+          if (!S.flags.insignia2) {
+            await decir('TALA: Primero conseguí la INSIGNIA AMATISTA de ROCÍO, en Puerto Wanda. Después te espero.');
+            return;
+          }
+          await decir('TALA: Bienvenido a mi jardín, Felipe. Acá todo crece despacio, pero crece fuerte.');
+          await decir('Soy TALA, líder del GIMNASIO TILCARA. Mis criaturas aguantan el sol, el viento y la sequía.');
+          await decir('Si me ganás, te llevás la INSIGNIA CARDÓN. ¡Vamos!');
+          const r = await batalla({ entrenador: { nombre: 'LÍDER TALA', pal: PAL.tala, equipo: [['totorarca', 33], ['cuison', 34], ['anahisa', 34], ['rodcardo', 36]] } });
+          if (r === 'gana') {
+            S.flags.insignia3 = true;
+            S.flags.insignias = Math.max(S.flags.insignias || 0, 3);
+            await decir('TALA: Ganaste con todas las de la ley. El jardín te reconoce.');
+            await decir('¡Felipe recibió la INSIGNIA CARDÓN!');
+            S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 4;
+            S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
+            await decir('TALA: Llevate estos ALFAJORES y BOLEADORAS. En la Puna te van a hacer falta.');
             guardar();
           }
         },
@@ -2471,7 +2932,7 @@ function npcEn(x, y) { return npcsVisibles().find(n => n.x === x && n.y === y); 
 function edificioEn(m, x, y) {
   return (m.edificios || []).find(e => x >= e.x && x < e.x + e.w && y >= e.y && y < e.y + e.h);
 }
-const CAMINABLE = new Set(['.', ',', '=', 'F', '_', 'm', 'r', 'h', 'v', 'q', ':']);
+const CAMINABLE = new Set(['.', ',', '=', 'F', '_', 'm', 'r', 'h', 'v', 'q', ':', '-', 'u']);
 function transitable(x, y) {
   const m = mapa();
   if (y < 0 || x < 0 || y >= m.grilla.length || x >= m.grilla[0].length) return false;
@@ -2527,7 +2988,7 @@ function alPisar() {
     if (d.prueba(S.x, S.y)) { correr(d.accion()); return; }
   }
   const pisada = m.grilla[S.y][S.x];
-  const prob = pisada === ',' ? 0.11 : (m.cueva && pisada === ':') ? 0.07 : 0;
+  const prob = (pisada === ',' || pisada === 'u') ? 0.11 : (m.cueva && pisada === ':') ? 0.07 : 0;
   if (prob && S.equipo.some(c => c.ps > 0) && m.encuentros && Math.random() < prob) {
     correr(encuentroSalvaje());
   }
@@ -2750,8 +3211,8 @@ function dibujarMundo() {
   for (const e of entes) {
     const bob = e.yo && frame ? -1 : 0;
     dibujarPersonaje(e.pal, e.dir, e.f, e.x - cx, e.y - cy - 3 + bob);
-    const enPasto = m.grilla[e.ty] && m.grilla[e.ty][e.tx] === ',' && !(e.yo && S.moviendo && S.prog < 8);
-    if (enPasto) b.drawImage(TILES[','], 0, 9, 16, 7, e.x - cx, e.y - cy + 9, 16, 7);
+    const enPasto = m.grilla[e.ty] && (m.grilla[e.ty][e.tx] === ',' || m.grilla[e.ty][e.tx] === 'u') && !(e.yo && S.moviendo && S.prog < 8);
+    if (enPasto) b.drawImage(TILES[m.grilla[e.ty][e.tx]], 0, 9, 16, 7, e.x - cx, e.y - cy + 9, 16, 7);
   }
   // Nombre del lugar al entrar
   if (S.cartelLugar && S.cartelLugar.t > 0) S.cartelLugar.t--;
