@@ -1826,6 +1826,40 @@ const ESPECIES = {
       ['r', 7, 10, 1, 4, '#f0f0f0'], ['r', 12, 10, 1, 4, '#f0f0f0'],
     ],
   },
+  pumita: {
+    nombre: 'Pumita', tipos: ['PSIQUICO', 'LUCHA'], base: { ps: 50, atk: 62, def: 45, vel: 62 }, captura: 60, exp: 66,
+    desc: 'el pumita que medita antes de pelear', evo: { nivel: 30, a: 'pumentor' },
+    movs: [[1, 'aranazo'], [1, 'mareo'], [6, 'punetazo'], [11, 'pique'], [16, 'vision'], [22, 'troncazo'], [30, 'mordisco']],
+    sprite: [
+      ['e', 26, 26, 5, 2, '#c89050'],
+      ['e', 16, 24, 10, 6, '#d8a060'],
+      ['e', 16, 18, 7, 7, '#d8a060'],
+      ['e', 16, 20, 4, 4, '#f4e0c0', 's'],
+      ['e', 9, 6, 2.5, 3, '#d8a060'], ['e', 23, 6, 2.5, 3, '#d8a060'],
+      ['e', 16, 10, 7, 6, '#d8a060'],
+      ['r', 9, 6, 14, 2, '#c83a2a'], ['p', [[23, 6], [28, 4], [27, 9]], '#c83a2a'],
+      ['r', 12, 10, 3, 1, '#201010'], ['r', 17, 10, 3, 1, '#201010'],
+      ['e', 16, 13, 2, 1.5, '#f4e0c0', 's'], ['d', 16, 12, '#5a3020'],
+      ['d', 3, 10, '#f85888'], ['d', 29, 14, '#f85888'], ['d', 5, 22, '#f85888'],
+    ],
+  },
+  pumentor: {
+    nombre: 'Pumentor', tipos: ['PSIQUICO', 'LUCHA'], base: { ps: 75, atk: 100, def: 70, vel: 90 }, captura: 45, exp: 200,
+    desc: 'el maestro puma de la cordillera',
+    movs: [[1, 'aranazo'], [1, 'mareo'], [6, 'punetazo'], [11, 'pique'], [16, 'vision'], [22, 'troncazo'], [30, 'mordisco']],
+    sprite: [
+      ['r', 10, 23, 4, 8, '#c08848'], ['r', 18, 23, 4, 8, '#c08848'],
+      ['e', 16, 18, 8, 9, '#c89050'],
+      ['r', 9, 19, 14, 2, '#f0f0f0', 'c'],
+      ['e', 5, 15, 3, 4, '#c89050'], ['e', 27, 15, 3, 4, '#c89050'],
+      ['e', 4, 12, 3, 3, '#f0f0f0'], ['e', 28, 12, 3, 3, '#f0f0f0'],
+      ['e', 10, 3, 2.5, 3, '#c89050'], ['e', 22, 3, 2.5, 3, '#c89050'],
+      ['e', 16, 8, 7, 6, '#c89050'],
+      ['r', 9, 4, 14, 2, '#7a3aa8'], ['p', [[9, 4], [3, 2], [4, 7]], '#7a3aa8'],
+      ['r', 12, 8, 3, 2, '#f85888'], ['r', 17, 8, 3, 2, '#f85888'],
+      ['e', 16, 11, 2, 1.5, '#f4e0c0', 's'],
+    ],
+  },
   // --- Rara de la Ruta 1 ---
   condorito: {
     nombre: 'Condorito', tipos: ['VOLADOR', 'PSIQUICO'], base: { ps: 45, atk: 48, def: 40, vel: 70 }, captura: 45, exp: 70,
@@ -2610,11 +2644,11 @@ const MAPAS = {
         equipo: [['lechucita', 12], ['espejito', 12]],
         antes: ['ADIVINO TITO: Ya sabía que ibas a venir...', '¡Y también sé que vas a perder!'],
         gana: 'ADIVINO TITO: Eso... eso no lo vi venir.',
-        despues: 'ADIVINO TITO: LUNA te espera al fondo. Sus lechuzas ven todo, ¡hasta de noche!',
+        despues: 'ADIVINO TITO: LUNA te espera al fondo. Su PUMITA medita... ¡y después pega como un boxeador!',
       }),
       entrenadorNPC({
         id: 'vidente2', x: 7, y: 4, dir: 2, pal: PAL.vidente, nombre: 'ADIVINA MARGA',
-        equipo: [['mimetit', 13], ['lechucita', 13]],
+        equipo: [['mimetit', 13], ['pumita', 13]],
         antes: ['ADIVINA MARGA: Las cartas dicen que hoy hay pelea. ¡Las cartas nunca fallan!'],
         gana: 'ADIVINA MARGA: Mmm... Tendría que haber mezclado mejor las cartas.',
         despues: 'ADIVINA MARGA: Las criaturas de LUNA son rápidas. ¡Llevá mates por las dudas!',
@@ -2629,7 +2663,7 @@ const MAPAS = {
           await decir('LUNA: Hola, Felipe. Te estaba esperando... lo vi en el reflejo del agua.');
           await decir('Soy LUNA, líder del GIMNASIO CAMALOTE. Mis criaturas sienten lo que pensás antes de que te muevas.');
           await decir('Si me ganás, te llevás la INSIGNIA ESPEJO. ¿Empezamos?');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER LUNA', pal: PAL.luna, equipo: [['condorito', 13], ['mythfae', 14], ['mimetit', 14], ['lechuzonte', 15], ['espejon', 16]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER LUNA', pal: PAL.luna, equipo: [['condorito', 13], ['mythfae', 14], ['mimetit', 14], ['pumita', 15], ['espejon', 16]] } });
           if (r === 'gana') {
             S.flags.insignia1 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 1);
@@ -2659,7 +2693,7 @@ const MAPAS = {
       '8,15': 'RUTA 3 · SELVA MISIONERA. La tierra es colorada por el hierro de las piedras.',
       '14,29': 'Al norte: MINAS DE WANDA y PUERTO WANDA. ¡Llevá mates!',
     },
-    encuentros: { lista: [['peluchin', 26], ['cuisito', 20], ['hornerito', 16], ['piedrin', 16], ['larvin', 10], ['zorrito', 8], ['ceibito', 4], ['mimetit', 3]], min: 11, max: 15 },
+    encuentros: { lista: [['peluchin', 26], ['cuisito', 20], ['hornerito', 16], ['piedrin', 16], ['larvin', 10], ['zorrito', 8], ['ceibito', 4], ['mimetit', 3], ['pumita', 3]], min: 11, max: 15 },
     npcs: [
       entrenadorNPC({
         id: 'guardaparque_selva', x: 12, y: 13, dir: 2, pal: PAL.guarda, nombre: 'GUARDAPARQUE ANA',

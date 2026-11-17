@@ -732,11 +732,11 @@ const MAPAS = {
         equipo: [['lechucita', 12], ['espejito', 12]],
         antes: ['ADIVINO TITO: Ya sabía que ibas a venir...', '¡Y también sé que vas a perder!'],
         gana: 'ADIVINO TITO: Eso... eso no lo vi venir.',
-        despues: 'ADIVINO TITO: LUNA te espera al fondo. Sus lechuzas ven todo, ¡hasta de noche!',
+        despues: 'ADIVINO TITO: LUNA te espera al fondo. Su PUMITA medita... ¡y después pega como un boxeador!',
       }),
       entrenadorNPC({
         id: 'vidente2', x: 7, y: 4, dir: 2, pal: PAL.vidente, nombre: 'ADIVINA MARGA',
-        equipo: [['mimetit', 13], ['lechucita', 13]],
+        equipo: [['mimetit', 13], ['pumita', 13]],
         antes: ['ADIVINA MARGA: Las cartas dicen que hoy hay pelea. ¡Las cartas nunca fallan!'],
         gana: 'ADIVINA MARGA: Mmm... Tendría que haber mezclado mejor las cartas.',
         despues: 'ADIVINA MARGA: Las criaturas de LUNA son rápidas. ¡Llevá mates por las dudas!',
@@ -751,7 +751,7 @@ const MAPAS = {
           await decir('LUNA: Hola, Felipe. Te estaba esperando... lo vi en el reflejo del agua.');
           await decir('Soy LUNA, líder del GIMNASIO CAMALOTE. Mis criaturas sienten lo que pensás antes de que te muevas.');
           await decir('Si me ganás, te llevás la INSIGNIA ESPEJO. ¿Empezamos?');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER LUNA', pal: PAL.luna, equipo: [['condorito', 13], ['mythfae', 14], ['mimetit', 14], ['lechuzonte', 15], ['espejon', 16]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER LUNA', pal: PAL.luna, equipo: [['condorito', 13], ['mythfae', 14], ['mimetit', 14], ['pumita', 15], ['espejon', 16]] } });
           if (r === 'gana') {
             S.flags.insignia1 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 1);
@@ -781,7 +781,7 @@ const MAPAS = {
       '8,15': 'RUTA 3 · SELVA MISIONERA. La tierra es colorada por el hierro de las piedras.',
       '14,29': 'Al norte: MINAS DE WANDA y PUERTO WANDA. ¡Llevá mates!',
     },
-    encuentros: { lista: [['peluchin', 26], ['cuisito', 20], ['hornerito', 16], ['piedrin', 16], ['larvin', 10], ['zorrito', 8], ['ceibito', 4], ['mimetit', 3]], min: 11, max: 15 },
+    encuentros: { lista: [['peluchin', 26], ['cuisito', 20], ['hornerito', 16], ['piedrin', 16], ['larvin', 10], ['zorrito', 8], ['ceibito', 4], ['mimetit', 3], ['pumita', 3]], min: 11, max: 15 },
     npcs: [
       entrenadorNPC({
         id: 'guardaparque_selva', x: 12, y: 13, dir: 2, pal: PAL.guarda, nombre: 'GUARDAPARQUE ANA',
