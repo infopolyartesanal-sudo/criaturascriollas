@@ -10,6 +10,13 @@ const PAL = {
   guarda: { id: 'guarda', piel: '#e8b890', pelo: '#4a3020', sombrero: '#7a8a4a', remera: '#8a9a5a', pant: '#5a4a3a' },
   nene: { id: 'nene', piel: '#f0c098', pelo: '#3a2a1a', remera: '#f0c030', pant: '#3a5a9a' },
   ayudante: { id: 'ayudante', piel: '#e0b088', pelo: '#2a2a2a', remera: '#ffffff', guardapolvo: true, pant: '#4a4a6a' },
+  // Litoral
+  pescador: { id: 'pescador', piel: '#d8a070', pelo: '#3a2a1a', sombrero: '#d8c080', remera: '#4a8ac8', pant: '#3a3a3a' },
+  chica: { id: 'chica', piel: '#f0c098', pelo: '#2a1a10', peloLargo: true, remera: '#58b048', pant: '#7a5a3a' },
+  rosa: { id: 'rosa', piel: '#e8b890', pelo: '#a8a8a8', peloLargo: true, remera: '#e08a2a', guardapolvo: true, pant: '#5a4a3a' },
+  luna: { id: 'luna', piel: '#f0c8a8', pelo: '#e8e8f8', peloLargo: true, remera: '#7a4aa8', guardapolvo: true, pant: '#3a2a5a' },
+  vidente: { id: 'vidente', piel: '#e0b088', pelo: '#2a2a2a', boina: '#f85888', remera: '#9a6ac8', pant: '#3a2a5a' },
+  nena: { id: 'nena', piel: '#f4c8a0', pelo: '#c08040', peloLargo: true, remera: '#f070a0', pant: '#4a6aa8' },
 };
 
 function grilla(w, h, ch) { return Array.from({ length: h }, () => Array(w).fill(ch)); }
@@ -41,6 +48,90 @@ function crearPueblo() {
   return g;
 }
 
+// Grillas del Litoral (T árbol · , pasto alto · = camino · ~ agua · j juncos · h puente · S cartel · F flores)
+const RUTA2 = [
+  'TTTTTTTTTT==TTTTTTTTTT',
+  'TT,,,,,,..==..,,,,,,TT',
+  'TT,,,,,,..==..,,,,,,TT',
+  'TT..F.....==S...F...TT',
+  'TTjj~~~~jj==jj~~~~jjTT',
+  'TT~~~~~~~~hh~~~~~~~~TT',
+  'TT~~~~~~~~hh~~~~~~~~TT',
+  'TTjj~~~~jjhhjj~~~~jjTT',
+  'TT........==........TT',
+  'TT,,,,,,..==,,,,,,..TT',
+  'TT,,,,,,..==,,,,,,..TT',
+  'TT,,TT,,..==,,TT,,..TT',
+  'TT..TT....======....TT',
+  'TT..........,,==....TT',
+  'TTj~~jj.....,,==....TT',
+  'TT~~~~~j..,,,,==,,,.TT',
+  'TT~~~~~j..,,,,==,,,.TT',
+  'TTj~~jj...,,,,==,,,.TT',
+  'TT........======....TT',
+  'TT..,,,,..==....jj~jTT',
+  'TT..,,,,..==...j~~~~TT',
+  'TT..,,,,..==...j~~~~TT',
+  'TT........==....jj~jTT',
+  'TT.TT.....======....TT',
+  'TT.TT.,,,,....==,,,,TT',
+  'TT....,,,,....==,,,,TT',
+  'TT....,,,,F...==,,,,TT',
+  'TT............==....TT',
+  'TTj~~~~jj.....==....TT',
+  'TT~~~~~~j.======....TT',
+  'TTjjjjj...==........TT',
+  'TT,,,,....==..,,,,,,TT',
+  'TT,,,,....==.S,,,,,,TT',
+  'TT,,,,....==..,,,,,,TT',
+  'TT,,,,....==..,,,,,,TT',
+  'TTTTTTTTTT==TTTTTTTTTT',
+];
+const VILLA = [
+  'TTTTTTTTTT==TTTTTTTTTT~~',
+  'TT........==S.......Tj~~',
+  'TT.F......==.......F.j~~',
+  'TT........==.........j~~',
+  'TT....................j~',
+  'TT....................j~',
+  'TT....................j~',
+  'TT....................j~',
+  'TT........==..........j~',
+  'TT...=..S.==.....=.S..j~',
+  'TT.=================..j~',
+  'TT........==.........j~~',
+  'TT..F.....==....F...j~~~',
+  'TT........==........j~~~',
+  'TT........==..~~~~..j~~~',
+  'TT........==.j~~~~j.j~~~',
+  'TT........==.j~~~~j..j~~',
+  'TT........==..jjjj...j~~',
+  'TT.FF.....==.........j~~',
+  'TT........==.....F...j~~',
+  'TT..S.....==.........j~~',
+  'TT........==.........Tj~',
+  'TT........==.........Tj~',
+  'TTTTTTTTTT==TTTTTTTTTTTT',
+];
+
+// Entrenador que pelea una sola vez (queda anotado en S.flags.ent_<id>)
+function entrenadorNPC(o) {
+  return {
+    id: o.id, x: o.x, y: o.y, dir: o.dir, pal: o.pal,
+    hablar: async () => {
+      const clave = 'ent_' + o.id;
+      if (S.flags[clave]) { await decir(o.despues); return; }
+      for (const t of o.antes) await decir(t);
+      const r = await batalla({ entrenador: { nombre: o.nombre, pal: o.pal, equipo: o.equipo } });
+      if (r === 'gana') {
+        S.flags[clave] = true;
+        await decir(o.gana);
+        guardar();
+      }
+    },
+  };
+}
+
 const MAPAS = {
   pueblo: {
     nombre: 'PUEBLO TERO',
@@ -53,6 +144,8 @@ const MAPAS = {
     salidas: [
       { x: 5, y: 16, a: 'casa', ax: 4, ay: 6, dir: 1 },
       { x: 16, y: 16, a: 'lab', ax: 5, ay: 8, dir: 1 },
+      { x: 10, y: 0, a: 'ruta2', ax: 10, ay: 34, dir: 1 },
+      { x: 11, y: 0, a: 'ruta2', ax: 11, ay: 34, dir: 1 },
     ],
     carteles: {
       '12,1': 'RUTA 1. Al norte: el LITORAL. ¡Cuidado con el pasto alto!',
@@ -69,13 +162,6 @@ const MAPAS = {
           await decir('GUARDAPARQUE: ¡Eh, Felipe! ¡Pará, pará!');
           await decir('El pasto alto está lleno de criaturas salvajes. No podés ir sin una criatura que te cuide.');
           await decir('Pasá por el laboratorio de la Profesora Ceibo. ¡Te está esperando!');
-          await pasoForzado(0);
-        },
-      },
-      {
-        prueba: (x, y) => y === 0,
-        accion: async () => {
-          await decir('El camino hacia el LITORAL todavía está en construcción. ¡Muy pronto vas a poder seguir viaje!');
           await pasoForzado(0);
         },
       },
@@ -220,6 +306,195 @@ const MAPAS = {
         hablar: async () => {
           await decir('AYUDANTE: Las criaturas de PLANTA le ganan a las de AGUA, las de AGUA a las de FUEGO, y las de FUEGO a las de PLANTA.');
           await decir('¡Pensá bien antes de cada pelea!');
+        },
+      },
+    ],
+  },
+  // ================= LITORAL =================
+  ruta2: {
+    nombre: 'RUTA 2 · ESTEROS',
+    exterior: true,
+    grilla: desdeTexto(RUTA2),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 35, a: 'pueblo', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 35, a: 'pueblo', ax: 11, ay: 1, dir: 0 },
+      { x: 10, y: 0, a: 'villa', ax: 10, ay: 22, dir: 1 },
+      { x: 11, y: 0, a: 'villa', ax: 11, ay: 22, dir: 1 },
+    ],
+    carteles: {
+      '12,3': 'VILLA CAMALOTE, acá nomás al norte. ¡Cuidado con los mosquitos!',
+      '13,32': 'RUTA 2 · LOS ESTEROS. Por el puente de madera se cruza la laguna.',
+    },
+    encuentros: { lista: [['larvin', 26], ['carpinchu', 22], ['junquito', 22], ['terito', 14], ['yacarelito', 10], ['ceibito', 6]], min: 6, max: 9 },
+    npcs: [
+      entrenadorNPC({
+        id: 'pescador', x: 12, y: 16, dir: 2, pal: PAL.pescador, nombre: 'PESCADOR RAÚL',
+        equipo: [['carpinchu', 8], ['larvin', 9]],
+        antes: ['PESCADOR RAÚL: ¡Shh! Me espantás los dorados...', '¡Bueno, ya que estás, peleemos!'],
+        gana: 'PESCADOR RAÚL: Me ganaste... Hoy no pica nada, ¡ni los peces ni mis criaturas!',
+        despues: 'PESCADOR RAÚL: En el agua de la laguna viven los JUNQUITOS. Parecen totoras, ¡pero tienen ojitos!',
+      }),
+      entrenadorNPC({
+        id: 'chica_estero', x: 16, y: 27, dir: 2, pal: PAL.chica, nombre: 'GUÍA SOLE',
+        equipo: [['junquito', 9], ['terito', 9], ['ceibito', 10]],
+        antes: ['GUÍA SOLE: ¡Bienvenido a los esteros! Acá las criaturas son de PLANTA y de AGUA.', '¿Querés ver a las mías?'],
+        gana: 'GUÍA SOLE: ¡Qué bien entrenaste! Seguro le vas a dar pelea a LUNA.',
+        despues: 'GUÍA SOLE: LUNA, la líder del gimnasio, usa criaturas que te leen la mente. ¡Dicen que los BICHOS la ponen nerviosa!',
+      }),
+      {
+        id: 'nena', x: 12, y: 8, dir: 2, pal: PAL.nena,
+        hablar: async () => {
+          await decir('NENA: ¿Viste las larvitas que nadan en zigzag? ¡Son LARVINES!');
+          await decir('Cuando crecen se vuelven MOSQUILLONES y zumban un montón. ¡Bzzzz!');
+        },
+      },
+    ],
+  },
+
+  villa: {
+    nombre: 'VILLA CAMALOTE',
+    exterior: true,
+    grilla: desdeTexto(VILLA),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 14, y: 4, w: 7, h: 5, tipo: 'gimnasio', puerta: 3, abre: true },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 10, y: 23, a: 'ruta2', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 23, a: 'ruta2', ax: 11, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro', ax: 4, ay: 6, dir: 1 },
+      { x: 17, y: 8, a: 'gimnasio', ax: 5, ay: 10, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'RUTA 3. Hacia la SELVA MISIONERA... (¡todavía en construcción!)',
+      '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis. ¡Siempre hay agua caliente!',
+      '19,9': 'GIMNASIO DE VILLA CAMALOTE. Líder: LUNA, la que ve más allá del agua. Tipo PSÍQUICO.',
+      '4,20': 'VILLA CAMALOTE. Donde el río trae flores flotantes.',
+    },
+    disparadores: [
+      {
+        prueba: (x, y) => y === 0,
+        accion: async () => {
+          await decir('El camino hacia la SELVA MISIONERA todavía está en construcción. ¡Muy pronto vas a poder seguir viaje!');
+          await pasoForzado(0);
+        },
+      },
+    ],
+    npcs: [
+      {
+        id: 'nene_villa', x: 7, y: 18, dir: 0, pal: PAL.nene,
+        hablar: async () => {
+          await decir('NENE: ¿Sabías que los camalotes son plantas que flotan y viajan por el río?');
+          await decir('¡A veces llevan arriba ranas, bichitos y hasta algún yacaré chiquito!');
+        },
+      },
+      {
+        id: 'pescador_villa', x: 19, y: 15, dir: 2, pal: PAL.pescador,
+        hablar: async () => {
+          if (S.flags.insignia1) await decir('PESCADOR: ¡Así que le ganaste a LUNA! Ahora sí que sos un baqueano del Litoral.');
+          else {
+            await decir('PESCADOR: Las criaturas PSÍQUICAS le tienen miedo a los BICHOS, a los FANTASMAS y a las SINIESTRAS.');
+            await decir('Y las PSÍQUICAS le pegan fuerte a las de LUCHA y VENENO. ¡Pensalo antes de entrar al gimnasio!');
+          }
+        },
+      },
+    ],
+  },
+
+  centro: {
+    nombre: 'CASA DEL MATE',
+    grilla: desdeTexto([
+      '#########',
+      '#k_x_x_p#',
+      '#tt___tt#',
+      '#_______#',
+      '#_______#',
+      '#p_____p#',
+      '#_______#',
+      '####m####',
+    ]),
+    edificios: [],
+    salidas: [{ x: 4, y: 7, a: 'villa', ax: 5, ay: 9, dir: 0 }],
+    objetos: {
+      k: 'Un estante lleno de termos, yerbas y bombillas de todos los colores.',
+      x: 'Un cuadro del río Paraná al atardecer.',
+      t: 'El mostrador de la Casa del Mate.',
+      p: 'Una planta de mburucuyá con flores violetas.',
+    },
+    npcs: [
+      {
+        id: 'rosa', x: 4, y: 2, dir: 0, pal: PAL.rosa,
+        hablar: async () => {
+          await decir('DOÑA ROSA: ¡Bienvenido a la CASA DEL MATE! ¿Tus criaturas están cansadas?');
+          if (!S.equipo.length) { await decir('Ah, todavía no tenés criaturas. ¡Volvé cuando tengas!'); return; }
+          curarEquipo();
+          S.flags.centro = { mapa: 'centro', x: 4, y: 4, dir: 1 };
+          await decir('Unos mates bien cebados y... ¡listo! Tus criaturas recuperaron toda su energía.');
+          await decir('DOÑA ROSA: Si pierden una pelea, te traemos acá a descansar. ¡Volvé cuando quieras!');
+          guardar();
+        },
+      },
+    ],
+  },
+
+  gimnasio: {
+    nombre: 'GIMNASIO CAMALOTE',
+    grilla: desdeTexto([
+      '###########',
+      '#g_______g#',
+      '#vvvvrvvvv#',
+      '#vgvvrvvgv#',
+      '#vvvvrvvvv#',
+      '#gvvvrvvvg#',
+      '#vvvvrvvvv#',
+      '#vgvvrvvgv#',
+      '#vvvvrvvvv#',
+      '#vvvvrvvvv#',
+      '#vvvvrvvvv#',
+      '#####m#####',
+    ]),
+    edificios: [],
+    salidas: [{ x: 5, y: 11, a: 'villa', ax: 17, ay: 9, dir: 0 }],
+    objetos: {
+      g: 'Una esfera de cristal. Adentro se ven nubes que se mueven solas...',
+    },
+    npcs: [
+      entrenadorNPC({
+        id: 'vidente1', x: 3, y: 8, dir: 3, pal: PAL.vidente, nombre: 'ADIVINO TITO',
+        equipo: [['condorito', 12], ['larvin', 12]],
+        antes: ['ADIVINO TITO: Ya sabía que ibas a venir...', '¡Y también sé que vas a perder!'],
+        gana: 'ADIVINO TITO: Eso... eso no lo vi venir.',
+        despues: 'ADIVINO TITO: LUNA te espera al fondo. Sus criaturas florecen en el estero.',
+      }),
+      entrenadorNPC({
+        id: 'vidente2', x: 7, y: 4, dir: 2, pal: PAL.vidente, nombre: 'ADIVINA MARGA',
+        equipo: [['ceibito', 13], ['condorito', 13]],
+        antes: ['ADIVINA MARGA: Las cartas dicen que hoy hay pelea. ¡Las cartas nunca fallan!'],
+        gana: 'ADIVINA MARGA: Mmm... Tendría que haber mezclado mejor las cartas.',
+        despues: 'ADIVINA MARGA: Las criaturas de LUNA son rápidas. ¡Llevá mates por las dudas!',
+      }),
+      {
+        id: 'luna', x: 5, y: 1, dir: 0, pal: PAL.luna,
+        hablar: async () => {
+          if (S.flags.insignia1) {
+            await decir('LUNA: El espejo del estero ya te mostró tu camino. Seguí viaje, Felipe.');
+            return;
+          }
+          await decir('LUNA: Hola, Felipe. Te estaba esperando... lo vi en el reflejo del agua.');
+          await decir('Soy LUNA, líder del GIMNASIO CAMALOTE. Mis criaturas sienten lo que pensás antes de que te muevas.');
+          await decir('Si me ganás, te llevás la INSIGNIA ESPEJO. ¿Empezamos?');
+          const r = await batalla({ entrenador: { nombre: 'LÍDER LUNA', pal: PAL.luna, equipo: [['condorito', 14], ['ceibito', 14], ['anahisa', 16]] } });
+          if (r === 'gana') {
+            S.flags.insignia1 = true;
+            S.flags.insignias = Math.max(S.flags.insignias || 0, 1);
+            await decir('LUNA: Tu mente es clara como el agua del Iberá. Te ganaste esto.');
+            await decir('¡Felipe recibió la INSIGNIA ESPEJO!');
+            S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 3;
+            await decir('LUNA: Y llevate estos ALFAJORES para el viaje. ¡Te vas a encontrar con criaturas cada vez más fuertes!');
+            guardar();
+          }
         },
       },
     ],

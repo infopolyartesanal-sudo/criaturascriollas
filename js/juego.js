@@ -247,7 +247,7 @@ function npcEn(x, y) { return npcsVisibles().find(n => n.x === x && n.y === y); 
 function edificioEn(m, x, y) {
   return (m.edificios || []).find(e => x >= e.x && x < e.x + e.w && y >= e.y && y < e.y + e.h);
 }
-const CAMINABLE = new Set(['.', ',', '=', 'F', '_', 'm', 'r']);
+const CAMINABLE = new Set(['.', ',', '=', 'F', '_', 'm', 'r', 'h', 'v']);
 function transitable(x, y) {
   const m = mapa();
   if (y < 0 || x < 0 || y >= m.grilla.length || x >= m.grilla[0].length) return false;
@@ -309,7 +309,11 @@ function alPisar() {
 
 async function viajar(sal) {
   await fundido(1, 8);
+  const antes = S.mapa;
   S.mapa = sal.a; S.x = sal.ax; S.y = sal.ay; S.dir = sal.dir;
+  if (MAPAS[sal.a].exterior && !(MAPAS[antes] && MAPAS[antes].nombre === MAPAS[sal.a].nombre)) {
+    S.cartelLugar = { t: 110, txt: MAPAS[sal.a].nombre };
+  }
   await esperar(2);
   await fundido(0, 8);
 }
@@ -730,11 +734,14 @@ async function batalla(op) {
   bt = null;
   ui.dialogo = null;
   if (resultado === 'pierde' && !(op.entrenador && op.entrenador.sinDerrota)) {
-    S.mapa = 'casa'; S.x = 4; S.y = 4; S.dir = 1;
+    const c = S.flags.centro;
+    if (c && MAPAS[c.mapa]) { S.mapa = c.mapa; S.x = c.x; S.y = c.y; S.dir = c.dir; }
+    else { S.mapa = 'casa'; S.x = 4; S.y = 4; S.dir = 1; }
     curarEquipo();
     S.escena = 'mundo';
     await fundido(0, 14);
-    await decir('MAMÁ: ¡Ay, Felipe! Descansen un poquito. Ya están como nuevas.');
+    if (S.mapa === 'centro') await decir('DOÑA ROSA: ¡Ay, Felipe! Tomaron unos mates y ya están como nuevas.');
+    else await decir('MAMÁ: ¡Ay, Felipe! Descansen un poquito. Ya están como nuevas.');
     guardar();
     return resultado;
   }
@@ -1148,6 +1155,10 @@ function dibujar() {
   sc.imageSmoothingEnabled = false;
   if (S.escena === 'titulo') uiTitulo();
   if (S.escena === 'batalla') uiBatalla();
+  if (S.escena === 'mundo' && S.cartelLugar && S.cartelLugar.t > 0 && !ui.dialogo) {
+    caja(4, 4, 150, 22, 'normal');
+    txt(S.cartelLugar.txt, 12, 11, { t: 7 });
+  }
   if (ui.vista) dibujarVista();
   if (ui.equipo) dibujarEquipo();
   if (ui.mochila) dibujarMochila();

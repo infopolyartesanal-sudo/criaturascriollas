@@ -301,6 +301,21 @@ function crearTiles() {
     pasto(x);
     sobre(x, [['r', 7, 10, 2, 5, '#7a4a22'], ['r', 2, 2, 12, 8, '#c89050'], ['r', 4, 4, 8, 1, '#8a5a2a'], ['r', 4, 6, 8, 1, '#8a5a2a']]);
   });
+  // Litoral: juncos/totoras en el agua y puente de madera
+  t['j'] = mk(x => {
+    R(x, 0, 0, 16, 16, '#4898e0');
+    R(x, 2, 12, 5, 1, '#a0d4ff'); R(x, 10, 14, 4, 1, '#a0d4ff');
+    for (const [a, hh] of [[2, 10], [5, 13], [8, 9], [11, 12], [13, 8]]) {
+      R(x, a, 14 - hh, 1, hh, '#3a8038'); R(x, a + 1, 15 - hh, 1, hh - 2, '#70c058');
+      R(x, a, 12 - hh, 2, 3, '#8a5a2a');
+    }
+  });
+  t['h'] = mk(x => {
+    R(x, 0, 0, 16, 16, '#4898e0');
+    R(x, 1, 0, 14, 16, '#b07a40');
+    for (const y of [3, 7, 11, 15]) R(x, 1, y, 14, 1, '#7a4a22');
+    R(x, 0, 0, 1, 16, '#6a3a1a'); R(x, 15, 0, 1, 16, '#6a3a1a');
+  });
   // Interiores
   t['_'] = mk(piso);
   t['#'] = mk(x => {
@@ -323,6 +338,16 @@ function crearTiles() {
   t['b'] = mk(x => { piso(x); sobre(x, [['r', 2, 0, 12, 15, '#a06a3a'], ['r', 3, 1, 10, 13, '#f4f4f4'], ['r', 3, 6, 10, 8, '#e05050'], ['r', 3, 9, 10, 1, '#f08080']]); });
   t['t'] = mk(x => { piso(x); sobre(x, [['r', 0, 2, 16, 10, '#c48a50'], ['r', 0, 12, 16, 3, '#8a5a2a'], ['r', 1, 3, 14, 1, '#dca870', 'c']]); });
   t['o'] = t['t'];
+  // Gimnasio psíquico: piso violeta y esferas sobre pedestales
+  t['v'] = mk(x => {
+    R(x, 0, 0, 16, 16, '#b8a0d8');
+    R(x, 0, 0, 16, 1, '#a088c8'); R(x, 0, 0, 1, 16, '#a088c8');
+    R(x, 7, 7, 2, 2, '#d8c8f0');
+  });
+  t['g'] = mk(x => {
+    R(x, 0, 0, 16, 16, '#b8a0d8');
+    sobre(x, [['r', 4, 10, 8, 5, '#6a5a8a'], ['r', 3, 9, 10, 2, '#8a7aaa'], ['e', 8, 6, 4.5, 4.5, '#f85888'], ['e', 6.5, 4.5, 1.3, 1.3, '#ffd0e0', 's']]);
+  });
   t['c'] = mk(x => { piso(x); sobre(x, [['r', 1, 8, 14, 7, '#909aa8'], ['r', 3, 1, 10, 7, '#404858'], ['r', 4, 2, 8, 5, '#80e0a0', 'c']]); });
   return t;
 }
@@ -333,10 +358,11 @@ function crearEdificio(tipo, w, h, puerta) {
   const R = (a, b, ww, hh, col) => { x.fillStyle = col; x.fillRect(a, b, ww, hh); };
   const ancho = w * 16, alto = h * 16;
   const techoH = (h - 2) * 16 + 4;
-  const pared = tipo === 'lab' ? '#eef2f6' : '#f6eedc';
+  const pared = tipo === 'lab' ? '#eef2f6' : tipo === 'gimnasio' ? '#ece4f4' : '#f6eedc';
   R(2, techoH - 4, ancho - 4, alto - techoH + 4, pared);
   R(2, alto - 3, ancho - 4, 3, '#a89878');
-  const tc = tipo === 'lab' ? '#4f7fa8' : tipo === 'casa2' ? '#3f8f6f' : '#c8553a';
+  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#e08a2a', gimnasio: '#7a4aa8' };
+  const tc = TECHOS[tipo] || '#c8553a';
   R(0, 0, ancho, techoH, tc);
   let fila = 0;
   for (let yy = 5; yy < techoH - 2; yy += 5, fila++) {
@@ -345,9 +371,18 @@ function crearEdificio(tipo, w, h, puerta) {
   }
   R(0, 0, ancho, 2, tono(tc, 1.25));
   R(0, techoH - 2, ancho, 2, tono(tc, 0.6));
-  if (tipo !== 'lab') { R(ancho - 14, 3, 6, 8, '#8a6a5a'); R(ancho - 15, 2, 8, 2, '#6a4a3a'); }
-  else { R(ancho / 2 - 6, 6, 12, 10, '#f8f8f8'); R(ancho / 2 - 1, 8, 2, 6, '#40a050'); R(ancho / 2 - 4, 10, 8, 2, '#40a050'); }
-  const ventanas = tipo === 'lab' ? [1, 4] : [1, 3];
+  if (tipo === 'lab') { R(ancho / 2 - 6, 6, 12, 10, '#f8f8f8'); R(ancho / 2 - 1, 8, 2, 6, '#40a050'); R(ancho / 2 - 4, 10, 8, 2, '#40a050'); }
+  else if (tipo === 'centro') {
+    // Cartel con un mate
+    R(ancho / 2 - 8, 5, 16, 13, '#f8f0e0'); R(ancho / 2 - 8, 5, 16, 1, '#a06a3a');
+    R(ancho / 2 - 4, 9, 8, 7, '#8a5a2a'); R(ancho / 2 - 3, 8, 6, 2, '#58a848'); R(ancho / 2 + 1, 6, 1, 4, '#c0c0c8');
+  } else if (tipo === 'gimnasio') {
+    // Cartel con una estrella (insignia)
+    const cx = ancho / 2;
+    R(cx - 9, 4, 18, 15, '#f8f0ff'); R(cx - 9, 4, 18, 1, '#4a2a6a');
+    R(cx - 1, 6, 2, 11, '#f0c030'); R(cx - 5, 10, 10, 2, '#f0c030'); R(cx - 3, 8, 6, 6, '#f0c030'); R(cx - 1, 10, 2, 2, '#f85888');
+  } else { R(ancho - 14, 3, 6, 8, '#8a6a5a'); R(ancho - 15, 2, 8, 2, '#6a4a3a'); }
+  const ventanas = tipo === 'lab' ? [1, 4] : tipo === 'gimnasio' ? [1, 5] : [1, 3];
   for (const i of ventanas) {
     if (i === puerta) continue;
     const vx = i * 16 + 2, vy = alto - 26;
@@ -355,7 +390,7 @@ function crearEdificio(tipo, w, h, puerta) {
     R(vx + 1, vy + 1, 4, 3, '#c0e4ff'); R(vx + 6, vy + 1, 1, 9, '#6a4a2a'); R(vx + 1, vy + 5, 10, 1, '#6a4a2a');
   }
   const dx = puerta * 16;
-  if (tipo === 'lab') {
+  if (tipo === 'lab' || tipo === 'gimnasio' || tipo === 'centro') {
     R(dx + 2, alto - 17, 12, 15, '#5a6a7a'); R(dx + 3, alto - 16, 10, 14, '#90d0f0'); R(dx + 7, alto - 16, 2, 14, '#5a6a7a'); R(dx + 4, alto - 15, 2, 4, '#d0f0ff');
   } else {
     R(dx + 3, alto - 16, 10, 14, '#5a3214'); R(dx + 4, alto - 15, 8, 13, '#9a6232'); R(dx + 10, alto - 9, 1, 2, '#f0d060');
