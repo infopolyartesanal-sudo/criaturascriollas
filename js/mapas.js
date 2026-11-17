@@ -571,7 +571,7 @@ const MAPAS = {
       '12,3': 'VILLA CAMALOTE, acá nomás al norte. ¡Cuidado con los mosquitos!',
       '13,32': 'RUTA 2 · LOS ESTEROS. Por el puente de madera se cruza la laguna.',
     },
-    encuentros: { lista: [['larvin', 26], ['carpinchu', 22], ['junquito', 22], ['terito', 14], ['yacarelito', 10], ['ceibito', 6]], min: 6, max: 9 },
+    encuentros: { lista: [['larvin', 26], ['carpinchu', 22], ['junquito', 22], ['terito', 14], ['yacarelito', 10], ['ceibito', 6], ['lechucita', 5]], min: 6, max: 9 },
     npcs: [
       entrenadorNPC({
         id: 'pescador', x: 12, y: 16, dir: 2, pal: PAL.pescador, nombre: 'PESCADOR RAÚL',
@@ -585,7 +585,7 @@ const MAPAS = {
         equipo: [['junquito', 9], ['terito', 9], ['ceibito', 10]],
         antes: ['GUÍA SOLE: ¡Bienvenido a los esteros! Acá las criaturas son de PLANTA y de AGUA.', '¿Querés ver a las mías?'],
         gana: 'GUÍA SOLE: ¡Qué bien entrenaste! Seguro le vas a dar pelea a LUNA.',
-        despues: 'GUÍA SOLE: LUNA, la líder del gimnasio, usa criaturas que te leen la mente. ¡Dicen que los BICHOS la ponen nerviosa!',
+        despues: 'GUÍA SOLE: LUNA, la líder del gimnasio, usa criaturas que te leen la mente. ¡Dicen que las mordidas SINIESTRAS la ponen nerviosa!',
       }),
       {
         id: 'nena', x: 12, y: 8, dir: 2, pal: PAL.nena,
@@ -617,7 +617,7 @@ const MAPAS = {
     carteles: {
       '12,1': 'RUTA 3. Hacia la SELVA MISIONERA y las MINAS DE WANDA.',
       '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis. ¡Siempre hay agua caliente!',
-      '19,9': 'GIMNASIO DE VILLA CAMALOTE. Líder: LUNA, la que ve más allá del agua. Tipo PSÍQUICO.',
+      '19,9': 'GIMNASIO DE VILLA CAMALOTE. Líder: LUNA, la que ve más allá del agua. Tipo PSÍQUICO y VOLADOR.',
       '4,20': 'VILLA CAMALOTE. Donde el río trae flores flotantes.',
     },
     npcs: [
@@ -633,8 +633,8 @@ const MAPAS = {
         hablar: async () => {
           if (S.flags.insignia1) await decir('PESCADOR: ¡Así que le ganaste a LUNA! Ahora sí que sos un baqueano del Litoral.');
           else {
-            await decir('PESCADOR: Las criaturas PSÍQUICAS le tienen miedo a los BICHOS, a los FANTASMAS y a las SINIESTRAS.');
-            await decir('Y las PSÍQUICAS le pegan fuerte a las de LUCHA y VENENO. ¡Pensalo antes de entrar al gimnasio!');
+            await decir('PESCADOR: Las criaturas de LUNA son PSÍQUICAS y VOLADORAS. Les ganan las de ROCA, ELÉCTRICO, HIELO, FANTASMA y SINIESTRO.');
+            await decir('¿Sabías que el PELUDÍN aprende MORDISCO, un ataque SINIESTRO? ¡Pensalo antes de entrar al gimnasio!');
           }
         },
       },
@@ -667,14 +667,14 @@ const MAPAS = {
     npcs: [
       entrenadorNPC({
         id: 'vidente1', x: 3, y: 8, dir: 3, pal: PAL.vidente, nombre: 'ADIVINO TITO',
-        equipo: [['condorito', 12], ['larvin', 12]],
+        equipo: [['condorito', 12], ['lechucita', 12]],
         antes: ['ADIVINO TITO: Ya sabía que ibas a venir...', '¡Y también sé que vas a perder!'],
         gana: 'ADIVINO TITO: Eso... eso no lo vi venir.',
-        despues: 'ADIVINO TITO: LUNA te espera al fondo. Sus criaturas florecen en el estero.',
+        despues: 'ADIVINO TITO: LUNA te espera al fondo. Sus lechuzas ven todo, ¡hasta de noche!',
       }),
       entrenadorNPC({
         id: 'vidente2', x: 7, y: 4, dir: 2, pal: PAL.vidente, nombre: 'ADIVINA MARGA',
-        equipo: [['ceibito', 13], ['condorito', 13]],
+        equipo: [['lechucita', 13], ['condorito', 13]],
         antes: ['ADIVINA MARGA: Las cartas dicen que hoy hay pelea. ¡Las cartas nunca fallan!'],
         gana: 'ADIVINA MARGA: Mmm... Tendría que haber mezclado mejor las cartas.',
         despues: 'ADIVINA MARGA: Las criaturas de LUNA son rápidas. ¡Llevá mates por las dudas!',
@@ -689,7 +689,7 @@ const MAPAS = {
           await decir('LUNA: Hola, Felipe. Te estaba esperando... lo vi en el reflejo del agua.');
           await decir('Soy LUNA, líder del GIMNASIO CAMALOTE. Mis criaturas sienten lo que pensás antes de que te muevas.');
           await decir('Si me ganás, te llevás la INSIGNIA ESPEJO. ¿Empezamos?');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER LUNA', pal: PAL.luna, equipo: [['condorito', 14], ['ceibito', 14], ['anahisa', 16]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER LUNA', pal: PAL.luna, equipo: [['lechucita', 13], ['condorito', 14], ['lechuzonte', 16]] } });
           if (r === 'gana') {
             S.flags.insignia1 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 1);
@@ -800,7 +800,7 @@ const MAPAS = {
     carteles: {
       '12,1': 'RUTA 4. Hacia las YUNGAS y el NORTE ARGENTINO.',
       '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis.',
-      '19,9': 'GIMNASIO DE PUERTO WANDA. Líder: ROCÍO, la minera de corazón de piedra. Tipo ROCA.',
+      '19,9': 'GIMNASIO DE PUERTO WANDA. Líder: ROCÍO, la minera de corazón de piedra. Tipo ROCA y VOLADOR.',
       '4,18': 'PUERTO WANDA. Tierra colorada, yerba mate y piedras preciosas.',
     },
     npcs: [
@@ -865,7 +865,7 @@ const MAPAS = {
       }),
       entrenadorNPC({
         id: 'gim2_b', x: 8, y: 5, dir: 2, pal: PAL.abuelo, nombre: 'GEÓLOGO ÁLVARO',
-        equipo: [['peludin', 21], ['micalonco', 22]],
+        equipo: [['geodin', 21], ['micalonco', 22]],
         antes: ['GEÓLOGO ÁLVARO: Estas rocas tienen millones de años. ¡Y mis criaturas también son duras como ellas!'],
         gana: 'GEÓLOGO ÁLVARO: Interesante... Muy interesante.',
         despues: 'GEÓLOGO ÁLVARO: MICALONCO tiene escamas de mica que brillan como espejos. ¡Es mi favorito!',
@@ -1046,7 +1046,7 @@ const MAPAS = {
     carteles: {
       '12,1': 'RUTA 6. Hacia LA PUNA... (¡todavía en construcción!)',
       '8,9': 'CASA DEL MATE. Tus criaturas descansan gratis.',
-      '19,9': 'GIMNASIO DE TILCARA. Líder: TALA, guardián del jardín de cardones. Tipo PLANTA.',
+      '19,9': 'GIMNASIO DE TILCARA. Líder: TALA, guardián del jardín de cardones. Tipo PLANTA y TIERRA.',
       '4,18': 'TILCARA. Casas de adobe y cerros de siete colores.',
     },
     disparadores: [
@@ -1102,14 +1102,14 @@ const MAPAS = {
     npcs: [
       entrenadorNPC({
         id: 'gim3_a', x: 2, y: 7, dir: 3, pal: PAL.chica, nombre: 'JARDINERA PAZ',
-        equipo: [['cuison', 32], ['junquito', 32]],
+        equipo: [['cuison', 32], ['cardito', 32]],
         antes: ['JARDINERA PAZ: ¡Cuidado con pisar las plantas! Si querés pasar, primero ganame.'],
         gana: 'JARDINERA PAZ: Ay, mis plantitas... Bueno, pasá.',
         despues: 'JARDINERA PAZ: TALA riega los cardones una vez por mes. ¡Con eso les alcanza!',
       }),
       entrenadorNPC({
         id: 'gim3_b', x: 8, y: 5, dir: 2, pal: PAL.ayudante, nombre: 'BOTÁNICO EZE',
-        equipo: [['lianaco', 33], ['cardito', 33], ['ceibito', 32]],
+        equipo: [['piquibrasa', 33], ['cardito', 33], ['cuisito', 32]],
         antes: ['BOTÁNICO EZE: Conozco cada planta de la Quebrada. ¡Y cada debilidad de tus criaturas!'],
         gana: 'BOTÁNICO EZE: Mmm, eso no estaba en mis libros.',
         despues: 'BOTÁNICO EZE: Las PLANTAS sufren con el FUEGO, el HIELO, el VENENO, los BICHOS y los VOLADORES.',
@@ -1128,7 +1128,7 @@ const MAPAS = {
           await decir('TALA: Bienvenido a mi jardín, Felipe. Acá todo crece despacio, pero crece fuerte.');
           await decir('Soy TALA, líder del GIMNASIO TILCARA. Mis criaturas aguantan el sol, el viento y la sequía.');
           await decir('Si me ganás, te llevás la INSIGNIA CARDÓN. ¡Vamos!');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER TALA', pal: PAL.tala, equipo: [['totorarca', 33], ['cuison', 34], ['anahisa', 34], ['rodcardo', 36]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER TALA', pal: PAL.tala, equipo: [['cuison', 33], ['piquibrasa', 34], ['rodcardo', 34], ['rodcardo', 36]] } });
           if (r === 'gana') {
             S.flags.insignia3 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 3);

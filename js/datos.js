@@ -846,6 +846,42 @@ const ESPECIES = {
       ['d', 2, 14, '#a0ffc0'], ['d', 29, 12, '#a0ffc0'], ['d', 5, 4, '#a0ffc0'],
     ],
   },
+  // --- Psíquicas del Litoral (creadas para el Gimnasio 1; Felipe las puede redibujar) ---
+  lechucita: {
+    nombre: 'Lechucita', tipos: ['PSIQUICO', 'VOLADOR'], base: { ps: 45, atk: 45, def: 42, vel: 60 }, captura: 90, exp: 64,
+    desc: 'la lechuza vizcachera que adivina el futuro', evo: { nivel: 18, a: 'lechuzonte' },
+    movs: [[1, 'picotazo'], [1, 'chillido'], [5, 'mareo'], [10, 'rasante'], [15, 'vision'], [24, 'vuelo_alto']],
+    sprite: [
+      ['r', 12, 24, 2, 7, '#c8a050'], ['r', 18, 24, 2, 7, '#c8a050'],
+      ['e', 16, 18, 8, 9, '#a07040'],
+      ['e', 16, 21, 5, 5, '#f0e0c0', 's'],
+      ['d', 13, 20, '#a07040'], ['d', 18, 22, '#a07040'], ['d', 15, 24, '#a07040'],
+      ['e', 16, 9, 7, 6, '#a07040'],
+      ['d', 11, 5, '#f0e0c0'], ['d', 20, 6, '#f0e0c0'], ['d', 16, 4, '#f0e0c0'],
+      ['e', 13, 9, 2.6, 2.6, '#f0d030', 's'], ['e', 19, 9, 2.6, 2.6, '#f0d030', 's'],
+      ['e', 13, 9, 1.2, 1.2, '#201010', 's'], ['e', 19, 9, 1.2, 1.2, '#201010', 's'],
+      ['p', [[15, 11], [17, 11], [16, 13]], '#5a4020'],
+      ['d', 4, 8, '#f85888'], ['d', 28, 12, '#f85888'], ['d', 6, 20, '#f85888'],
+    ],
+  },
+  lechuzonte: {
+    nombre: 'Lechuzonte', tipos: ['PSIQUICO', 'VOLADOR'], base: { ps: 70, atk: 68, def: 65, vel: 88 }, captura: 45, exp: 160,
+    desc: 'la lechuza vidente que ve en la oscuridad del estero',
+    movs: [[1, 'picotazo'], [1, 'chillido'], [5, 'mareo'], [10, 'rasante'], [15, 'vision'], [24, 'vuelo_alto']],
+    sprite: [
+      ['e', 6, 17, 5, 9, '#7a5030'], ['e', 26, 17, 5, 9, '#7a5030'],
+      ['r', 12, 26, 2, 5, '#c8a050'], ['r', 18, 26, 2, 5, '#c8a050'],
+      ['e', 16, 19, 9, 9, '#8a6038'],
+      ['e', 16, 21, 6, 6, '#f0e0c0', 's'],
+      ['r', 11, 19, 10, 1, '#8a6038', 'c'], ['r', 11, 23, 10, 1, '#8a6038', 'c'],
+      ['e', 16, 9, 8, 7, '#8a6038'],
+      ['p', [[9, 4], [8, 0], [12, 3]], '#8a6038'], ['p', [[23, 4], [24, 0], [20, 3]], '#8a6038'],
+      ['e', 12, 9, 3, 3, '#f85888', 's'], ['e', 20, 9, 3, 3, '#f85888', 's'],
+      ['e', 12, 9, 1.4, 1.4, '#201010', 's'], ['e', 20, 9, 1.4, 1.4, '#201010', 's'],
+      ['p', [[15, 12], [17, 12], [16, 14]], '#f0c030'],
+      ['d', 2, 4, '#f85888'], ['d', 29, 5, '#f85888'], ['d', 3, 28, '#f85888'], ['d', 29, 29, '#f85888'],
+    ],
+  },
   // --- Rara de la Ruta 1 ---
   condorito: {
     nombre: 'Condorito', tipos: ['VOLADOR', 'PSIQUICO'], base: { ps: 45, atk: 48, def: 40, vel: 70 }, captura: 45, exp: 70,
