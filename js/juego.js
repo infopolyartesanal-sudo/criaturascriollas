@@ -952,7 +952,7 @@ function calcularDanio(at, de, mv) {
   const ha = habDe(at), hd = habDe(de);
   const stab = tiposDe(at).includes(mv.tipo) ? (ha.ef === 'adaptable' ? 2 : 1.5) : 1;
   const ef = eficacia(mv.tipo, tiposDe(de));
-  const critico = hd.ef !== 'sinCritico' && Math.random() < (ha.ef === 'critico' ? 1 / 5 : 1 / 16);
+  const critico = hd.ef !== 'sinCritico' && Math.random() < (ha.ef === 'critico' || mv.critAlto ? 1 / 5 : 1 / 16);
   const azar = 0.85 + Math.random() * 0.15;
   if (ef === 0) return { danio: 0, ef, critico: false };
   let extra = 1;
@@ -969,6 +969,7 @@ function calcularDanio(at, de, mv) {
   if (bt.lluvia > 0 && mv.tipo === 'FUEGO') extra *= 0.7;
   if (hd.ef === 'filtro' && ef > 1) extra *= 0.75;
   if (hd.ef === 'animaGlacial' && de.ps === de.psMax) extra *= 0.5;
+  if (ha.ef === 'sobrecarga') extra *= 1.3;
   if (ha.ef === 'filoRecio' && mv.corta) extra *= 1.5;
   if (hd.ef === 'ilusion' && !de.et.golpeado) extra *= 0.5;
   return { danio: Math.max(1, Math.floor(base * stab * ef * (critico ? 1.5 : 1) * azar * extra)), ef, critico };
@@ -987,7 +988,8 @@ async function batalla(op) {
   const escenaPrevia = S.escena;
   await transicionBatalla();
   const ent = op.entrenador;
-  const equipoRival = ent ? ent.equipo.map(([id, l]) => crearCriatura(id, l)) : [crearCriatura(op.salvaje[0], op.salvaje[1])];
+  // Un entrenador puede forzar la habilidad de una criatura: ['id', nivel, { hab: 'sequia' }]
+  const equipoRival = ent ? ent.equipo.map(([id, l, extra]) => { const c = crearCriatura(id, l); if (extra && extra.hab) c.habForzada = extra.hab; return c; }) : [crearCriatura(op.salvaje[0], op.salvaje[1])];
   bt = {
     tipo: ent ? 'entrenador' : 'salvaje', ent, equipoRival,
     rival: null, yo: null, rivalVis: false, yoVis: false, entVis: !!ent,
@@ -1255,6 +1257,12 @@ async function ejecutarMov(at, de, slot, quien) {
       await decir(`¡El fuego no lastima a ${nombreBatalla(de)}, lo cura!`, { auto: 50 });
       return;
     }
+    if (hd.ef === 'electromotor' && M.tipo === 'ELECTRICO') {
+      await anunciarHab(de);
+      await decir(`¡${nombreBatalla(de)} absorbió la electricidad!`, { auto: 40 });
+      await cambiarEtapa(de, 'vel', 1);
+      return;
+    }
     if (hd.ef === 'terruno' && M.tipo === 'TIERRA') {
       await anunciarHab(de);
       if (de.ps < de.psMax) { de.ps = Math.min(de.psMax, de.ps + Math.ceil(de.psMax / 4)); await animarPS(de); }
@@ -1391,6 +1399,17 @@ async function despuesDelGolpe(at, de, M, danio = 0) {
   if (de.ps > 0) {
     if (hd.ef === 'hervor' && (M.tipo === 'FUEGO' || M.tipo === 'AGUA')) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 2); }
     if (hd.ef === 'cobardia' && ['BICHO', 'FANTASMA', 'SINIESTRO'].includes(M.tipo)) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 1); }
+  }
+  if (hd.ef === 'geotermica' && de.ps <= 0 && at.ps > 0) {
+    await anunciarHab(de);
+    await decir(`¡${nombreBatalla(de)} explotó como un volcán y se llevó a ${nombreBatalla(at)}!`, { auto: 50 });
+    at.ps = 0;
+    await animarPS(at);
+  }
+  if (ha.ef === 'sobrecarga' && at.ps > 0 && danio > 0) {
+    await anunciarHab(at);
+    at.ps = Math.max(0, at.ps - Math.max(1, Math.floor(at.psMax / 10)));
+    await animarPS(at);
   }
   if (hd.ef === 'justiciero' && de.ps > 0 && M.tipo === 'SINIESTRO') { await anunciarHab(de); await cambiarEtapa(de, 'atk', 1); }
   if (ha.ef === 'furiaAndina' && de.ps <= 0 && at.ps > 0) { await anunciarHab(at); await cambiarEtapa(at, 'atk', 1); }

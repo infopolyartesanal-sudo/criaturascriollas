@@ -366,6 +366,12 @@ function crearTiles() {
     sobre(x, [['r', 6, 2, 4, 13, '#3a8a4a'], ['r', 2, 6, 3, 6, '#3a8a4a'], ['r', 2, 6, 2, 2, '#3a8a4a'], ['r', 11, 4, 3, 6, '#3a8a4a'],
       ['r', 7, 3, 1, 11, '#5aaa60', 'c'], ['d', 7, 1, '#f0f0a0'], ['d', 12, 3, '#f0f0a0']]);
   });
+  // Lava (Gimnasio 7)
+  t['L'] = mk(x => {
+    R(x, 0, 0, 16, 16, '#d84010');
+    R(x, 2, 3, 5, 2, '#f8a020'); R(x, 9, 9, 5, 2, '#f8a020'); R(x, 4, 12, 3, 1, '#f8d040'); R(x, 11, 2, 2, 1, '#f8d040');
+    R(x, 0, 7, 3, 1, '#a02008'); R(x, 13, 14, 3, 1, '#a02008');
+  });
   // Puna: salinas y cerros nevados
   t['w'] = mk(x => {
     R(x, 0, 0, 16, 16, '#f4f6f8');
@@ -421,7 +427,7 @@ function crearEdificio(tipo, w, h, puerta) {
   const pared = tipo === 'lab' ? '#eef2f6' : tipo.startsWith('gimnasio') ? '#ece4f4' : tipo === 'adobe' ? '#e0c08a' : '#f6eedc';
   R(2, techoH - 4, ancho - 4, alto - techoH + 4, pared);
   R(2, alto - 3, ancho - 4, 3, '#a89878');
-  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#d84848', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', gimnasio4: '#3a7ab0', gimnasio5: '#2a2040', gimnasio6: '#c83a3a', adobe: '#9a6a3a' };
+  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#d84848', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', gimnasio4: '#3a7ab0', gimnasio5: '#2a2040', gimnasio6: '#c83a3a', gimnasio7: '#e06a20', adobe: '#9a6a3a' };
   const tc = TECHOS[tipo] || '#c8553a';
   R(0, 0, ancho, techoH, tc);
   let fila = 0;

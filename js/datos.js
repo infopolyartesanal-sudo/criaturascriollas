@@ -132,6 +132,14 @@ const MOVS = {
   cola_acuatica: { nombre: 'Cola Acuática', tipo: 'AGUA', pot: 90, prec: 90, pp: 10 },
   terremoto: { nombre: 'Terremoto', tipo: 'TIERRA', pot: 100, prec: 100, pp: 10 },
   relajo: { nombre: 'Relajo', tipo: 'NORMAL', pot: 0, prec: 100, pp: 10, ef: 'cura' },
+  // Región 7 (Catamarca)
+  chispazo: { nombre: 'Chispazo', tipo: 'ELECTRICO', pot: 50, prec: 100, pp: 25 },
+  rayo: { nombre: 'Rayo', tipo: 'ELECTRICO', pot: 90, prec: 100, pp: 15 },
+  trueno: { nombre: 'Trueno', tipo: 'ELECTRICO', pot: 110, prec: 75, pp: 10 },
+  turbo_plasma: { nombre: 'Turbo Plasma', tipo: 'FUEGO', pot: 95, prec: 100, pp: 10 },
+  erupcion_termal: { nombre: 'Erupción Termal', tipo: 'AGUA', pot: 85, prec: 100, pp: 10 },
+  furia_lanin: { nombre: 'Furia del Lanín', tipo: 'ROCA', pot: 90, prec: 95, pp: 10, critAlto: true },
+  aletazo_igneo: { nombre: 'Aletazo Ígneo', tipo: 'VOLADOR', pot: 85, prec: 100, pp: 15 },
   forcejeo: { nombre: 'Forcejeo', tipo: 'NORMAL', pot: 40, prec: 100, pp: 1 },
 };
 
@@ -143,6 +151,8 @@ const OBJETOS = {
   alfajor: { nombre: 'ALFAJOR', precio: 350, desc: 'De dulce de leche. Recupera 50 PS.', cura: 50 },
   piedraNoche: { nombre: 'PIEDRA NOCHE', precio: 2500, piedra: true, desc: 'Una piedra oscura como la noche. Hace evolucionar a GARKOL y a FAEVE.' },
   nectarFloral: { nombre: 'NÉCTAR FLORAL', precio: 2500, piedra: true, desc: 'Néctar de flores del monte. Hace evolucionar a FAEVE.' },
+  piedraAgua: { nombre: 'PIEDRA AGUA', precio: 2500, piedra: true, desc: 'Una piedra azul que gotea agua fresca. Hace evolucionar a CALDERITO.' },
+  piedraTrueno: { nombre: 'PIEDRA TRUENO', precio: 2500, piedra: true, desc: 'Una piedra con un rayo adentro. Hace evolucionar a DYNACORE.' },
   velaAnima: { nombre: 'VELA ÁNIMA', precio: 2500, piedra: true, desc: 'Una vela que arde con fuego rosa y no se apaga. Hace evolucionar a FAEVE.' },
 };
 // Lo que se vende en el ALMACÉN, en orden
@@ -152,7 +162,7 @@ const OBJETOS = {
 // Formato: idEspecie: ['idMovimiento', 'otroMovimiento'],   (los ids están en MOVS, más arriba)
 const TUTOR = {
 };
-const TIENDA = ['boleadora', 'mate', 'alfajor', 'piedraNoche', 'nectarFloral', 'velaAnima'];
+const TIENDA = ['boleadora', 'mate', 'alfajor', 'piedraNoche', 'nectarFloral', 'velaAnima', 'piedraAgua', 'piedraTrueno'];
 
 // ===== Especies =====
 // base: ps, atk, def, vel
@@ -1438,6 +1448,117 @@ const ESPECIES = {
       ['p', [[16, 4], [22, 0], [19, 4], [24, 3], [17, 7]], '#40c8e8'],
     ],
   },
+  // ===== Región 7: diseños de Felipe =====
+  motorb: {
+    nombre: 'Motorb', tipos: ['FUEGO', 'ELECTRICO'], base: { ps: 45, atk: 40, def: 50, vel: 70 }, captura: 75, exp: 64,
+    desc: 'la bujía flotante que suena como una moto', evo: { nivel: 28, a: 'dynacore' },
+    movs: [[1, 'embestida'], [1, 'chispa'], [6, 'chispazo'], [11, 'brasita'], [16, 'pique'], [22, 'fogon'], [28, 'rayo'], [34, 'lavazo'], [40, 'turbo_plasma'], [48, 'trueno'], [56, 'erupcion']],
+    sprite: [
+      ['e', 16, 30, 7, 1.2, '#3a3030', 's'],
+      ['p', [[9, 17], [3, 12], [2, 20]], '#4a4a58'], ['p', [[23, 17], [29, 12], [30, 20]], '#4a4a58'],
+      ['d', 2, 11, '#f8e040'], ['d', 30, 11, '#f8e040'], ['d', 1, 21, '#f8e040'], ['d', 31, 21, '#f8e040'],
+      ['e', 16, 19, 8, 8, '#8a8a98'],
+      ['r', 12, 5, 8, 9, '#c8e8f8'], ['r', 11, 4, 10, 2, '#5a5a68'],
+      ['e', 16, 10, 3, 3.5, '#f88030', 's'], ['e', 16, 10, 1.5, 2, '#f8e040', 's'],
+      ['e', 13, 19, 1.6, 1.8, '#40c0f0', 's'], ['e', 19, 19, 1.6, 1.8, '#40c0f0', 's'],
+      ['r', 13, 23, 6, 1, '#3a3a48', 's'],
+    ],
+  },
+  dynacore: {
+    nombre: 'Dynacore', tipos: ['FUEGO', 'ELECTRICO'], base: { ps: 60, atk: 55, def: 65, vel: 90 }, captura: 45, exp: 142,
+    desc: 'el bloque de motor que es un dínamo viviente', evo: { nivel: 45, a: 'turborush' }, evoPiedra: { piedraTrueno: 'turborush' },
+    movs: [[1, 'embestida'], [1, 'chispa'], [6, 'chispazo'], [11, 'brasita'], [16, 'pique'], [22, 'fogon'], [28, 'rayo'], [34, 'lavazo'], [40, 'turbo_plasma'], [48, 'trueno'], [56, 'erupcion']],
+    sprite: [
+      ['e', 16, 31, 10, 1.2, '#3a3030', 's'],
+      ['p', [[6, 16], [1, 24], [3, 26], [8, 19]], '#b87040'], ['p', [[26, 16], [31, 24], [29, 26], [24, 19]], '#b87040'],
+      ['r', 0, 25, 4, 3, '#d03030'], ['r', 28, 25, 4, 3, '#202020'],
+      ['r', 6, 12, 20, 14, '#7a7a88'], ['r', 6, 24, 20, 3, '#b87040'],
+      ['r', 7, 4, 5, 9, '#c8e8f8'], ['r', 13.5, 3, 5, 10, '#c8e8f8'], ['r', 20, 4, 5, 9, '#c8e8f8'],
+      ['e', 9.5, 9, 1.5, 2.5, '#f88030', 's'], ['e', 16, 8, 1.5, 3, '#f8a030', 's'], ['e', 22.5, 9, 1.5, 2.5, '#f88030', 's'],
+      ['e', 12, 18, 1.6, 1.8, '#40c0f0', 's'], ['e', 20, 18, 1.6, 1.8, '#40c0f0', 's'],
+      ['d', 3, 14, '#f8e040'], ['d', 29, 14, '#f8e040'],
+    ],
+  },
+  turborush: {
+    nombre: 'Turborush', tipos: ['FUEGO', 'ELECTRICO'], base: { ps: 75, atk: 125, def: 75, vel: 115 }, captura: 45, exp: 245,
+    desc: 'la turbina de plasma que deja un rastro de relámpagos',
+    movs: [[1, 'embestida'], [1, 'chispa'], [6, 'chispazo'], [11, 'brasita'], [16, 'pique'], [22, 'fogon'], [28, 'rayo'], [34, 'lavazo'], [40, 'turbo_plasma'], [48, 'trueno'], [56, 'erupcion']],
+    sprite: [
+      ['p', [[25, 13], [32, 9], [32, 23], [25, 19]], '#40a0f8', 's'], ['p', [[26, 14], [31, 12], [31, 20], [26, 18]], '#c0f0ff', 's'],
+      ['p', [[5, 16], [24, 8], [27, 16], [24, 24]], '#202024'],
+      ['p', [[7, 16], [23, 10], [23, 22]], '#2a2a30'],
+      ['r', 10, 10, 13, 1, '#d8b040', 's'], ['r', 10, 21, 13, 1, '#d8b040', 's'],
+      ['e', 15, 16, 4, 4, '#e8f8ff', 's'], ['e', 15, 16, 2.2, 2.2, '#80d0ff', 's'],
+      ['e', 8, 5, 3, 2, '#5a5a68'], ['e', 8, 27, 3, 2, '#5a5a68'],
+      ['p', [[6, 4], [3, 1], [5, 4], [1, 3]], '#f8f060', 's'], ['p', [[6, 28], [2, 31], [4, 28], [0, 29]], '#f8f060', 's'],
+      ['d', 3, 8, '#f8f060'], ['d', 12, 2, '#f8f060'], ['d', 2, 22, '#f8f060'], ['d', 13, 30, '#f8f060'],
+      ['e', 10, 15, 1, 1, '#40c0f0', 's'],
+    ],
+  },
+  calderito: {
+    nombre: 'Calderito', tipos: ['FUEGO'], base: { ps: 55, atk: 55, def: 65, vel: 35 }, captura: 75, exp: 64,
+    desc: 'el volcancito que echa humo cuando se enoja', evo: { nivel: 32, a: 'laninger' }, evoPiedra: { piedraAgua: 'submaringer' },
+    movs: [[1, 'embestida'], [1, 'brasita'], [6, 'adobe'], [11, 'chispa'], [16, 'pedrada'], [22, 'fogon'], [28, 'chapuzon'], [32, 'derrumbe'], [38, 'lavazo'], [44, 'erupcion_termal'], [44, 'furia_lanin'], [52, 'erupcion']],
+    sprite: [
+      ['e', 16, 30, 10, 1.5, '#3a2a2a', 's'],
+      ['p', [[5, 29], [11, 10], [21, 10], [27, 29]], '#7a5a4a'],
+      ['p', [[11, 10], [21, 10], [19, 14], [13, 14]], '#f86020'],
+      ['p', [[13, 11], [16, 13], [19, 11]], '#f8d040', 's'],
+      ['p', [[8, 26], [12, 18], [10, 26]], '#f86020', 's'], ['p', [[22, 27], [21, 20], [24, 27]], '#f86020', 's'],
+      ['e', 13, 20, 1.6, 2, '#ffffff', 's'], ['e', 19, 20, 1.6, 2, '#ffffff', 's'],
+      ['d', 13, 20, '#202020'], ['d', 19, 20, '#202020'],
+      ['e', 13, 6, 2.5, 2, '#d8d8d8', 's'], ['e', 17, 3, 3, 2.2, '#e8e8e8', 's'], ['e', 21, 6, 2, 1.6, '#c8c8c8', 's'],
+    ],
+  },
+  submaringer: {
+    nombre: 'Submaringer', tipos: ['FUEGO', 'AGUA'], base: { ps: 90, atk: 100, def: 95, vel: 60 }, captura: 45, exp: 235,
+    desc: 'el volcán submarino que escupe agua hirviendo',
+    movs: [[1, 'embestida'], [1, 'brasita'], [6, 'adobe'], [11, 'chispa'], [16, 'pedrada'], [22, 'fogon'], [28, 'chapuzon'], [32, 'derrumbe'], [38, 'lavazo'], [44, 'erupcion_termal'], [44, 'furia_lanin'], [52, 'erupcion']],
+    sprite: [
+      ['e', 16, 30, 14, 2, '#3a6a9a', 's'],
+      ['p', [[2, 30], [10, 9], [22, 9], [30, 30]], '#3a4a6a'],
+      ['p', [[6, 30], [11, 18], [21, 18], [26, 30]], '#4a6a9a', 's'],
+      ['p', [[10, 9], [22, 9], [20, 13], [12, 13]], '#f86020'],
+      ['p', [[13, 9], [12, 1], [16, 5], [20, 0], [19, 9]], '#80d0f8', 's'], ['e', 16, 4, 2, 2, '#e0f8ff', 's'],
+      ['p', [[7, 24], [10, 15], [12, 24]], '#f86020', 's'], ['p', [[21, 25], [23, 16], [25, 25]], '#f86020', 's'],
+      ['e', 13, 19, 1.8, 2, '#f8d040', 's'], ['e', 19, 19, 1.8, 2, '#f8d040', 's'],
+      ['d', 13, 19, '#202020'], ['d', 19, 19, '#202020'],
+      ['d', 4, 22, '#a0e0ff'], ['d', 28, 18, '#a0e0ff'], ['d', 26, 12, '#a0e0ff'],
+    ],
+  },
+  laninger: {
+    nombre: 'Lanínger', tipos: ['FUEGO', 'ROCA'], base: { ps: 90, atk: 115, def: 105, vel: 45 }, captura: 45, exp: 235,
+    desc: 'el volcán andante con la forma del Lanín',
+    movs: [[1, 'embestida'], [1, 'brasita'], [6, 'adobe'], [11, 'chispa'], [16, 'pedrada'], [22, 'fogon'], [28, 'chapuzon'], [32, 'derrumbe'], [38, 'lavazo'], [44, 'erupcion_termal'], [44, 'furia_lanin'], [52, 'erupcion']],
+    sprite: [
+      ['e', 16, 30, 14, 2, '#3a2a2a', 's'],
+      ['p', [[1, 30], [12, 4], [20, 4], [31, 30]], '#5a4a48'],
+      ['p', [[12, 4], [20, 4], [23, 11], [9, 11]], '#f0f0f8'],
+      ['p', [[13, 4], [19, 4], [18, 6], [14, 6]], '#f86020'],
+      ['p', [[10, 30], [13, 16], [15, 30]], '#f86020', 's'], ['p', [[19, 30], [20, 20], [23, 30]], '#f8a030', 's'],
+      ['e', 12, 17, 1.8, 1.6, '#f8d040', 's'], ['e', 20, 17, 1.8, 1.6, '#f8d040', 's'],
+      ['r', 4, 22, 5, 7, '#4a3a38'], ['r', 23, 22, 5, 7, '#4a3a38'],
+      ['e', 16, 1, 2, 1.5, '#f86020', 's'], ['d', 13, 0, '#f8d040'], ['d', 19, 0, '#f8d040'],
+    ],
+  },
+  zorzaliente: {
+    nombre: 'Zorzaliente', tipos: ['FUEGO', 'VOLADOR'], base: { ps: 70, atk: 105, def: 65, vel: 120 }, captura: 45, exp: 200,
+    desc: 'el zorzal de fuego que calienta los bosques en invierno',
+    movs: [[1, 'picotazo'], [1, 'brasita'], [6, 'rasante'], [12, 'chispa'], [18, 'fogon'], [24, 'vuelo_alto'], [32, 'lavazo'], [40, 'aletazo_igneo'], [48, 'erupcion']],
+    sprite: [
+      ['e', 16, 30, 7, 1.2, '#4a3020', 's'],
+      ['p', [[20, 20], [31, 23], [29, 26], [21, 24]], '#d04020'], ['p', [[26, 22], [31, 18], [30, 25]], '#f8a030', 's'],
+      ['p', [[15, 14], [4, 3], [7, 11], [3, 13], [11, 19]], '#c05030'], ['p', [[14, 15], [6, 7], [9, 15]], '#f8c040', 's'],
+      ['p', [[18, 14], [29, 4], [27, 12], [30, 14], [22, 19]], '#c05030'], ['p', [[19, 15], [26, 8], [23, 16]], '#f8c040', 's'],
+      ['r', 13, 23, 1, 6, '#5a3a20'], ['r', 18, 23, 1, 6, '#5a3a20'],
+      ['e', 16, 19, 6, 6, '#a05030'],
+      ['e', 15, 21, 3.5, 4, '#f8d070', 's'], ['d', 14, 20, '#a05030'], ['d', 16, 22, '#a05030'],
+      ['e', 15, 10, 4.5, 4, '#a05030'],
+      ['p', [[11, 10], [6, 11], [11, 12]], '#f8c040'],
+      ['e', 14, 9, 1.4, 1.4, '#202020', 's'], ['d', 14, 8, '#ffffff'],
+      ['p', [[15, 6], [17, 1], [18, 5], [21, 2], [19, 8]], '#f86020', 's'],
+    ],
+  },
   mimetit: {
     nombre: 'Mimetit', tipos: ['DRAGON', 'PSIQUICO'], base: { ps: 50, atk: 55, def: 48, vel: 68 }, captura: 45, exp: 70,
     desc: 'el dragoncito que se vuelve transparente', evo: { nivel: 35, a: 'espectradraco' },
@@ -1767,6 +1888,10 @@ const HABILIDADES = {
   llovizna: { nombre: 'Llovizna', ef: 'llovizna', desc: 'Al entrar se larga a llover: el Agua pega más y el Fuego menos.' },
   vientoAfin: { nombre: 'Viento Afín', ef: 'veloz', desc: 'Llama al viento a su favor: al entrar se vuelve más rápido.' },
   terruno: { nombre: 'Terruño', ef: 'terruno', desc: 'Los ataques de Tierra no lo lastiman: absorbe el barro y se cura.' },
+  electromotor: { nombre: 'Electromotor', ef: 'electromotor', desc: 'Los ataques Eléctricos no lo lastiman: lo aceleran.' },
+  sobrecarga: { nombre: 'Sobrecarga', ef: 'sobrecarga', desc: 'Sus ataques pegan un 30% más, pero pierde PS cada vez que golpea.' },
+  geotermica: { nombre: 'Energía Geotérmica', ef: 'geotermica', desc: 'Si lo debilitan con un golpe, explota y se lleva al rival con él.' },
+  cuerpoHumo: { nombre: 'Cuerpo Humo', ef: 'cuerpoPuro', desc: 'Su humo blanco lo protege: nadie le puede bajar nada.' },
   maldicionLunar: { nombre: 'Maldición Lunar', ef: 'maldicion', desc: 'Sus mordiscos le devuelven la mitad del daño que hacen como PS.' },
 };
 const HAB_ESPECIE = {
@@ -1799,6 +1924,11 @@ const HAB_ESPECIE = {
   pumita: 'intimidacion', pumentor: 'intimidacion',
   howlup: { n: ['intimidacion', 'cuerpoMaldito'], o: 'maldicionLunar' }, phantolycan: { n: ['intimidacion', 'cuerpoMaldito'], o: 'maldicionLunar' },
   sparknight: { n: ['intimidacion', 'ojoNocturno'] }, umbratail: { n: ['intimidacion', 'ojoNocturno'] },
+  motorb: { n: ['electromotor', 'cuerpoLlama'], o: 'sobrecarga' }, dynacore: { n: ['electromotor', 'cuerpoLlama'], o: 'sobrecarga' },
+  turborush: { n: ['electromotor', 'cuerpoLlama'], o: 'sobrecarga' },
+  calderito: { n: ['robustez', 'cuerpoHumo'], o: 'absorbeFuego' }, submaringer: { n: ['llovizna', 'cuerpoHumo'], o: 'geotermica' },
+  laninger: { n: ['rocaSolida', 'cuerpoHumo'], o: 'geotermica' },
+  zorzaliente: { n: ['pasoLigero', 'cuerpoLlama'] },
   carpibarro: { n: ['descansoRegio', 'caparazon'], o: 'terruno' }, glyptopampa: { n: ['descansoRegio', 'caparazon'], o: 'terruno' },
   azularza: { n: ['nadoRapido', 'vientoAfin'], o: 'llovizna' },
   escarchin: { n: ['cortinaNieve', 'cuerpoPuro'], o: 'animaGlacial' }, glaciar: { n: ['cuerpoPuro', 'competitivo'], o: 'animaGlacial' },
@@ -1812,6 +1942,7 @@ for (const id in ESPECIES) {
 }
 // Cada criatura guarda qué habilidad le tocó (habSlot: 0, 1 u 'o' = oculta); al evolucionar conserva el lugar
 function habClave(m) {
+  if (m.habForzada) return m.habForzada;
   const e = ESPECIES[m.id];
   if (m.habSlot === 'o' && e.habOculta) return e.habOculta;
   return e.habs[m.habSlot] || e.habs[0];

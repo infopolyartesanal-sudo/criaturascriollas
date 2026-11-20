@@ -23,6 +23,8 @@ const PAL = {
   almacenero: { id: 'almacenero', piel: '#e8b890', pelo: '#5a3a20', boina: '#3a3a5a', remera: '#3a8a4a', guardapolvo: true, pant: '#4a3a2a', barba: '#5a3a20' },
   sombra: { id: 'sombra', piel: '#e8d0c0', pelo: '#1a1a2a', peloLargo: true, sombrero: '#1a1a1a', remera: '#4a2a6a', raya: '#b060f0', pant: '#1a1a2a' },
   marea: { id: 'marea', piel: '#f0d0b8', pelo: '#2a3a5a', peloLargo: true, gorra: '#e8f0f8', remera: '#2a6ab0', raya: '#f0f0f0', pant: '#1a2a4a' },
+  ceniza: { id: 'ceniza', piel: '#d8a070', pelo: '#c03020', peloLargo: true, remera: '#e06a20', raya: '#f8d040', pant: '#3a2a2a' },
+  piloto: { id: 'piloto', piel: '#e8b890', pelo: '#3a2a1a', gorra: '#1a2a5a', remera: '#f0f0f8', raya: '#1a2a5a', pant: '#1a2a5a' },
   nena: { id: 'nena', piel: '#f4c8a0', pelo: '#c08040', peloLargo: true, remera: '#f070a0', pant: '#4a6aa8' },
 };
 
@@ -887,6 +889,113 @@ const ESTRECHO = [
 const MADRYN = teñir(TILCARA, { C: 'R', K: '-' });
 const GALLEGOS = teñir(PUERTO, { Y: 'N', q: '=' });
 const USHUAIA = teñir(VILLA, { T: 'N' });
+// Región 7 (Catamarca): rutas 19 y 20 van al OESTE (ccw), la 21 SUBE a la Puna
+const VALLECAT = [
+  'CCCCCCCCCC==CCCCCCCCCC',
+  'CC....,,,,==........CC',
+  'CC....,,,,==........CC',
+  'CC....,,,S==,,......CC',
+  'CC........==,,......CC',
+  'CC........==........CC',
+  'CC...,,,,.==....CC..CC',
+  'CC...,,,,.==....CC..CC',
+  'CC....,,,,==........CC',
+  'CC..,,,,,,==....CC..CC',
+  'CC..,,,,,,==....CC..CC',
+  'CC,,,,,,,.==,,,.....CC',
+  'CC,,,=======,,,.....CC',
+  'CC,,,==,,,,.........CC',
+  'CC...==.....,,,,,,..CC',
+  'CC...==.....,,,,,,..CC',
+  'CC..,==,....,,,,,,KKCC',
+  'CC..,==,.....,,,,,KKCC',
+  'CC..,==,.....,,,,,,.CC',
+  'CC...==.,,,,,KK...CCCC',
+  'CCF..==.,,,,,KK...CCCC',
+  'CC...==..F..........CC',
+  'CC..,==,,...........CC',
+  'CC..,==,,........,,,CC',
+  'CC..,==,,.,,,,,..,,,CC',
+  'CC...=======,,,....FCC',
+  'CC....,,,.==........CC',
+  'CC....,,,.==....F...CC',
+  'CC..F....S==........CC',
+  'CC........==...F....CC',
+  'CC........==........CC',
+  'CCCCCCCCCC==CCCCCCCCCC',
+];
+const TATON = [
+  'CCCCCCCCCC==CCCCCCCCCC',
+  'CC--------==--------CC',
+  'CC-------u==uuuuuu--CC',
+  'CC-------S==uuuuuu--CC',
+  'CC----uuuu==-uuuuu--CC',
+  'CC----uRRu==--------CC',
+  'CCuuuuuRRu==--------CC',
+  'CCuuuuuu--==--------CC',
+  'CCuuCCRR-u========--CC',
+  'CC--CCRR-uuuu---==--CC',
+  'CC--CCuuuuuuu---==--CC',
+  'CC--CCuuuuuu----==--CC',
+  'CC----uuRRuu----==--CC',
+  'CC------RR------==--CC',
+  'CC--------------==--CC',
+  'CC-----------uuu==--CC',
+  'CC---------CCuuu==u-CC',
+  'CC------uuuCCuuu==u-CC',
+  'CC------uuuuu---==--CC',
+  'CC--------------==--CC',
+  'CC------------uu==uuCC',
+  'CC------------uu==uuCC',
+  'CC------uuuuuuuu==uuCC',
+  'CC------uuuuuuuu==--CC',
+  'CC----RRuuuuuuuu==--CC',
+  'CC-RR-RR--------==--CC',
+  'CC-RR-uuuuu-----==--CC',
+  'CC-uuuuuuu========--CC',
+  'CC-uuuuuuS==u-------CC',
+  'CC-uuu----==--------CC',
+  'CC--------==--------CC',
+  'CCCCCCCCCC==CCCCCCCCCC',
+];
+const PUNA_ATACAMA = [
+  'NNNNNNNNNN==NNNNNNNNNN',
+  'NN--------==--------NN',
+  'NN--------==uu------NN',
+  'NN-------S==uu------NN',
+  'NN--------==uu------NN',
+  'NN--------==uuuu----NN',
+  'NNRRuuuuu-==uuNN----NN',
+  'NNRRuuuuuu==uuNNuu--NN',
+  'NN-----uuu==uuuuuu--NN',
+  'NN-----uuu==u---uNNuNN',
+  'NN--------==u---uNNuNN',
+  'NN--------==uuu-----NN',
+  'NN--------==uuu-----NN',
+  'NN-------u==uuu-----NN',
+  'NN-------u==uuu-----NN',
+  'NN--------==--------NN',
+  'NN--------==--------NN',
+  'NN--------======----NN',
+  'NN--------uuu-==----NN',
+  'NN------------==----NN',
+  'NN------------==----NN',
+  'NN--uuu-------==----NN',
+  'NN--uuu-------==----NN',
+  'NNwwwwwwwwwwww==wwwwNN',
+  'NNwwwwwwwwwwww==wwwwNN',
+  'NN-----------u==uuu-NN',
+  'NN-----------u==uuu-NN',
+  'NN--------======uuu-NN',
+  'NN-------S==--------NN',
+  'NN--------==--------NN',
+  'NN--------==--------NN',
+  'NNNNNNNNNN==NNNNNNNNNN',
+];
+const CATAMARCA = teñir(PUERTO, { Y: 'C', q: '=' });
+const BELEN = teñir(TILCARA, {});
+const FIAMBALA = teñir(PUERTO, { Y: 'C', q: '=', '.': '-', F: '-' });
+const OJOS = teñir(TILCARA, { C: 'N', K: 'R', '.': '-' });
 const TAFI = [
   'RRRRRRRRRR==RRRRRRRRRRRR',
   'RR........==S.........RR',
@@ -2949,6 +3058,7 @@ const MAPAS = {
   ushuaia: {
     nombre: 'USHUAIA',
     exterior: true,
+    vuelos: ['catamarca'], // con el PILOTO
     grilla: desdeTexto(USHUAIA),
     edificios: [
       { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
@@ -2962,7 +3072,7 @@ const MAPAS = {
       { x: 17, y: 8, a: 'gimnasio6', ax: 5, ay: 10, dir: 1 },
     ],
     carteles: {
-      '12,1': 'Al NORTE: RUTA 18, el ESTRECHO DE MAGALLANES. Más al sur ya no hay nada... ¡solo la Antártida!',
+      '12,1': 'Al NORTE: RUTA 18, el ESTRECHO DE MAGALLANES. Más al sur, solo la Antártida. ¡Para ir a CATAMARCA, hablá con el PILOTO!',
       '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡El CEMIC más austral del mundo!',
       '19,9': 'GIMNASIO DE USHUAIA. Líder: MAREA, la guardiana del faro. Tipo AGUA.',
       '4,20': 'USHUAIA. La ciudad del fin del mundo, entre la montaña y el Canal Beagle.',
@@ -2978,6 +3088,21 @@ const MAPAS = {
           S.flags.regaloUshuaia = true;
           await decir('¡Felipe recibió 5 MATES!');
           guardar();
+        },
+      },
+      {
+        id: 'piloto_ush', x: 12, y: 18, dir: 2, pal: PAL.piloto,
+        hablar: async () => {
+          if (!S.flags.insignia6) {
+            await decir('PILOTO: Desde el aeropuerto de Ushuaia vuelo hasta CATAMARCA, en el norte.');
+            await decir('Pero solo llevo a los entrenadores que tienen la INSIGNIA FARO de MAREA. ¡Andá al gimnasio!');
+            return;
+          }
+          await decir('PILOTO: ¡Felicitaciones por la INSIGNIA FARO! El GIMNASIO 7 está en CATAMARCA, al lado de un volcán.');
+          if (await siNo('¿Querés volar a CATAMARCA?')) {
+            await decir('PILOTO: ¡Abrochate el cinturón! Son más de 3.000 kilómetros. ¡Despegamos!');
+            await viajar({ a: 'catamarca', ax: 9, ay: 15, dir: 0 });
+          }
         },
       },
       {
@@ -3057,6 +3182,381 @@ const MAPAS = {
             S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 5;
             S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
             await decir('MAREA: Llevate estos ALFAJORES y BOLEADORAS. ¡Ya tenés seis insignias!');
+            guardar();
+          }
+        },
+      },
+    ],
+  },
+
+  // ================= REGIÓN 7: CATAMARCA (VALLE → BELÉN → FIAMBALÁ → PUNA DE ATACAMA) =================
+  catamarca: {
+    nombre: 'SAN FERNANDO DEL VALLE DE CATAMARCA',
+    exterior: true,
+    vuelos: ['ushuaia'], // con el PILOTO
+    grilla: desdeTexto(CATAMARCA),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 15, y: 4, w: 5, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'casa', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 5, y: 8, a: 'centro16', ax: 4, ay: 6, dir: 1 },
+      { x: 0, y: 10, a: 'ruta19', ax: 11, ay: 30, dir: 1 },
+      { x: 0, y: 11, a: 'ruta19', ax: 10, ay: 30, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Al OESTE: RUTA 19, el VALLE DE CATAMARCA, hacia BELÉN, FIAMBALÁ y la PUNA.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Con empanadas catamarqueñas!',
+      '19,9': 'AEROPUERTO. Vuelos a USHUAIA.',
+      '4,18': 'SAN FERNANDO DEL VALLE DE CATAMARCA. Rodeada de cerros, olivos y nogales.',
+    },
+    npcs: [
+      {
+        id: 'piloto_cat', x: 8, y: 15, dir: 0, pal: PAL.piloto,
+        hablar: async () => {
+          await decir('PILOTO: ¡Hola, Felipe! Desde acá vuelo a USHUAIA, en el fin del mundo.');
+          if (await siNo('¿Querés volar a USHUAIA?')) {
+            await decir('PILOTO: ¡Abrochate el cinturón! ¡Despegamos!');
+            await viajar({ a: 'ushuaia', ax: 12, ay: 19, dir: 0 });
+          }
+        },
+      },
+      {
+        id: 'nena_cat', x: 17, y: 18, dir: 2, pal: PAL.nena,
+        hablar: async () => {
+          await decir('NENA: La líder del GIMNASIO 7 es CENIZA. ¡Entrena al lado del volcán OJOS DEL SALADO, el volcán más alto del mundo!');
+          await decir('Usa criaturas de FUEGO. ¡AGUA, TIERRA y ROCA les ganan!');
+        },
+      },
+    ],
+  },
+
+  centro16: crearCentro('catamarca', 5, 9, 'centro16'),
+
+  ruta19: {
+    nombre: 'RUTA 19 · VALLE DE CATAMARCA',
+    exterior: true,
+    grilla: desdeTexto(VALLECAT),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'catamarca', ax: 1, ay: 11, dir: 3 },
+      { x: 11, y: 31, a: 'catamarca', ax: 1, ay: 10, dir: 3 },
+      { x: 10, y: 0, a: 'belen', ax: 22, ay: 11, dir: 2 },
+      { x: 11, y: 0, a: 'belen', ax: 22, ay: 10, dir: 2 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 19 · VALLE DE CATAMARCA. Cardones, olivos y cerros por todos lados.',
+      '9,3': 'Al oeste: BELÉN, la ciudad del poncho.',
+    },
+    encuentros: { lista: [['motorb', 14], ['calderito', 14], ['zorrazo', 12], ['cardito', 10], ['rodcardo', 8], ['piquibrote', 10], ['vizcachita', 10], ['condorito', 8], ['chispuna', 8], ['piquillonco', 4]], min: 60, max: 63 },
+    npcs: [
+      entrenadorNPC({
+        id: 'olivero', x: 12, y: 5, dir: 2, pal: PAL.beto, nombre: 'OLIVERO HÉCTOR',
+        equipo: [['rodcardo', 61], ['piquillonco', 61], ['zorrazo', 62]],
+        antes: ['OLIVERO HÉCTOR: Cosecho aceitunas todo el día. ¡Y a la tarde, una buena pelea!'],
+        gana: 'OLIVERO HÉCTOR: ¡Me dejaste hecho aceite!',
+        despues: 'OLIVERO HÉCTOR: Los MOTORB hacen ruido de moto. ¡Si los escuchás, están cerca!',
+      }),
+      entrenadorNPC({
+        id: 'mecanica', x: 8, y: 21, dir: 2, pal: PAL.ayudante, nombre: 'MECÁNICA VALERIA',
+        equipo: [['motorb', 61], ['dynacore', 62], ['chispuna', 62]],
+        antes: ['MECÁNICA VALERIA: ¡Arreglo motores y entreno criaturas que SON motores! ¿Probamos el tuyo?'],
+        gana: 'MECÁNICA VALERIA: ¡Se me fundió el motor!',
+        despues: 'MECÁNICA VALERIA: Con una PIEDRA TRUENO, DYNACORE se vuelve TURBORUSH. ¡Se venden en el ALMACÉN!',
+      }),
+      {
+        id: 'nuecero', x: 14, y: 29, dir: 1, pal: PAL.abuelo,
+        hablar: async () => {
+          await decir('ABUELO: En Catamarca hacemos los mejores dulces de nuez y de membrillo. ¡Probalos cuando pases por Belén!');
+        },
+      },
+    ],
+  },
+
+  belen: {
+    nombre: 'BELÉN',
+    exterior: true,
+    grilla: desdeTexto(BELEN),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 15, y: 4, w: 6, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 23, y: 10, a: 'ruta19', ax: 11, ay: 1, dir: 0 },
+      { x: 23, y: 11, a: 'ruta19', ax: 10, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro17', ax: 4, ay: 6, dir: 1 },
+      { x: 0, y: 10, a: 'ruta20', ax: 11, ay: 30, dir: 1 },
+      { x: 0, y: 11, a: 'ruta20', ax: 10, ay: 30, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Al ESTE: RUTA 19, hacia CATAMARCA. Al OESTE: RUTA 20, las DUNAS DE TATÓN y FIAMBALÁ.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Con dulce de membrillo!',
+      '19,9': 'TEJEDURÍA. Ponchos de vicuña y de llama, hechos a mano en telar.',
+      '4,18': 'BELÉN. La cuna del poncho, en el oeste de Catamarca.',
+    },
+    npcs: [
+      {
+        id: 'tejedor_belen', x: 7, y: 11, dir: 0, pal: PAL.coplera,
+        hablar: async () => {
+          if (S.flags.regaloBelen) { await decir('TEJEDORA: Un poncho de vicuña tarda meses en tejerse. ¡Es el más suave del mundo!'); return; }
+          await decir('TEJEDORA: ¡Qué bueno que pasaste por Belén! Tomá, unas piedras que encontré en el río.');
+          S.bolsa.piedraAgua = (S.bolsa.piedraAgua || 0) + 1;
+          S.flags.regaloBelen = true;
+          await decir('¡Felipe recibió una PIEDRA AGUA!');
+          await decir('TEJEDORA: Si se la das a un CALDERITO, se vuelve SUBMARINGER, ¡un volcán submarino!');
+          guardar();
+        },
+      },
+      {
+        id: 'nene_belen', x: 19, y: 11, dir: 1, pal: PAL.nene,
+        hablar: async () => {
+          await decir('NENE: CALDERITO tiene dos evoluciones: si lo entrenás se vuelve LANÍNGER, ¡y con una PIEDRA AGUA, SUBMARINGER!');
+        },
+      },
+    ],
+  },
+
+  centro17: crearCentro('belen', 5, 9, 'centro17'),
+
+  ruta20: {
+    nombre: 'RUTA 20 · DUNAS DE TATÓN',
+    exterior: true,
+    grilla: desdeTexto(TATON),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'belen', ax: 1, ay: 11, dir: 3 },
+      { x: 11, y: 31, a: 'belen', ax: 1, ay: 10, dir: 3 },
+      { x: 10, y: 0, a: 'fiambala', ax: 22, ay: 11, dir: 2 },
+      { x: 11, y: 0, a: 'fiambala', ax: 22, ay: 10, dir: 2 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 20 · DUNAS DE TATÓN. ¡Las dunas de arena más altas del mundo!',
+      '9,3': 'Al oeste: FIAMBALÁ y sus aguas termales.',
+    },
+    encuentros: { lista: [['calderito', 14], ['dynacore', 12], ['chispuna', 12], ['volcarin', 12], ['zorrazo', 10], ['terito', 10], ['vizcachita', 10], ['candilejo', 8], ['laninger', 4]], min: 62, max: 65 },
+    npcs: [
+      entrenadorNPC({
+        id: 'sandboard', x: 12, y: 5, dir: 2, pal: PAL.chica, nombre: 'SANDBOARDISTA FLOR',
+        equipo: [['volcarin', 63], ['zorzaliente', 63], ['laninger', 64]],
+        antes: ['SANDBOARDISTA FLOR: ¡Me tiro por las dunas en tabla! ¿Te animás a una pelea a toda velocidad?'],
+        gana: 'SANDBOARDISTA FLOR: ¡Me comí toda la arena!',
+        despues: 'SANDBOARDISTA FLOR: Algunas dunas de Tatón miden más de mil metros. ¡Y suenan cuando sopla el viento!',
+      }),
+      entrenadorNPC({
+        id: 'vulcanologo', x: 13, y: 19, dir: 3, pal: PAL.guarda, nombre: 'VULCANÓLOGO DIEGO',
+        equipo: [['laninger', 63], ['submaringer', 64], ['andragon', 64]],
+        antes: ['VULCANÓLOGO DIEGO: ¡Estudio los volcanes de la Puna! Los de fuego y los que tienen lagunas adentro. ¡Duelo!'],
+        gana: 'VULCANÓLOGO DIEGO: ¡Entraste en erupción!',
+        despues: 'VULCANÓLOGO DIEGO: Ojo con SUBMARINGER y LANÍNGER: si los debilitás con un golpe, ¡pueden explotar y llevarse a tu criatura!',
+      }),
+      {
+        id: 'baqueano_taton', x: 5, y: 30, dir: 1, pal: PAL.abuelo,
+        hablar: async () => {
+          await decir('BAQUEANO: Cuando el viento sopla en las dunas, la arena hace un ruido como de tambor. ¡Le dicen la arena que canta!');
+        },
+      },
+    ],
+  },
+
+  fiambala: {
+    nombre: 'FIAMBALÁ',
+    exterior: true,
+    grilla: desdeTexto(FIAMBALA),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 15, y: 4, w: 5, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 23, y: 10, a: 'ruta20', ax: 11, ay: 1, dir: 0 },
+      { x: 23, y: 11, a: 'ruta20', ax: 10, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro18', ax: 4, ay: 6, dir: 1 },
+      { x: 10, y: 0, a: 'ruta21', ax: 10, ay: 30, dir: 1 },
+      { x: 11, y: 0, a: 'ruta21', ax: 11, ay: 30, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Al NORTE: RUTA 21, la PUNA DE ATACAMA y el volcán OJOS DEL SALADO. Al ESTE: las DUNAS DE TATÓN.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Y después, a las termas!',
+      '19,9': 'TERMAS DE FIAMBALÁ. Piletas de agua caliente que salen de la montaña.',
+      '4,18': 'FIAMBALÁ. Un oasis de viñedos al pie de la cordillera.',
+    },
+    npcs: [
+      tomiNPC({
+        id: 'tomi_fiambala', x: 12, y: 16, dir: 2, bandera: 'tomi7', forma: 'final', nivel: 64,
+        equipo: [['arquitemplillo', 61], ['wandacoloso', 62], ['nevukhan', 62], ['gargorrupt', 62], ['umbratail', 63]],
+        antes: [
+          'TOMI: ¡Felipe! Vine a las termas a descansar... pero vos no me dejás tranquilo, ¿eh?',
+          'TOMI: Bueno, ¡vamos con todo! ¡Esta vez sí te gano!',
+        ],
+        gana: 'TOMI: ¡Ufa! Andá, CENIZA te espera arriba, al lado del volcán. ¡AGUA, TIERRA y ROCA le ganan al FUEGO!',
+        despues: 'TOMI: Me voy a meter en las termas un rato. ¡Suerte en el GIMNASIO 7!',
+        premio: 5,
+      }),
+      {
+        id: 'termas', x: 8, y: 15, dir: 0, pal: PAL.rosa,
+        hablar: async () => {
+          await decir('SEÑORA: ¡Las termas están buenísimas! El agua sale calentita del volcán.');
+          await decir('Mis criaturas se metieron y salieron como nuevas.');
+          curarEquipo();
+          await decir('¡Las criaturas de Felipe se dieron un baño termal y recuperaron toda su energía!');
+        },
+      },
+    ],
+  },
+
+  centro18: crearCentro('fiambala', 5, 9, 'centro18'),
+
+  ruta21: {
+    nombre: 'RUTA 21 · PUNA DE ATACAMA',
+    exterior: true,
+    grilla: desdeTexto(PUNA_ATACAMA),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'fiambala', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 31, a: 'fiambala', ax: 11, ay: 1, dir: 0 },
+      { x: 10, y: 0, a: 'ojos', ax: 10, ay: 20, dir: 1 },
+      { x: 11, y: 0, a: 'ojos', ax: 11, ay: 20, dir: 1 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 21 · PUNA DE ATACAMA. Más de 4.000 metros de altura. ¡Caminá despacio que falta el aire!',
+      '9,3': 'Al norte: la BASE del volcán OJOS DEL SALADO y el GIMNASIO 7.',
+    },
+    encuentros: { lista: [['dynacore', 12], ['calderito', 12], ['volcarin', 12], ['laninger', 10], ['condorito', 10], ['glaciolito', 10], ['vientuino', 8], ['escarchin', 8], ['zorzaliente', 4], ['andragon', 3]], min: 64, max: 66 },
+    npcs: [
+      entrenadorNPC({
+        id: 'andinista_puna', x: 12, y: 15, dir: 2, pal: PAL.nieve, nombre: 'ANDINISTA CAMILA',
+        equipo: [['glaciolito', 64], ['zorzaliente', 65], ['laninger', 65]],
+        antes: ['ANDINISTA CAMILA: Voy a subir el Ojos del Salado: ¡6.893 metros! Pero antes, un duelo para entrar en calor.'],
+        gana: 'ANDINISTA CAMILA: ¡Uf! Me quedé sin aire.',
+        despues: 'ANDINISTA CAMILA: En la cumbre del Ojos del Salado hay una laguna. ¡Es la más alta del mundo!',
+      }),
+      entrenadorNPC({
+        id: 'arriero_puna', x: 13, y: 20, dir: 3, pal: PAL.beto, nombre: 'ARRIERO SEGUNDO',
+        equipo: [['turborush', 65], ['submaringer', 65], ['andragon', 66]],
+        antes: ['ARRIERO SEGUNDO: Cruzo la cordillera con mis mulas desde que era así de chiquito. ¡A ver qué tenés!'],
+        gana: 'ARRIERO SEGUNDO: ¡Bien ahí, gurí! Tenés el corazón de un arriero.',
+        despues: 'ARRIERO SEGUNDO: CENIZA hace salir un sol que raja la tierra. ¡Con ese sol el FUEGO pega más fuerte!',
+      }),
+      {
+        id: 'llamero', x: 5, y: 12, dir: 3, pal: PAL.coplera,
+        hablar: async () => {
+          await decir('LLAMERA: Las vicuñas y las llamas aguantan el frío de la Puna con su lana. ¡Y las criaturas de fuego se calientan solas!');
+        },
+      },
+    ],
+  },
+
+  ojos: {
+    nombre: 'BASE OJOS DEL SALADO',
+    exterior: true,
+    grilla: desdeTexto(OJOS),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 14, y: 4, w: 7, h: 5, tipo: 'gimnasio7', puerta: 3, abre: true },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 10, y: 21, a: 'ruta21', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 21, a: 'ruta21', ax: 11, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro19', ax: 4, ay: 6, dir: 1 },
+      { x: 17, y: 8, a: 'gimnasio7', ax: 5, ay: 10, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Arriba: el volcán OJOS DEL SALADO, el volcán más alto del mundo. Al SUR: RUTA 21, de vuelta a FIAMBALÁ.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡El CEMIC más alto del país!',
+      '19,9': 'GIMNASIO OJOS DEL SALADO. Líder: CENIZA, la que duerme al lado del volcán. Tipo FUEGO.',
+      '4,18': 'BASE OJOS DEL SALADO. El último refugio antes de la cumbre.',
+    },
+    npcs: [
+      {
+        id: 'refugiero', x: 7, y: 11, dir: 0, pal: PAL.guarda,
+        hablar: async () => {
+          await decir('REFUGIERO: ¿Sentís el piso tibio? Es el volcán. Todavía está vivo, aunque duerme hace mucho.');
+        },
+      },
+      {
+        id: 'nene_ojos', x: 19, y: 11, dir: 1, pal: PAL.nene,
+        hablar: async () => {
+          if (S.flags.insignia7) await decir('NENE: ¡Le ganaste a CENIZA! ¡Ya tenés siete insignias! Solo te falta el ACONCAGUA...');
+          else {
+            await decir('NENE: El gimnasio de CENIZA tiene un río de LAVA adentro. ¡No te caigas!');
+            await decir('Su última criatura hace salir un SOL que raja la tierra. ¡Llevá criaturas de AGUA, TIERRA y ROCA!');
+          }
+        },
+      },
+    ],
+  },
+
+  centro19: crearCentro('ojos', 5, 9, 'centro19'),
+
+  gimnasio7: {
+    nombre: 'GIMNASIO OJOS DEL SALADO',
+    grilla: desdeTexto([
+      '###########',
+      '#a__vvv__a#',
+      '#LL_vvv_LL#',
+      '#LL_____LL#',
+      '#___LLL___#',
+      '#_L_LLL_L_#',
+      '#_L_____L_#',
+      '#___L_L___#',
+      '#LL_____LL#',
+      '#LL_____LL#',
+      '#_________#',
+      '#####m#####',
+    ]),
+    edificios: [],
+    salidas: [{ x: 5, y: 11, a: 'ojos', ax: 17, ay: 9, dir: 0 }],
+    objetos: {
+      L: '¡LAVA! Mejor no acercarse mucho... ¡quema!',
+      a: 'Una piedra volcánica que todavía está calentita.',
+    },
+    npcs: [
+      entrenadorNPC({
+        id: 'gim7_a', x: 7, y: 3, dir: 2, pal: PAL.ceniza, nombre: 'FOGONERO RAMIRO',
+        equipo: [['laninger', 64], ['dynacore', 64], ['zorzaliente', 65]],
+        antes: ['FOGONERO RAMIRO: ¡Acá adentro hace 50 grados! ¿Aguantás el calor? ¡Duelo!'],
+        gana: 'FOGONERO RAMIRO: ¡Me apagaste el fogón!',
+        despues: 'FOGONERO RAMIRO: El FUEGO sufre con el AGUA, la TIERRA y la ROCA.',
+      }),
+      entrenadorNPC({
+        id: 'gim7_b', x: 1, y: 6, dir: 3, pal: PAL.coplera, nombre: 'ASADORA MARTA',
+        equipo: [['submaringer', 65], ['turborush', 65]],
+        antes: ['ASADORA MARTA: ¡Tengo las brasas listas para el asado! Pero primero... ¡una pelea!'],
+        gana: 'ASADORA MARTA: ¡Se me quemó el asado!',
+        despues: 'ASADORA MARTA: CENIZA tiene seis criaturas. ¡Y la última trae el sol con ella!',
+      }),
+      {
+        id: 'ceniza', x: 5, y: 1, dir: 0, pal: PAL.ceniza,
+        hablar: async () => {
+          if (S.flags.insignia7) {
+            await decir('CENIZA: Apagaste mi fuego, Felipe. Ahora andá al ACONCAGUA: el último gimnasio te espera.');
+            return;
+          }
+          if (!S.flags.insignia6) {
+            await decir('CENIZA: Primero conseguí la INSIGNIA FARO de MAREA, en Ushuaia. Después volvé.');
+            return;
+          }
+          await decir('CENIZA: ¡Llegaste hasta el volcán más alto del mundo! Pocos aguantan este calor... y este frío.');
+          await decir('Soy CENIZA, líder del GIMNASIO OJOS DEL SALADO. Mis criaturas nacieron de la lava.');
+          await decir('Si me ganás, te llevás la INSIGNIA VOLCÁN. ¡Que arda la Puna!');
+          // Equipo pedido por Poly (20/11): Ignidraxx, Turborush, Zorzaliente, Piquillonco, Submaringer y Brasaspumas (con SEQUÍA).
+          // BRASASPUMAS todavía no está: mientras tanto ocupa su lugar Andragón, con la habilidad Sequía.
+          const r = await batalla({ entrenador: { nombre: 'LÍDER CENIZA', pal: PAL.ceniza, equipo: [['piquillonco', 64], ['submaringer', 65], ['zorzaliente', 65], ['turborush', 66], ['ignidraxx', 66], ['andragon', 67, { hab: 'sequia' }] /* lugar de BRASASPUMAS */] } });
+          if (r === 'gana') {
+            S.flags.insignia7 = true;
+            S.flags.insignias = Math.max(S.flags.insignias || 0, 7);
+            await decir('CENIZA: El volcán se durmió otra vez... Te ganaste la insignia, Felipe.');
+            await decir('¡Felipe recibió la INSIGNIA VOLCÁN!');
+            S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 5;
+            S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
+            await decir('CENIZA: Llevate estos ALFAJORES y BOLEADORAS. ¡Siete insignias! Ya solo te falta el ACONCAGUA.');
             guardar();
           }
         },
@@ -3178,6 +3678,14 @@ abrir('jacobacci', [[0, 10], [1, 10], [0, 11], [1, 11], [22, 10], [23, 10], [22,
 abrir('somuncura', [[10, 0], [11, 0]], 'R');
 // Ushuaia: el fin del mundo, se llega desde el norte y abajo está cerrado
 abrir('ushuaia', [[10, 23], [11, 23]], 'N');
+// Región 7: abrir costados y cerrar lo que no se usa
+abrir('catamarca', [[10, 0], [11, 0], [10, 21], [11, 21]], 'C');
+abrir('catamarca', [[0, 10], [1, 10], [0, 11], [1, 11]], '=');
+abrir('belen', [[10, 0], [11, 0], [10, 21], [11, 21]], 'C');
+abrir('belen', [[0, 10], [1, 10], [0, 11], [1, 11], [22, 10], [23, 10], [22, 11], [23, 11]], '=');
+abrir('fiambala', [[10, 21], [11, 21]], 'C');
+abrir('fiambala', [[22, 10], [23, 10], [22, 11], [23, 11]], '=');
+abrir('ojos', [[10, 0], [11, 0]], 'N');
 abrir('somuncura', [[0, 10], [1, 10], [0, 11], [1, 11]], '=');
 
 // --- Rutas: girarlas ---
@@ -3223,6 +3731,9 @@ girarMapa('ruta15', 'cw');
 girarMapa('ruta16', '180');
 girarMapa('ruta17', '180');
 girarMapa('ruta18', '180');
+// Región 7: hacia el OESTE por Catamarca; la Ruta 21 sube derecho a la Puna
+girarMapa('ruta19', 'ccw');
+girarMapa('ruta20', 'ccw');
 
 
 // ===== Escenas de la historia =====

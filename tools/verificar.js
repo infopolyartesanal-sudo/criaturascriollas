@@ -50,6 +50,7 @@ const txt = fs.readFileSync(R + '/js/mapas.js', 'utf8');
 for (const m of txt.matchAll(/\['([a-z_]+)', \d+\]/g)) if (!E[m[1]]) err('especie de entrenador inexistente', m[1]);
 // todos los mapas alcanzables desde el pueblo
 const vis = new Set(['pueblo']); const q = ['pueblo'];
-while (q.length) { const a = q.shift(); for (const s of M[a].salidas || []) if (!vis.has(s.a)) { vis.add(s.a); q.push(s.a); } }
+// `vuelos`: lugares a los que se llega en avión (hablando con el piloto)
+while (q.length) { const a = q.shift(); for (const s of [...(M[a].salidas || []), ...(M[a].vuelos || []).map(v => ({ a: v }))]) if (!vis.has(s.a)) { vis.add(s.a); q.push(s.a); } }
 for (const id of Object.keys(M)) if (!vis.has(id)) err('mapa inalcanzable', id);
 console.log(Object.keys(M).length, 'mapas,', errores, 'errores');

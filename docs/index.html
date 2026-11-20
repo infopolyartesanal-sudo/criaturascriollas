@@ -471,6 +471,12 @@ function crearTiles() {
     sobre(x, [['r', 6, 2, 4, 13, '#3a8a4a'], ['r', 2, 6, 3, 6, '#3a8a4a'], ['r', 2, 6, 2, 2, '#3a8a4a'], ['r', 11, 4, 3, 6, '#3a8a4a'],
       ['r', 7, 3, 1, 11, '#5aaa60', 'c'], ['d', 7, 1, '#f0f0a0'], ['d', 12, 3, '#f0f0a0']]);
   });
+  // Lava (Gimnasio 7)
+  t['L'] = mk(x => {
+    R(x, 0, 0, 16, 16, '#d84010');
+    R(x, 2, 3, 5, 2, '#f8a020'); R(x, 9, 9, 5, 2, '#f8a020'); R(x, 4, 12, 3, 1, '#f8d040'); R(x, 11, 2, 2, 1, '#f8d040');
+    R(x, 0, 7, 3, 1, '#a02008'); R(x, 13, 14, 3, 1, '#a02008');
+  });
   // Puna: salinas y cerros nevados
   t['w'] = mk(x => {
     R(x, 0, 0, 16, 16, '#f4f6f8');
@@ -526,7 +532,7 @@ function crearEdificio(tipo, w, h, puerta) {
   const pared = tipo === 'lab' ? '#eef2f6' : tipo.startsWith('gimnasio') ? '#ece4f4' : tipo === 'adobe' ? '#e0c08a' : '#f6eedc';
   R(2, techoH - 4, ancho - 4, alto - techoH + 4, pared);
   R(2, alto - 3, ancho - 4, 3, '#a89878');
-  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#d84848', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', gimnasio4: '#3a7ab0', gimnasio5: '#2a2040', gimnasio6: '#c83a3a', adobe: '#9a6a3a' };
+  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#d84848', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', gimnasio4: '#3a7ab0', gimnasio5: '#2a2040', gimnasio6: '#c83a3a', gimnasio7: '#e06a20', adobe: '#9a6a3a' };
   const tc = TECHOS[tipo] || '#c8553a';
   R(0, 0, ancho, techoH, tc);
   let fila = 0;
@@ -735,6 +741,14 @@ const MOVS = {
   cola_acuatica: { nombre: 'Cola Acuática', tipo: 'AGUA', pot: 90, prec: 90, pp: 10 },
   terremoto: { nombre: 'Terremoto', tipo: 'TIERRA', pot: 100, prec: 100, pp: 10 },
   relajo: { nombre: 'Relajo', tipo: 'NORMAL', pot: 0, prec: 100, pp: 10, ef: 'cura' },
+  // Región 7 (Catamarca)
+  chispazo: { nombre: 'Chispazo', tipo: 'ELECTRICO', pot: 50, prec: 100, pp: 25 },
+  rayo: { nombre: 'Rayo', tipo: 'ELECTRICO', pot: 90, prec: 100, pp: 15 },
+  trueno: { nombre: 'Trueno', tipo: 'ELECTRICO', pot: 110, prec: 75, pp: 10 },
+  turbo_plasma: { nombre: 'Turbo Plasma', tipo: 'FUEGO', pot: 95, prec: 100, pp: 10 },
+  erupcion_termal: { nombre: 'Erupción Termal', tipo: 'AGUA', pot: 85, prec: 100, pp: 10 },
+  furia_lanin: { nombre: 'Furia del Lanín', tipo: 'ROCA', pot: 90, prec: 95, pp: 10, critAlto: true },
+  aletazo_igneo: { nombre: 'Aletazo Ígneo', tipo: 'VOLADOR', pot: 85, prec: 100, pp: 15 },
   forcejeo: { nombre: 'Forcejeo', tipo: 'NORMAL', pot: 40, prec: 100, pp: 1 },
 };
 
@@ -746,6 +760,8 @@ const OBJETOS = {
   alfajor: { nombre: 'ALFAJOR', precio: 350, desc: 'De dulce de leche. Recupera 50 PS.', cura: 50 },
   piedraNoche: { nombre: 'PIEDRA NOCHE', precio: 2500, piedra: true, desc: 'Una piedra oscura como la noche. Hace evolucionar a GARKOL y a FAEVE.' },
   nectarFloral: { nombre: 'NÉCTAR FLORAL', precio: 2500, piedra: true, desc: 'Néctar de flores del monte. Hace evolucionar a FAEVE.' },
+  piedraAgua: { nombre: 'PIEDRA AGUA', precio: 2500, piedra: true, desc: 'Una piedra azul que gotea agua fresca. Hace evolucionar a CALDERITO.' },
+  piedraTrueno: { nombre: 'PIEDRA TRUENO', precio: 2500, piedra: true, desc: 'Una piedra con un rayo adentro. Hace evolucionar a DYNACORE.' },
   velaAnima: { nombre: 'VELA ÁNIMA', precio: 2500, piedra: true, desc: 'Una vela que arde con fuego rosa y no se apaga. Hace evolucionar a FAEVE.' },
 };
 // Lo que se vende en el ALMACÉN, en orden
@@ -755,7 +771,7 @@ const OBJETOS = {
 // Formato: idEspecie: ['idMovimiento', 'otroMovimiento'],   (los ids están en MOVS, más arriba)
 const TUTOR = {
 };
-const TIENDA = ['boleadora', 'mate', 'alfajor', 'piedraNoche', 'nectarFloral', 'velaAnima'];
+const TIENDA = ['boleadora', 'mate', 'alfajor', 'piedraNoche', 'nectarFloral', 'velaAnima', 'piedraAgua', 'piedraTrueno'];
 
 // ===== Especies =====
 // base: ps, atk, def, vel
@@ -2041,6 +2057,117 @@ const ESPECIES = {
       ['p', [[16, 4], [22, 0], [19, 4], [24, 3], [17, 7]], '#40c8e8'],
     ],
   },
+  // ===== Región 7: diseños de Felipe =====
+  motorb: {
+    nombre: 'Motorb', tipos: ['FUEGO', 'ELECTRICO'], base: { ps: 45, atk: 40, def: 50, vel: 70 }, captura: 75, exp: 64,
+    desc: 'la bujía flotante que suena como una moto', evo: { nivel: 28, a: 'dynacore' },
+    movs: [[1, 'embestida'], [1, 'chispa'], [6, 'chispazo'], [11, 'brasita'], [16, 'pique'], [22, 'fogon'], [28, 'rayo'], [34, 'lavazo'], [40, 'turbo_plasma'], [48, 'trueno'], [56, 'erupcion']],
+    sprite: [
+      ['e', 16, 30, 7, 1.2, '#3a3030', 's'],
+      ['p', [[9, 17], [3, 12], [2, 20]], '#4a4a58'], ['p', [[23, 17], [29, 12], [30, 20]], '#4a4a58'],
+      ['d', 2, 11, '#f8e040'], ['d', 30, 11, '#f8e040'], ['d', 1, 21, '#f8e040'], ['d', 31, 21, '#f8e040'],
+      ['e', 16, 19, 8, 8, '#8a8a98'],
+      ['r', 12, 5, 8, 9, '#c8e8f8'], ['r', 11, 4, 10, 2, '#5a5a68'],
+      ['e', 16, 10, 3, 3.5, '#f88030', 's'], ['e', 16, 10, 1.5, 2, '#f8e040', 's'],
+      ['e', 13, 19, 1.6, 1.8, '#40c0f0', 's'], ['e', 19, 19, 1.6, 1.8, '#40c0f0', 's'],
+      ['r', 13, 23, 6, 1, '#3a3a48', 's'],
+    ],
+  },
+  dynacore: {
+    nombre: 'Dynacore', tipos: ['FUEGO', 'ELECTRICO'], base: { ps: 60, atk: 55, def: 65, vel: 90 }, captura: 45, exp: 142,
+    desc: 'el bloque de motor que es un dínamo viviente', evo: { nivel: 45, a: 'turborush' }, evoPiedra: { piedraTrueno: 'turborush' },
+    movs: [[1, 'embestida'], [1, 'chispa'], [6, 'chispazo'], [11, 'brasita'], [16, 'pique'], [22, 'fogon'], [28, 'rayo'], [34, 'lavazo'], [40, 'turbo_plasma'], [48, 'trueno'], [56, 'erupcion']],
+    sprite: [
+      ['e', 16, 31, 10, 1.2, '#3a3030', 's'],
+      ['p', [[6, 16], [1, 24], [3, 26], [8, 19]], '#b87040'], ['p', [[26, 16], [31, 24], [29, 26], [24, 19]], '#b87040'],
+      ['r', 0, 25, 4, 3, '#d03030'], ['r', 28, 25, 4, 3, '#202020'],
+      ['r', 6, 12, 20, 14, '#7a7a88'], ['r', 6, 24, 20, 3, '#b87040'],
+      ['r', 7, 4, 5, 9, '#c8e8f8'], ['r', 13.5, 3, 5, 10, '#c8e8f8'], ['r', 20, 4, 5, 9, '#c8e8f8'],
+      ['e', 9.5, 9, 1.5, 2.5, '#f88030', 's'], ['e', 16, 8, 1.5, 3, '#f8a030', 's'], ['e', 22.5, 9, 1.5, 2.5, '#f88030', 's'],
+      ['e', 12, 18, 1.6, 1.8, '#40c0f0', 's'], ['e', 20, 18, 1.6, 1.8, '#40c0f0', 's'],
+      ['d', 3, 14, '#f8e040'], ['d', 29, 14, '#f8e040'],
+    ],
+  },
+  turborush: {
+    nombre: 'Turborush', tipos: ['FUEGO', 'ELECTRICO'], base: { ps: 75, atk: 125, def: 75, vel: 115 }, captura: 45, exp: 245,
+    desc: 'la turbina de plasma que deja un rastro de relámpagos',
+    movs: [[1, 'embestida'], [1, 'chispa'], [6, 'chispazo'], [11, 'brasita'], [16, 'pique'], [22, 'fogon'], [28, 'rayo'], [34, 'lavazo'], [40, 'turbo_plasma'], [48, 'trueno'], [56, 'erupcion']],
+    sprite: [
+      ['p', [[25, 13], [32, 9], [32, 23], [25, 19]], '#40a0f8', 's'], ['p', [[26, 14], [31, 12], [31, 20], [26, 18]], '#c0f0ff', 's'],
+      ['p', [[5, 16], [24, 8], [27, 16], [24, 24]], '#202024'],
+      ['p', [[7, 16], [23, 10], [23, 22]], '#2a2a30'],
+      ['r', 10, 10, 13, 1, '#d8b040', 's'], ['r', 10, 21, 13, 1, '#d8b040', 's'],
+      ['e', 15, 16, 4, 4, '#e8f8ff', 's'], ['e', 15, 16, 2.2, 2.2, '#80d0ff', 's'],
+      ['e', 8, 5, 3, 2, '#5a5a68'], ['e', 8, 27, 3, 2, '#5a5a68'],
+      ['p', [[6, 4], [3, 1], [5, 4], [1, 3]], '#f8f060', 's'], ['p', [[6, 28], [2, 31], [4, 28], [0, 29]], '#f8f060', 's'],
+      ['d', 3, 8, '#f8f060'], ['d', 12, 2, '#f8f060'], ['d', 2, 22, '#f8f060'], ['d', 13, 30, '#f8f060'],
+      ['e', 10, 15, 1, 1, '#40c0f0', 's'],
+    ],
+  },
+  calderito: {
+    nombre: 'Calderito', tipos: ['FUEGO'], base: { ps: 55, atk: 55, def: 65, vel: 35 }, captura: 75, exp: 64,
+    desc: 'el volcancito que echa humo cuando se enoja', evo: { nivel: 32, a: 'laninger' }, evoPiedra: { piedraAgua: 'submaringer' },
+    movs: [[1, 'embestida'], [1, 'brasita'], [6, 'adobe'], [11, 'chispa'], [16, 'pedrada'], [22, 'fogon'], [28, 'chapuzon'], [32, 'derrumbe'], [38, 'lavazo'], [44, 'erupcion_termal'], [44, 'furia_lanin'], [52, 'erupcion']],
+    sprite: [
+      ['e', 16, 30, 10, 1.5, '#3a2a2a', 's'],
+      ['p', [[5, 29], [11, 10], [21, 10], [27, 29]], '#7a5a4a'],
+      ['p', [[11, 10], [21, 10], [19, 14], [13, 14]], '#f86020'],
+      ['p', [[13, 11], [16, 13], [19, 11]], '#f8d040', 's'],
+      ['p', [[8, 26], [12, 18], [10, 26]], '#f86020', 's'], ['p', [[22, 27], [21, 20], [24, 27]], '#f86020', 's'],
+      ['e', 13, 20, 1.6, 2, '#ffffff', 's'], ['e', 19, 20, 1.6, 2, '#ffffff', 's'],
+      ['d', 13, 20, '#202020'], ['d', 19, 20, '#202020'],
+      ['e', 13, 6, 2.5, 2, '#d8d8d8', 's'], ['e', 17, 3, 3, 2.2, '#e8e8e8', 's'], ['e', 21, 6, 2, 1.6, '#c8c8c8', 's'],
+    ],
+  },
+  submaringer: {
+    nombre: 'Submaringer', tipos: ['FUEGO', 'AGUA'], base: { ps: 90, atk: 100, def: 95, vel: 60 }, captura: 45, exp: 235,
+    desc: 'el volcán submarino que escupe agua hirviendo',
+    movs: [[1, 'embestida'], [1, 'brasita'], [6, 'adobe'], [11, 'chispa'], [16, 'pedrada'], [22, 'fogon'], [28, 'chapuzon'], [32, 'derrumbe'], [38, 'lavazo'], [44, 'erupcion_termal'], [44, 'furia_lanin'], [52, 'erupcion']],
+    sprite: [
+      ['e', 16, 30, 14, 2, '#3a6a9a', 's'],
+      ['p', [[2, 30], [10, 9], [22, 9], [30, 30]], '#3a4a6a'],
+      ['p', [[6, 30], [11, 18], [21, 18], [26, 30]], '#4a6a9a', 's'],
+      ['p', [[10, 9], [22, 9], [20, 13], [12, 13]], '#f86020'],
+      ['p', [[13, 9], [12, 1], [16, 5], [20, 0], [19, 9]], '#80d0f8', 's'], ['e', 16, 4, 2, 2, '#e0f8ff', 's'],
+      ['p', [[7, 24], [10, 15], [12, 24]], '#f86020', 's'], ['p', [[21, 25], [23, 16], [25, 25]], '#f86020', 's'],
+      ['e', 13, 19, 1.8, 2, '#f8d040', 's'], ['e', 19, 19, 1.8, 2, '#f8d040', 's'],
+      ['d', 13, 19, '#202020'], ['d', 19, 19, '#202020'],
+      ['d', 4, 22, '#a0e0ff'], ['d', 28, 18, '#a0e0ff'], ['d', 26, 12, '#a0e0ff'],
+    ],
+  },
+  laninger: {
+    nombre: 'Lanínger', tipos: ['FUEGO', 'ROCA'], base: { ps: 90, atk: 115, def: 105, vel: 45 }, captura: 45, exp: 235,
+    desc: 'el volcán andante con la forma del Lanín',
+    movs: [[1, 'embestida'], [1, 'brasita'], [6, 'adobe'], [11, 'chispa'], [16, 'pedrada'], [22, 'fogon'], [28, 'chapuzon'], [32, 'derrumbe'], [38, 'lavazo'], [44, 'erupcion_termal'], [44, 'furia_lanin'], [52, 'erupcion']],
+    sprite: [
+      ['e', 16, 30, 14, 2, '#3a2a2a', 's'],
+      ['p', [[1, 30], [12, 4], [20, 4], [31, 30]], '#5a4a48'],
+      ['p', [[12, 4], [20, 4], [23, 11], [9, 11]], '#f0f0f8'],
+      ['p', [[13, 4], [19, 4], [18, 6], [14, 6]], '#f86020'],
+      ['p', [[10, 30], [13, 16], [15, 30]], '#f86020', 's'], ['p', [[19, 30], [20, 20], [23, 30]], '#f8a030', 's'],
+      ['e', 12, 17, 1.8, 1.6, '#f8d040', 's'], ['e', 20, 17, 1.8, 1.6, '#f8d040', 's'],
+      ['r', 4, 22, 5, 7, '#4a3a38'], ['r', 23, 22, 5, 7, '#4a3a38'],
+      ['e', 16, 1, 2, 1.5, '#f86020', 's'], ['d', 13, 0, '#f8d040'], ['d', 19, 0, '#f8d040'],
+    ],
+  },
+  zorzaliente: {
+    nombre: 'Zorzaliente', tipos: ['FUEGO', 'VOLADOR'], base: { ps: 70, atk: 105, def: 65, vel: 120 }, captura: 45, exp: 200,
+    desc: 'el zorzal de fuego que calienta los bosques en invierno',
+    movs: [[1, 'picotazo'], [1, 'brasita'], [6, 'rasante'], [12, 'chispa'], [18, 'fogon'], [24, 'vuelo_alto'], [32, 'lavazo'], [40, 'aletazo_igneo'], [48, 'erupcion']],
+    sprite: [
+      ['e', 16, 30, 7, 1.2, '#4a3020', 's'],
+      ['p', [[20, 20], [31, 23], [29, 26], [21, 24]], '#d04020'], ['p', [[26, 22], [31, 18], [30, 25]], '#f8a030', 's'],
+      ['p', [[15, 14], [4, 3], [7, 11], [3, 13], [11, 19]], '#c05030'], ['p', [[14, 15], [6, 7], [9, 15]], '#f8c040', 's'],
+      ['p', [[18, 14], [29, 4], [27, 12], [30, 14], [22, 19]], '#c05030'], ['p', [[19, 15], [26, 8], [23, 16]], '#f8c040', 's'],
+      ['r', 13, 23, 1, 6, '#5a3a20'], ['r', 18, 23, 1, 6, '#5a3a20'],
+      ['e', 16, 19, 6, 6, '#a05030'],
+      ['e', 15, 21, 3.5, 4, '#f8d070', 's'], ['d', 14, 20, '#a05030'], ['d', 16, 22, '#a05030'],
+      ['e', 15, 10, 4.5, 4, '#a05030'],
+      ['p', [[11, 10], [6, 11], [11, 12]], '#f8c040'],
+      ['e', 14, 9, 1.4, 1.4, '#202020', 's'], ['d', 14, 8, '#ffffff'],
+      ['p', [[15, 6], [17, 1], [18, 5], [21, 2], [19, 8]], '#f86020', 's'],
+    ],
+  },
   mimetit: {
     nombre: 'Mimetit', tipos: ['DRAGON', 'PSIQUICO'], base: { ps: 50, atk: 55, def: 48, vel: 68 }, captura: 45, exp: 70,
     desc: 'el dragoncito que se vuelve transparente', evo: { nivel: 35, a: 'espectradraco' },
@@ -2370,6 +2497,10 @@ const HABILIDADES = {
   llovizna: { nombre: 'Llovizna', ef: 'llovizna', desc: 'Al entrar se larga a llover: el Agua pega más y el Fuego menos.' },
   vientoAfin: { nombre: 'Viento Afín', ef: 'veloz', desc: 'Llama al viento a su favor: al entrar se vuelve más rápido.' },
   terruno: { nombre: 'Terruño', ef: 'terruno', desc: 'Los ataques de Tierra no lo lastiman: absorbe el barro y se cura.' },
+  electromotor: { nombre: 'Electromotor', ef: 'electromotor', desc: 'Los ataques Eléctricos no lo lastiman: lo aceleran.' },
+  sobrecarga: { nombre: 'Sobrecarga', ef: 'sobrecarga', desc: 'Sus ataques pegan un 30% más, pero pierde PS cada vez que golpea.' },
+  geotermica: { nombre: 'Energía Geotérmica', ef: 'geotermica', desc: 'Si lo debilitan con un golpe, explota y se lleva al rival con él.' },
+  cuerpoHumo: { nombre: 'Cuerpo Humo', ef: 'cuerpoPuro', desc: 'Su humo blanco lo protege: nadie le puede bajar nada.' },
   maldicionLunar: { nombre: 'Maldición Lunar', ef: 'maldicion', desc: 'Sus mordiscos le devuelven la mitad del daño que hacen como PS.' },
 };
 const HAB_ESPECIE = {
@@ -2402,6 +2533,11 @@ const HAB_ESPECIE = {
   pumita: 'intimidacion', pumentor: 'intimidacion',
   howlup: { n: ['intimidacion', 'cuerpoMaldito'], o: 'maldicionLunar' }, phantolycan: { n: ['intimidacion', 'cuerpoMaldito'], o: 'maldicionLunar' },
   sparknight: { n: ['intimidacion', 'ojoNocturno'] }, umbratail: { n: ['intimidacion', 'ojoNocturno'] },
+  motorb: { n: ['electromotor', 'cuerpoLlama'], o: 'sobrecarga' }, dynacore: { n: ['electromotor', 'cuerpoLlama'], o: 'sobrecarga' },
+  turborush: { n: ['electromotor', 'cuerpoLlama'], o: 'sobrecarga' },
+  calderito: { n: ['robustez', 'cuerpoHumo'], o: 'absorbeFuego' }, submaringer: { n: ['llovizna', 'cuerpoHumo'], o: 'geotermica' },
+  laninger: { n: ['rocaSolida', 'cuerpoHumo'], o: 'geotermica' },
+  zorzaliente: { n: ['pasoLigero', 'cuerpoLlama'] },
   carpibarro: { n: ['descansoRegio', 'caparazon'], o: 'terruno' }, glyptopampa: { n: ['descansoRegio', 'caparazon'], o: 'terruno' },
   azularza: { n: ['nadoRapido', 'vientoAfin'], o: 'llovizna' },
   escarchin: { n: ['cortinaNieve', 'cuerpoPuro'], o: 'animaGlacial' }, glaciar: { n: ['cuerpoPuro', 'competitivo'], o: 'animaGlacial' },
@@ -2415,6 +2551,7 @@ for (const id in ESPECIES) {
 }
 // Cada criatura guarda qué habilidad le tocó (habSlot: 0, 1 u 'o' = oculta); al evolucionar conserva el lugar
 function habClave(m) {
+  if (m.habForzada) return m.habForzada;
   const e = ESPECIES[m.id];
   if (m.habSlot === 'o' && e.habOculta) return e.habOculta;
   return e.habs[m.habSlot] || e.habs[0];
@@ -2454,6 +2591,8 @@ const PAL = {
   almacenero: { id: 'almacenero', piel: '#e8b890', pelo: '#5a3a20', boina: '#3a3a5a', remera: '#3a8a4a', guardapolvo: true, pant: '#4a3a2a', barba: '#5a3a20' },
   sombra: { id: 'sombra', piel: '#e8d0c0', pelo: '#1a1a2a', peloLargo: true, sombrero: '#1a1a1a', remera: '#4a2a6a', raya: '#b060f0', pant: '#1a1a2a' },
   marea: { id: 'marea', piel: '#f0d0b8', pelo: '#2a3a5a', peloLargo: true, gorra: '#e8f0f8', remera: '#2a6ab0', raya: '#f0f0f0', pant: '#1a2a4a' },
+  ceniza: { id: 'ceniza', piel: '#d8a070', pelo: '#c03020', peloLargo: true, remera: '#e06a20', raya: '#f8d040', pant: '#3a2a2a' },
+  piloto: { id: 'piloto', piel: '#e8b890', pelo: '#3a2a1a', gorra: '#1a2a5a', remera: '#f0f0f8', raya: '#1a2a5a', pant: '#1a2a5a' },
   nena: { id: 'nena', piel: '#f4c8a0', pelo: '#c08040', peloLargo: true, remera: '#f070a0', pant: '#4a6aa8' },
 };
 
@@ -3318,6 +3457,113 @@ const ESTRECHO = [
 const MADRYN = teñir(TILCARA, { C: 'R', K: '-' });
 const GALLEGOS = teñir(PUERTO, { Y: 'N', q: '=' });
 const USHUAIA = teñir(VILLA, { T: 'N' });
+// Región 7 (Catamarca): rutas 19 y 20 van al OESTE (ccw), la 21 SUBE a la Puna
+const VALLECAT = [
+  'CCCCCCCCCC==CCCCCCCCCC',
+  'CC....,,,,==........CC',
+  'CC....,,,,==........CC',
+  'CC....,,,S==,,......CC',
+  'CC........==,,......CC',
+  'CC........==........CC',
+  'CC...,,,,.==....CC..CC',
+  'CC...,,,,.==....CC..CC',
+  'CC....,,,,==........CC',
+  'CC..,,,,,,==....CC..CC',
+  'CC..,,,,,,==....CC..CC',
+  'CC,,,,,,,.==,,,.....CC',
+  'CC,,,=======,,,.....CC',
+  'CC,,,==,,,,.........CC',
+  'CC...==.....,,,,,,..CC',
+  'CC...==.....,,,,,,..CC',
+  'CC..,==,....,,,,,,KKCC',
+  'CC..,==,.....,,,,,KKCC',
+  'CC..,==,.....,,,,,,.CC',
+  'CC...==.,,,,,KK...CCCC',
+  'CCF..==.,,,,,KK...CCCC',
+  'CC...==..F..........CC',
+  'CC..,==,,...........CC',
+  'CC..,==,,........,,,CC',
+  'CC..,==,,.,,,,,..,,,CC',
+  'CC...=======,,,....FCC',
+  'CC....,,,.==........CC',
+  'CC....,,,.==....F...CC',
+  'CC..F....S==........CC',
+  'CC........==...F....CC',
+  'CC........==........CC',
+  'CCCCCCCCCC==CCCCCCCCCC',
+];
+const TATON = [
+  'CCCCCCCCCC==CCCCCCCCCC',
+  'CC--------==--------CC',
+  'CC-------u==uuuuuu--CC',
+  'CC-------S==uuuuuu--CC',
+  'CC----uuuu==-uuuuu--CC',
+  'CC----uRRu==--------CC',
+  'CCuuuuuRRu==--------CC',
+  'CCuuuuuu--==--------CC',
+  'CCuuCCRR-u========--CC',
+  'CC--CCRR-uuuu---==--CC',
+  'CC--CCuuuuuuu---==--CC',
+  'CC--CCuuuuuu----==--CC',
+  'CC----uuRRuu----==--CC',
+  'CC------RR------==--CC',
+  'CC--------------==--CC',
+  'CC-----------uuu==--CC',
+  'CC---------CCuuu==u-CC',
+  'CC------uuuCCuuu==u-CC',
+  'CC------uuuuu---==--CC',
+  'CC--------------==--CC',
+  'CC------------uu==uuCC',
+  'CC------------uu==uuCC',
+  'CC------uuuuuuuu==uuCC',
+  'CC------uuuuuuuu==--CC',
+  'CC----RRuuuuuuuu==--CC',
+  'CC-RR-RR--------==--CC',
+  'CC-RR-uuuuu-----==--CC',
+  'CC-uuuuuuu========--CC',
+  'CC-uuuuuuS==u-------CC',
+  'CC-uuu----==--------CC',
+  'CC--------==--------CC',
+  'CCCCCCCCCC==CCCCCCCCCC',
+];
+const PUNA_ATACAMA = [
+  'NNNNNNNNNN==NNNNNNNNNN',
+  'NN--------==--------NN',
+  'NN--------==uu------NN',
+  'NN-------S==uu------NN',
+  'NN--------==uu------NN',
+  'NN--------==uuuu----NN',
+  'NNRRuuuuu-==uuNN----NN',
+  'NNRRuuuuuu==uuNNuu--NN',
+  'NN-----uuu==uuuuuu--NN',
+  'NN-----uuu==u---uNNuNN',
+  'NN--------==u---uNNuNN',
+  'NN--------==uuu-----NN',
+  'NN--------==uuu-----NN',
+  'NN-------u==uuu-----NN',
+  'NN-------u==uuu-----NN',
+  'NN--------==--------NN',
+  'NN--------==--------NN',
+  'NN--------======----NN',
+  'NN--------uuu-==----NN',
+  'NN------------==----NN',
+  'NN------------==----NN',
+  'NN--uuu-------==----NN',
+  'NN--uuu-------==----NN',
+  'NNwwwwwwwwwwww==wwwwNN',
+  'NNwwwwwwwwwwww==wwwwNN',
+  'NN-----------u==uuu-NN',
+  'NN-----------u==uuu-NN',
+  'NN--------======uuu-NN',
+  'NN-------S==--------NN',
+  'NN--------==--------NN',
+  'NN--------==--------NN',
+  'NNNNNNNNNN==NNNNNNNNNN',
+];
+const CATAMARCA = teñir(PUERTO, { Y: 'C', q: '=' });
+const BELEN = teñir(TILCARA, {});
+const FIAMBALA = teñir(PUERTO, { Y: 'C', q: '=', '.': '-', F: '-' });
+const OJOS = teñir(TILCARA, { C: 'N', K: 'R', '.': '-' });
 const TAFI = [
   'RRRRRRRRRR==RRRRRRRRRRRR',
   'RR........==S.........RR',
@@ -5380,6 +5626,7 @@ const MAPAS = {
   ushuaia: {
     nombre: 'USHUAIA',
     exterior: true,
+    vuelos: ['catamarca'], // con el PILOTO
     grilla: desdeTexto(USHUAIA),
     edificios: [
       { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
@@ -5393,7 +5640,7 @@ const MAPAS = {
       { x: 17, y: 8, a: 'gimnasio6', ax: 5, ay: 10, dir: 1 },
     ],
     carteles: {
-      '12,1': 'Al NORTE: RUTA 18, el ESTRECHO DE MAGALLANES. Más al sur ya no hay nada... ¡solo la Antártida!',
+      '12,1': 'Al NORTE: RUTA 18, el ESTRECHO DE MAGALLANES. Más al sur, solo la Antártida. ¡Para ir a CATAMARCA, hablá con el PILOTO!',
       '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡El CEMIC más austral del mundo!',
       '19,9': 'GIMNASIO DE USHUAIA. Líder: MAREA, la guardiana del faro. Tipo AGUA.',
       '4,20': 'USHUAIA. La ciudad del fin del mundo, entre la montaña y el Canal Beagle.',
@@ -5409,6 +5656,21 @@ const MAPAS = {
           S.flags.regaloUshuaia = true;
           await decir('¡Felipe recibió 5 MATES!');
           guardar();
+        },
+      },
+      {
+        id: 'piloto_ush', x: 12, y: 18, dir: 2, pal: PAL.piloto,
+        hablar: async () => {
+          if (!S.flags.insignia6) {
+            await decir('PILOTO: Desde el aeropuerto de Ushuaia vuelo hasta CATAMARCA, en el norte.');
+            await decir('Pero solo llevo a los entrenadores que tienen la INSIGNIA FARO de MAREA. ¡Andá al gimnasio!');
+            return;
+          }
+          await decir('PILOTO: ¡Felicitaciones por la INSIGNIA FARO! El GIMNASIO 7 está en CATAMARCA, al lado de un volcán.');
+          if (await siNo('¿Querés volar a CATAMARCA?')) {
+            await decir('PILOTO: ¡Abrochate el cinturón! Son más de 3.000 kilómetros. ¡Despegamos!');
+            await viajar({ a: 'catamarca', ax: 9, ay: 15, dir: 0 });
+          }
         },
       },
       {
@@ -5488,6 +5750,381 @@ const MAPAS = {
             S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 5;
             S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
             await decir('MAREA: Llevate estos ALFAJORES y BOLEADORAS. ¡Ya tenés seis insignias!');
+            guardar();
+          }
+        },
+      },
+    ],
+  },
+
+  // ================= REGIÓN 7: CATAMARCA (VALLE → BELÉN → FIAMBALÁ → PUNA DE ATACAMA) =================
+  catamarca: {
+    nombre: 'SAN FERNANDO DEL VALLE DE CATAMARCA',
+    exterior: true,
+    vuelos: ['ushuaia'], // con el PILOTO
+    grilla: desdeTexto(CATAMARCA),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 15, y: 4, w: 5, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'casa', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 5, y: 8, a: 'centro16', ax: 4, ay: 6, dir: 1 },
+      { x: 0, y: 10, a: 'ruta19', ax: 11, ay: 30, dir: 1 },
+      { x: 0, y: 11, a: 'ruta19', ax: 10, ay: 30, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Al OESTE: RUTA 19, el VALLE DE CATAMARCA, hacia BELÉN, FIAMBALÁ y la PUNA.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Con empanadas catamarqueñas!',
+      '19,9': 'AEROPUERTO. Vuelos a USHUAIA.',
+      '4,18': 'SAN FERNANDO DEL VALLE DE CATAMARCA. Rodeada de cerros, olivos y nogales.',
+    },
+    npcs: [
+      {
+        id: 'piloto_cat', x: 8, y: 15, dir: 0, pal: PAL.piloto,
+        hablar: async () => {
+          await decir('PILOTO: ¡Hola, Felipe! Desde acá vuelo a USHUAIA, en el fin del mundo.');
+          if (await siNo('¿Querés volar a USHUAIA?')) {
+            await decir('PILOTO: ¡Abrochate el cinturón! ¡Despegamos!');
+            await viajar({ a: 'ushuaia', ax: 12, ay: 19, dir: 0 });
+          }
+        },
+      },
+      {
+        id: 'nena_cat', x: 17, y: 18, dir: 2, pal: PAL.nena,
+        hablar: async () => {
+          await decir('NENA: La líder del GIMNASIO 7 es CENIZA. ¡Entrena al lado del volcán OJOS DEL SALADO, el volcán más alto del mundo!');
+          await decir('Usa criaturas de FUEGO. ¡AGUA, TIERRA y ROCA les ganan!');
+        },
+      },
+    ],
+  },
+
+  centro16: crearCentro('catamarca', 5, 9, 'centro16'),
+
+  ruta19: {
+    nombre: 'RUTA 19 · VALLE DE CATAMARCA',
+    exterior: true,
+    grilla: desdeTexto(VALLECAT),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'catamarca', ax: 1, ay: 11, dir: 3 },
+      { x: 11, y: 31, a: 'catamarca', ax: 1, ay: 10, dir: 3 },
+      { x: 10, y: 0, a: 'belen', ax: 22, ay: 11, dir: 2 },
+      { x: 11, y: 0, a: 'belen', ax: 22, ay: 10, dir: 2 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 19 · VALLE DE CATAMARCA. Cardones, olivos y cerros por todos lados.',
+      '9,3': 'Al oeste: BELÉN, la ciudad del poncho.',
+    },
+    encuentros: { lista: [['motorb', 14], ['calderito', 14], ['zorrazo', 12], ['cardito', 10], ['rodcardo', 8], ['piquibrote', 10], ['vizcachita', 10], ['condorito', 8], ['chispuna', 8], ['piquillonco', 4]], min: 60, max: 63 },
+    npcs: [
+      entrenadorNPC({
+        id: 'olivero', x: 12, y: 5, dir: 2, pal: PAL.beto, nombre: 'OLIVERO HÉCTOR',
+        equipo: [['rodcardo', 61], ['piquillonco', 61], ['zorrazo', 62]],
+        antes: ['OLIVERO HÉCTOR: Cosecho aceitunas todo el día. ¡Y a la tarde, una buena pelea!'],
+        gana: 'OLIVERO HÉCTOR: ¡Me dejaste hecho aceite!',
+        despues: 'OLIVERO HÉCTOR: Los MOTORB hacen ruido de moto. ¡Si los escuchás, están cerca!',
+      }),
+      entrenadorNPC({
+        id: 'mecanica', x: 8, y: 21, dir: 2, pal: PAL.ayudante, nombre: 'MECÁNICA VALERIA',
+        equipo: [['motorb', 61], ['dynacore', 62], ['chispuna', 62]],
+        antes: ['MECÁNICA VALERIA: ¡Arreglo motores y entreno criaturas que SON motores! ¿Probamos el tuyo?'],
+        gana: 'MECÁNICA VALERIA: ¡Se me fundió el motor!',
+        despues: 'MECÁNICA VALERIA: Con una PIEDRA TRUENO, DYNACORE se vuelve TURBORUSH. ¡Se venden en el ALMACÉN!',
+      }),
+      {
+        id: 'nuecero', x: 14, y: 29, dir: 1, pal: PAL.abuelo,
+        hablar: async () => {
+          await decir('ABUELO: En Catamarca hacemos los mejores dulces de nuez y de membrillo. ¡Probalos cuando pases por Belén!');
+        },
+      },
+    ],
+  },
+
+  belen: {
+    nombre: 'BELÉN',
+    exterior: true,
+    grilla: desdeTexto(BELEN),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 15, y: 4, w: 6, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 23, y: 10, a: 'ruta19', ax: 11, ay: 1, dir: 0 },
+      { x: 23, y: 11, a: 'ruta19', ax: 10, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro17', ax: 4, ay: 6, dir: 1 },
+      { x: 0, y: 10, a: 'ruta20', ax: 11, ay: 30, dir: 1 },
+      { x: 0, y: 11, a: 'ruta20', ax: 10, ay: 30, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Al ESTE: RUTA 19, hacia CATAMARCA. Al OESTE: RUTA 20, las DUNAS DE TATÓN y FIAMBALÁ.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Con dulce de membrillo!',
+      '19,9': 'TEJEDURÍA. Ponchos de vicuña y de llama, hechos a mano en telar.',
+      '4,18': 'BELÉN. La cuna del poncho, en el oeste de Catamarca.',
+    },
+    npcs: [
+      {
+        id: 'tejedor_belen', x: 7, y: 11, dir: 0, pal: PAL.coplera,
+        hablar: async () => {
+          if (S.flags.regaloBelen) { await decir('TEJEDORA: Un poncho de vicuña tarda meses en tejerse. ¡Es el más suave del mundo!'); return; }
+          await decir('TEJEDORA: ¡Qué bueno que pasaste por Belén! Tomá, unas piedras que encontré en el río.');
+          S.bolsa.piedraAgua = (S.bolsa.piedraAgua || 0) + 1;
+          S.flags.regaloBelen = true;
+          await decir('¡Felipe recibió una PIEDRA AGUA!');
+          await decir('TEJEDORA: Si se la das a un CALDERITO, se vuelve SUBMARINGER, ¡un volcán submarino!');
+          guardar();
+        },
+      },
+      {
+        id: 'nene_belen', x: 19, y: 11, dir: 1, pal: PAL.nene,
+        hablar: async () => {
+          await decir('NENE: CALDERITO tiene dos evoluciones: si lo entrenás se vuelve LANÍNGER, ¡y con una PIEDRA AGUA, SUBMARINGER!');
+        },
+      },
+    ],
+  },
+
+  centro17: crearCentro('belen', 5, 9, 'centro17'),
+
+  ruta20: {
+    nombre: 'RUTA 20 · DUNAS DE TATÓN',
+    exterior: true,
+    grilla: desdeTexto(TATON),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'belen', ax: 1, ay: 11, dir: 3 },
+      { x: 11, y: 31, a: 'belen', ax: 1, ay: 10, dir: 3 },
+      { x: 10, y: 0, a: 'fiambala', ax: 22, ay: 11, dir: 2 },
+      { x: 11, y: 0, a: 'fiambala', ax: 22, ay: 10, dir: 2 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 20 · DUNAS DE TATÓN. ¡Las dunas de arena más altas del mundo!',
+      '9,3': 'Al oeste: FIAMBALÁ y sus aguas termales.',
+    },
+    encuentros: { lista: [['calderito', 14], ['dynacore', 12], ['chispuna', 12], ['volcarin', 12], ['zorrazo', 10], ['terito', 10], ['vizcachita', 10], ['candilejo', 8], ['laninger', 4]], min: 62, max: 65 },
+    npcs: [
+      entrenadorNPC({
+        id: 'sandboard', x: 12, y: 5, dir: 2, pal: PAL.chica, nombre: 'SANDBOARDISTA FLOR',
+        equipo: [['volcarin', 63], ['zorzaliente', 63], ['laninger', 64]],
+        antes: ['SANDBOARDISTA FLOR: ¡Me tiro por las dunas en tabla! ¿Te animás a una pelea a toda velocidad?'],
+        gana: 'SANDBOARDISTA FLOR: ¡Me comí toda la arena!',
+        despues: 'SANDBOARDISTA FLOR: Algunas dunas de Tatón miden más de mil metros. ¡Y suenan cuando sopla el viento!',
+      }),
+      entrenadorNPC({
+        id: 'vulcanologo', x: 13, y: 19, dir: 3, pal: PAL.guarda, nombre: 'VULCANÓLOGO DIEGO',
+        equipo: [['laninger', 63], ['submaringer', 64], ['andragon', 64]],
+        antes: ['VULCANÓLOGO DIEGO: ¡Estudio los volcanes de la Puna! Los de fuego y los que tienen lagunas adentro. ¡Duelo!'],
+        gana: 'VULCANÓLOGO DIEGO: ¡Entraste en erupción!',
+        despues: 'VULCANÓLOGO DIEGO: Ojo con SUBMARINGER y LANÍNGER: si los debilitás con un golpe, ¡pueden explotar y llevarse a tu criatura!',
+      }),
+      {
+        id: 'baqueano_taton', x: 5, y: 30, dir: 1, pal: PAL.abuelo,
+        hablar: async () => {
+          await decir('BAQUEANO: Cuando el viento sopla en las dunas, la arena hace un ruido como de tambor. ¡Le dicen la arena que canta!');
+        },
+      },
+    ],
+  },
+
+  fiambala: {
+    nombre: 'FIAMBALÁ',
+    exterior: true,
+    grilla: desdeTexto(FIAMBALA),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 15, y: 4, w: 5, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 23, y: 10, a: 'ruta20', ax: 11, ay: 1, dir: 0 },
+      { x: 23, y: 11, a: 'ruta20', ax: 10, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro18', ax: 4, ay: 6, dir: 1 },
+      { x: 10, y: 0, a: 'ruta21', ax: 10, ay: 30, dir: 1 },
+      { x: 11, y: 0, a: 'ruta21', ax: 11, ay: 30, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Al NORTE: RUTA 21, la PUNA DE ATACAMA y el volcán OJOS DEL SALADO. Al ESTE: las DUNAS DE TATÓN.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Y después, a las termas!',
+      '19,9': 'TERMAS DE FIAMBALÁ. Piletas de agua caliente que salen de la montaña.',
+      '4,18': 'FIAMBALÁ. Un oasis de viñedos al pie de la cordillera.',
+    },
+    npcs: [
+      tomiNPC({
+        id: 'tomi_fiambala', x: 12, y: 16, dir: 2, bandera: 'tomi7', forma: 'final', nivel: 64,
+        equipo: [['arquitemplillo', 61], ['wandacoloso', 62], ['nevukhan', 62], ['gargorrupt', 62], ['umbratail', 63]],
+        antes: [
+          'TOMI: ¡Felipe! Vine a las termas a descansar... pero vos no me dejás tranquilo, ¿eh?',
+          'TOMI: Bueno, ¡vamos con todo! ¡Esta vez sí te gano!',
+        ],
+        gana: 'TOMI: ¡Ufa! Andá, CENIZA te espera arriba, al lado del volcán. ¡AGUA, TIERRA y ROCA le ganan al FUEGO!',
+        despues: 'TOMI: Me voy a meter en las termas un rato. ¡Suerte en el GIMNASIO 7!',
+        premio: 5,
+      }),
+      {
+        id: 'termas', x: 8, y: 15, dir: 0, pal: PAL.rosa,
+        hablar: async () => {
+          await decir('SEÑORA: ¡Las termas están buenísimas! El agua sale calentita del volcán.');
+          await decir('Mis criaturas se metieron y salieron como nuevas.');
+          curarEquipo();
+          await decir('¡Las criaturas de Felipe se dieron un baño termal y recuperaron toda su energía!');
+        },
+      },
+    ],
+  },
+
+  centro18: crearCentro('fiambala', 5, 9, 'centro18'),
+
+  ruta21: {
+    nombre: 'RUTA 21 · PUNA DE ATACAMA',
+    exterior: true,
+    grilla: desdeTexto(PUNA_ATACAMA),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'fiambala', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 31, a: 'fiambala', ax: 11, ay: 1, dir: 0 },
+      { x: 10, y: 0, a: 'ojos', ax: 10, ay: 20, dir: 1 },
+      { x: 11, y: 0, a: 'ojos', ax: 11, ay: 20, dir: 1 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 21 · PUNA DE ATACAMA. Más de 4.000 metros de altura. ¡Caminá despacio que falta el aire!',
+      '9,3': 'Al norte: la BASE del volcán OJOS DEL SALADO y el GIMNASIO 7.',
+    },
+    encuentros: { lista: [['dynacore', 12], ['calderito', 12], ['volcarin', 12], ['laninger', 10], ['condorito', 10], ['glaciolito', 10], ['vientuino', 8], ['escarchin', 8], ['zorzaliente', 4], ['andragon', 3]], min: 64, max: 66 },
+    npcs: [
+      entrenadorNPC({
+        id: 'andinista_puna', x: 12, y: 15, dir: 2, pal: PAL.nieve, nombre: 'ANDINISTA CAMILA',
+        equipo: [['glaciolito', 64], ['zorzaliente', 65], ['laninger', 65]],
+        antes: ['ANDINISTA CAMILA: Voy a subir el Ojos del Salado: ¡6.893 metros! Pero antes, un duelo para entrar en calor.'],
+        gana: 'ANDINISTA CAMILA: ¡Uf! Me quedé sin aire.',
+        despues: 'ANDINISTA CAMILA: En la cumbre del Ojos del Salado hay una laguna. ¡Es la más alta del mundo!',
+      }),
+      entrenadorNPC({
+        id: 'arriero_puna', x: 13, y: 20, dir: 3, pal: PAL.beto, nombre: 'ARRIERO SEGUNDO',
+        equipo: [['turborush', 65], ['submaringer', 65], ['andragon', 66]],
+        antes: ['ARRIERO SEGUNDO: Cruzo la cordillera con mis mulas desde que era así de chiquito. ¡A ver qué tenés!'],
+        gana: 'ARRIERO SEGUNDO: ¡Bien ahí, gurí! Tenés el corazón de un arriero.',
+        despues: 'ARRIERO SEGUNDO: CENIZA hace salir un sol que raja la tierra. ¡Con ese sol el FUEGO pega más fuerte!',
+      }),
+      {
+        id: 'llamero', x: 5, y: 12, dir: 3, pal: PAL.coplera,
+        hablar: async () => {
+          await decir('LLAMERA: Las vicuñas y las llamas aguantan el frío de la Puna con su lana. ¡Y las criaturas de fuego se calientan solas!');
+        },
+      },
+    ],
+  },
+
+  ojos: {
+    nombre: 'BASE OJOS DEL SALADO',
+    exterior: true,
+    grilla: desdeTexto(OJOS),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 14, y: 4, w: 7, h: 5, tipo: 'gimnasio7', puerta: 3, abre: true },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 10, y: 21, a: 'ruta21', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 21, a: 'ruta21', ax: 11, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro19', ax: 4, ay: 6, dir: 1 },
+      { x: 17, y: 8, a: 'gimnasio7', ax: 5, ay: 10, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Arriba: el volcán OJOS DEL SALADO, el volcán más alto del mundo. Al SUR: RUTA 21, de vuelta a FIAMBALÁ.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡El CEMIC más alto del país!',
+      '19,9': 'GIMNASIO OJOS DEL SALADO. Líder: CENIZA, la que duerme al lado del volcán. Tipo FUEGO.',
+      '4,18': 'BASE OJOS DEL SALADO. El último refugio antes de la cumbre.',
+    },
+    npcs: [
+      {
+        id: 'refugiero', x: 7, y: 11, dir: 0, pal: PAL.guarda,
+        hablar: async () => {
+          await decir('REFUGIERO: ¿Sentís el piso tibio? Es el volcán. Todavía está vivo, aunque duerme hace mucho.');
+        },
+      },
+      {
+        id: 'nene_ojos', x: 19, y: 11, dir: 1, pal: PAL.nene,
+        hablar: async () => {
+          if (S.flags.insignia7) await decir('NENE: ¡Le ganaste a CENIZA! ¡Ya tenés siete insignias! Solo te falta el ACONCAGUA...');
+          else {
+            await decir('NENE: El gimnasio de CENIZA tiene un río de LAVA adentro. ¡No te caigas!');
+            await decir('Su última criatura hace salir un SOL que raja la tierra. ¡Llevá criaturas de AGUA, TIERRA y ROCA!');
+          }
+        },
+      },
+    ],
+  },
+
+  centro19: crearCentro('ojos', 5, 9, 'centro19'),
+
+  gimnasio7: {
+    nombre: 'GIMNASIO OJOS DEL SALADO',
+    grilla: desdeTexto([
+      '###########',
+      '#a__vvv__a#',
+      '#LL_vvv_LL#',
+      '#LL_____LL#',
+      '#___LLL___#',
+      '#_L_LLL_L_#',
+      '#_L_____L_#',
+      '#___L_L___#',
+      '#LL_____LL#',
+      '#LL_____LL#',
+      '#_________#',
+      '#####m#####',
+    ]),
+    edificios: [],
+    salidas: [{ x: 5, y: 11, a: 'ojos', ax: 17, ay: 9, dir: 0 }],
+    objetos: {
+      L: '¡LAVA! Mejor no acercarse mucho... ¡quema!',
+      a: 'Una piedra volcánica que todavía está calentita.',
+    },
+    npcs: [
+      entrenadorNPC({
+        id: 'gim7_a', x: 7, y: 3, dir: 2, pal: PAL.ceniza, nombre: 'FOGONERO RAMIRO',
+        equipo: [['laninger', 64], ['dynacore', 64], ['zorzaliente', 65]],
+        antes: ['FOGONERO RAMIRO: ¡Acá adentro hace 50 grados! ¿Aguantás el calor? ¡Duelo!'],
+        gana: 'FOGONERO RAMIRO: ¡Me apagaste el fogón!',
+        despues: 'FOGONERO RAMIRO: El FUEGO sufre con el AGUA, la TIERRA y la ROCA.',
+      }),
+      entrenadorNPC({
+        id: 'gim7_b', x: 1, y: 6, dir: 3, pal: PAL.coplera, nombre: 'ASADORA MARTA',
+        equipo: [['submaringer', 65], ['turborush', 65]],
+        antes: ['ASADORA MARTA: ¡Tengo las brasas listas para el asado! Pero primero... ¡una pelea!'],
+        gana: 'ASADORA MARTA: ¡Se me quemó el asado!',
+        despues: 'ASADORA MARTA: CENIZA tiene seis criaturas. ¡Y la última trae el sol con ella!',
+      }),
+      {
+        id: 'ceniza', x: 5, y: 1, dir: 0, pal: PAL.ceniza,
+        hablar: async () => {
+          if (S.flags.insignia7) {
+            await decir('CENIZA: Apagaste mi fuego, Felipe. Ahora andá al ACONCAGUA: el último gimnasio te espera.');
+            return;
+          }
+          if (!S.flags.insignia6) {
+            await decir('CENIZA: Primero conseguí la INSIGNIA FARO de MAREA, en Ushuaia. Después volvé.');
+            return;
+          }
+          await decir('CENIZA: ¡Llegaste hasta el volcán más alto del mundo! Pocos aguantan este calor... y este frío.');
+          await decir('Soy CENIZA, líder del GIMNASIO OJOS DEL SALADO. Mis criaturas nacieron de la lava.');
+          await decir('Si me ganás, te llevás la INSIGNIA VOLCÁN. ¡Que arda la Puna!');
+          // Equipo pedido por Poly (20/11): Ignidraxx, Turborush, Zorzaliente, Piquillonco, Submaringer y Brasaspumas (con SEQUÍA).
+          // BRASASPUMAS todavía no está: mientras tanto ocupa su lugar Andragón, con la habilidad Sequía.
+          const r = await batalla({ entrenador: { nombre: 'LÍDER CENIZA', pal: PAL.ceniza, equipo: [['piquillonco', 64], ['submaringer', 65], ['zorzaliente', 65], ['turborush', 66], ['ignidraxx', 66], ['andragon', 67, { hab: 'sequia' }] /* lugar de BRASASPUMAS */] } });
+          if (r === 'gana') {
+            S.flags.insignia7 = true;
+            S.flags.insignias = Math.max(S.flags.insignias || 0, 7);
+            await decir('CENIZA: El volcán se durmió otra vez... Te ganaste la insignia, Felipe.');
+            await decir('¡Felipe recibió la INSIGNIA VOLCÁN!');
+            S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 5;
+            S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
+            await decir('CENIZA: Llevate estos ALFAJORES y BOLEADORAS. ¡Siete insignias! Ya solo te falta el ACONCAGUA.');
             guardar();
           }
         },
@@ -5609,6 +6246,14 @@ abrir('jacobacci', [[0, 10], [1, 10], [0, 11], [1, 11], [22, 10], [23, 10], [22,
 abrir('somuncura', [[10, 0], [11, 0]], 'R');
 // Ushuaia: el fin del mundo, se llega desde el norte y abajo está cerrado
 abrir('ushuaia', [[10, 23], [11, 23]], 'N');
+// Región 7: abrir costados y cerrar lo que no se usa
+abrir('catamarca', [[10, 0], [11, 0], [10, 21], [11, 21]], 'C');
+abrir('catamarca', [[0, 10], [1, 10], [0, 11], [1, 11]], '=');
+abrir('belen', [[10, 0], [11, 0], [10, 21], [11, 21]], 'C');
+abrir('belen', [[0, 10], [1, 10], [0, 11], [1, 11], [22, 10], [23, 10], [22, 11], [23, 11]], '=');
+abrir('fiambala', [[10, 21], [11, 21]], 'C');
+abrir('fiambala', [[22, 10], [23, 10], [22, 11], [23, 11]], '=');
+abrir('ojos', [[10, 0], [11, 0]], 'N');
 abrir('somuncura', [[0, 10], [1, 10], [0, 11], [1, 11]], '=');
 
 // --- Rutas: girarlas ---
@@ -5654,6 +6299,9 @@ girarMapa('ruta15', 'cw');
 girarMapa('ruta16', '180');
 girarMapa('ruta17', '180');
 girarMapa('ruta18', '180');
+// Región 7: hacia el OESTE por Catamarca; la Ruta 21 sube derecho a la Puna
+girarMapa('ruta19', 'ccw');
+girarMapa('ruta20', 'ccw');
 
 
 // ===== Escenas de la historia =====
@@ -6867,7 +7515,7 @@ function calcularDanio(at, de, mv) {
   const ha = habDe(at), hd = habDe(de);
   const stab = tiposDe(at).includes(mv.tipo) ? (ha.ef === 'adaptable' ? 2 : 1.5) : 1;
   const ef = eficacia(mv.tipo, tiposDe(de));
-  const critico = hd.ef !== 'sinCritico' && Math.random() < (ha.ef === 'critico' ? 1 / 5 : 1 / 16);
+  const critico = hd.ef !== 'sinCritico' && Math.random() < (ha.ef === 'critico' || mv.critAlto ? 1 / 5 : 1 / 16);
   const azar = 0.85 + Math.random() * 0.15;
   if (ef === 0) return { danio: 0, ef, critico: false };
   let extra = 1;
@@ -6884,6 +7532,7 @@ function calcularDanio(at, de, mv) {
   if (bt.lluvia > 0 && mv.tipo === 'FUEGO') extra *= 0.7;
   if (hd.ef === 'filtro' && ef > 1) extra *= 0.75;
   if (hd.ef === 'animaGlacial' && de.ps === de.psMax) extra *= 0.5;
+  if (ha.ef === 'sobrecarga') extra *= 1.3;
   if (ha.ef === 'filoRecio' && mv.corta) extra *= 1.5;
   if (hd.ef === 'ilusion' && !de.et.golpeado) extra *= 0.5;
   return { danio: Math.max(1, Math.floor(base * stab * ef * (critico ? 1.5 : 1) * azar * extra)), ef, critico };
@@ -6902,7 +7551,8 @@ async function batalla(op) {
   const escenaPrevia = S.escena;
   await transicionBatalla();
   const ent = op.entrenador;
-  const equipoRival = ent ? ent.equipo.map(([id, l]) => crearCriatura(id, l)) : [crearCriatura(op.salvaje[0], op.salvaje[1])];
+  // Un entrenador puede forzar la habilidad de una criatura: ['id', nivel, { hab: 'sequia' }]
+  const equipoRival = ent ? ent.equipo.map(([id, l, extra]) => { const c = crearCriatura(id, l); if (extra && extra.hab) c.habForzada = extra.hab; return c; }) : [crearCriatura(op.salvaje[0], op.salvaje[1])];
   bt = {
     tipo: ent ? 'entrenador' : 'salvaje', ent, equipoRival,
     rival: null, yo: null, rivalVis: false, yoVis: false, entVis: !!ent,
@@ -7170,6 +7820,12 @@ async function ejecutarMov(at, de, slot, quien) {
       await decir(`¡El fuego no lastima a ${nombreBatalla(de)}, lo cura!`, { auto: 50 });
       return;
     }
+    if (hd.ef === 'electromotor' && M.tipo === 'ELECTRICO') {
+      await anunciarHab(de);
+      await decir(`¡${nombreBatalla(de)} absorbió la electricidad!`, { auto: 40 });
+      await cambiarEtapa(de, 'vel', 1);
+      return;
+    }
     if (hd.ef === 'terruno' && M.tipo === 'TIERRA') {
       await anunciarHab(de);
       if (de.ps < de.psMax) { de.ps = Math.min(de.psMax, de.ps + Math.ceil(de.psMax / 4)); await animarPS(de); }
@@ -7306,6 +7962,17 @@ async function despuesDelGolpe(at, de, M, danio = 0) {
   if (de.ps > 0) {
     if (hd.ef === 'hervor' && (M.tipo === 'FUEGO' || M.tipo === 'AGUA')) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 2); }
     if (hd.ef === 'cobardia' && ['BICHO', 'FANTASMA', 'SINIESTRO'].includes(M.tipo)) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 1); }
+  }
+  if (hd.ef === 'geotermica' && de.ps <= 0 && at.ps > 0) {
+    await anunciarHab(de);
+    await decir(`¡${nombreBatalla(de)} explotó como un volcán y se llevó a ${nombreBatalla(at)}!`, { auto: 50 });
+    at.ps = 0;
+    await animarPS(at);
+  }
+  if (ha.ef === 'sobrecarga' && at.ps > 0 && danio > 0) {
+    await anunciarHab(at);
+    at.ps = Math.max(0, at.ps - Math.max(1, Math.floor(at.psMax / 10)));
+    await animarPS(at);
   }
   if (hd.ef === 'justiciero' && de.ps > 0 && M.tipo === 'SINIESTRO') { await anunciarHab(de); await cambiarEtapa(de, 'atk', 1); }
   if (ha.ef === 'furiaAndina' && de.ps <= 0 && at.ps > 0) { await anunciarHab(at); await cambiarEtapa(at, 'atk', 1); }
