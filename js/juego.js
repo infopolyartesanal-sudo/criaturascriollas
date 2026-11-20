@@ -759,6 +759,9 @@ function calcularDanio(at, de, mv) {
   if (ef === 0) return { danio: 0, ef, critico: false };
   let extra = 1;
   if (ha.ef === 'fuerza') extra *= 1.25;
+  if (ha.ef === 'garra') extra *= 1.3;
+  if (ha.ef === 'poderSolar' && bt.sol > 0) extra *= 1.5;
+  if (de.et.escudoFuego) extra *= ef < 1 ? 0.5 : 0.7;
   if (ha.ef === 'cromolente' && ef < 1) extra *= 2;
   if (ha.ef === 'apuro' && mv.tipo === ha.tipo && at.ps <= at.psMax / 3) extra *= 1.5;
   if (ha.ef === 'humedal' && (mv.tipo === 'AGUA' || mv.tipo === 'PLANTA')) extra *= 1.3;
@@ -1031,7 +1034,13 @@ async function ejecutarMov(at, de, slot, quien) {
     await esperar(1);
   }
   bt.yDX = 0; bt.rDX = 0;
+  at.et.escudoFuego = false; // el escudo dura hasta su próximo movimiento
   if (Math.random() * 100 >= M.prec) { await decir('¡Pero falló!', { auto: 40 }); return; }
+  if (M.pot && de.et.escudoFuego && ['PLANTA', 'ACERO', 'BICHO', 'HIELO'].includes(M.tipo)) {
+    await anunciarHab(de);
+    await decir(`¡El escudo de fuego frenó el ataque de ${nombreTipo(M.tipo)}!`, { auto: 50 });
+    return;
+  }
   const ladoDe = quien === 'yo' ? 'r' : 'y';
   if (M.pot) {
     const hd = habDe(de);
@@ -1061,7 +1070,13 @@ async function ejecutarMov(at, de, slot, quien) {
     if (r.critico) await decir('¡Golpe crítico!', { auto: 40 });
     if (r.ef > 1) await decir('¡Es muy eficaz!', { auto: 40 });
     else if (r.ef < 1) await decir('No es muy eficaz...', { auto: 40 });
+    if (de.et.escudoFuego && r.danio > 0) await decir('El escudo de fuego achicó el golpe.', { auto: 40 });
     await despuesDelGolpe(at, de, M);
+    if (habDe(at).ef === 'maestroFuego' && M.tipo === 'FUEGO' && at.ps > 0) {
+      at.et.escudoFuego = true;
+      bt.parp[at === bt.yo ? 'y' : 'r'] = 8;
+      await decir(`¡Maestro de Fuego! ${nombreBatalla(at)} se cubrió con un escudo de fuego.`, { auto: 50 });
+    }
     if (slot.id === 'forcejeo') {
       at.ps = Math.max(0, at.ps - Math.max(1, Math.floor(at.psMax / 4)));
       await animarPS(at);
@@ -1165,6 +1180,11 @@ async function finDeTurno() {
       m.ps = Math.min(m.psMax, m.ps + Math.max(1, Math.floor(m.psMax / 16)));
       await animarPS(m);
       await decir(`¡${h.nombre}! ${nombreBatalla(m)} recuperó un poco de PS.`, { auto: 40 });
+    }
+    if (h.ef === 'poderSolar' && bt.sol > 0) {
+      m.ps = Math.max(0, m.ps - Math.max(1, Math.floor(m.psMax / 8)));
+      await animarPS(m);
+      await decir(`¡${h.nombre}! El sol fuerte le quita PS a ${nombreBatalla(m)}.`, { auto: 45 });
     }
     if (h.ef === 'impulso' && (m.et.vel || 0) < 6) { await anunciarHab(m); await cambiarEtapa(m, 'vel', 1); }
   }
