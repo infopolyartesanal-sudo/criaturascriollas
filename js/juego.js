@@ -1040,8 +1040,9 @@ function dibujarMundo() {
   // Lugares oscuros (Gimnasio 5): solo se ve un círculo alrededor de Felipe
   if (m.oscuro) {
     const fx = ppx - cx + 8, fy = ppy - cy + 6;
-    const gr = b.createRadialGradient(fx, fy, 18, fx, fy, 70);
-    gr.addColorStop(0, 'rgba(12,4,28,0)'); gr.addColorStop(1, 'rgba(12,4,28,0.88)');
+    const muy = m.oscuro === 2; // El Monte Cerrado: todavía menos luz
+    const gr = b.createRadialGradient(fx, fy, muy ? 8 : 18, fx, fy, muy ? 40 : 70);
+    gr.addColorStop(0, muy ? 'rgba(4,10,4,0)' : 'rgba(12,4,28,0)'); gr.addColorStop(1, muy ? 'rgba(4,10,4,0.97)' : 'rgba(12,4,28,0.88)');
     b.fillStyle = gr; b.fillRect(0, 0, W, H);
   }
   // Nombre del lugar al entrar

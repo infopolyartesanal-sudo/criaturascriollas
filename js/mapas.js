@@ -1015,6 +1015,31 @@ const BANADO = [
   'TT,,,,,,~~~,,,,,,,,,,,TT',
   'TTTTTTTTTTTTTTTTTTTTTTTT',
 ];
+// Desvío de la Ruta 7 (Yungas): EL MONTE CERRADO, bosque muy oscuro (se entra por el ESTE)
+const MONTE = [
+  'YYYYYYYYYYYYYYYYYYYYYYYYYY',
+  'YYYYYYYYYYYYYYYYYYYYYYYYYY',
+  'YYYY.,YYYYYYYYYYYYYYYYY,.Y',
+  'YYYY,,..,.,.,.,.,.,,,YY.,Y',
+  'YYYY,,,,.,.,.....,,,.YY,,Y',
+  'YYYYYYYYYYY,.YYYYYY.,YY.,Y',
+  'YYYYYYYYYYY..YYYYYY..,,,.Y',
+  'YYYYYYYYYYY.,YYYYYY.,,,,YY',
+  'YYY.,...,,.,,YYYYYY,.YYYYY',
+  'YYY....,,..,YYYYYYY,,YYYYY',
+  'YYY.,YYYYYYYY,,YYYY.,,====',
+  'YYY,.YYYYYYYY,,YYYY,..====',
+  'YYY.,YYYYYYYY.,YYYYYYSYYYY',
+  'YYY,,YYYYYYYY,.YYYYYYYYYYY',
+  'YYY,,YYYYYYYYYYYYY,,.,.YYY',
+  'YYY.,.,,,..YYYYYYY,.,,.YYY',
+  'YYY..,.....YYYYYYY,.YYYYYY',
+  'YYYYYYYYY.,YYYYYYY,,YYYYYY',
+  'YYY.,...,,.,,.,....,YYYYYY',
+  'YYY,....,,.,,..,.,,YYYYYYY',
+  'YYYYYYYYYYYYYYYYYYYYYYYYYY',
+  'YYYYYYYYYYYYYYYYYYYYYYYYYY',
+];
 const TAFI = [
   'RRRRRRRRRR==RRRRRRRRRRRR',
   'RR........==S.........RR',
@@ -2005,6 +2030,38 @@ const MAPAS = {
         hablar: async () => {
           await decir('PESCADOR: ¡Shhh, que se espantan las tarariras! Este bañado se llena con el agua del río Salado.');
           await decir('Entre los juncos se esconden AJOLODO, JUNQUITO y CARPINCHU. Y ojo con los mosquitos: ¡algunos tienen VENENO!');
+        },
+      },
+    ],
+  },
+
+  monte: {
+    nombre: 'EL MONTE CERRADO',
+    exterior: true,
+    oscuro: 2, // más oscuro que el Gimnasio 5
+    grilla: desdeTexto(MONTE),
+    edificios: [],
+    salidas: [
+      { x: 25, y: 10, a: 'ruta4', ax: 2, ay: 13, dir: 3 },
+      { x: 25, y: 11, a: 'ruta4', ax: 2, ay: 14, dir: 3 },
+    ],
+    carteles: {
+      '21,12': 'EL MONTE CERRADO. Acá los árboles tapan el sol y casi no se ve nada. Dicen que en el fondo vive un ermitaño...',
+    },
+    objetos: { Y: 'Árboles tan juntos que no pasa ni la luz. Se escuchan ruidos raros entre las hojas...' },
+    encuentros: { lista: [['capullon', 14], ['cuison', 12], ['lechucita', 12], ['farolito', 12], ['garkol', 10], ['mimetit', 10], ['ramoa', 8], ['faeve', 8], ['polillaca', 6], ['howlup', 4], ['sparknight', 4]], min: 26, max: 30 },
+    npcs: [
+      {
+        id: 'ermitano_monte', x: 4, y: 2, dir: 0, pal: PAL.abuelo,
+        hablar: async () => {
+          if (S.flags.regaloMonte) { await decir('ERMITAÑO: En la oscuridad las criaturas FANTASMA y SINIESTRO se sienten como en casa. ¡Cuidate, gurí!'); return; }
+          await decir('ERMITAÑO: ¡Uh! ¿Cómo llegaste hasta acá con esta oscuridad? Hace años que nadie me visita.');
+          await decir('Tomá, te lo ganaste por valiente. La encontré entre las raíces de un árbol gigante.');
+          S.bolsa.piedraNoche = (S.bolsa.piedraNoche || 0) + 1;
+          S.flags.regaloMonte = true;
+          await decir('¡Felipe recibió una PIEDRA NOCHE!');
+          await decir('ERMITAÑO: Con ella, GARKOL se vuelve GARGORRUPT y FAEVE se vuelve DUSKFAE. ¡Usala bien!');
+          guardar();
         },
       },
     ],
@@ -3778,6 +3835,12 @@ MAPAS.pampa.salidas.push(
 );
 abrir('pampa', [[19, 14]], 'S');
 MAPAS.pampa.carteles['19,14'] = 'Al ESTE, siguiendo el río: el BAÑADO DEL RÍO SALADO. ¡Un pantano lleno de criaturas!';
+// Ruta 7 (Yungas): desvío al OESTE hacia El Monte Cerrado
+abrir('ruta4', [[0, 13], [1, 13], [0, 14], [1, 14]], '=');
+MAPAS.ruta4.salidas.push(
+  { x: 0, y: 13, a: 'monte', ax: 24, ay: 10, dir: 2 },
+  { x: 0, y: 14, a: 'monte', ax: 24, ay: 11, dir: 2 },
+);
 girarMapa('ruta13', '180');
 girarMapa('ruta14', 'cw');
 girarMapa('ruta15', 'cw');
