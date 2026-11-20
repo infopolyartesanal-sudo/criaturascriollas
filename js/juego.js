@@ -285,6 +285,7 @@ function transitable(x, y) {
 }
 
 function pasoMundo() {
+  pasoSalvajes();
   if (S.moviendo) {
     S.prog += held.b ? 4 : 2;
     if (S.prog >= 16) {
@@ -296,11 +297,17 @@ function pasoMundo() {
     return;
   }
   if (pressed.start) { correr(menuPrincipal()); return; }
-  if (pressed.a) { interactuar(S.x + DX[S.dir], S.y + DY[S.dir]); return; }
+  if (pressed.a) {
+    const c = salvajeOcupa(S.x + DX[S.dir], S.y + DY[S.dir]);
+    if (c && S.equipo.some(e => e.ps > 0)) { correr(pelearSalvajeVisible(c)); return; }
+    interactuar(S.x + DX[S.dir], S.y + DY[S.dir]); return;
+  }
   const d = held.up ? 1 : held.down ? 0 : held.left ? 2 : held.right ? 3 : -1;
   if (d < 0) { S.giro = 0; return; }
   if (S.dir !== d) { S.dir = d; S.giro = 6; return; }
   if (S.giro > 0) { S.giro--; return; }
+  const choca = S.equipo.some(e => e.ps > 0) && salvajeOcupa(S.x + DX[d], S.y + DY[d]);
+  if (choca) { correr(pelearSalvajeVisible(choca)); return; }
   if (transitable(S.x + DX[d], S.y + DY[d])) { S.moviendo = true; S.prog = 0; }
 }
 
@@ -325,11 +332,7 @@ function alPisar() {
   for (const d of m.disparadores || []) {
     if (d.prueba(S.x, S.y)) { correr(d.accion()); return; }
   }
-  const pisada = m.grilla[S.y][S.x];
-  const prob = (pisada === ',' || pisada === 'u') ? 0.11 : (m.cueva && pisada === ':') ? 0.07 : 0;
-  if (prob && S.equipo.some(c => c.ps > 0) && m.encuentros && Math.random() < prob) {
-    correr(encuentroSalvaje());
-  }
+  // Los encuentros ya no son al azar: las criaturas se ven en el pasto alto (pasoSalvajes)
 }
 
 async function viajar(sal) {
@@ -357,6 +360,91 @@ async function interactuar(x, y) {
   const ch = m.grilla[y][x];
   if (ch === 'S' && m.carteles && m.carteles[x + ',' + y]) { correr(decir(m.carteles[x + ',' + y])); return; }
   if (m.objetos && m.objetos[ch]) { correr(decir(m.objetos[ch])); return; }
+}
+
+// ---------- Criaturas salvajes visibles en el pasto alto ----------
+// En vez de aparecer de golpe, las criaturas se ven caminando por el pasto alto (y por el piso de las cuevas).
+// Si Felipe se choca con una (o la mira y aprieta A), empieza la batalla.
+let SALV = { mapa: null, lista: [], espera: 0 };
+function esZonaSalvaje(m, x, y) {
+  const ch = m.grilla[y] && m.grilla[y][x];
+  return ch === ',' || ch === 'u' || (m.cueva && ch === ':');
+}
+function salvajeEn(x, y) { return SALV.lista.find(c => c.x === x && c.y === y); }
+function maxSalvajes(m) {
+  let n = 0;
+  for (let y = 0; y < m.grilla.length; y++) for (let x = 0; x < m.grilla[y].length; x++) if (esZonaSalvaje(m, x, y)) n++;
+  return n ? Math.max(2, Math.min(6, Math.round(n / 14))) : 0;
+}
+function lugarLibreSalvaje(m, x, y) {
+  return esZonaSalvaje(m, x, y) && !salvajeEn(x, y) && !npcEn(x, y) && !edificioEn(m, x, y) &&
+    !(x === S.x && y === S.y) && !(m.salidas || []).some(s => s.x === x && s.y === y);
+}
+function elegirEspecie(enc) {
+  const total = enc.lista.reduce((a, e) => a + e[1], 0);
+  let r = Math.random() * total, id = enc.lista[0][0];
+  for (const [e, p] of enc.lista) { if ((r -= p) < 0) { id = e; break; } }
+  return { id, nivel: enc.min + Math.floor(Math.random() * (enc.max - enc.min + 1)) };
+}
+function aparecerSalvaje(m, lejos) {
+  for (let intento = 0; intento < 40; intento++) {
+    const y = Math.floor(Math.random() * m.grilla.length), x = Math.floor(Math.random() * m.grilla[0].length);
+    if (!lugarLibreSalvaje(m, x, y)) continue;
+    if (lejos && Math.abs(x - S.x) + Math.abs(y - S.y) < 4) continue;
+    const e = elegirEspecie(m.encuentros);
+    SALV.lista.push({ ...e, x, y, dir: 0, prog: 0, mov: false, quieto: 30 + Math.floor(Math.random() * 90), nace: 20 });
+    return;
+  }
+}
+function prepararSalvajes() {
+  const m = mapa();
+  if (SALV.mapa === S.mapa) return;
+  SALV = { mapa: S.mapa, lista: [], espera: 0 };
+  if (!m.encuentros) return;
+  const max = maxSalvajes(m);
+  for (let i = 0; i < max; i++) aparecerSalvaje(m, true);
+}
+function pasoSalvajes() {
+  prepararSalvajes();
+  const m = mapa();
+  if (!m.encuentros) return;
+  // Repone criaturas de a poco
+  if (SALV.lista.length < maxSalvajes(m) && --SALV.espera <= 0) { aparecerSalvaje(m, true); SALV.espera = 180; }
+  for (const c of SALV.lista) {
+    if (c.nace > 0) c.nace--;
+    if (c.mov) {
+      c.prog += 1;
+      if (c.prog >= 16) { c.mov = false; c.prog = 0; c.x += DX[c.dir]; c.y += DY[c.dir]; c.quieto = 40 + Math.floor(Math.random() * 100); }
+      continue;
+    }
+    if (--c.quieto > 0) continue;
+    const d = Math.floor(Math.random() * 4);
+    c.dir = d;
+    const nx = c.x + DX[d], ny = c.y + DY[d];
+    // Se mueven solo por el pasto alto y no se meten donde está Felipe (ni a donde está yendo)
+    const destinoFelipe = S.moviendo ? [S.x + DX[S.dir], S.y + DY[S.dir]] : [S.x, S.y];
+    if (lugarLibreSalvaje(m, nx, ny) && !(nx === destinoFelipe[0] && ny === destinoFelipe[1]) &&
+        !SALV.lista.some(o => o.mov && o.x + DX[o.dir] === nx && o.y + DY[o.dir] === ny)) {
+      c.mov = true; c.prog = 0;
+    } else c.quieto = 20 + Math.floor(Math.random() * 40);
+  }
+}
+// Devuelve la criatura que está (o está llegando) a esa baldosa
+function salvajeOcupa(x, y) {
+  return SALV.lista.find(c => (c.x === x && c.y === y) || (c.mov && c.x + DX[c.dir] === x && c.y + DY[c.dir] === y));
+}
+async function pelearSalvajeVisible(c) {
+  SALV.lista = SALV.lista.filter(o => o !== c);
+  SALV.espera = 240;
+  await batalla({ salvaje: [c.id, c.nivel] });
+}
+const _miniCriatura = {};
+function miniCriatura(id) {
+  if (_miniCriatura[id]) return _miniCriatura[id];
+  const c = nuevoCanvas(20, 20), x = c.getContext('2d');
+  x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high';
+  x.drawImage(spriteCriatura(id), 0, 0, 20, 20);
+  return (_miniCriatura[id] = c);
 }
 
 async function encuentroSalvaje() {
@@ -545,8 +633,26 @@ function dibujarMundo() {
   let frame = 0;
   if (S.moviendo) frame = S.prog < 10 ? 1 + S.pasoAlt : 0;
   entes.push({ y: ppy, x: ppx, pal: PAL.felipe, dir: S.dir, f: frame, yo: true, tx: S.x, ty: S.y });
+  prepararSalvajes();
+  for (const c of SALV.lista) {
+    const px = c.x * T + (c.mov ? DX[c.dir] * c.prog : 0), py = c.y * T + (c.mov ? DY[c.dir] * c.prog : 0);
+    entes.push({ y: py, x: px, salvaje: c, tx: c.mov && c.prog >= 8 ? c.x + DX[c.dir] : c.x, ty: c.mov && c.prog >= 8 ? c.y + DY[c.dir] : c.y });
+  }
   entes.sort((a, c) => a.y - c.y);
   for (const e of entes) {
+    if (e.salvaje) {
+      const c = e.salvaje;
+      const salto = c.mov ? -Math.abs(Math.sin(c.prog / 16 * Math.PI)) * 3 : ((tick + c.x * 7) >> 4) % 2 ? -1 : 0;
+      const img = miniCriatura(c.id);
+      b.save();
+      if (c.nace > 0) b.globalAlpha = 1 - c.nace / 20;
+      if (c.dir === 3) { b.translate(Math.round(e.x - cx) + 18, 0); b.scale(-1, 1); b.drawImage(img, 0, Math.round(e.y - cy - 6 + salto)); }
+      else b.drawImage(img, Math.round(e.x - cx - 2), Math.round(e.y - cy - 6 + salto));
+      b.restore();
+      const ch = m.grilla[e.ty] && m.grilla[e.ty][e.tx];
+      if (ch === ',' || ch === 'u') b.drawImage(TILES[ch], 0, 9, 16, 7, e.x - cx, e.y - cy + 9, 16, 7);
+      continue;
+    }
     const bob = e.yo && frame ? -1 : 0;
     dibujarPersonaje(e.pal, e.dir, e.f, e.x - cx, e.y - cy - 3 + bob);
     const enPasto = m.grilla[e.ty] && (m.grilla[e.ty][e.tx] === ',' || m.grilla[e.ty][e.tx] === 'u') && !(e.yo && S.moviendo && S.prog < 8);
