@@ -1345,7 +1345,7 @@ const HABILIDADES = {
   impulso: { nombre: 'Impulso', ef: 'impulso', desc: 'Se emociona con el fuego: es más rápido en cada turno.' },
   garraDura: { nombre: 'Garra Dura', ef: 'garra', desc: 'Ataca con sus garras enormes: sus ataques pegan un 30% más.' },
   poderSolar: { nombre: 'Poder Solar', ef: 'poderSolar', desc: 'Con sol fuerte sus ataques pegan un 50% más, pero pierde un poco de PS cada turno.' },
-  maestroFuego: { nombre: 'Maestro de Fuego', ef: 'maestroFuego', desc: 'Al atacar con Fuego levanta un escudo de llamas: frena Planta, Acero, Bicho y Hielo y achica lo demás.' },
+  maestroFuego: { nombre: 'Maestro de Fuego', ef: 'maestroFuego', desc: 'Si lo atacan, lo cubre un escudo de llamas: frena Planta, Acero, Bicho y Hielo y achica lo demás.' },
   sequia: { nombre: 'Sequía', ef: 'sequia', desc: 'Al entrar sale un sol fuerte: los ataques de Fuego, Tierra y Roca pegan más.' },
   crisolMagma: { nombre: 'Crisol de Magma', ef: 'crisol', desc: 'Sus ataques de Fuego y Roca pegan más.' },
   monteBravo: { nombre: 'Monte Bravo', ef: 'apuro', tipo: 'PLANTA', desc: 'Con poca vida, sus ataques de Planta pegan mucho más.' },

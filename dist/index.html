@@ -1947,7 +1947,7 @@ const HABILIDADES = {
   impulso: { nombre: 'Impulso', ef: 'impulso', desc: 'Se emociona con el fuego: es más rápido en cada turno.' },
   garraDura: { nombre: 'Garra Dura', ef: 'garra', desc: 'Ataca con sus garras enormes: sus ataques pegan un 30% más.' },
   poderSolar: { nombre: 'Poder Solar', ef: 'poderSolar', desc: 'Con sol fuerte sus ataques pegan un 50% más, pero pierde un poco de PS cada turno.' },
-  maestroFuego: { nombre: 'Maestro de Fuego', ef: 'maestroFuego', desc: 'Al atacar con Fuego levanta un escudo de llamas: frena Planta, Acero, Bicho y Hielo y achica lo demás.' },
+  maestroFuego: { nombre: 'Maestro de Fuego', ef: 'maestroFuego', desc: 'Si lo atacan, lo cubre un escudo de llamas: frena Planta, Acero, Bicho y Hielo y achica lo demás.' },
   sequia: { nombre: 'Sequía', ef: 'sequia', desc: 'Al entrar sale un sol fuerte: los ataques de Fuego, Tierra y Roca pegan más.' },
   crisolMagma: { nombre: 'Crisol de Magma', ef: 'crisol', desc: 'Sus ataques de Fuego y Roca pegan más.' },
   monteBravo: { nombre: 'Monte Bravo', ef: 'apuro', tipo: 'PLANTA', desc: 'Con poca vida, sus ataques de Planta pegan mucho más.' },
@@ -5045,7 +5045,7 @@ function calcularDanio(at, de, mv) {
   if (ha.ef === 'fuerza') extra *= 1.25;
   if (ha.ef === 'garra') extra *= 1.3;
   if (ha.ef === 'poderSolar' && bt.sol > 0) extra *= 1.5;
-  if (de.et.escudoFuego) extra *= ef < 1 ? 0.5 : 0.7;
+  if (hd.ef === 'maestroFuego') extra *= ef < 1 ? 0.5 : 0.7;
   if (ha.ef === 'cromolente' && ef < 1) extra *= 2;
   if (ha.ef === 'apuro' && mv.tipo === ha.tipo && at.ps <= at.psMax / 3) extra *= 1.5;
   if (ha.ef === 'humedal' && (mv.tipo === 'AGUA' || mv.tipo === 'PLANTA')) extra *= 1.3;
@@ -5318,9 +5318,8 @@ async function ejecutarMov(at, de, slot, quien) {
     await esperar(1);
   }
   bt.yDX = 0; bt.rDX = 0;
-  at.et.escudoFuego = false; // el escudo dura hasta su próximo movimiento
   if (Math.random() * 100 >= M.prec) { await decir('¡Pero falló!', { auto: 40 }); return; }
-  if (M.pot && de.et.escudoFuego && ['PLANTA', 'ACERO', 'BICHO', 'HIELO'].includes(M.tipo)) {
+  if (M.pot && habDe(de).ef === 'maestroFuego' && ['PLANTA', 'ACERO', 'BICHO', 'HIELO'].includes(M.tipo)) {
     await anunciarHab(de);
     await decir(`¡El escudo de fuego frenó el ataque de ${nombreTipo(M.tipo)}!`, { auto: 50 });
     return;
@@ -5354,13 +5353,8 @@ async function ejecutarMov(at, de, slot, quien) {
     if (r.critico) await decir('¡Golpe crítico!', { auto: 40 });
     if (r.ef > 1) await decir('¡Es muy eficaz!', { auto: 40 });
     else if (r.ef < 1) await decir('No es muy eficaz...', { auto: 40 });
-    if (de.et.escudoFuego && r.danio > 0) await decir('El escudo de fuego achicó el golpe.', { auto: 40 });
+    if (hd.ef === 'maestroFuego' && r.danio > 0) await decir('¡Maestro de Fuego! El escudo de llamas achicó el golpe.', { auto: 40 });
     await despuesDelGolpe(at, de, M);
-    if (habDe(at).ef === 'maestroFuego' && M.tipo === 'FUEGO' && at.ps > 0) {
-      at.et.escudoFuego = true;
-      bt.parp[at === bt.yo ? 'y' : 'r'] = 8;
-      await decir(`¡Maestro de Fuego! ${nombreBatalla(at)} se cubrió con un escudo de fuego.`, { auto: 50 });
-    }
     if (slot.id === 'forcejeo') {
       at.ps = Math.max(0, at.ps - Math.max(1, Math.floor(at.psMax / 4)));
       await animarPS(at);
