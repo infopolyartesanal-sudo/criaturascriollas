@@ -2515,7 +2515,7 @@ const MAPAS = {
       '9,28': 'RUTA 13 · BOSQUE ANDINO. Coihues, lagos y niebla. Dicen que en este bosque viven los duendes...',
       '9,3': 'Al sur: EL BOLSÓN, al pie del cerro Piltriquitrón.',
     },
-    encuentros: { lista: [['howlup', 16], ['escarchin', 14], ['faeve', 12], ['farolito', 12], ['garkol', 10], ['lechuzonte', 10], ['nevulon', 8], ['condorito', 8], ['pumentor', 6], ['candilejo', 4]], min: 44, max: 47 },
+    encuentros: { lista: [['howlup', 16], ['escarchin', 14], ['celestin', 10], ['faeve', 12], ['farolito', 12], ['garkol', 10], ['lechuzonte', 10], ['nevulon', 8], ['condorito', 8], ['pumentor', 6], ['candilejo', 4]], min: 44, max: 47 },
     npcs: [
       entrenadorNPC({
         id: 'guarda_bosque', x: 7, y: 17, dir: 2, pal: PAL.guarda, nombre: 'GUARDAPARQUE NAHUEL',
@@ -2819,7 +2819,7 @@ const MAPAS = {
           await decir('SOMBRA: ...Shhh. ¿Lo escuchás? Es el viento entre las rocas. Las piedras de Somuncurá me contaron que venías.');
           await decir('Soy SOMBRA, líder del GIMNASIO SOMUNCURÁ. Mis criaturas viven entre la niebla y la noche.');
           await decir('Si me ganás, te llevás la INSIGNIA ECO. ¡Que la oscuridad te acompañe!');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER SOMBRA', pal: PAL.sombra, equipo: [['wraithfae', 50], ['duskfae', 51] /* lugar de COBIJOSO */, ['phantolycan', 51] /* lugar de YAGUARALBA */, ['umbratail', 52], ['umbracor', 52], ['andespectro', 53]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER SOMBRA', pal: PAL.sombra, equipo: [['wraithfae', 50], ['cobijoso', 51], ['yaguaraba', 51], ['umbratail', 52], ['umbracor', 52], ['andespectro', 53]] } });
           if (r === 'gana') {
             S.flags.insignia5 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 5);
@@ -2853,7 +2853,7 @@ const MAPAS = {
       '9,3': 'Al sur: PUERTO MADRYN.',
     },
     objetos: { '~': '¡Allá lejos salta una ballena franca! Llegan a Península Valdés todos los inviernos.' },
-    encuentros: { lista: [['pinguinoide', 16], ['carpibarro', 14], ['zorrazo', 10], ['vizcachita', 10], ['condorito', 10], ['sparknight', 8], ['peludin', 8], ['vientuino', 6], ['howlup', 6]], min: 52, max: 55 },
+    encuentros: { lista: [['pinguinoide', 16], ['carpibarro', 14], ['celestin', 12], ['zorrazo', 10], ['vizcachita', 10], ['condorito', 10], ['sparknight', 8], ['peludin', 8], ['vientuino', 6], ['howlup', 6]], min: 52, max: 55 },
     npcs: [
       entrenadorNPC({
         id: 'guardafauna', x: 12, y: 8, dir: 2, pal: PAL.guarda, nombre: 'GUARDAFAUNA LUCÍA',
@@ -3171,9 +3171,8 @@ const MAPAS = {
           await decir('MAREA: ¡Llegaste al fin del mundo! Desde el faro te vi cruzar el Estrecho en la balsa.');
           await decir('Soy MAREA, líder del GIMNASIO USHUAIA. Mis criaturas nadan en el agua más fría de la Argentina.');
           await decir('Si me ganás, te llevás la INSIGNIA FARO. ¡Que suba la marea!');
-          // Equipo pedido por Poly (20/11): el inicial de agua, Gliptopampa, Totorarca, Galiorca, Iberadraco y Azularza.
-          // GALIORCA todavía no está: mientras tanto ocupa su lugar Vientüino.
-          const r = await batalla({ entrenador: { nombre: 'LÍDER MAREA', pal: PAL.marea, equipo: [['totorarca', 56], ['vientuino', 57] /* lugar de GALIORCA */, ['azularza', 57], ['glyptopampa', 58], ['iberadraco', 59], ['iberaxolot', 60]] } });
+          // Equipo pedido por Poly (20/11): el inicial de agua, Gliptopampa, Totorarca, Glaciorka, Iberadraco y Azularza.
+          const r = await batalla({ entrenador: { nombre: 'LÍDER MAREA', pal: PAL.marea, equipo: [['totorarca', 56], ['glaciorka', 57], ['azularza', 57], ['glyptopampa', 58], ['iberadraco', 59], ['iberaxolot', 60]] } });
           if (r === 'gana') {
             S.flags.insignia6 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 6);
@@ -3546,9 +3545,8 @@ const MAPAS = {
           await decir('CENIZA: ¡Llegaste hasta el volcán más alto del mundo! Pocos aguantan este calor... y este frío.');
           await decir('Soy CENIZA, líder del GIMNASIO OJOS DEL SALADO. Mis criaturas nacieron de la lava.');
           await decir('Si me ganás, te llevás la INSIGNIA VOLCÁN. ¡Que arda la Puna!');
-          // Equipo pedido por Poly (20/11): Ignidraxx, Turborush, Zorzaliente, Piquillonco, Submaringer y Brasaspumas (con SEQUÍA).
-          // BRASASPUMAS todavía no está: mientras tanto ocupa su lugar Andragón, con la habilidad Sequía.
-          const r = await batalla({ entrenador: { nombre: 'LÍDER CENIZA', pal: PAL.ceniza, equipo: [['piquillonco', 64], ['submaringer', 65], ['zorzaliente', 65], ['turborush', 66], ['ignidraxx', 66], ['andragon', 67, { hab: 'sequia' }] /* lugar de BRASASPUMAS */] } });
+          // Equipo pedido por Poly (20/11): Ignidraxx, Turborush, Zorzaliente, Piquillonco, Submaringer y Braspuma (con SEQUÍA).
+          const r = await batalla({ entrenador: { nombre: 'LÍDER CENIZA', pal: PAL.ceniza, equipo: [['piquillonco', 64], ['submaringer', 65], ['zorzaliente', 65], ['turborush', 66], ['ignidraxx', 66], ['braspuma', 67, { hab: 'sequia' }]] } });
           if (r === 'gana') {
             S.flags.insignia7 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 7);

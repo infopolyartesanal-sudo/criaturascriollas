@@ -951,7 +951,8 @@ function calcularDanio(at, de, mv) {
   let base = Math.floor(Math.floor(Math.floor(2 * L / 5 + 2) * mv.pot * a / d) / 50) + 2;
   const ha = habDe(at), hd = habDe(de);
   const stab = tiposDe(at).includes(mv.tipo) ? (ha.ef === 'adaptable' ? 2 : 1.5) : 1;
-  const ef = eficacia(mv.tipo, tiposDe(de));
+  let ef = eficacia(mv.tipo, tiposDe(de));
+  if (ef === 0 && ha.ef === 'audaz' && ['NORMAL', 'LUCHA'].includes(mv.tipo)) ef = eficacia(mv.tipo, tiposDe(de).filter(t => t !== 'FANTASMA'));
   const critico = hd.ef !== 'sinCritico' && Math.random() < (ha.ef === 'critico' || mv.critAlto ? 1 / 5 : 1 / 16);
   const azar = 0.85 + Math.random() * 0.15;
   if (ef === 0) return { danio: 0, ef, critico: false };
@@ -970,6 +971,10 @@ function calcularDanio(at, de, mv) {
   if (hd.ef === 'filtro' && ef > 1) extra *= 0.75;
   if (hd.ef === 'animaGlacial' && de.ps === de.psMax) extra *= 0.5;
   if (ha.ef === 'sobrecarga') extra *= 1.3;
+  if (ha.ef === 'punoFerreo' && mv.punio) extra *= 1.3;
+  if (ha.ef === 'pielHelada' && mv.tipo === 'HIELO') extra *= 1.3;
+  if (hd.ef === 'pielHelada') extra *= 0.85;
+  if (bt.nieve > 0 && mv.tipo === 'HIELO') extra *= 1.3;
   if (ha.ef === 'filoRecio' && mv.corta) extra *= 1.5;
   if (hd.ef === 'ilusion' && !de.et.golpeado) extra *= 0.5;
   return { danio: Math.max(1, Math.floor(base * stab * ef * (critico ? 1.5 : 1) * azar * extra)), ef, critico };
@@ -1242,7 +1247,7 @@ async function ejecutarMov(at, de, slot, quien) {
     await esperar(1);
   }
   bt.yDX = 0; bt.rDX = 0;
-  if (!(M.lluviaSegura && bt.lluvia > 0) && Math.random() * 100 >= M.prec) { await decir('¡Pero falló!', { auto: 40 }); return; }
+  if (!(M.lluviaSegura && bt.lluvia > 0) && !(M.nieveSegura && bt.nieve > 0) && Math.random() * 100 >= M.prec) { await decir('¡Pero falló!', { auto: 40 }); return; }
   if (M.pot && habDe(de).ef === 'maestroFuego' && ['PLANTA', 'ACERO', 'BICHO', 'HIELO'].includes(M.tipo)) {
     await anunciarHab(de);
     await decir(`¡El escudo de fuego frenó el ataque de ${nombreTipo(M.tipo)}!`, { auto: 50 });
@@ -1255,6 +1260,11 @@ async function ejecutarMov(at, de, slot, quien) {
       await anunciarHab(de);
       if (de.ps < de.psMax) { de.ps = Math.min(de.psMax, de.ps + Math.ceil(de.psMax / 4)); await animarPS(de); }
       await decir(`¡El fuego no lastima a ${nombreBatalla(de)}, lo cura!`, { auto: 50 });
+      return;
+    }
+    if (hd.ef === 'intangible' && M.tipo === 'TIERRA') {
+      await anunciarHab(de);
+      await decir(`¡${nombreBatalla(de)} flota y el ataque no lo toca!`, { auto: 45 });
       return;
     }
     if (hd.ef === 'electromotor' && M.tipo === 'ELECTRICO') {
@@ -1375,13 +1385,22 @@ async function alEntrar(m) {
     else { await cambiarEtapa(otro, 'def', -1); await competitivo(otro); }
   } else if (h.ef === 'veloz') {
     await anunciarHab(m); await cambiarEtapa(m, 'vel', 1);
+  } else if (h.ef === 'nevada') {
+    await anunciarHab(m);
+    bt.nieve = 5; bt.sol = 0; bt.lluvia = 0;
+    await decir('¡Se desató una tormenta de nieve! Los ataques de Hielo pegan más.', { auto: 60 });
+  } else if (h.ef === 'acoso') {
+    if (!otro || otro.ps <= 0) { m.et.entro = false; return; }
+    await anunciarHab(m);
+    if (['cuerpoPuro', 'animaGlacial'].includes(habDe(otro).ef)) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
+    else { await cambiarEtapa(otro, 'vel', -1); await competitivo(otro); }
   } else if (h.ef === 'llovizna') {
     await anunciarHab(m);
-    bt.lluvia = 5; bt.sol = 0;
+    bt.lluvia = 5; bt.sol = 0; bt.nieve = 0;
     await decir('¡Se largó a llover! Los ataques de Agua pegan más y los de Fuego, menos.', { auto: 60 });
   } else if (h.ef === 'sequia') {
     await anunciarHab(m);
-    bt.sol = 5; bt.lluvia = 0;
+    bt.sol = 5; bt.lluvia = 0; bt.nieve = 0;
     await decir('¡Salió un sol que raja la tierra! Los ataques de Fuego, Tierra y Roca pegan más.', { auto: 60 });
   } else if (h.ef === 'humedal') {
     await anunciarHab(m);
@@ -1390,6 +1409,12 @@ async function alEntrar(m) {
 }
 async function despuesDelGolpe(at, de, M, danio = 0) {
   const ha = habDe(at), hd = habDe(de);
+  if (ha.ef === 'colectorAlmas' && at.ps > 0 && at.ps < at.psMax && danio > 0) {
+    await anunciarHab(at);
+    at.ps = Math.min(at.psMax, at.ps + Math.max(1, Math.floor(danio / 4)));
+    await animarPS(at);
+    await decir(`${nombreBatalla(at)} le robó energía a ${nombreBatalla(de)}.`, { auto: 40 });
+  }
   if (ha.ef === 'maldicion' && M.muerde && at.ps > 0 && at.ps < at.psMax && danio > 0) {
     await anunciarHab(at);
     at.ps = Math.min(at.psMax, at.ps + Math.max(1, Math.floor(danio / 2)));
@@ -1424,6 +1449,7 @@ async function despuesDelGolpe(at, de, M, danio = 0) {
 async function finDeTurno() {
   if (bt.sol > 0 && --bt.sol === 0) await decir('El sol fuerte se fue.', { auto: 45 });
   if (bt.lluvia > 0 && --bt.lluvia === 0) await decir('Dejó de llover.', { auto: 45 });
+  if (bt.nieve > 0 && --bt.nieve === 0) await decir('Paró de nevar.', { auto: 45 });
   for (const m of [bt.yo, bt.rival]) {
     if (!m || m.ps <= 0) continue;
     const h = habDe(m);
@@ -1588,6 +1614,7 @@ function dibujarBatalla() {
   const g = b.createLinearGradient(0, 0, 0, 112);
   if (bt.sol > 0) { g.addColorStop(0, '#ffd890'); g.addColorStop(1, '#f0d890'); }
   else if (bt.lluvia > 0) { g.addColorStop(0, '#a8b8c8'); g.addColorStop(1, '#b8d0d8'); }
+  else if (bt.nieve > 0) { g.addColorStop(0, '#e8f0f8'); g.addColorStop(1, '#d0e4f0'); }
   else { g.addColorStop(0, '#f8f0c8'); g.addColorStop(1, '#d8f0b0'); }
   b.fillStyle = g; b.fillRect(0, 0, W, H);
   b.fillStyle = '#c8e8a0'; b.fillRect(0, 60, W, 52);

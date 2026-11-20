@@ -733,7 +733,7 @@ const MOVS = {
   // Diseños de Poly: línea de Andespectro y Umbracor
   tajo_espectral: { nombre: 'Tajo Espectral', tipo: 'FANTASMA', pot: 80, prec: 100, pp: 15, corta: true },
   tajo_abisal: { nombre: 'Tajo Abisal', tipo: 'SINIESTRO', pot: 85, prec: 95, pp: 10, corta: true },
-  puno_hielo: { nombre: 'Puño Hielo', tipo: 'HIELO', pot: 75, prec: 100, pp: 15 },
+  puno_hielo: { nombre: 'Puño Hielo', tipo: 'HIELO', pot: 75, prec: 100, pp: 15, punio: true },
   danza_espada: { nombre: 'Danza Espada', tipo: 'NORMAL', pot: 0, prec: 100, pp: 20, ef: 'atk++' },
   // Región 6 (Tierra del Fuego)
   rafaga_pluvial: { nombre: 'Ráfaga Pluvial', tipo: 'AGUA', pot: 75, prec: 95, pp: 15, lluviaSegura: true },
@@ -749,6 +749,10 @@ const MOVS = {
   erupcion_termal: { nombre: 'Erupción Termal', tipo: 'AGUA', pot: 85, prec: 100, pp: 10 },
   furia_lanin: { nombre: 'Furia del Lanín', tipo: 'ROCA', pot: 90, prec: 95, pp: 10, critAlto: true },
   aletazo_igneo: { nombre: 'Aletazo Ígneo', tipo: 'VOLADOR', pot: 85, prec: 100, pp: 15 },
+  gancho_volcanico: { nombre: 'Gancho Volcánico', tipo: 'FUEGO', pot: 90, prec: 100, pp: 10, punio: true },
+  tajo_glacial: { nombre: 'Tajo Glacial', tipo: 'HIELO', pot: 90, prec: 95, pp: 10, critAlto: true, nieveSegura: true },
+  envoltura: { nombre: 'Envoltura Sombría', tipo: 'FANTASMA', pot: 80, prec: 100, pp: 15 },
+  garra_eclipse: { nombre: 'Garra Eclipse', tipo: 'SINIESTRO', pot: 90, prec: 100, pp: 10, corta: true },
   forcejeo: { nombre: 'Forcejeo', tipo: 'NORMAL', pot: 40, prec: 100, pp: 1 },
 };
 
@@ -2168,6 +2172,99 @@ const ESPECIES = {
       ['p', [[15, 6], [17, 1], [18, 5], [21, 2], [19, 8]], '#f86020', 's'],
     ],
   },
+  // ===== Diseños de Felipe que faltaban (presentación, diapositivas 27, 32, 40, 49 y 62) =====
+  celestin: {
+    nombre: 'Celestín', tipos: ['VOLADOR', 'AGUA'], base: { ps: 45, atk: 45, def: 40, vel: 60 }, captura: 120, exp: 56,
+    desc: 'el pajarito celeste que sacude sus plumas para hacer llovizna', evo: { nivel: 24, a: 'azularza' },
+    movs: [[1, 'picotazo'], [1, 'burbujas'], [6, 'rasante'], [12, 'chapuzon'], [18, 'vuelo_alto'], [24, 'rafaga_pluvial'], [32, 'coletazo_agua'], [40, 'torrente']],
+    sprite: [
+      ['e', 16, 30, 8, 1.3, '#4a7a9a', 's'],
+      ['r', 12, 25, 2, 4, '#e0a020'], ['r', 18, 25, 2, 4, '#e0a020'],
+      ['p', [[7, 16], [1, 13], [3, 20], [8, 22]], '#ffffff'], ['p', [[25, 16], [31, 13], [29, 20], [24, 22]], '#ffffff'],
+      ['e', 16, 18, 10, 9, '#7ab8e8'],
+      ['e', 16, 21, 6, 5, '#a8d4f4', 's'],
+      ['e', 16, 6, 2.5, 3, '#8ad0f8', 's'], ['e', 15.5, 5, 1, 1, '#e0f8ff', 's'],
+      ['e', 12, 15, 2.6, 3, '#203060', 's'], ['e', 20, 15, 2.6, 3, '#203060', 's'],
+      ['d', 11, 14, '#ffffff'], ['d', 19, 14, '#ffffff'],
+      ['p', [[14, 18], [18, 18], [16, 21]], '#f0a020'],
+      ['e', 9, 19, 1.6, 1, '#f0a8b0', 's'], ['e', 23, 19, 1.6, 1, '#f0a8b0', 's'],
+    ],
+  },
+  cobijoso: {
+    nombre: 'Cobijoso', tipos: ['NORMAL', 'FANTASMA'], base: { ps: 75, atk: 110, def: 60, vel: 115 }, captura: 45, exp: 190,
+    desc: 'la cobija embrujada que vuela con el viento y envuelve a sus rivales',
+    movs: [[1, 'embestida'], [1, 'susto'], [6, 'silbido'], [12, 'pique'], [18, 'alarido'], [26, 'envoltura'], [34, 'luz_mala'], [42, 'payada']],
+    sprite: [
+      ['e', 16, 31, 9, 1, '#2a2040', 's'],
+      ['p', [[9, 6], [17, 3], [24, 9], [31, 16], [27, 18], [30, 23], [24, 22], [26, 28], [18, 24], [16, 30], [12, 23], [5, 27], [7, 19], [1, 18], [7, 13]], '#4a2a7a'],
+      ['p', [[9, 6], [17, 3], [16, 12], [10, 13]], '#3a1a60'],
+      ['e', 13, 9, 2.6, 2.2, '#1a0a30', 's'],
+      ['e', 12, 9, 1, 0.8, '#f8e070', 's'], ['e', 15, 9, 1, 0.8, '#f8e070', 's'],
+      ['e', 20, 14, 1.6, 0.9, '#e0c050', 's'], ['e', 25, 18, 1.4, 0.8, '#e0c050', 's'], ['e', 14, 19, 1.6, 0.9, '#e0c050', 's'],
+      ['e', 20, 22, 1.4, 0.8, '#e0c050', 's'], ['e', 9, 22, 1.2, 0.7, '#e0c050', 's'],
+      ['d', 20, 14, '#3a1a60'], ['d', 14, 19, '#3a1a60'],
+      ['p', [[7, 13], [24, 9], [24, 10], [7, 14]], '#c0a040', 's'],
+    ],
+  },
+  yaguaraba: {
+    nombre: 'Yaguarabá', tipos: ['SINIESTRO', 'FANTASMA'], base: { ps: 85, atk: 120, def: 80, vel: 105 }, captura: 45, exp: 245,
+    desc: 'el yaguareté del eclipse, con manchas que cambian como la luna',
+    movs: [[1, 'aranazo'], [1, 'grunido'], [6, 'mordisco'], [12, 'susto'], [18, 'emboscada'], [26, 'colmillo_niebla'], [34, 'garra_eclipse'], [42, 'luz_mala'], [50, 'noche_cerrada']],
+    sprite: [
+      ['e', 16, 29, 15, 2.5, '#4a2a90', 's'],
+      ['p', [[2, 30], [4, 22], [7, 30]], '#7a50f0', 's'], ['p', [[25, 30], [28, 21], [31, 30]], '#7a50f0', 's'],
+      ['p', [[24, 16], [31, 8], [30, 13], [27, 19]], '#14121e'],
+      ['r', 7, 20, 4, 9, '#14121e'], ['r', 12, 21, 3, 8, '#14121e'], ['r', 20, 20, 4, 9, '#14121e'], ['r', 25, 19, 3, 9, '#14121e'],
+      ['r', 6, 27, 5, 2, '#6a8af8', 's'], ['r', 19, 27, 5, 2, '#6a8af8', 's'],
+      ['e', 17, 17, 10, 5.5, '#14121e'],
+      ['e', 12, 15, 1.6, 1.6, '#a8e8f8', 's'], ['e', 17, 14, 1.6, 1.6, '#a8e8f8', 's'], ['e', 22, 15, 1.6, 1.6, '#a8e8f8', 's'],
+      ['e', 12.6, 15, 1, 1.4, '#14121e', 's'], ['e', 21.4, 15, 1, 1.4, '#14121e', 's'],
+      ['e', 15, 19, 1.2, 1.2, '#a8e8f8', 's'], ['e', 20, 19, 1.2, 1.2, '#a8e8f8', 's'],
+      ['e', 6, 13, 5, 4.5, '#14121e'],
+      ['p', [[3, 10], [3, 5], [6, 9]], '#14121e'], ['p', [[8, 9], [10, 5], [10, 10]], '#14121e'],
+      ['p', [[3, 12], [6, 13], [3, 14]], '#e8f0ff', 's'], ['p', [[7, 12], [10, 13], [7, 14]], '#e8f0ff', 's'],
+      ['r', 2, 16, 5, 1, '#5a3aa0', 's'],
+    ],
+  },
+  glaciorka: {
+    nombre: 'Glaciorka', tipos: ['AGUA', 'HIELO'], base: { ps: 100, atk: 115, def: 90, vel: 90 }, captura: 45, exp: 245,
+    desc: 'la orca de hielo, depredadora alfa de los mares del sur',
+    movs: [[1, 'embestida'], [1, 'escarcha'], [6, 'burbujas'], [12, 'mordisco'], [18, 'granizo'], [24, 'chapuzon'], [32, 'coletazo_agua'], [40, 'tajo_glacial'], [48, 'rayo_hielo'], [56, 'torrente']],
+    sprite: [
+      ['e', 16, 29, 15, 2, '#5a90c8', 's'],
+      ['p', [[14, 12], [18, 1], [21, 4], [20, 12]], '#a8d8f8'], ['p', [[16, 11], [18, 3], [20, 10]], '#e0f4ff', 's'],
+      ['p', [[25, 17], [31, 10], [30, 17], [31, 24], [26, 21]], '#14182a'],
+      ['e', 15, 18, 12, 6.5, '#14182a'],
+      ['p', [[3, 20], [14, 21], [24, 20], [16, 25], [6, 24]], '#f4f8fc'],
+      ['e', 7, 15, 2.2, 1.6, '#f4f8fc', 's'],
+      ['e', 7, 15, 1, 1, '#40c0f0', 's'],
+      ['p', [[3, 19], [9, 20], [3, 21]], '#d0e8f8', 's'],
+      ['p', [[11, 22], [7, 28], [14, 24]], '#14182a'],
+      ['p', [[17, 13], [22, 12], [20, 15]], '#80c8f0', 's'], ['p', [[22, 15], [26, 15], [24, 17]], '#80c8f0', 's'],
+      ['d', 3, 26, '#e0f8ff'], ['d', 28, 27, '#e0f8ff'], ['d', 1, 14, '#e0f8ff'],
+    ],
+  },
+  braspuma: {
+    nombre: 'Braspuma', tipos: ['FUEGO', 'LUCHA'], base: { ps: 78, atk: 125, def: 70, vel: 120 }, captura: 45, exp: 240,
+    desc: 'el puma de fuego cuyo gancho hace retumbar el suelo como un volcán',
+    movs: [[1, 'aranazo'], [1, 'grunido'], [6, 'brasita'], [12, 'punetazo'], [18, 'fogon'], [24, 'mordisco'], [32, 'troncazo'], [40, 'gancho_volcanico'], [48, 'lavazo'], [56, 'erupcion']],
+    sprite: [
+      ['e', 16, 29, 13, 2, '#4a2010', 's'],
+      ['p', [[24, 16], [29, 6], [32, 3], [31, 11], [28, 18]], '#f86020'], ['p', [[28, 7], [31, 1], [30, 8]], '#f8c030', 's'],
+      ['r', 8, 20, 4, 8, '#e07030'], ['r', 20, 20, 4, 8, '#e07030'], ['r', 24, 19, 3, 8, '#c86028'],
+      ['r', 8, 22, 4, 2, '#2a1a10', 's'], ['r', 20, 22, 4, 2, '#2a1a10', 's'],
+      ['e', 10, 28, 3, 1.6, '#f4e0c0'], ['e', 22, 28, 3, 1.6, '#f4e0c0'],
+      ['e', 18, 17, 9, 5, '#e07030'],
+      ['p', [[14, 14], [16, 22], [18, 14]], '#2a1a10', 's'], ['p', [[20, 13], [22, 21], [24, 14]], '#2a1a10', 's'],
+      ['e', 10, 13, 6, 6, '#f4e0c0'],
+      ['p', [[5, 9], [8, 2], [11, 7], [14, 1], [15, 8], [17, 5], [16, 13]], '#f86020'],
+      ['p', [[8, 6], [10, 3], [12, 7]], '#f8c030', 's'],
+      ['e', 8, 13, 3.5, 3, '#e07030'],
+      ['p', [[3, 14], [7, 13], [7, 16], [4, 16]], '#e07030'],
+      ['e', 7, 12, 1.2, 1, '#202020', 's'], ['d', 3, 14, '#3a2010'],
+      ['r', 4, 16, 3, 1, '#c03030', 's'],
+    ],
+  },
   mimetit: {
     nombre: 'Mimetit', tipos: ['DRAGON', 'PSIQUICO'], base: { ps: 50, atk: 55, def: 48, vel: 68 }, captura: 45, exp: 70,
     desc: 'el dragoncito que se vuelve transparente', evo: { nivel: 35, a: 'espectradraco' },
@@ -2501,6 +2598,16 @@ const HABILIDADES = {
   sobrecarga: { nombre: 'Sobrecarga', ef: 'sobrecarga', desc: 'Sus ataques pegan un 30% más, pero pierde PS cada vez que golpea.' },
   geotermica: { nombre: 'Energía Geotérmica', ef: 'geotermica', desc: 'Si lo debilitan con un golpe, explota y se lleva al rival con él.' },
   cuerpoHumo: { nombre: 'Cuerpo Humo', ef: 'cuerpoPuro', desc: 'Su humo blanco lo protege: nadie le puede bajar nada.' },
+  acoso: { nombre: 'Acoso', ef: 'acoso', desc: 'Al entrar persigue al rival y le baja la VELOCIDAD.' },
+  sigiloSombrio: { nombre: 'Sigilo Sombrío', ef: 'veloz', desc: 'Se mueve con el viento: al entrar se vuelve más rápido.' },
+  colectorAlmas: { nombre: 'Colector de Almas', ef: 'colectorAlmas', desc: 'Al golpear, le roba energía al rival y recupera PS.' },
+  hidratacion: { nombre: 'Hidratación', ef: 'regenera', desc: 'Se baña en los charcos: recupera un poco de PS cada turno.' },
+  intangible: { nombre: 'Intangible', ef: 'intangible', desc: 'Flota apenas: los ataques de Tierra no lo tocan.' },
+  mendicidad: { nombre: 'Mendicidad', ef: 'nevada', desc: 'Al entrar desata una tormenta de nieve: los ataques de Hielo pegan más.' },
+  pielHelada: { nombre: 'Piel Helada', ef: 'pielHelada', desc: 'Sus ataques de Hielo pegan más y los golpes le hacen menos daño.' },
+  marLlamas: { nombre: 'Mar Llamas', ef: 'apuro', tipo: 'FUEGO', desc: 'Con poca vida, sus ataques de Fuego pegan mucho más.' },
+  punoFerreo: { nombre: 'Puño Férreo', ef: 'punoFerreo', desc: 'Sus puñetazos y ganchos pegan un 30% más.' },
+  audaz: { nombre: 'Audaz', ef: 'audaz', desc: 'Sus ataques Normal y Lucha también le pegan a los Fantasma.' },
   maldicionLunar: { nombre: 'Maldición Lunar', ef: 'maldicion', desc: 'Sus mordiscos le devuelven la mitad del daño que hacen como PS.' },
 };
 const HAB_ESPECIE = {
@@ -2538,6 +2645,9 @@ const HAB_ESPECIE = {
   calderito: { n: ['robustez', 'cuerpoHumo'], o: 'absorbeFuego' }, submaringer: { n: ['llovizna', 'cuerpoHumo'], o: 'geotermica' },
   laninger: { n: ['rocaSolida', 'cuerpoHumo'], o: 'geotermica' },
   zorzaliente: { n: ['pasoLigero', 'cuerpoLlama'] },
+  celestin: { n: ['colector', 'hidratacion'], o: 'llovizna' }, cobijoso: { n: ['acoso', 'sigiloSombrio'], o: 'colectorAlmas' },
+  yaguaraba: { n: ['cuerpoMaldito', 'intangible'] }, glaciorka: { n: ['mendicidad', 'nadoRapido'], o: 'pielHelada' },
+  braspuma: { n: ['marLlamas', 'punoFerreo'], o: 'audaz' },
   carpibarro: { n: ['descansoRegio', 'caparazon'], o: 'terruno' }, glyptopampa: { n: ['descansoRegio', 'caparazon'], o: 'terruno' },
   azularza: { n: ['nadoRapido', 'vientoAfin'], o: 'llovizna' },
   escarchin: { n: ['cortinaNieve', 'cuerpoPuro'], o: 'animaGlacial' }, glaciar: { n: ['cuerpoPuro', 'competitivo'], o: 'animaGlacial' },
@@ -5083,7 +5193,7 @@ const MAPAS = {
       '9,28': 'RUTA 13 · BOSQUE ANDINO. Coihues, lagos y niebla. Dicen que en este bosque viven los duendes...',
       '9,3': 'Al sur: EL BOLSÓN, al pie del cerro Piltriquitrón.',
     },
-    encuentros: { lista: [['howlup', 16], ['escarchin', 14], ['faeve', 12], ['farolito', 12], ['garkol', 10], ['lechuzonte', 10], ['nevulon', 8], ['condorito', 8], ['pumentor', 6], ['candilejo', 4]], min: 44, max: 47 },
+    encuentros: { lista: [['howlup', 16], ['escarchin', 14], ['celestin', 10], ['faeve', 12], ['farolito', 12], ['garkol', 10], ['lechuzonte', 10], ['nevulon', 8], ['condorito', 8], ['pumentor', 6], ['candilejo', 4]], min: 44, max: 47 },
     npcs: [
       entrenadorNPC({
         id: 'guarda_bosque', x: 7, y: 17, dir: 2, pal: PAL.guarda, nombre: 'GUARDAPARQUE NAHUEL',
@@ -5387,7 +5497,7 @@ const MAPAS = {
           await decir('SOMBRA: ...Shhh. ¿Lo escuchás? Es el viento entre las rocas. Las piedras de Somuncurá me contaron que venías.');
           await decir('Soy SOMBRA, líder del GIMNASIO SOMUNCURÁ. Mis criaturas viven entre la niebla y la noche.');
           await decir('Si me ganás, te llevás la INSIGNIA ECO. ¡Que la oscuridad te acompañe!');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER SOMBRA', pal: PAL.sombra, equipo: [['wraithfae', 50], ['duskfae', 51] /* lugar de COBIJOSO */, ['phantolycan', 51] /* lugar de YAGUARALBA */, ['umbratail', 52], ['umbracor', 52], ['andespectro', 53]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER SOMBRA', pal: PAL.sombra, equipo: [['wraithfae', 50], ['cobijoso', 51], ['yaguaraba', 51], ['umbratail', 52], ['umbracor', 52], ['andespectro', 53]] } });
           if (r === 'gana') {
             S.flags.insignia5 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 5);
@@ -5421,7 +5531,7 @@ const MAPAS = {
       '9,3': 'Al sur: PUERTO MADRYN.',
     },
     objetos: { '~': '¡Allá lejos salta una ballena franca! Llegan a Península Valdés todos los inviernos.' },
-    encuentros: { lista: [['pinguinoide', 16], ['carpibarro', 14], ['zorrazo', 10], ['vizcachita', 10], ['condorito', 10], ['sparknight', 8], ['peludin', 8], ['vientuino', 6], ['howlup', 6]], min: 52, max: 55 },
+    encuentros: { lista: [['pinguinoide', 16], ['carpibarro', 14], ['celestin', 12], ['zorrazo', 10], ['vizcachita', 10], ['condorito', 10], ['sparknight', 8], ['peludin', 8], ['vientuino', 6], ['howlup', 6]], min: 52, max: 55 },
     npcs: [
       entrenadorNPC({
         id: 'guardafauna', x: 12, y: 8, dir: 2, pal: PAL.guarda, nombre: 'GUARDAFAUNA LUCÍA',
@@ -5739,9 +5849,8 @@ const MAPAS = {
           await decir('MAREA: ¡Llegaste al fin del mundo! Desde el faro te vi cruzar el Estrecho en la balsa.');
           await decir('Soy MAREA, líder del GIMNASIO USHUAIA. Mis criaturas nadan en el agua más fría de la Argentina.');
           await decir('Si me ganás, te llevás la INSIGNIA FARO. ¡Que suba la marea!');
-          // Equipo pedido por Poly (20/11): el inicial de agua, Gliptopampa, Totorarca, Galiorca, Iberadraco y Azularza.
-          // GALIORCA todavía no está: mientras tanto ocupa su lugar Vientüino.
-          const r = await batalla({ entrenador: { nombre: 'LÍDER MAREA', pal: PAL.marea, equipo: [['totorarca', 56], ['vientuino', 57] /* lugar de GALIORCA */, ['azularza', 57], ['glyptopampa', 58], ['iberadraco', 59], ['iberaxolot', 60]] } });
+          // Equipo pedido por Poly (20/11): el inicial de agua, Gliptopampa, Totorarca, Glaciorka, Iberadraco y Azularza.
+          const r = await batalla({ entrenador: { nombre: 'LÍDER MAREA', pal: PAL.marea, equipo: [['totorarca', 56], ['glaciorka', 57], ['azularza', 57], ['glyptopampa', 58], ['iberadraco', 59], ['iberaxolot', 60]] } });
           if (r === 'gana') {
             S.flags.insignia6 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 6);
@@ -6114,9 +6223,8 @@ const MAPAS = {
           await decir('CENIZA: ¡Llegaste hasta el volcán más alto del mundo! Pocos aguantan este calor... y este frío.');
           await decir('Soy CENIZA, líder del GIMNASIO OJOS DEL SALADO. Mis criaturas nacieron de la lava.');
           await decir('Si me ganás, te llevás la INSIGNIA VOLCÁN. ¡Que arda la Puna!');
-          // Equipo pedido por Poly (20/11): Ignidraxx, Turborush, Zorzaliente, Piquillonco, Submaringer y Brasaspumas (con SEQUÍA).
-          // BRASASPUMAS todavía no está: mientras tanto ocupa su lugar Andragón, con la habilidad Sequía.
-          const r = await batalla({ entrenador: { nombre: 'LÍDER CENIZA', pal: PAL.ceniza, equipo: [['piquillonco', 64], ['submaringer', 65], ['zorzaliente', 65], ['turborush', 66], ['ignidraxx', 66], ['andragon', 67, { hab: 'sequia' }] /* lugar de BRASASPUMAS */] } });
+          // Equipo pedido por Poly (20/11): Ignidraxx, Turborush, Zorzaliente, Piquillonco, Submaringer y Braspuma (con SEQUÍA).
+          const r = await batalla({ entrenador: { nombre: 'LÍDER CENIZA', pal: PAL.ceniza, equipo: [['piquillonco', 64], ['submaringer', 65], ['zorzaliente', 65], ['turborush', 66], ['ignidraxx', 66], ['braspuma', 67, { hab: 'sequia' }]] } });
           if (r === 'gana') {
             S.flags.insignia7 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 7);
@@ -7514,7 +7622,8 @@ function calcularDanio(at, de, mv) {
   let base = Math.floor(Math.floor(Math.floor(2 * L / 5 + 2) * mv.pot * a / d) / 50) + 2;
   const ha = habDe(at), hd = habDe(de);
   const stab = tiposDe(at).includes(mv.tipo) ? (ha.ef === 'adaptable' ? 2 : 1.5) : 1;
-  const ef = eficacia(mv.tipo, tiposDe(de));
+  let ef = eficacia(mv.tipo, tiposDe(de));
+  if (ef === 0 && ha.ef === 'audaz' && ['NORMAL', 'LUCHA'].includes(mv.tipo)) ef = eficacia(mv.tipo, tiposDe(de).filter(t => t !== 'FANTASMA'));
   const critico = hd.ef !== 'sinCritico' && Math.random() < (ha.ef === 'critico' || mv.critAlto ? 1 / 5 : 1 / 16);
   const azar = 0.85 + Math.random() * 0.15;
   if (ef === 0) return { danio: 0, ef, critico: false };
@@ -7533,6 +7642,10 @@ function calcularDanio(at, de, mv) {
   if (hd.ef === 'filtro' && ef > 1) extra *= 0.75;
   if (hd.ef === 'animaGlacial' && de.ps === de.psMax) extra *= 0.5;
   if (ha.ef === 'sobrecarga') extra *= 1.3;
+  if (ha.ef === 'punoFerreo' && mv.punio) extra *= 1.3;
+  if (ha.ef === 'pielHelada' && mv.tipo === 'HIELO') extra *= 1.3;
+  if (hd.ef === 'pielHelada') extra *= 0.85;
+  if (bt.nieve > 0 && mv.tipo === 'HIELO') extra *= 1.3;
   if (ha.ef === 'filoRecio' && mv.corta) extra *= 1.5;
   if (hd.ef === 'ilusion' && !de.et.golpeado) extra *= 0.5;
   return { danio: Math.max(1, Math.floor(base * stab * ef * (critico ? 1.5 : 1) * azar * extra)), ef, critico };
@@ -7805,7 +7918,7 @@ async function ejecutarMov(at, de, slot, quien) {
     await esperar(1);
   }
   bt.yDX = 0; bt.rDX = 0;
-  if (!(M.lluviaSegura && bt.lluvia > 0) && Math.random() * 100 >= M.prec) { await decir('¡Pero falló!', { auto: 40 }); return; }
+  if (!(M.lluviaSegura && bt.lluvia > 0) && !(M.nieveSegura && bt.nieve > 0) && Math.random() * 100 >= M.prec) { await decir('¡Pero falló!', { auto: 40 }); return; }
   if (M.pot && habDe(de).ef === 'maestroFuego' && ['PLANTA', 'ACERO', 'BICHO', 'HIELO'].includes(M.tipo)) {
     await anunciarHab(de);
     await decir(`¡El escudo de fuego frenó el ataque de ${nombreTipo(M.tipo)}!`, { auto: 50 });
@@ -7818,6 +7931,11 @@ async function ejecutarMov(at, de, slot, quien) {
       await anunciarHab(de);
       if (de.ps < de.psMax) { de.ps = Math.min(de.psMax, de.ps + Math.ceil(de.psMax / 4)); await animarPS(de); }
       await decir(`¡El fuego no lastima a ${nombreBatalla(de)}, lo cura!`, { auto: 50 });
+      return;
+    }
+    if (hd.ef === 'intangible' && M.tipo === 'TIERRA') {
+      await anunciarHab(de);
+      await decir(`¡${nombreBatalla(de)} flota y el ataque no lo toca!`, { auto: 45 });
       return;
     }
     if (hd.ef === 'electromotor' && M.tipo === 'ELECTRICO') {
@@ -7938,13 +8056,22 @@ async function alEntrar(m) {
     else { await cambiarEtapa(otro, 'def', -1); await competitivo(otro); }
   } else if (h.ef === 'veloz') {
     await anunciarHab(m); await cambiarEtapa(m, 'vel', 1);
+  } else if (h.ef === 'nevada') {
+    await anunciarHab(m);
+    bt.nieve = 5; bt.sol = 0; bt.lluvia = 0;
+    await decir('¡Se desató una tormenta de nieve! Los ataques de Hielo pegan más.', { auto: 60 });
+  } else if (h.ef === 'acoso') {
+    if (!otro || otro.ps <= 0) { m.et.entro = false; return; }
+    await anunciarHab(m);
+    if (['cuerpoPuro', 'animaGlacial'].includes(habDe(otro).ef)) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
+    else { await cambiarEtapa(otro, 'vel', -1); await competitivo(otro); }
   } else if (h.ef === 'llovizna') {
     await anunciarHab(m);
-    bt.lluvia = 5; bt.sol = 0;
+    bt.lluvia = 5; bt.sol = 0; bt.nieve = 0;
     await decir('¡Se largó a llover! Los ataques de Agua pegan más y los de Fuego, menos.', { auto: 60 });
   } else if (h.ef === 'sequia') {
     await anunciarHab(m);
-    bt.sol = 5; bt.lluvia = 0;
+    bt.sol = 5; bt.lluvia = 0; bt.nieve = 0;
     await decir('¡Salió un sol que raja la tierra! Los ataques de Fuego, Tierra y Roca pegan más.', { auto: 60 });
   } else if (h.ef === 'humedal') {
     await anunciarHab(m);
@@ -7953,6 +8080,12 @@ async function alEntrar(m) {
 }
 async function despuesDelGolpe(at, de, M, danio = 0) {
   const ha = habDe(at), hd = habDe(de);
+  if (ha.ef === 'colectorAlmas' && at.ps > 0 && at.ps < at.psMax && danio > 0) {
+    await anunciarHab(at);
+    at.ps = Math.min(at.psMax, at.ps + Math.max(1, Math.floor(danio / 4)));
+    await animarPS(at);
+    await decir(`${nombreBatalla(at)} le robó energía a ${nombreBatalla(de)}.`, { auto: 40 });
+  }
   if (ha.ef === 'maldicion' && M.muerde && at.ps > 0 && at.ps < at.psMax && danio > 0) {
     await anunciarHab(at);
     at.ps = Math.min(at.psMax, at.ps + Math.max(1, Math.floor(danio / 2)));
@@ -7987,6 +8120,7 @@ async function despuesDelGolpe(at, de, M, danio = 0) {
 async function finDeTurno() {
   if (bt.sol > 0 && --bt.sol === 0) await decir('El sol fuerte se fue.', { auto: 45 });
   if (bt.lluvia > 0 && --bt.lluvia === 0) await decir('Dejó de llover.', { auto: 45 });
+  if (bt.nieve > 0 && --bt.nieve === 0) await decir('Paró de nevar.', { auto: 45 });
   for (const m of [bt.yo, bt.rival]) {
     if (!m || m.ps <= 0) continue;
     const h = habDe(m);
@@ -8151,6 +8285,7 @@ function dibujarBatalla() {
   const g = b.createLinearGradient(0, 0, 0, 112);
   if (bt.sol > 0) { g.addColorStop(0, '#ffd890'); g.addColorStop(1, '#f0d890'); }
   else if (bt.lluvia > 0) { g.addColorStop(0, '#a8b8c8'); g.addColorStop(1, '#b8d0d8'); }
+  else if (bt.nieve > 0) { g.addColorStop(0, '#e8f0f8'); g.addColorStop(1, '#d0e4f0'); }
   else { g.addColorStop(0, '#f8f0c8'); g.addColorStop(1, '#d8f0b0'); }
   b.fillStyle = g; b.fillRect(0, 0, W, H);
   b.fillStyle = '#c8e8a0'; b.fillRect(0, 60, W, 52);
