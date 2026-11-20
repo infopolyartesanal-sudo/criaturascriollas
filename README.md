@@ -45,3 +45,10 @@ Arma `dist/index.html` y `docs/index.html`. GitHub Pages publica `docs/` solo al
 Menú → Equipo → criatura → MOVIMIENTOS.
 - NIVEL: los movimientos que la criatura (o sus formas anteriores) ya aprendió por nivel. Se vuelven a enseñar gratis.
 - TUTOR (también gratis): los que aprendería más adelante por nivel + los extra de la tabla `TUTOR` en `js/datos.js`, que elige Felipe. Formato: `idEspecie: ['idMovimiento', ...]`.
+
+## Multijugador
+
+- `js/multi.js`. Menú → MULTIJUGADOR → CREAR SALA (el dueño elige un SIGNO de 5 tipos y una CLAVE de 10 números) o UNIRSE A SALA (el amigo pone los mismos; el dueño confirma).
+- Usa Supabase Realtime (proyecto `criaturas-criollas`, solo canales "broadcast": no hay base de datos). Canal: `cc-<índices de los 5 tipos>-<clave>`.
+- Juntos se ven en el mapa (posición cada 0,4 s). Si están a 3 baldosas o menos, aparece PELEAR en el menú.
+- Peleas entre amigos (`batallaPvP`): cada uno manda su acción por turno; el azar usa una semilla compartida (`azar()` en juego.js) y el dueño manda el estado al final de cada turno. No gastan energía ni dan experiencia; no se usan objetos.

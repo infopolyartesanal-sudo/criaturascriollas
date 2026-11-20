@@ -102,7 +102,7 @@ async function mpEsperar(cond, seg) {
     const i = MP.cola.findIndex(cond);
     if (i >= 0) return MP.cola.splice(i, 1)[0];
     if (MP.cola.some(m => m.tipo === 'chau')) return null;
-    await esperar(2);
+    await new Promise(r => setTimeout(r, 50)); // reloj real: sigue andando aunque la pestaña esté de fondo
   }
   return null;
 }
