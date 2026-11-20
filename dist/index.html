@@ -5196,18 +5196,18 @@ const MAPAS = {
       '9,28': 'RUTA 13 · BOSQUE ANDINO. Coihues, lagos y niebla. Dicen que en este bosque viven los duendes...',
       '9,3': 'Al sur: EL BOLSÓN, al pie del cerro Piltriquitrón.',
     },
-    encuentros: { lista: [['howlup', 16], ['escarchin', 14], ['celestin', 10], ['faeve', 12], ['farolito', 12], ['garkol', 10], ['lechuzonte', 10], ['nevulon', 8], ['condorito', 8], ['pumentor', 6], ['candilejo', 4]], min: 24, max: 27 },
+    encuentros: { lista: [['howlup', 16], ['escarchin', 14], ['celestin', 10], ['faeve', 12], ['farolito', 12], ['garkol', 10], ['lechuzonte', 10], ['nevulon', 8], ['condorito', 8], ['pumentor', 6], ['candilejo', 4]], min: 34, max: 37 },
     npcs: [
       entrenadorNPC({
         id: 'guarda_bosque', x: 7, y: 17, dir: 2, pal: PAL.guarda, nombre: 'GUARDAPARQUE NAHUEL',
-        equipo: [['lechuzonte', 35], ['howlup', 35], ['nevulon', 36]],
+        equipo: [['lechuzonte', 45], ['howlup', 45], ['nevulon', 46]],
         antes: ['GUARDAPARQUE NAHUEL: ¡Shhh! En la niebla del bosque se esconden criaturas que nunca viste. ¡Duelo!'],
         gana: 'GUARDAPARQUE NAHUEL: ¡Uh! Me ganaste como una sombra.',
         despues: 'GUARDAPARQUE NAHUEL: Los HOWLUP le aúllan a la luna. ¡Su sombra parece mucho más grande que ellos!',
       }),
       entrenadorNPC({
         id: 'mochilera', x: 12, y: 7, dir: 2, pal: PAL.chica, nombre: 'MOCHILERA SOFI',
-        equipo: [['faeve', 35], ['candilejo', 36], ['garkol', 36]],
+        equipo: [['faeve', 45], ['candilejo', 46], ['garkol', 46]],
         antes: ['MOCHILERA SOFI: ¡Vengo caminando desde Bariloche! ¿Peleamos para descansar las piernas?'],
         gana: 'MOCHILERA SOFI: ¡Qué equipo que tenés!',
         despues: 'MOCHILERA SOFI: Le di una VELA ÁNIMA a mi FAEVE... ¡y se volvió un fantasmita rosado! Se venden en el ALMACÉN.',
@@ -5285,18 +5285,18 @@ const MAPAS = {
       '9,28': 'RUTA 14 · LÍNEA SUR. La estepa de Río Negro: coirones, piedras y viento.',
       '9,3': 'Al este: INGENIERO JACOBACCI, la estación de LA TROCHITA.',
     },
-    encuentros: { lista: [['sparknight', 16], ['howlup', 12], ['vizcachita', 12], ['zorrazo', 10], ['terito', 10], ['candilejo', 10], ['garkol', 10], ['peludin', 8], ['condorito', 8]], min: 26, max: 29 },
+    encuentros: { lista: [['sparknight', 16], ['howlup', 12], ['vizcachita', 12], ['zorrazo', 10], ['terito', 10], ['candilejo', 10], ['garkol', 10], ['peludin', 8], ['condorito', 8]], min: 36, max: 39 },
     npcs: [
       entrenadorNPC({
         id: 'arriero', x: 7, y: 9, dir: 3, pal: PAL.beto, nombre: 'ARRIERO JUAN',
-        equipo: [['zorrazo', 37], ['sparknight', 37], ['vizcachita', 38]],
+        equipo: [['zorrazo', 47], ['sparknight', 47], ['vizcachita', 48]],
         antes: ['ARRIERO JUAN: ¡Epa, gurí! Acá en la meseta el que no pelea se vuela con el viento. ¡Duelo!'],
         gana: 'ARRIERO JUAN: ¡Me dejaste de a pie!',
         despues: 'ARRIERO JUAN: Los SPARKNIGHT se esconden entre las piedras. Cuando crecen se vuelven negros como la noche.',
       }),
       entrenadorNPC({
         id: 'tejedora', x: 7, y: 21, dir: 2, pal: PAL.coplera, nombre: 'TEJEDORA AYELÉN',
-        equipo: [['candilejo', 37], ['howlup', 38], ['garkol', 38]],
+        equipo: [['candilejo', 47], ['howlup', 48], ['garkol', 48]],
         antes: ['TEJEDORA AYELÉN: Tejo ponchos con lana de oveja... ¡y con mis criaturas te voy a enredar!'],
         gana: 'TEJEDORA AYELÉN: ¡Se me deshizo el ovillo!',
         despues: 'TEJEDORA AYELÉN: SOMBRA es la guardiana de las PIEDRAS QUE HABLAN. Las criaturas FANTASMA sufren con el FANTASMA y el SINIESTRO.',
@@ -5336,8 +5336,8 @@ const MAPAS = {
     },
     npcs: [
       tomiNPC({
-        id: 'tomi_jacobacci', x: 12, y: 16, dir: 2, bandera: 'tomi5', forma: 'final', nivel: 40,
-        equipo: [['arquitemplillo', 37], ['wandacoloso', 37], ['nevukhan', 38], ['gargorrupt', 38]],
+        id: 'tomi_jacobacci', x: 12, y: 16, dir: 2, bandera: 'tomi5', forma: 'final', nivel: 50,
+        equipo: [['arquitemplillo', 47], ['wandacoloso', 47], ['nevukhan', 48], ['gargorrupt', 48]],
         antes: [
           'TOMI: ¡Felipe! Llegué en LA TROCHITA. ¡Un tren a vapor de verdad, con humo y todo!',
           'TOMI: Yo también voy al GIMNASIO 5. Pero antes... ¡veamos quién entrenó más en la Patagonia!',
@@ -5374,25 +5374,25 @@ const MAPAS = {
       '9,3': 'Al este: el PARAJE SOMUNCURÁ y el GIMNASIO 5.',
     },
     objetos: { R: 'Una roca de basalto llena de agujeros. Cuando sopla el viento... ¡parece que susurra!' },
-    encuentros: { lista: [['sparknight', 14], ['howlup', 14], ['candilejo', 12], ['garkol', 12], ['farolito', 10], ['faeve', 10], ['vizcachita', 8], ['zorrazo', 8], ['gargorrupt', 2]], min: 28, max: 31 },
+    encuentros: { lista: [['sparknight', 14], ['howlup', 14], ['candilejo', 12], ['garkol', 12], ['farolito', 10], ['faeve', 10], ['vizcachita', 8], ['zorrazo', 8], ['gargorrupt', 2]], min: 38, max: 41 },
     npcs: [
       entrenadorNPC({
         id: 'paleonto', x: 12, y: 5, dir: 2, pal: PAL.ayudante, nombre: 'CIENTÍFICA MARA',
-        equipo: [['gargorrupt', 39], ['sparknight', 39], ['wandacoloso', 40]],
+        equipo: [['gargorrupt', 49], ['sparknight', 49], ['wandacoloso', 50]],
         antes: ['CIENTÍFICA MARA: En la meseta hay ranitas que no viven en ningún otro lugar del mundo. ¡Y yo las cuido! ¡Duelo!'],
         gana: 'CIENTÍFICA MARA: ¡Interesante! Lo voy a anotar en mi libreta.',
         despues: 'CIENTÍFICA MARA: El viento sopla entre las rocas de basalto y hace ruidos raros. Por eso dicen que las piedras hablan.',
       }),
       entrenadorNPC({
         id: 'cazafantasmas', x: 6, y: 9, dir: 3, pal: PAL.tomi, nombre: 'BUSCADOR DE ÁNIMAS LEO',
-        equipo: [['candilejo', 39], ['duskfae', 40], ['howlup', 40]],
+        equipo: [['candilejo', 49], ['duskfae', 50], ['howlup', 50]],
         antes: ['BUSCADOR LEO: ¡Estoy buscando la LUZ MALA! ¿No la viste? Bueno... ¡entonces peleemos!'],
         gana: 'BUSCADOR LEO: ¡Me asustaste más que la Luz Mala!',
         despues: 'BUSCADOR LEO: Contra FANTASMA y SINIESTRO van bien el HADA, la LUCHA y el BICHO... ¡pero ojo, que la LUCHA no le hace nada al FANTASMA!',
       }),
       entrenadorNPC({
         id: 'ermitano', x: 13, y: 26, dir: 2, pal: PAL.abuelo, nombre: 'ERMITAÑO ANSELMO',
-        equipo: [['farolito', 39], ['wraithfae', 40], ['umbratail', 41]],
+        equipo: [['farolito', 49], ['wraithfae', 50], ['umbratail', 51]],
         antes: ['ERMITAÑO ANSELMO: Hace cuarenta años que escucho a las piedras. Hoy me dijeron que ibas a venir.'],
         gana: 'ERMITAÑO ANSELMO: Las piedras tenían razón: sos fuerte.',
         despues: 'ERMITAÑO ANSELMO: SOMBRA entrena a oscuras. Adentro de su gimnasio casi no se ve nada.',
@@ -5474,14 +5474,14 @@ const MAPAS = {
     npcs: [
       entrenadorNPC({
         id: 'gim5_a', x: 8, y: 5, dir: 2, pal: PAL.sombra, nombre: 'MÉDIUM CLARA',
-        equipo: [['candilejo', 40], ['glaciar', 40], ['gargorrupt', 41]],
+        equipo: [['candilejo', 50], ['glaciar', 50], ['gargorrupt', 51]],
         antes: ['MÉDIUM CLARA: Uuuuh... ¿Quién anda ahí? ¡No se ve nada! ¡Peleemos a oscuras!'],
         gana: 'MÉDIUM CLARA: Los espíritus me dijeron que ibas a ganar... y tenían razón.',
         despues: 'MÉDIUM CLARA: Las criaturas FANTASMA no sienten los golpes NORMAL ni LUCHA. ¡Ojo con eso!',
       }),
       entrenadorNPC({
         id: 'gim5_b', x: 2, y: 3, dir: 3, pal: PAL.tomi, nombre: 'MATERO NOCTURNO FIDEL',
-        equipo: [['duskfae', 41], ['umbratail', 41]],
+        equipo: [['duskfae', 51], ['umbratail', 51]],
         antes: ['MATERO FIDEL: Tomo mate a la luz de la luna. ¡Y mis criaturas pelean mejor de noche!'],
         gana: 'MATERO FIDEL: Se me lavó el mate...',
         despues: 'MATERO FIDEL: SOMBRA tiene seis criaturas. ¡La última es la más fuerte!',
@@ -5500,7 +5500,7 @@ const MAPAS = {
           await decir('SOMBRA: ...Shhh. ¿Lo escuchás? Es el viento entre las rocas. Las piedras de Somuncurá me contaron que venías.');
           await decir('Soy SOMBRA, líder del GIMNASIO SOMUNCURÁ. Mis criaturas viven entre la niebla y la noche.');
           await decir('Si me ganás, te llevás la INSIGNIA ECO. ¡Que la oscuridad te acompañe!');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER SOMBRA', pal: PAL.sombra, equipo: [['wraithfae', 40], ['cobijoso', 41], ['yaguaraba', 41], ['umbratail', 42], ['umbracor', 42], ['andespectro', 43]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER SOMBRA', pal: PAL.sombra, equipo: [['wraithfae', 50], ['cobijoso', 51], ['yaguaraba', 51], ['umbratail', 52], ['umbracor', 52], ['andespectro', 53]] } });
           if (r === 'gana') {
             S.flags.insignia5 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 5);
@@ -5534,18 +5534,18 @@ const MAPAS = {
       '9,3': 'Al sur: PUERTO MADRYN.',
     },
     objetos: { '~': '¡Allá lejos salta una ballena franca! Llegan a Península Valdés todos los inviernos.' },
-    encuentros: { lista: [['pinguinoide', 16], ['carpibarro', 14], ['celestin', 12], ['zorrazo', 10], ['vizcachita', 10], ['condorito', 10], ['sparknight', 8], ['peludin', 8], ['vientuino', 6], ['howlup', 6]], min: 32, max: 35 },
+    encuentros: { lista: [['pinguinoide', 16], ['carpibarro', 14], ['celestin', 12], ['zorrazo', 10], ['vizcachita', 10], ['condorito', 10], ['sparknight', 8], ['peludin', 8], ['vientuino', 6], ['howlup', 6]], min: 42, max: 45 },
     npcs: [
       entrenadorNPC({
         id: 'guardafauna', x: 12, y: 8, dir: 2, pal: PAL.guarda, nombre: 'GUARDAFAUNA LUCÍA',
-        equipo: [['vientuino', 43], ['carpibarro', 43], ['condorito', 44]],
+        equipo: [['vientuino', 53], ['carpibarro', 53], ['condorito', 54]],
         antes: ['GUARDAFAUNA LUCÍA: ¡Cuidado, que acá los lobos marinos tienen cría! Si querés pasar, primero un duelo.'],
         gana: 'GUARDAFAUNA LUCÍA: ¡Muy bien! Pero no hagas ruido cerca de la costa.',
         despues: 'GUARDAFAUNA LUCÍA: Los PINGUINOIDE nadan rapidísimo. ¡Debajo del agua parecen volar!',
       }),
       entrenadorNPC({
         id: 'buzo', x: 8, y: 23, dir: 2, pal: PAL.pescador, nombre: 'BUZO MARTÍN',
-        equipo: [['iberadraco', 43], ['pinguinoide', 44], ['carpibarro', 44]],
+        equipo: [['iberadraco', 53], ['pinguinoide', 54], ['carpibarro', 54]],
         antes: ['BUZO MARTÍN: Recién salgo del agua. ¡Hay que estar loco para bucear con este frío! ¿Peleamos?'],
         gana: 'BUZO MARTÍN: ¡Me dejaste más frío que el mar!',
         despues: 'BUZO MARTÍN: Al AGUA le ganan la PLANTA y el ELÉCTRICO. ¡Acordate para el gimnasio de Ushuaia!',
@@ -5623,18 +5623,18 @@ const MAPAS = {
       '9,3': 'Al sur: RÍO GALLEGOS, la última ciudad antes del ESTRECHO DE MAGALLANES.',
     },
     objetos: { '~': 'El mar está helado y con olas grandes. ¡Mejor no meterse!' },
-    encuentros: { lista: [['pinguinoide', 14], ['vientuino', 12], ['carpibarro', 12], ['zorrazo', 10], ['nevulon', 10], ['glaciolito', 10], ['escarchin', 10], ['venomin', 8], ['glaciperador', 2]], min: 34, max: 37 },
+    encuentros: { lista: [['pinguinoide', 14], ['vientuino', 12], ['carpibarro', 12], ['zorrazo', 10], ['nevulon', 10], ['glaciolito', 10], ['escarchin', 10], ['venomin', 8], ['glaciperador', 2]], min: 44, max: 47 },
     npcs: [
       entrenadorNPC({
         id: 'esquilador', x: 12, y: 4, dir: 2, pal: PAL.beto, nombre: 'ESQUILADOR RAÚL',
-        equipo: [['nevulon', 45], ['zorrazo', 45], ['glyptopampa', 46]],
+        equipo: [['nevulon', 55], ['zorrazo', 55], ['glyptopampa', 56]],
         antes: ['ESQUILADOR RAÚL: En las estancias de Santa Cruz hay más ovejas que personas. ¡Y más criaturas que ovejas!'],
         gana: 'ESQUILADOR RAÚL: ¡Me esquilaste, che!',
         despues: 'ESQUILADOR RAÚL: Para cruzar a Tierra del Fuego hay que tomar la BALSA en el Estrecho de Magallanes.',
       }),
       entrenadorNPC({
         id: 'pinguinera', x: 12, y: 20, dir: 3, pal: PAL.nieve, nombre: 'BIÓLOGA JULIETA',
-        equipo: [['pinguinoide', 45], ['vientuino', 46], ['glaciperador', 46]],
+        equipo: [['pinguinoide', 55], ['vientuino', 56], ['glaciperador', 56]],
         antes: ['BIÓLOGA JULIETA: ¡Estoy contando pingüinos! Me perdí en el 4.327... ¡Por tu culpa! ¡Duelo!'],
         gana: 'BIÓLOGA JULIETA: Bueno, ahora tengo que empezar a contar de nuevo...',
         despues: 'BIÓLOGA JULIETA: Los pingüinos de Magallanes vuelven todos los años al mismo nido. ¡Con la misma pareja!',
@@ -5673,8 +5673,8 @@ const MAPAS = {
     },
     npcs: [
       tomiNPC({
-        id: 'tomi_gallegos', x: 12, y: 16, dir: 2, bandera: 'tomi6', forma: 'final', nivel: 47,
-        equipo: [['arquitemplillo', 44], ['wandacoloso', 45], ['nevukhan', 45], ['gargorrupt', 45], ['umbratail', 46]],
+        id: 'tomi_gallegos', x: 12, y: 16, dir: 2, bandera: 'tomi6', forma: 'final', nivel: 57,
+        equipo: [['arquitemplillo', 54], ['wandacoloso', 55], ['nevukhan', 55], ['gargorrupt', 55], ['umbratail', 56]],
         antes: [
           'TOMI: ¡Felipe! ¿Viste qué frío? Tengo puestas tres camperas.',
           'TOMI: Dicen que MAREA, la líder de Ushuaia, es imbatible. ¡Pero primero tenés que ganarme a mí!',
@@ -5711,18 +5711,18 @@ const MAPAS = {
       '9,3': 'TIERRA DEL FUEGO. Al sur: USHUAIA, la ciudad del fin del mundo.',
     },
     objetos: { '~': 'El agua del Estrecho de Magallanes. ¡Acá se juntan el océano Atlántico y el Pacífico!' },
-    encuentros: { lista: [['pinguinoide', 12], ['vientuino', 12], ['carpibarro', 10], ['zorrazo', 10], ['escarchin', 10], ['nevulon', 10], ['lechuzonte', 10], ['glaciolito', 8], ['glyptopampa', 4], ['glaciperador', 4]], min: 36, max: 39 },
+    encuentros: { lista: [['pinguinoide', 12], ['vientuino', 12], ['carpibarro', 10], ['zorrazo', 10], ['escarchin', 10], ['nevulon', 10], ['lechuzonte', 10], ['glaciolito', 8], ['glyptopampa', 4], ['glaciperador', 4]], min: 46, max: 49 },
     npcs: [
       entrenadorNPC({
         id: 'castorero', x: 13, y: 11, dir: 2, pal: PAL.guarda, nombre: 'GUARDAPARQUE ANA',
-        equipo: [['lechuzonte', 47], ['glyptopampa', 47], ['vientuino', 48]],
+        equipo: [['lechuzonte', 57], ['glyptopampa', 57], ['vientuino', 58]],
         antes: ['GUARDAPARQUE ANA: ¡Bienvenido a Tierra del Fuego! Los bosques de acá son los más australes del mundo. ¡Duelo!'],
         gana: 'GUARDAPARQUE ANA: ¡Qué bien entrenás! Ushuaia está cerca.',
         despues: 'GUARDAPARQUE ANA: En el Canal Beagle hay un faro rojo y blanco: el faro LES ÉCLAIREURS. ¡Es el símbolo de Ushuaia!',
       }),
       entrenadorNPC({
         id: 'marinero', x: 12, y: 22, dir: 3, pal: PAL.pescador, nombre: 'MARINERO ERNESTO',
-        equipo: [['iberadraco', 47], ['totorarca', 47], ['glaciperador', 48]],
+        equipo: [['iberadraco', 57], ['totorarca', 57], ['glaciperador', 58]],
         antes: ['MARINERO ERNESTO: Crucé el Estrecho de Magallanes como mil veces. ¡Con tormentas y todo! ¿Te animás?'],
         gana: 'MARINERO ERNESTO: ¡Hundiste mi barco!',
         despues: 'MARINERO ERNESTO: MAREA tiene seis criaturas. ¡Y la última es su compañera de toda la vida!',
@@ -5826,14 +5826,14 @@ const MAPAS = {
     npcs: [
       entrenadorNPC({
         id: 'gim6_a', x: 2, y: 7, dir: 3, pal: PAL.pescador, nombre: 'PESCADOR DE CENTOLLAS BRUNO',
-        equipo: [['carpibarro', 47], ['totorarca', 48], ['iberadraco', 48]],
+        equipo: [['carpibarro', 57], ['totorarca', 58], ['iberadraco', 58]],
         antes: ['PESCADOR BRUNO: ¡Las centollas de Ushuaia son las más ricas del mundo! Y mis criaturas, las más fuertes. ¡Duelo!'],
         gana: 'PESCADOR BRUNO: ¡Se me escaparon todas las centollas!',
         despues: 'PESCADOR BRUNO: Las criaturas de AGUA sufren con la PLANTA y el ELÉCTRICO.',
       }),
       entrenadorNPC({
         id: 'gim6_b', x: 8, y: 4, dir: 2, pal: PAL.marea, nombre: 'NADADORA SOL',
-        equipo: [['azularza', 48], ['glyptopampa', 49]],
+        equipo: [['azularza', 58], ['glyptopampa', 59]],
         antes: ['NADADORA SOL: ¡Me tiro al Canal Beagle todos los años en invierno! ¿Vos te animás a pelear conmigo?'],
         gana: 'NADADORA SOL: ¡Uy! Me congelé de la sorpresa.',
         despues: 'NADADORA SOL: Cuidado con la LLUVIA de AZULARZA: con lluvia el agua pega más y el fuego, menos.',
@@ -5853,7 +5853,7 @@ const MAPAS = {
           await decir('Soy MAREA, líder del GIMNASIO USHUAIA. Mis criaturas nadan en el agua más fría de la Argentina.');
           await decir('Si me ganás, te llevás la INSIGNIA FARO. ¡Que suba la marea!');
           // Equipo pedido por Poly (20/11): el inicial de agua, Gliptopampa, Totorarca, Glaciorka, Iberadraco y Azularza.
-          const r = await batalla({ entrenador: { nombre: 'LÍDER MAREA', pal: PAL.marea, equipo: [['totorarca', 46], ['glaciorka', 47], ['azularza', 47], ['glyptopampa', 48], ['iberadraco', 49], ['iberaxolot', 50]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER MAREA', pal: PAL.marea, equipo: [['totorarca', 56], ['glaciorka', 57], ['azularza', 57], ['glyptopampa', 58], ['iberadraco', 59], ['iberaxolot', 60]] } });
           if (r === 'gana') {
             S.flags.insignia6 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 6);
@@ -5930,18 +5930,18 @@ const MAPAS = {
       '9,28': 'RUTA 19 · VALLE DE CATAMARCA. Cardones, olivos y cerros por todos lados.',
       '9,3': 'Al oeste: BELÉN, la ciudad del poncho.',
     },
-    encuentros: { lista: [['motorb', 14], ['calderito', 14], ['zorrazo', 12], ['cardito', 10], ['rodcardo', 8], ['piquibrote', 10], ['vizcachita', 10], ['condorito', 8], ['chispuna', 8], ['piquillonco', 4]], min: 40, max: 43 },
+    encuentros: { lista: [['motorb', 14], ['calderito', 14], ['zorrazo', 12], ['cardito', 10], ['rodcardo', 8], ['piquibrote', 10], ['vizcachita', 10], ['condorito', 8], ['chispuna', 8], ['piquillonco', 4]], min: 50, max: 53 },
     npcs: [
       entrenadorNPC({
         id: 'olivero', x: 12, y: 5, dir: 2, pal: PAL.beto, nombre: 'OLIVERO HÉCTOR',
-        equipo: [['rodcardo', 51], ['piquillonco', 51], ['zorrazo', 52]],
+        equipo: [['rodcardo', 61], ['piquillonco', 61], ['zorrazo', 62]],
         antes: ['OLIVERO HÉCTOR: Cosecho aceitunas todo el día. ¡Y a la tarde, una buena pelea!'],
         gana: 'OLIVERO HÉCTOR: ¡Me dejaste hecho aceite!',
         despues: 'OLIVERO HÉCTOR: Los MOTORB hacen ruido de moto. ¡Si los escuchás, están cerca!',
       }),
       entrenadorNPC({
         id: 'mecanica', x: 8, y: 21, dir: 2, pal: PAL.ayudante, nombre: 'MECÁNICA VALERIA',
-        equipo: [['motorb', 51], ['dynacore', 52], ['chispuna', 52]],
+        equipo: [['motorb', 61], ['dynacore', 62], ['chispuna', 62]],
         antes: ['MECÁNICA VALERIA: ¡Arreglo motores y entreno criaturas que SON motores! ¿Probamos el tuyo?'],
         gana: 'MECÁNICA VALERIA: ¡Se me fundió el motor!',
         despues: 'MECÁNICA VALERIA: Con una PIEDRA TRUENO, DYNACORE se vuelve TURBORUSH. ¡Se venden en el ALMACÉN!',
@@ -6017,18 +6017,18 @@ const MAPAS = {
       '9,28': 'RUTA 20 · DUNAS DE TATÓN. ¡Las dunas de arena más altas del mundo!',
       '9,3': 'Al oeste: FIAMBALÁ y sus aguas termales.',
     },
-    encuentros: { lista: [['calderito', 14], ['dynacore', 12], ['chispuna', 12], ['volcarin', 12], ['zorrazo', 10], ['terito', 10], ['vizcachita', 10], ['candilejo', 8], ['laninger', 4]], min: 42, max: 45 },
+    encuentros: { lista: [['calderito', 14], ['dynacore', 12], ['chispuna', 12], ['volcarin', 12], ['zorrazo', 10], ['terito', 10], ['vizcachita', 10], ['candilejo', 8], ['laninger', 4]], min: 52, max: 55 },
     npcs: [
       entrenadorNPC({
         id: 'sandboard', x: 12, y: 5, dir: 2, pal: PAL.chica, nombre: 'SANDBOARDISTA FLOR',
-        equipo: [['volcarin', 53], ['zorzaliente', 53], ['laninger', 54]],
+        equipo: [['volcarin', 63], ['zorzaliente', 63], ['laninger', 64]],
         antes: ['SANDBOARDISTA FLOR: ¡Me tiro por las dunas en tabla! ¿Te animás a una pelea a toda velocidad?'],
         gana: 'SANDBOARDISTA FLOR: ¡Me comí toda la arena!',
         despues: 'SANDBOARDISTA FLOR: Algunas dunas de Tatón miden más de mil metros. ¡Y suenan cuando sopla el viento!',
       }),
       entrenadorNPC({
         id: 'vulcanologo', x: 13, y: 19, dir: 3, pal: PAL.guarda, nombre: 'VULCANÓLOGO DIEGO',
-        equipo: [['laninger', 53], ['submaringer', 54], ['andragon', 54]],
+        equipo: [['laninger', 63], ['submaringer', 64], ['andragon', 64]],
         antes: ['VULCANÓLOGO DIEGO: ¡Estudio los volcanes de la Puna! Los de fuego y los que tienen lagunas adentro. ¡Duelo!'],
         gana: 'VULCANÓLOGO DIEGO: ¡Entraste en erupción!',
         despues: 'VULCANÓLOGO DIEGO: Ojo con SUBMARINGER y LANÍNGER: si los debilitás con un golpe, ¡pueden explotar y llevarse a tu criatura!',
@@ -6067,8 +6067,8 @@ const MAPAS = {
     },
     npcs: [
       tomiNPC({
-        id: 'tomi_fiambala', x: 12, y: 16, dir: 2, bandera: 'tomi7', forma: 'final', nivel: 54,
-        equipo: [['arquitemplillo', 51], ['wandacoloso', 52], ['nevukhan', 52], ['gargorrupt', 52], ['umbratail', 53]],
+        id: 'tomi_fiambala', x: 12, y: 16, dir: 2, bandera: 'tomi7', forma: 'final', nivel: 64,
+        equipo: [['arquitemplillo', 61], ['wandacoloso', 62], ['nevukhan', 62], ['gargorrupt', 62], ['umbratail', 63]],
         antes: [
           'TOMI: ¡Felipe! Vine a las termas a descansar... pero vos no me dejás tranquilo, ¿eh?',
           'TOMI: Bueno, ¡vamos con todo! ¡Esta vez sí te gano!',
@@ -6106,18 +6106,18 @@ const MAPAS = {
       '9,28': 'RUTA 21 · PUNA DE ATACAMA. Más de 4.000 metros de altura. ¡Caminá despacio que falta el aire!',
       '9,3': 'Al norte: la BASE del volcán OJOS DEL SALADO y el GIMNASIO 7.',
     },
-    encuentros: { lista: [['dynacore', 12], ['calderito', 12], ['volcarin', 12], ['laninger', 10], ['condorito', 10], ['glaciolito', 10], ['vientuino', 8], ['escarchin', 8], ['zorzaliente', 4], ['andragon', 3]], min: 44, max: 46 },
+    encuentros: { lista: [['dynacore', 12], ['calderito', 12], ['volcarin', 12], ['laninger', 10], ['condorito', 10], ['glaciolito', 10], ['vientuino', 8], ['escarchin', 8], ['zorzaliente', 4], ['andragon', 3]], min: 54, max: 56 },
     npcs: [
       entrenadorNPC({
         id: 'andinista_puna', x: 12, y: 15, dir: 2, pal: PAL.nieve, nombre: 'ANDINISTA CAMILA',
-        equipo: [['glaciolito', 54], ['zorzaliente', 55], ['laninger', 55]],
+        equipo: [['glaciolito', 64], ['zorzaliente', 65], ['laninger', 65]],
         antes: ['ANDINISTA CAMILA: Voy a subir el Ojos del Salado: ¡6.893 metros! Pero antes, un duelo para entrar en calor.'],
         gana: 'ANDINISTA CAMILA: ¡Uf! Me quedé sin aire.',
         despues: 'ANDINISTA CAMILA: En la cumbre del Ojos del Salado hay una laguna. ¡Es la más alta del mundo!',
       }),
       entrenadorNPC({
         id: 'arriero_puna', x: 13, y: 20, dir: 3, pal: PAL.beto, nombre: 'ARRIERO SEGUNDO',
-        equipo: [['turborush', 55], ['submaringer', 55], ['andragon', 56]],
+        equipo: [['turborush', 65], ['submaringer', 65], ['andragon', 66]],
         antes: ['ARRIERO SEGUNDO: Cruzo la cordillera con mis mulas desde que era así de chiquito. ¡A ver qué tenés!'],
         gana: 'ARRIERO SEGUNDO: ¡Bien ahí, gurí! Tenés el corazón de un arriero.',
         despues: 'ARRIERO SEGUNDO: CENIZA hace salir un sol que raja la tierra. ¡Con ese sol el FUEGO pega más fuerte!',
@@ -6200,14 +6200,14 @@ const MAPAS = {
     npcs: [
       entrenadorNPC({
         id: 'gim7_a', x: 7, y: 3, dir: 2, pal: PAL.ceniza, nombre: 'FOGONERO RAMIRO',
-        equipo: [['laninger', 54], ['dynacore', 54], ['zorzaliente', 55]],
+        equipo: [['laninger', 64], ['dynacore', 64], ['zorzaliente', 65]],
         antes: ['FOGONERO RAMIRO: ¡Acá adentro hace 50 grados! ¿Aguantás el calor? ¡Duelo!'],
         gana: 'FOGONERO RAMIRO: ¡Me apagaste el fogón!',
         despues: 'FOGONERO RAMIRO: El FUEGO sufre con el AGUA, la TIERRA y la ROCA.',
       }),
       entrenadorNPC({
         id: 'gim7_b', x: 1, y: 6, dir: 3, pal: PAL.coplera, nombre: 'ASADORA MARTA',
-        equipo: [['submaringer', 55], ['turborush', 55]],
+        equipo: [['submaringer', 65], ['turborush', 65]],
         antes: ['ASADORA MARTA: ¡Tengo las brasas listas para el asado! Pero primero... ¡una pelea!'],
         gana: 'ASADORA MARTA: ¡Se me quemó el asado!',
         despues: 'ASADORA MARTA: CENIZA tiene seis criaturas. ¡Y la última trae el sol con ella!',
@@ -6227,7 +6227,7 @@ const MAPAS = {
           await decir('Soy CENIZA, líder del GIMNASIO OJOS DEL SALADO. Mis criaturas nacieron de la lava.');
           await decir('Si me ganás, te llevás la INSIGNIA VOLCÁN. ¡Que arda la Puna!');
           // Equipo pedido por Poly (20/11): Ignidraxx, Turborush, Zorzaliente, Piquillonco, Submaringer y Braspuma (con SEQUÍA).
-          const r = await batalla({ entrenador: { nombre: 'LÍDER CENIZA', pal: PAL.ceniza, equipo: [['piquillonco', 54], ['submaringer', 55], ['zorzaliente', 55], ['turborush', 56], ['ignidraxx', 56], ['braspuma', 57, { hab: 'sequia' }]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER CENIZA', pal: PAL.ceniza, equipo: [['piquillonco', 64], ['submaringer', 65], ['zorzaliente', 65], ['turborush', 66], ['ignidraxx', 66], ['braspuma', 67, { hab: 'sequia' }]] } });
           if (r === 'gana') {
             S.flags.insignia7 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 7);
