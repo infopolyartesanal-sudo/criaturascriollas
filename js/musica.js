@@ -1,7 +1,7 @@
 'use strict';
 // ================= MÚSICA (8 bits, compuesta para el juego) =================
-// Tres temas originales: RUTA (para caminar), BATALLA y GIMNASIO (fanfarria épica para los
-// gimnasios y las peleas contra los líderes). Se generan con Web Audio, sin archivos.
+// Temas originales: RUTA (para caminar), BATALLA, GIMNASIO (fanfarria épica para los
+// gimnasios y las peleas contra los líderes) y MISTERIO (bosque oscuro y cuevas). Se generan con Web Audio, sin archivos.
 // Notas: 'C5/4' = do de la 5ª octava que dura 4 semicorcheas (16 = un compás). 'R' = silencio.
 // Batería: 'k' bombo, 's' redoblante, 'h' platillo.
 
@@ -79,6 +79,23 @@ const CANCIONES = {
       { tipo: 'bateria', vol: 0.1, notas: [
         rep('k/4 s/4 k/2 k/2 s/4', 7), 's/1 s/1 s/1 s/1 s/1 s/1 s/1 s/1 k/4 k/4',
         rep('k/4 s/4 k/2 k/2 s/4', 7), 'k/2 k/2 s/1 s/1 s/1 s/1 k/4 h/4'] },
+    ],
+  },
+  // MISTERIO: para el bosque oscuro y las cuevas. Lento, en re menor, con notas que "no cierran"
+  // (do sostenido, sol sostenido) y un bombo suave como un latido.
+  misterio: {
+    bpm: 72,
+    canales: [
+      { tipo: 'triangle', vol: 0.2, notas: [
+        'D5/6 R/2 F5/4 E5/4', 'C#5/8 R/8', 'A4/4 D5/4 F5/4 A5/4', 'G#5/12 R/4',
+        'G5/6 R/2 F5/4 E5/4', 'F5/4 E5/4 D5/4 C#5/4', 'D5/4 A4/4 F4/4 E4/4', 'D4/12 R/4'] },
+      { tipo: 'square', duty: 0.125, vol: 0.035, notas: [
+        'D3/2 F3/2 A3/2 D4/2 A3/2 F3/2 D3/2 F3/2', 'C#3/2 E3/2 A3/2 C#4/2 A3/2 E3/2 C#3/2 E3/2',
+        'D3/2 F3/2 A3/2 D4/2 A3/2 F3/2 D3/2 F3/2', 'A#2/2 D3/2 F3/2 A#3/2 F3/2 D3/2 A#2/2 D3/2',
+        'G2/2 A#2/2 D3/2 G3/2 D3/2 A#2/2 G2/2 A#2/2', 'C#3/2 E3/2 A3/2 C#4/2 A3/2 E3/2 C#3/2 E3/2',
+        'D3/2 F3/2 A3/2 D4/2 A3/2 F3/2 D3/2 F3/2', 'A2/2 C#3/2 E3/2 A3/2 E3/2 C#3/2 A2/4'] },
+      { tipo: 'triangle', vol: 0.2, notas: ['D2/16', 'A1/16', 'D2/16', 'A#1/16', 'G1/16', 'A1/16', 'D2/16', 'A1/16'] },
+      { tipo: 'bateria', vol: 0.05, notas: ['k/2 k/2 R/12'] },
     ],
   },
 };
@@ -175,7 +192,13 @@ function tocarNota(ch, nota, t, dur) {
 // Qué tema corresponde ahora
 function pistaDeseada() {
   if (S.escena === 'batalla' && bt) return bt.ent && /^LÍDER/.test(bt.ent.nombre) ? 'gimnasio' : 'batalla';
-  if (S.escena === 'mundo' || S.escena === 'titulo' || S.escena === 'intro') return /^gimnasio/.test(S.mapa) && S.escena === 'mundo' ? 'gimnasio' : 'ruta';
+  if (S.escena === 'mundo') {
+    if (/^gimnasio/.test(S.mapa)) return 'gimnasio';
+    const m = MAPAS[S.mapa];
+    if (m && (m.cueva || m.oscuro || m.musica === 'misterio')) return 'misterio'; // bosque oscuro y cuevas
+    return 'ruta';
+  }
+  if (S.escena === 'titulo' || S.escena === 'intro') return 'ruta';
   if (S.escena === 'evo') return MUS.pista;
   return null;
 }
