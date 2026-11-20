@@ -48,15 +48,15 @@ const held = {};
 let cola = {}, pressed = {};
 const TECLAS = {
   ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down', ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right',
-  KeyZ: 'a', Enter: 'a', Space: 'a', KeyX: 'b', Escape: 'b', Backspace: 'b', ShiftLeft: 'b', ShiftRight: 'b', KeyM: 'start', KeyC: 'start', Tab: 'start',
+  KeyZ: 'a', Enter: ['start', 'a'], NumpadEnter: ['start', 'a'], Space: 'a', KeyX: 'b', Escape: 'b', Backspace: 'b', ShiftLeft: 'b', ShiftRight: 'b', KeyM: 'start', KeyC: 'start', Tab: 'start',
 };
+// Enter abre el MENÚ cuando Felipe camina, y en menús y carteles funciona como A
 window.addEventListener('keydown', e => {
-  const k = TECLAS[e.code]; if (!k) return;
+  const t = TECLAS[e.code]; if (!t) return;
   e.preventDefault();
-  if (!held[k]) cola[k] = true;
-  held[k] = true;
+  for (const k of [].concat(t)) { if (!held[k]) cola[k] = true; held[k] = true; }
 });
-window.addEventListener('keyup', e => { const k = TECLAS[e.code]; if (k) held[k] = false; });
+window.addEventListener('keyup', e => { const t = TECLAS[e.code]; if (t) for (const k of [].concat(t)) held[k] = false; });
 window.addEventListener('blur', () => { for (const k in held) held[k] = false; });
 document.querySelectorAll('[data-k]').forEach(el => {
   const k = el.dataset.k;
@@ -800,7 +800,7 @@ async function escribirTexto(titulo, inicial, max, sprite, sinCancelar) {
     if (pressed.down) te.idx = te.idx < 20 ? te.idx + 10 : te.idx < 30 ? 30 + Math.min(col, 7) : col;
     if (pressed.up) te.idx = te.idx >= 30 ? 20 + col : te.idx >= 10 ? te.idx - 10 : 30 + Math.min(col, 7);
     if (pressed.b) { if (te.texto) te.texto = te.texto.slice(0, -1); else if (!sinCancelar) { ui.teclado = null; return null; } }
-    if (pressed.start) te.idx = TECLADO.indexOf('LISTO');
+    if (pressed.start && !pressed.a) te.idx = TECLADO.indexOf('LISTO');
     if (pressed.a) {
       const k = TECLADO[te.idx];
       if (k === 'LISTO') break;
@@ -1123,7 +1123,7 @@ async function nuevaPartida() {
   const tactil = document.body.classList.contains('tactil');
   await decir(tactil
     ? 'CONSEJO: Caminá con las FLECHAS de abajo. Para hablar con alguien, ponete enfrente y tocá el botón A.'
-    : 'CONSEJO: Caminá con las FLECHAS del teclado. Para hablar con alguien, ponete enfrente y apretá Z o Enter.');
+    : 'CONSEJO: Caminá con las FLECHAS del teclado. Para hablar con alguien, ponete enfrente y apretá Z. Con Enter abrís el MENÚ.');
   S.ocupado = false;
 }
 
