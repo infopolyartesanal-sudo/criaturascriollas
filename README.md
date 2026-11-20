@@ -39,3 +39,9 @@ python3 construir.py
 ```
 
 Arma `dist/index.html` y `docs/index.html`. GitHub Pages publica `docs/` solo al hacer push a `main`.
+
+## Movimientos: NIVEL y TUTOR
+
+Menú → Equipo → criatura → MOVIMIENTOS.
+- NIVEL: los movimientos que la criatura (o sus formas anteriores) ya aprendió por nivel. Se vuelven a enseñar gratis.
+- TUTOR (también gratis): los que aprendería más adelante por nivel + los extra de la tabla `TUTOR` en `js/datos.js`, que elige Felipe. Formato: `idEspecie: ['idMovimiento', ...]`.
