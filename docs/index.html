@@ -6670,18 +6670,23 @@ const CANCIONES = {
   // MISTERIO: para el bosque oscuro y las cuevas. Lento, en re menor, con notas que "no cierran"
   // (do sostenido, sol sostenido) y un bombo suave como un latido.
   misterio: {
-    bpm: 72,
+    bpm: 66,
     canales: [
-      { tipo: 'triangle', vol: 0.2, notas: [
+      // flauta: la melodía, suave y con vibrato
+      { tipo: 'flauta', vol: 0.15, notas: [
         'D5/6 R/2 F5/4 E5/4', 'C#5/8 R/8', 'A4/4 D5/4 F5/4 A5/4', 'G#5/12 R/4',
         'G5/6 R/2 F5/4 E5/4', 'F5/4 E5/4 D5/4 C#5/4', 'D5/4 A4/4 F4/4 E4/4', 'D4/12 R/4'] },
-      { tipo: 'square', duty: 0.125, vol: 0.035, notas: [
-        'D3/2 F3/2 A3/2 D4/2 A3/2 F3/2 D3/2 F3/2', 'C#3/2 E3/2 A3/2 C#4/2 A3/2 E3/2 C#3/2 E3/2',
-        'D3/2 F3/2 A3/2 D4/2 A3/2 F3/2 D3/2 F3/2', 'A#2/2 D3/2 F3/2 A#3/2 F3/2 D3/2 A#2/2 D3/2',
-        'G2/2 A#2/2 D3/2 G3/2 D3/2 A#2/2 G2/2 A#2/2', 'C#3/2 E3/2 A3/2 C#4/2 A3/2 E3/2 C#3/2 E3/2',
-        'D3/2 F3/2 A3/2 D4/2 A3/2 F3/2 D3/2 F3/2', 'A2/2 C#3/2 E3/2 A3/2 E3/2 C#3/2 A2/4'] },
-      { tipo: 'triangle', vol: 0.2, notas: ['D2/16', 'A1/16', 'D2/16', 'A#1/16', 'G1/16', 'A1/16', 'D2/16', 'A1/16'] },
-      { tipo: 'bateria', vol: 0.05, notas: ['k/2 k/2 R/12'] },
+      // campanitas lejanas
+      { tipo: 'campana', vol: 0.05, notas: ['D6/8 R/8', 'E6/8 R/8', 'F6/8 R/8', 'D6/8 R/8', 'A#5/8 R/8', 'C#6/8 R/8', 'A5/8 R/8', 'E5/8 R/8'] },
+      // colchón de acordes (dos voces)
+      { tipo: 'pad', vol: 0.045, notas: ['F3/16', 'E3/16', 'F3/16', 'F3/16', 'D3/16', 'E3/16', 'F3/16', 'E3/16'] },
+      { tipo: 'pad', vol: 0.04, notas: ['A3/16', 'A3/16', 'A3/16', 'A#3/16', 'A#3/16', 'C#4/16', 'A3/16', 'C#4/16'] },
+      // bajo profundo
+      { tipo: 'grave', vol: 0.22, notas: ['D2/16', 'A1/16', 'D2/16', 'A#1/16', 'G1/16', 'A1/16', 'D2/16', 'A1/16'] },
+      // viento entre los árboles
+      { tipo: 'viento', vol: 0.06, notas: ['w/32 R/16 w/24 R/24 w/32'] },
+      // latido
+      { tipo: 'bateria', vol: 0.035, notas: ['k/2 k/2 R/12'] },
     ],
   },
 };
@@ -6762,7 +6767,51 @@ function tocarNota(ch, nota, t, dur) {
     }
     return;
   }
+  // Instrumentos "suaves" (para MISTERIO): viento, flauta, pad, campana y bajo grave
+  if (ch.tipo === 'viento') { // ráfaga de viento: ruido filtrado que crece y se apaga
+    const s = ctx.createBufferSource(); s.buffer = MUS.ruido; s.loop = true;
+    const f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 1.4;
+    f.frequency.setValueAtTime(280, t); f.frequency.linearRampToValueAtTime(950, t + dur * 0.5); f.frequency.linearRampToValueAtTime(320, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(ch.vol, t + dur * 0.5); g.gain.linearRampToValueAtTime(0.0001, t + dur);
+    s.connect(f); f.connect(g); s.start(t); s.stop(t + dur + 0.05);
+    return;
+  }
   const fr = frecuencia(nota); if (!fr) return;
+  if (ch.tipo === 'flauta') { // seno con vibrato y entrada suave
+    const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(fr, t);
+    const lfo = ctx.createOscillator(), lg = ctx.createGain(); lfo.frequency.value = 5; lg.gain.value = fr * 0.007;
+    lfo.connect(lg); lg.connect(o.frequency);
+    const fin = t + dur;
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(ch.vol, t + 0.12);
+    g.gain.setValueAtTime(ch.vol, Math.max(t + 0.12, fin - 0.12)); g.gain.linearRampToValueAtTime(0.0001, fin + 0.1);
+    o.connect(g); o.start(t); lfo.start(t); o.stop(fin + 0.12); lfo.stop(fin + 0.12);
+    return;
+  }
+  if (ch.tipo === 'pad') { // colchón: dos sierras desafinadas apenas, filtradas, que entran y salen despacio
+    const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 750; f.Q.value = 0.6;
+    const fin = t + dur;
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(ch.vol, t + Math.min(0.8, dur / 3));
+    g.gain.setValueAtTime(ch.vol, fin - 0.3); g.gain.linearRampToValueAtTime(0.0001, fin + 0.5);
+    for (const det of [-7, 7]) { const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.setValueAtTime(fr, t); o.detune.value = det; o.connect(f); o.start(t); o.stop(fin + 0.55); }
+    f.connect(g);
+    return;
+  }
+  if (ch.tipo === 'campana') { // campanita: fundamental y armónicos "raros" que se apagan solos
+    g.gain.setValueAtTime(ch.vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.4);
+    for (const [mult, v] of [[1, 1], [2.76, 0.35], [5.4, 0.12]]) {
+      const o = ctx.createOscillator(), og = ctx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(fr * mult, t); og.gain.value = v;
+      o.connect(og); og.connect(g); o.start(t); o.stop(t + 2.5);
+    }
+    return;
+  }
+  if (ch.tipo === 'grave') { // bajo profundo y redondo
+    const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.setValueAtTime(fr, t);
+    const fin = t + dur;
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(ch.vol, t + 0.08);
+    g.gain.setValueAtTime(ch.vol, fin - 0.25); g.gain.linearRampToValueAtTime(0.0001, fin + 0.2);
+    o.connect(g); o.start(t); o.stop(fin + 0.25);
+    return;
+  }
   const o = ctx.createOscillator();
   if (ch.tipo === 'square') o.setPeriodicWave(ondaCuadrada(ch.duty || 0.5)); else o.type = 'triangle';
   o.frequency.setValueAtTime(fr, t);
