@@ -1410,6 +1410,8 @@ function elipse(ctx, x, y, rx, ry, c1, c2) {
   ctx.fillStyle = c2; ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, 7); ctx.fill();
   ctx.fillStyle = c1; ctx.beginPath(); ctx.ellipse(x, y - 1, rx - 3, ry - 2, 0, 0, 7); ctx.fill();
 }
+// Animación de "respirar" en la batalla (0 a 2 píxeles)
+function respiro(fase) { return Math.round((Math.sin(tick / 14 + fase) + 1)); }
 function dibujarBatalla() {
   const g = b.createLinearGradient(0, 0, 0, 112);
   if (bt.sol > 0) { g.addColorStop(0, '#ffd890'); g.addColorStop(1, '#f0d890'); }
@@ -1422,12 +1424,14 @@ function dibujarBatalla() {
   if (bt.rival && bt.rivalVis && !(bt.parp.r > 0 && (bt.parp.r-- >> 1) % 2)) {
     const sp = spriteCriatura(bt.rival.id);
     b.save(); b.beginPath(); b.rect(0, 0, W, 66); b.clip();
-    b.drawImage(bt.blanco.r > 0 ? silueta(sp) : sp, 144 + bt.rDX, 2 + bt.rDY, 64, 64);
+    const rr = respiro(0); // respiran: se estiran un poquito para arriba y vuelven
+    b.drawImage(bt.blanco.r > 0 ? silueta(sp) : sp, 144 + bt.rDX - rr / 2, 2 + bt.rDY - rr, 64 + rr, 64 + rr);
     b.restore();
   }
   if (bt.yo && bt.yoVis && !(bt.parp.y > 0 && (bt.parp.y-- >> 1) % 2)) {
     b.save(); b.beginPath(); b.rect(0, 0, W, 112); b.clip();
-    b.drawImage(spriteCriatura(bt.yo.id, true), 30 + bt.yDX, 50 + bt.yDY, 64, 64);
+    const ry = respiro(2.2);
+    b.drawImage(spriteCriatura(bt.yo.id, true), 30 + bt.yDX - ry / 2, 50 + bt.yDY - ry, 64 + ry, 64 + ry);
     b.restore();
   }
   if (bt.bola) {
