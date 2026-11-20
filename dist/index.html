@@ -770,7 +770,7 @@ const OBJETOS = {
   piedraAgua: { nombre: 'PIEDRA AGUA', precio: 2500, piedra: true, desc: 'Una piedra azul que gotea agua fresca. Hace evolucionar a CALDERITO.' },
   piedraTrueno: { nombre: 'PIEDRA TRUENO', precio: 2500, piedra: true, desc: 'Una piedra con un rayo adentro. Hace evolucionar a DYNACORE.' },
   mapa: { nombre: 'MAPA', precio: 0, mapa: true, desc: 'El mapa de la Argentina. Muestra dónde estás y todos los lugares del viaje.' },
-  bici: { nombre: 'BICICLETA', precio: 0, bici: true, desc: 'Una bici para recorrer la Argentina el doble de rápido. Solo afuera.' },
+  bici: { nombre: 'BICICLETA', precio: 0, bici: true, desc: 'La bici de montaña de ROCÍO. Recorre la Argentina el doble de rápido. Solo afuera.' },
   velaAnima: { nombre: 'VELA ÁNIMA', precio: 2500, piedra: true, desc: 'Una vela que arde con fuego rosa y no se apaga. Hace evolucionar a FAEVE.' },
 };
 // Lo que se vende en el ALMACÉN, en orden
@@ -6293,6 +6293,10 @@ const MAPAS = {
             S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 3;
             S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
             await decir('ROCÍO: Y llevate estos ALFAJORES y BOLEADORAS. ¡En el norte hay criaturas que todavía nadie atrapó!');
+            S.bolsa.bici = 1;
+            await decir('ROCÍO: ¡Ah! Y esto también: mi BICICLETA de montaña. Con ella vas a cruzar el país el doble de rápido.');
+            await decir('¡Felipe recibió la BICICLETA!');
+            await decir('Usala desde el MENÚ (BICICLETA) o desde la MOCHILA. ¡Solo se puede andar afuera!');
             guardar();
           }
         },
@@ -6924,7 +6928,8 @@ function cargar() {
     Object.assign(S, d);
     if (typeof S.plata !== 'number') S.plata = 3000; // partidas de antes de que existiera la plata
     if (!S.bolsa.mapa) S.bolsa.mapa = 1; // el MAPA lo tienen todos
-    if (!S.bolsa.bici) S.bolsa.bici = 1; // la BICICLETA también
+    // La BICICLETA se gana con la 2ª insignia (ROCÍO); las partidas viejas la reciben si ya la tienen
+    if (S.flags.insignia2) S.bolsa.bici = 1; else delete S.bolsa.bici;
     S.bici = false;
     acomodarPosicion();
     return true;
@@ -7713,7 +7718,7 @@ async function siNoTitulo() {
   return siNo('Si empezás una partida nueva se borra la anterior. ¿Seguro?');
 }
 async function nuevaPartida() {
-  Object.assign(S, { mapa: 'casa', x: 4, y: 4, dir: 0, equipo: [], caja: [], bolsa: { mapa: 1, bici: 1 }, flags: {}, plata: 3000, bici: false });
+  Object.assign(S, { mapa: 'casa', x: 4, y: 4, dir: 0, equipo: [], caja: [], bolsa: { mapa: 1 }, flags: {}, plata: 3000, bici: false });
   S.escena = 'intro';
   await fundido(0, 16);
   await decir('¡Hola! ¡Bienvenido al mundo de las CRIATURAS CRIOLLAS!');

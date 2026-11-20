@@ -3610,6 +3610,10 @@ const MAPAS = {
             S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 3;
             S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
             await decir('ROCÍO: Y llevate estos ALFAJORES y BOLEADORAS. ¡En el norte hay criaturas que todavía nadie atrapó!');
+            S.bolsa.bici = 1;
+            await decir('ROCÍO: ¡Ah! Y esto también: mi BICICLETA de montaña. Con ella vas a cruzar el país el doble de rápido.');
+            await decir('¡Felipe recibió la BICICLETA!');
+            await decir('Usala desde el MENÚ (BICICLETA) o desde la MOCHILA. ¡Solo se puede andar afuera!');
             guardar();
           }
         },

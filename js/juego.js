@@ -248,7 +248,8 @@ function cargar() {
     Object.assign(S, d);
     if (typeof S.plata !== 'number') S.plata = 3000; // partidas de antes de que existiera la plata
     if (!S.bolsa.mapa) S.bolsa.mapa = 1; // el MAPA lo tienen todos
-    if (!S.bolsa.bici) S.bolsa.bici = 1; // la BICICLETA también
+    // La BICICLETA se gana con la 2ª insignia (ROCÍO); las partidas viejas la reciben si ya la tienen
+    if (S.flags.insignia2) S.bolsa.bici = 1; else delete S.bolsa.bici;
     S.bici = false;
     acomodarPosicion();
     return true;
@@ -1037,7 +1038,7 @@ async function siNoTitulo() {
   return siNo('Si empezás una partida nueva se borra la anterior. ¿Seguro?');
 }
 async function nuevaPartida() {
-  Object.assign(S, { mapa: 'casa', x: 4, y: 4, dir: 0, equipo: [], caja: [], bolsa: { mapa: 1, bici: 1 }, flags: {}, plata: 3000, bici: false });
+  Object.assign(S, { mapa: 'casa', x: 4, y: 4, dir: 0, equipo: [], caja: [], bolsa: { mapa: 1 }, flags: {}, plata: 3000, bici: false });
   S.escena = 'intro';
   await fundido(0, 16);
   await decir('¡Hola! ¡Bienvenido al mundo de las CRIATURAS CRIOLLAS!');
