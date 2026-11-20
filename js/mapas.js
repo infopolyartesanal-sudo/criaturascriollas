@@ -2211,7 +2211,7 @@ const MAPAS = {
       '9,30': 'RUTA 4 · TRAVESÍA SANJUANINA. Desierto, jarillas y mucho sol.',
       '9,3': 'Al OESTE: VALLE FÉRTIL y el GIMNASIO DEL VALLE DE LA LUNA.',
     },
-    encuentros: { lista: [['vizcachita', 18], ['lechucita', 16], ['piedrin', 14], ['espejito', 14], ['pumita', 12], ['mimetit', 10], ['faeve', 8], ['cardito', 8]], min: 10, max: 14 },
+    encuentros: { lista: [['vizcachita', 18], ['lechucita', 16], ['piedrin', 14], ['espejito', 14], ['pumita', 12], ['mimetit', 10], ['faeve', 8], ['cardito', 8], ['flamartija', 6]], min: 10, max: 14 },
     npcs: [
       tomiNPC({
         id: 'tomi_travesia', x: 12, y: 26, dir: 2, bandera: 'tomi2', forma: 'base', nivel: 14,
