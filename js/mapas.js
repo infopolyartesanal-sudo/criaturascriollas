@@ -22,6 +22,7 @@ const PAL = {
   nieve: { id: 'nieve', piel: '#e8c0a0', pelo: '#f0f0f8', peloLargo: true, gorra: '#3a7ab0', remera: '#e8f4ff', raya: '#3a7ab0', pant: '#2a3a5a' },
   almacenero: { id: 'almacenero', piel: '#e8b890', pelo: '#5a3a20', boina: '#3a3a5a', remera: '#3a8a4a', guardapolvo: true, pant: '#4a3a2a', barba: '#5a3a20' },
   sombra: { id: 'sombra', piel: '#e8d0c0', pelo: '#1a1a2a', peloLargo: true, sombrero: '#1a1a1a', remera: '#4a2a6a', raya: '#b060f0', pant: '#1a1a2a' },
+  marea: { id: 'marea', piel: '#f0d0b8', pelo: '#2a3a5a', peloLargo: true, gorra: '#e8f0f8', remera: '#2a6ab0', raya: '#f0f0f0', pant: '#1a2a4a' },
   nena: { id: 'nena', piel: '#f4c8a0', pelo: '#c08040', peloLargo: true, remera: '#f070a0', pant: '#4a6aa8' },
 };
 
@@ -780,6 +781,112 @@ const MESETA = [
 const ELBOLSON = teñir(PUERTO, { Y: 'N', q: '=' });
 const JACOBACCI = teñir(TILCARA, { C: 'N', K: 'R' });
 const SOMUNCURA = teñir(PUERTO, { Y: 'R', q: '=', '.': '-', F: '-' });
+// Región 6 (costa patagónica y Tierra del Fuego): el mar se dibuja a la IZQUIERDA y al girar 180 queda al ESTE
+const VALDES = [
+  'RRRRRRRRRR==RRRRRRRRRR',
+  'RR~~~-----==--------RR',
+  'RR~~~-----==-uuRRu--RR',
+  'RR~~~uuuuS==-uuRRuuuRR',
+  'RR~~~RRuu-==-uuuuuuuRR',
+  'RR~~~RR---==--------RR',
+  'RR~~~-----==--------RR',
+  'RR~~~-----==--------RR',
+  'RR~~~-----==--------RR',
+  'RR~~~uuu--==--------RR',
+  'RR~~~uuuu-==-----uuuRR',
+  'RR~~~uuuu-==-----uuuRR',
+  'RR~~~uuuu-==--------RR',
+  'RR~~~-----==--------RR',
+  'RR~~~-----==--------RR',
+  'RR~~~-----==--------RR',
+  'RR~~~-----==--------RR',
+  'RR~~~--uuu==-----RR-RR',
+  'RR~~~=======-----RR-RR',
+  'RR~~~==uuu----------RR',
+  'RR~~~==----uuuu-----RR',
+  'RR~~~==u---uuuuu----RR',
+  'RR~~~==u----uuuu----RR',
+  'RR~~~==-----uuuu----RR',
+  'RR~~~==------uuu----RR',
+  'RR~~~==------uuu----RR',
+  'RR~~~=======--------RR',
+  'RR~~~uuuu-==--------RR',
+  'RR~~~uuuuS==--------RR',
+  'RR~~~u-uuu==----uuu-RR',
+  'RR~~~u-uuu==----uuu-RR',
+  'RRRRRRRRRR==RRRRRRRRRR',
+];
+const SANTACRUZ = [
+  'NNNNNNNNNN==NNNNNNNNNN',
+  'NN~~~----u==--------NN',
+  'NN~~~----u==--------NN',
+  'NN~~~uuu-S==--------NN',
+  'NN~~~uuu--==--------NN',
+  'NN~~~-----==------RRNN',
+  'NN~~~-----==------RRNN',
+  'NN~~~--uuu==uuuuu---NN',
+  'NN~~~--uuu==uuuuu---NN',
+  'NN~~~--uuu==uuuuu---NN',
+  'NN~~~-----==---RR---NN',
+  'NN~~~-----==---RR---NN',
+  'NN~~~-----==--------NN',
+  'NN~~~-----==-----RR-NN',
+  'NN~~~--uuu==u----RR-NN',
+  'NN~~~--uuu==u--uuuu-NN',
+  'NN~~~--uuu==u--uuuu-NN',
+  'NN~~~-----==--------NN',
+  'NN~~~-----======----NN',
+  'NN~~~---------==----NN',
+  'NN~~~---------==----NN',
+  'NN~~~---------==uu--NN',
+  'NN~~~---------==uu--NN',
+  'NN~~~uuuu-----==uu--NN',
+  'NN~~~uuuu-----==----NN',
+  'NN~~~uuuu-----==----NN',
+  'NN~~~uuuu-======----NN',
+  'NN~~~uuuu-==uuuu-NN-NN',
+  'NN~~~uuRRS==uuuu-NN-NN',
+  'NN~~~uuRRu==--------NN',
+  'NN~~~-----==--------NN',
+  'NNNNNNNNNN==NNNNNNNNNN',
+];
+const ESTRECHO = [
+  'NNNNNNNNNN==NNNNNNNNNN',
+  'NN~~~.....==........NN',
+  'NN~~~.....==.TT,,,,,NN',
+  'NN~~~...,S==,TT,,,,,NN',
+  'NN~~~...,,==,,......NN',
+  'NN~~~,,,,,==,,......NN',
+  'NN~~~,,,..==,,,.....NN',
+  'NN~~~~~~~~hh~~~~~~~~NN',
+  'NN~~~~~~~~hh~~~~~~~~NN',
+  'NN~~~.....==........NN',
+  'NN~~~.....==........NN',
+  'NN~~~.....==........NN',
+  'NN~~~...,,==,,,,,,..NN',
+  'NN~~~...,,==,,,,,,..NN',
+  'NN~~~TT..,==,,,,,,..NN',
+  'NN~~~TT...==...,,,,.NN',
+  'NN~~~.....==.,,,,,,.NN',
+  'NN~~~.....==.,,,,..FNN',
+  'NN~~~.....======...FNN',
+  'NN~~~.........==....NN',
+  'NN~~~.........==,,..NN',
+  'NN~~~......F..==,,..NN',
+  'NN~~~.........==....NN',
+  'NN~~~NN.......==,,..NN',
+  'NN~~~NN,,.....==,,..NN',
+  'NN~~~,,,,.======,,,.NN',
+  'NN~~~,,...==,,,,,,,.NN',
+  'NN~~~.....==,,,,,,,.NN',
+  'NN~~~..,,S==........NN',
+  'NN~~~..,,,==...F....NN',
+  'NN~~~..,,,==........NN',
+  'NNNNNNNNNN==NNNNNNNNNN',
+];
+const MADRYN = teñir(TILCARA, { C: 'R', K: '-' });
+const GALLEGOS = teñir(PUERTO, { Y: 'N', q: '=' });
+const USHUAIA = teñir(VILLA, { T: 'N' });
 const TAFI = [
   'RRRRRRRRRR==RRRRRRRRRRRR',
   'RR........==S.........RR',
@@ -2518,23 +2625,16 @@ const MAPAS = {
       { x: 0, y: 11, a: 'ruta15', ax: 11, ay: 1, dir: 0 },
       { x: 5, y: 8, a: 'centro12', ax: 4, ay: 6, dir: 1 },
       { x: 17, y: 8, a: 'gimnasio5', ax: 5, ay: 10, dir: 1 },
+      { x: 10, y: 21, a: 'ruta16', ax: 10, ay: 30, dir: 1 },
+      { x: 11, y: 21, a: 'ruta16', ax: 11, ay: 30, dir: 1 },
     ],
     carteles: {
-      '12,1': 'Al OESTE: RUTA 15, de vuelta a la LÍNEA SUR. Al SUR: hacia TIERRA DEL FUEGO (¡en construcción!).',
+      '12,1': 'Al OESTE: RUTA 15, de vuelta a la LÍNEA SUR. Al SUR: RUTA 16, la COSTA PATAGÓNICA, hacia TIERRA DEL FUEGO.',
       '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Hasta en el medio de la meseta!',
       '19,9': 'GIMNASIO DE SOMUNCURÁ. Líder: SOMBRA, la que escucha a las piedras. Tipo FANTASMA y SINIESTRO.',
       '4,18': 'PARAJE SOMUNCURÁ. Una meseta de piedra negra, más alta que las nubes de la estepa.',
     },
     objetos: { R: 'Una roca de basalto llena de agujeros. Cuando sopla el viento... ¡parece que susurra!' },
-    disparadores: [
-      {
-        prueba: (x, y) => y === 21,
-        accion: async () => {
-          await decir('Al SUR: el camino hacia TIERRA DEL FUEGO y el GIMNASIO 6... ¡Todavía está en construcción!');
-          await pasoForzado(1);
-        },
-      },
-    ],
     npcs: [
       {
         id: 'poblador', x: 7, y: 11, dir: 0, pal: PAL.coplera,
@@ -2620,6 +2720,343 @@ const MAPAS = {
             S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
             S.bolsa.velaAnima = (S.bolsa.velaAnima || 0) + 1;
             await decir('SOMBRA: Llevate estos ALFAJORES, BOLEADORAS y una VELA ÁNIMA. ¡Ya tenés cinco insignias!');
+            guardar();
+          }
+        },
+      },
+    ],
+  },
+
+  // ================= REGIÓN 6: COSTA PATAGÓNICA Y TIERRA DEL FUEGO =================
+  ruta16: {
+    nombre: 'RUTA 16 · PENÍNSULA VALDÉS',
+    exterior: true,
+    grilla: desdeTexto(VALDES),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'somuncura', ax: 10, ay: 20, dir: 1 },
+      { x: 11, y: 31, a: 'somuncura', ax: 11, ay: 20, dir: 1 },
+      { x: 10, y: 0, a: 'madryn', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 0, a: 'madryn', ax: 11, ay: 1, dir: 0 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 16 · PENÍNSULA VALDÉS. Al este, el mar: ballenas, lobos marinos y pingüinos.',
+      '9,3': 'Al sur: PUERTO MADRYN.',
+    },
+    objetos: { '~': '¡Allá lejos salta una ballena franca! Llegan a Península Valdés todos los inviernos.' },
+    encuentros: { lista: [['pinguinoide', 16], ['carpibarro', 14], ['zorrazo', 10], ['vizcachita', 10], ['condorito', 10], ['sparknight', 8], ['peludin', 8], ['vientuino', 6], ['howlup', 6]], min: 52, max: 55 },
+    npcs: [
+      entrenadorNPC({
+        id: 'guardafauna', x: 12, y: 8, dir: 2, pal: PAL.guarda, nombre: 'GUARDAFAUNA LUCÍA',
+        equipo: [['vientuino', 53], ['carpibarro', 53], ['condorito', 54]],
+        antes: ['GUARDAFAUNA LUCÍA: ¡Cuidado, que acá los lobos marinos tienen cría! Si querés pasar, primero un duelo.'],
+        gana: 'GUARDAFAUNA LUCÍA: ¡Muy bien! Pero no hagas ruido cerca de la costa.',
+        despues: 'GUARDAFAUNA LUCÍA: Los PINGUINOIDE nadan rapidísimo. ¡Debajo del agua parecen volar!',
+      }),
+      entrenadorNPC({
+        id: 'buzo', x: 8, y: 23, dir: 2, pal: PAL.pescador, nombre: 'BUZO MARTÍN',
+        equipo: [['iberadraco', 53], ['pinguinoide', 54], ['carpibarro', 54]],
+        antes: ['BUZO MARTÍN: Recién salgo del agua. ¡Hay que estar loco para bucear con este frío! ¿Peleamos?'],
+        gana: 'BUZO MARTÍN: ¡Me dejaste más frío que el mar!',
+        despues: 'BUZO MARTÍN: Al AGUA le ganan la PLANTA y el ELÉCTRICO. ¡Acordate para el gimnasio de Ushuaia!',
+      }),
+      {
+        id: 'avistaje', x: 13, y: 14, dir: 2, pal: PAL.chica,
+        hablar: async () => {
+          await decir('CHICA: ¡Vine a ver ballenas! Las ballenas francas vienen a tener sus crías acá, en el golfo.');
+          await decir('Una me saludó con la cola. ¡Te lo juro!');
+        },
+      },
+    ],
+  },
+
+  madryn: {
+    nombre: 'PUERTO MADRYN',
+    exterior: true,
+    grilla: desdeTexto(MADRYN),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 15, y: 4, w: 6, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'casa', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 10, y: 0, a: 'ruta16', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 0, a: 'ruta16', ax: 11, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro13', ax: 4, ay: 6, dir: 1 },
+      { x: 10, y: 21, a: 'ruta17', ax: 10, ay: 30, dir: 1 },
+      { x: 11, y: 21, a: 'ruta17', ax: 11, ay: 30, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Al NORTE: RUTA 16, de vuelta a SOMUNCURÁ. Al SUR: RUTA 17, la COSTA DE SANTA CRUZ.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Con tortas galesas!',
+      '19,9': 'MUSEO DEL MAR. Esqueletos de ballenas y fósiles de la Patagonia.',
+      '4,18': 'PUERTO MADRYN. Ciudad de playas y ballenas, fundada por colonos galeses.',
+    },
+    npcs: [
+      {
+        id: 'galesa', x: 7, y: 11, dir: 0, pal: PAL.rosa,
+        hablar: async () => {
+          if (S.flags.regaloMadryn) { await decir('SEÑORA GALESA: Mis abuelos llegaron desde Gales en un barco, hace muchísimos años. ¡Y trajeron la receta de la torta negra!'); return; }
+          await decir('SEÑORA GALESA: ¡Qué frío hace, gurí! Tomá, unos alfajores para el viaje al sur.');
+          S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 3;
+          S.flags.regaloMadryn = true;
+          await decir('¡Felipe recibió 3 ALFAJORES!');
+          guardar();
+        },
+      },
+      {
+        id: 'pescador_madryn', x: 19, y: 11, dir: 1, pal: PAL.pescador,
+        hablar: async () => {
+          await decir('PESCADOR: La líder del GIMNASIO 6 es MAREA, de USHUAIA. ¡Allá en la punta de Tierra del Fuego!');
+          await decir('Usa criaturas de AGUA. ¡Contra el agua van la PLANTA y el ELÉCTRICO!');
+        },
+      },
+    ],
+  },
+
+  centro13: crearCentro('madryn', 5, 9, 'centro13'),
+
+  ruta17: {
+    nombre: 'RUTA 17 · COSTA DE SANTA CRUZ',
+    exterior: true,
+    grilla: desdeTexto(SANTACRUZ),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'madryn', ax: 10, ay: 20, dir: 1 },
+      { x: 11, y: 31, a: 'madryn', ax: 11, ay: 20, dir: 1 },
+      { x: 10, y: 0, a: 'gallegos', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 0, a: 'gallegos', ax: 11, ay: 1, dir: 0 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 17 · COSTA DE SANTA CRUZ. Acantilados, viento helado y colonias de pingüinos.',
+      '9,3': 'Al sur: RÍO GALLEGOS, la última ciudad antes del ESTRECHO DE MAGALLANES.',
+    },
+    objetos: { '~': 'El mar está helado y con olas grandes. ¡Mejor no meterse!' },
+    encuentros: { lista: [['pinguinoide', 14], ['vientuino', 12], ['carpibarro', 12], ['zorrazo', 10], ['nevulon', 10], ['glaciolito', 10], ['escarchin', 10], ['venomin', 8], ['glaciperador', 2]], min: 54, max: 57 },
+    npcs: [
+      entrenadorNPC({
+        id: 'esquilador', x: 12, y: 4, dir: 2, pal: PAL.beto, nombre: 'ESQUILADOR RAÚL',
+        equipo: [['nevulon', 55], ['zorrazo', 55], ['glyptopampa', 56]],
+        antes: ['ESQUILADOR RAÚL: En las estancias de Santa Cruz hay más ovejas que personas. ¡Y más criaturas que ovejas!'],
+        gana: 'ESQUILADOR RAÚL: ¡Me esquilaste, che!',
+        despues: 'ESQUILADOR RAÚL: Para cruzar a Tierra del Fuego hay que tomar la BALSA en el Estrecho de Magallanes.',
+      }),
+      entrenadorNPC({
+        id: 'pinguinera', x: 12, y: 20, dir: 3, pal: PAL.nieve, nombre: 'BIÓLOGA JULIETA',
+        equipo: [['pinguinoide', 55], ['vientuino', 56], ['glaciperador', 56]],
+        antes: ['BIÓLOGA JULIETA: ¡Estoy contando pingüinos! Me perdí en el 4.327... ¡Por tu culpa! ¡Duelo!'],
+        gana: 'BIÓLOGA JULIETA: Bueno, ahora tengo que empezar a contar de nuevo...',
+        despues: 'BIÓLOGA JULIETA: Los pingüinos de Magallanes vuelven todos los años al mismo nido. ¡Con la misma pareja!',
+      }),
+      {
+        id: 'gaucho_sur', x: 17, y: 30, dir: 1, pal: PAL.abuelo,
+        hablar: async () => {
+          await decir('PAISANO: Acá el viento sopla tan fuerte que los árboles crecen torcidos. ¡Les dicen "árboles bandera"!');
+        },
+      },
+    ],
+  },
+
+  gallegos: {
+    nombre: 'RÍO GALLEGOS',
+    exterior: true,
+    grilla: desdeTexto(GALLEGOS),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 15, y: 4, w: 5, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'casa', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 10, y: 0, a: 'ruta17', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 0, a: 'ruta17', ax: 11, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro14', ax: 4, ay: 6, dir: 1 },
+      { x: 10, y: 21, a: 'ruta18', ax: 10, ay: 30, dir: 1 },
+      { x: 11, y: 21, a: 'ruta18', ax: 11, ay: 30, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Al NORTE: RUTA 17, hacia PUERTO MADRYN. Al SUR: el ESTRECHO DE MAGALLANES y TIERRA DEL FUEGO.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Con chocolate caliente y torta frita!',
+      '19,9': 'Acá se juntan los camioneros que van a Tierra del Fuego. ¡Todavía falta un montón!',
+      '4,18': 'RÍO GALLEGOS. Capital de Santa Cruz, a orillas de un río con mareas gigantes.',
+    },
+    npcs: [
+      tomiNPC({
+        id: 'tomi_gallegos', x: 12, y: 16, dir: 2, bandera: 'tomi6', forma: 'final', nivel: 57,
+        equipo: [['arquitemplillo', 54], ['wandacoloso', 55], ['nevukhan', 55], ['gargorrupt', 55], ['umbratail', 56]],
+        antes: [
+          'TOMI: ¡Felipe! ¿Viste qué frío? Tengo puestas tres camperas.',
+          'TOMI: Dicen que MAREA, la líder de Ushuaia, es imbatible. ¡Pero primero tenés que ganarme a mí!',
+        ],
+        gana: 'TOMI: ¡Otra vez! Bueno... MAREA tiene criaturas de AGUA. ¡PLANTA y ELÉCTRICO les ganan!',
+        despues: 'TOMI: Yo me quedo a entrenar en Río Gallegos. ¡Andá a ganar esa insignia!',
+        premio: 5,
+      }),
+      {
+        id: 'camionero', x: 8, y: 15, dir: 0, pal: PAL.beto,
+        hablar: async () => {
+          await decir('CAMIONERO: El río Gallegos tiene mareas enormes: ¡el agua sube y baja como diez metros por día!');
+          await decir('Y para llegar a Ushuaia hay que cruzar el Estrecho en balsa. ¡Agarrate fuerte!');
+        },
+      },
+    ],
+  },
+
+  centro14: crearCentro('gallegos', 5, 9, 'centro14'),
+
+  ruta18: {
+    nombre: 'RUTA 18 · ESTRECHO DE MAGALLANES',
+    exterior: true,
+    grilla: desdeTexto(ESTRECHO),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'gallegos', ax: 10, ay: 20, dir: 1 },
+      { x: 11, y: 31, a: 'gallegos', ax: 11, ay: 20, dir: 1 },
+      { x: 10, y: 0, a: 'ushuaia', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 0, a: 'ushuaia', ax: 11, ay: 1, dir: 0 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 18 · ESTRECHO DE MAGALLANES. Más adelante, la BALSA cruza a TIERRA DEL FUEGO.',
+      '9,3': 'TIERRA DEL FUEGO. Al sur: USHUAIA, la ciudad del fin del mundo.',
+    },
+    objetos: { '~': 'El agua del Estrecho de Magallanes. ¡Acá se juntan el océano Atlántico y el Pacífico!' },
+    encuentros: { lista: [['pinguinoide', 12], ['vientuino', 12], ['carpibarro', 10], ['zorrazo', 10], ['escarchin', 10], ['nevulon', 10], ['lechuzonte', 10], ['glaciolito', 8], ['glyptopampa', 4], ['glaciperador', 4]], min: 56, max: 59 },
+    npcs: [
+      entrenadorNPC({
+        id: 'castorero', x: 13, y: 11, dir: 2, pal: PAL.guarda, nombre: 'GUARDAPARQUE ANA',
+        equipo: [['lechuzonte', 57], ['glyptopampa', 57], ['vientuino', 58]],
+        antes: ['GUARDAPARQUE ANA: ¡Bienvenido a Tierra del Fuego! Los bosques de acá son los más australes del mundo. ¡Duelo!'],
+        gana: 'GUARDAPARQUE ANA: ¡Qué bien entrenás! Ushuaia está cerca.',
+        despues: 'GUARDAPARQUE ANA: En el Canal Beagle hay un faro rojo y blanco: el faro LES ÉCLAIREURS. ¡Es el símbolo de Ushuaia!',
+      }),
+      entrenadorNPC({
+        id: 'marinero', x: 12, y: 22, dir: 3, pal: PAL.pescador, nombre: 'MARINERO ERNESTO',
+        equipo: [['iberadraco', 57], ['totorarca', 57], ['glaciperador', 58]],
+        antes: ['MARINERO ERNESTO: Crucé el Estrecho de Magallanes como mil veces. ¡Con tormentas y todo! ¿Te animás?'],
+        gana: 'MARINERO ERNESTO: ¡Hundiste mi barco!',
+        despues: 'MARINERO ERNESTO: MAREA tiene seis criaturas. ¡Y la última es su compañera de toda la vida!',
+      }),
+      {
+        id: 'balsero', x: 9, y: 10, dir: 3, pal: PAL.beto,
+        hablar: async () => {
+          await decir('BALSERO: ¡Subí, que zarpamos! La balsa cruza el Estrecho todo el día. ¡Ojo con las olas!');
+        },
+      },
+    ],
+  },
+
+  ushuaia: {
+    nombre: 'USHUAIA',
+    exterior: true,
+    grilla: desdeTexto(USHUAIA),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 14, y: 4, w: 7, h: 5, tipo: 'gimnasio6', puerta: 3, abre: true },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 10, y: 0, a: 'ruta18', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 0, a: 'ruta18', ax: 11, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro15', ax: 4, ay: 6, dir: 1 },
+      { x: 17, y: 8, a: 'gimnasio6', ax: 5, ay: 10, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Al NORTE: RUTA 18, el ESTRECHO DE MAGALLANES. Más al sur ya no hay nada... ¡solo la Antártida!',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡El CEMIC más austral del mundo!',
+      '19,9': 'GIMNASIO DE USHUAIA. Líder: MAREA, la guardiana del faro. Tipo AGUA.',
+      '4,20': 'USHUAIA. La ciudad del fin del mundo, entre la montaña y el Canal Beagle.',
+    },
+    objetos: { '~': 'El CANAL BEAGLE. A lo lejos se ve el faro Les Éclaireurs, rojo y blanco.' },
+    npcs: [
+      {
+        id: 'presidio', x: 7, y: 18, dir: 0, pal: PAL.abuelo,
+        hablar: async () => {
+          if (S.flags.regaloUshuaia) { await decir('ABUELO: Antes Ushuaia era una cárcel: el PRESIDIO DEL FIN DEL MUNDO. ¡Hoy es un museo!'); return; }
+          await decir('ABUELO: ¡Llegaste al fin del mundo, pibe! Tomá, para que tus criaturas no pasen frío.');
+          S.bolsa.mate = (S.bolsa.mate || 0) + 5;
+          S.flags.regaloUshuaia = true;
+          await decir('¡Felipe recibió 5 MATES!');
+          guardar();
+        },
+      },
+      {
+        id: 'guia_ushuaia', x: 19, y: 15, dir: 2, pal: PAL.nieve,
+        hablar: async () => {
+          if (S.flags.insignia6) await decir('GUÍA: ¡Le ganaste a MAREA! Ya tenés seis insignias. ¡Solo te faltan dos!');
+          else {
+            await decir('GUÍA: MAREA cuida el faro del Canal Beagle desde chiquita. ¡Sus criaturas nadan en el agua más fría del país!');
+            await decir('Su AZULARZA hace llover cuando entra a pelear. ¡Con la lluvia, el AGUA pega más fuerte!');
+          }
+        },
+      },
+    ],
+  },
+
+  centro15: crearCentro('ushuaia', 5, 9, 'centro15'),
+
+  gimnasio6: {
+    nombre: 'GIMNASIO USHUAIA',
+    grilla: desdeTexto([
+      '###########',
+      '#a___v___a#',
+      '#~~~_v_~~~#',
+      '#~~~___~~~#',
+      '#_________#',
+      '#_~~~h~~~_#',
+      '#_~~~h~~~_#',
+      '#_________#',
+      '#~~_____~~#',
+      '#~~_____~~#',
+      '#_________#',
+      '#####m#####',
+    ]),
+    edificios: [],
+    salidas: [{ x: 5, y: 11, a: 'ushuaia', ax: 17, ay: 9, dir: 0 }],
+    objetos: {
+      '~': 'Una pileta con agua helada del Canal Beagle. ¡Brrr!',
+      a: 'Una maqueta del faro Les Éclaireurs, rojo y blanco.',
+    },
+    npcs: [
+      entrenadorNPC({
+        id: 'gim6_a', x: 2, y: 7, dir: 3, pal: PAL.pescador, nombre: 'PESCADOR DE CENTOLLAS BRUNO',
+        equipo: [['carpibarro', 57], ['totorarca', 58], ['iberadraco', 58]],
+        antes: ['PESCADOR BRUNO: ¡Las centollas de Ushuaia son las más ricas del mundo! Y mis criaturas, las más fuertes. ¡Duelo!'],
+        gana: 'PESCADOR BRUNO: ¡Se me escaparon todas las centollas!',
+        despues: 'PESCADOR BRUNO: Las criaturas de AGUA sufren con la PLANTA y el ELÉCTRICO.',
+      }),
+      entrenadorNPC({
+        id: 'gim6_b', x: 8, y: 4, dir: 2, pal: PAL.marea, nombre: 'NADADORA SOL',
+        equipo: [['azularza', 58], ['glyptopampa', 59]],
+        antes: ['NADADORA SOL: ¡Me tiro al Canal Beagle todos los años en invierno! ¿Vos te animás a pelear conmigo?'],
+        gana: 'NADADORA SOL: ¡Uy! Me congelé de la sorpresa.',
+        despues: 'NADADORA SOL: Cuidado con la LLUVIA de AZULARZA: con lluvia el agua pega más y el fuego, menos.',
+      }),
+      {
+        id: 'marea', x: 5, y: 1, dir: 0, pal: PAL.marea,
+        hablar: async () => {
+          if (S.flags.insignia6) {
+            await decir('MAREA: El faro siempre te va a guiar de vuelta, Felipe. Seguí: todavía te faltan dos insignias.');
+            return;
+          }
+          if (!S.flags.insignia5) {
+            await decir('MAREA: Primero conseguí la INSIGNIA ECO de SOMBRA, en Somuncurá. Después hablamos.');
+            return;
+          }
+          await decir('MAREA: ¡Llegaste al fin del mundo! Desde el faro te vi cruzar el Estrecho en la balsa.');
+          await decir('Soy MAREA, líder del GIMNASIO USHUAIA. Mis criaturas nadan en el agua más fría de la Argentina.');
+          await decir('Si me ganás, te llevás la INSIGNIA FARO. ¡Que suba la marea!');
+          // Equipo pedido por Poly (20/11): el inicial de agua, Gliptopampa, Totorarca, Galiorca, Iberadraco y Azularza.
+          // GALIORCA todavía no está: mientras tanto ocupa su lugar Vientüino.
+          const r = await batalla({ entrenador: { nombre: 'LÍDER MAREA', pal: PAL.marea, equipo: [['totorarca', 56], ['vientuino', 57] /* lugar de GALIORCA */, ['azularza', 57], ['glyptopampa', 58], ['iberadraco', 59], ['iberaxolot', 60]] } });
+          if (r === 'gana') {
+            S.flags.insignia6 = true;
+            S.flags.insignias = Math.max(S.flags.insignias || 0, 6);
+            await decir('MAREA: La marea bajó... Te ganaste la insignia, Felipe.');
+            await decir('¡Felipe recibió la INSIGNIA FARO!');
+            S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 5;
+            S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
+            await decir('MAREA: Llevate estos ALFAJORES y BOLEADORAS. ¡Ya tenés seis insignias!');
             guardar();
           }
         },
@@ -2739,6 +3176,8 @@ abrir('jacobacci', [[10, 0], [11, 0], [10, 21], [11, 21]], 'N');
 abrir('jacobacci', [[0, 10], [1, 10], [0, 11], [1, 11], [22, 10], [23, 10], [22, 11], [23, 11]], '=');
 // Paraje Somuncurá: se llega desde el OESTE; arriba cerrado, abajo el camino en construcción
 abrir('somuncura', [[10, 0], [11, 0]], 'R');
+// Ushuaia: el fin del mundo, se llega desde el norte y abajo está cerrado
+abrir('ushuaia', [[10, 23], [11, 23]], 'N');
 abrir('somuncura', [[0, 10], [1, 10], [0, 11], [1, 11]], '=');
 
 // --- Rutas: girarlas ---
@@ -2780,6 +3219,10 @@ girarMapa('estepa', '180');
 girarMapa('ruta13', '180');
 girarMapa('ruta14', 'cw');
 girarMapa('ruta15', 'cw');
+// Región 6: todo BAJA por la costa
+girarMapa('ruta16', '180');
+girarMapa('ruta17', '180');
+girarMapa('ruta18', '180');
 
 
 // ===== Escenas de la historia =====
