@@ -301,6 +301,7 @@ function pasoMundo() {
     }
     return;
   }
+  if (MP.eventos.length) { correr(atenderMP()); return; }
   if (pressed.start) { correr(menuPrincipal()); return; }
   if (pressed.a) {
     const c = salvajeOcupa(S.x + DX[S.dir], S.y + DY[S.dir]);
@@ -465,8 +466,10 @@ async function encuentroSalvaje() {
 // ---------- Menú principal ----------
 async function menuPrincipal() {
   while (true) {
-    const ops = ['EQUIPO', 'MOCHILA', ...(S.bolsa.bici ? [S.bici ? 'BAJAR BICI' : 'BICICLETA'] : []), 'GUARDAR', MUS.prendida ? 'MÚSICA: SÍ' : 'MÚSICA: NO', 'CERRAR'];
-    const op = ops[await elegir(ops, { x: 148, y: 4, w: 88 })];
+    const ops = [...(mpConAmigo() && amigoCerca() ? ['PELEAR'] : []), 'EQUIPO', 'MOCHILA', ...(S.bolsa.bici ? [S.bici ? 'BAJAR BICI' : 'BICICLETA'] : []), 'MULTIJUGADOR', 'GUARDAR', MUS.prendida ? 'MÚSICA: SÍ' : 'MÚSICA: NO', 'CERRAR'];
+    const op = ops[await elegir(ops, { x: 140, y: 4, w: 96 })];
+    if (op === 'PELEAR') { await retarAmigo(); return; }
+    if (op === 'MULTIJUGADOR') { await menuMultijugador(); continue; }
     if (op === 'BICICLETA' || op === 'BAJAR BICI') { await usarBici(); if (S.bici) return; continue; }
     const r = ['EQUIPO', 'MOCHILA', 'GUARDAR', 'MÚSICA: SÍ', 'MÚSICA: NO'].indexOf(op);
     if (r === 0) {
@@ -779,7 +782,15 @@ const TECLADO = [
 const MAX_APODO = 10;
 async function ponerApodo(m, sinCancelar) {
   const especie = ESPECIES[m.id].nombre.toUpperCase();
-  const te = { m, especie, texto: m.apodo || '', idx: 0 };
+  const texto = await escribirTexto(`Apodo para ${especie}:`, m.apodo || '', MAX_APODO, m.id, sinCancelar);
+  if (texto === null) return;
+  const nuevo = texto.trim();
+  if (!nuevo || nuevo === especie) { delete m.apodo; await decir(`Le dejaste su nombre: ${especie}.`); }
+  else { m.apodo = nuevo; await decir(`¡Ahora se llama ${nuevo}!`); }
+}
+// Teclado en pantalla. Devuelve el texto, o null si se canceló.
+async function escribirTexto(titulo, inicial, max, sprite, sinCancelar) {
+  const te = { titulo, sprite, max, texto: inicial || '', idx: 0 };
   ui.teclado = te;
   while (true) {
     await esperar(1);
@@ -788,19 +799,17 @@ async function ponerApodo(m, sinCancelar) {
     if (pressed.left) te.idx = (te.idx - 1 + n) % n;
     if (pressed.down) te.idx = te.idx < 20 ? te.idx + 10 : te.idx < 30 ? 30 + Math.min(col, 7) : col;
     if (pressed.up) te.idx = te.idx >= 30 ? 20 + col : te.idx >= 10 ? te.idx - 10 : 30 + Math.min(col, 7);
-    if (pressed.b) { if (te.texto) te.texto = te.texto.slice(0, -1); else if (!sinCancelar) { ui.teclado = null; return; } }
+    if (pressed.b) { if (te.texto) te.texto = te.texto.slice(0, -1); else if (!sinCancelar) { ui.teclado = null; return null; } }
     if (pressed.start) te.idx = TECLADO.indexOf('LISTO');
     if (pressed.a) {
       const k = TECLADO[te.idx];
       if (k === 'LISTO') break;
       if (k === 'BORRAR') te.texto = te.texto.slice(0, -1);
-      else if (te.texto.length < MAX_APODO) te.texto += k === 'ESP' ? ' ' : k;
+      else if (te.texto.length < te.max) te.texto += k === 'ESP' ? ' ' : k;
     }
   }
   ui.teclado = null;
-  const nuevo = te.texto.trim();
-  if (!nuevo || nuevo === especie) { delete m.apodo; await decir(`Le dejaste su nombre: ${especie}.`); }
-  else { m.apodo = nuevo; await decir(`¡Ahora se llama ${nuevo}!`); }
+  return te.texto.trim();
 }
 function dibujarTeclado() {
   const te = ui.teclado;
@@ -808,11 +817,12 @@ function dibujarTeclado() {
   sc.fillStyle = '#d89040'; for (let i = 0; i < H; i += 12) sc.fillRect(0, i, W, 6);
   caja(4, 4, 232, 42, 'info');
   sc.imageSmoothingEnabled = false;
-  sc.drawImage(spriteCriatura(te.m.id), 8, 6, 36, 36);
-  txt(`Apodo para ${te.especie}:`, 48, 10, { t: 6, sombra: null, c: '#606060' });
+  if (te.sprite) sc.drawImage(spriteCriatura(te.sprite), 8, 6, 36, 36);
+  else sc.drawImage(spriteChar(PAL.felipe, 0, 0), 12, 8, 32, 32);
+  txt(te.titulo, 48, 10, { t: 6, sombra: null, c: '#606060' });
   sc.fillStyle = '#ffffff'; sc.fillRect(48, 22, 150, 16);
-  txt(te.texto + ((tick >> 4) % 2 === 0 && te.texto.length < MAX_APODO ? '_' : ''), 52, 26, { t: 8 });
-  txt(`${te.texto.length}/${MAX_APODO}`, 230, 30, { t: 5, al: 'right', sombra: null, c: '#606060' });
+  txt(te.texto + ((tick >> 4) % 2 === 0 && te.texto.length < te.max ? '_' : ''), 52, 26, { t: 8 });
+  txt(`${te.texto.length}/${te.max}`, 230, 30, { t: 5, al: 'right', sombra: null, c: '#606060' });
   caja(4, 50, 232, 106, 'normal');
   TECLADO.forEach((k, i) => {
     let x, y, w;
@@ -955,6 +965,7 @@ function dibujarMochila() {
 function dibujarPersonaje(pal, dir, frame, x, y) {
   b.drawImage(spriteChar(pal, dir, frame), Math.round(x), Math.round(y));
 }
+const PAL_AMIGO = { ...PAL.felipe, id: 'amigo', gorra: '#e04040', remera: '#e04040', raya: '#ffffff' };
 function dibujarBici(dir, x, y) {
   x = Math.round(x); y = Math.round(y);
   b.strokeStyle = '#202020'; b.lineWidth = 1.5;
@@ -999,6 +1010,7 @@ function dibujarMundo() {
   let frame = 0;
   if (S.moviendo && !S.bici) frame = S.prog < 10 ? 1 + S.pasoAlt : 0;
   entes.push({ y: ppy, x: ppx, pal: PAL.felipe, dir: S.dir, f: frame, yo: true, tx: S.x, ty: S.y });
+  if (mpConAmigo() && MP.otro.mapa === S.mapa && MP.otro.x !== undefined) entes.push({ y: MP.otro.y * T, x: MP.otro.x * T, pal: PAL_AMIGO, dir: MP.otro.dir || 0, f: 0, tx: MP.otro.x, ty: MP.otro.y });
   prepararSalvajes();
   for (const c of SALV.lista) {
     const px = c.x * T + (c.mov ? DX[c.dir] * c.prog : 0), py = c.y * T + (c.mov ? DY[c.dir] * c.prog : 0);
@@ -1064,7 +1076,7 @@ function uiTitulo() {
   txt('CRIATURAS', 120, 14, { t: 18, c: '#f8d030', sombra: '#a04020', al: 'center' });
   txt('CRIOLLAS', 120, 38, { t: 18, c: '#6cb4ee', sombra: '#1a3a6a', al: 'center' });
   txt('Una aventura por la Argentina', 120, 62, { t: 6, c: '#203048', sombra: '#ffffff', al: 'center' });
-  txt('VERSIÓN 7 GIMNASIOS · 20/11', 236, 152, { t: 5, c: '#ffffff', sombra: '#203048', al: 'right' });
+  txt('VERSIÓN 7 GIMNASIOS + MULTI · 20/11', 236, 152, { t: 5, c: '#ffffff', sombra: '#203048', al: 'right' });
   if (!ui.menu && (tick >> 5) % 2 === 0) txt('APRETÁ A PARA EMPEZAR', 120, 84, { t: 7, c: '#ffffff', sombra: '#203048', al: 'center' });
 }
 function dibujarIntro() {
@@ -1116,6 +1128,8 @@ async function nuevaPartida() {
 }
 
 // ================= BATALLA =================
+// Azar de la batalla: en los duelos entre amigos usa la semilla compartida
+function azar() { return bt && bt.rng ? bt.rng() : Math.random(); }
 function mult(etapa) { return etapa >= 0 ? (2 + etapa) / 2 : 2 / (2 - etapa); }
 function calcularDanio(at, de, mv) {
   const L = at.nivel;
@@ -1125,8 +1139,8 @@ function calcularDanio(at, de, mv) {
   const stab = tiposDe(at).includes(mv.tipo) ? (ha.ef === 'adaptable' ? 2 : 1.5) : 1;
   let ef = eficacia(mv.tipo, tiposDe(de));
   if (ef === 0 && ha.ef === 'audaz' && ['NORMAL', 'LUCHA'].includes(mv.tipo)) ef = eficacia(mv.tipo, tiposDe(de).filter(t => t !== 'FANTASMA'));
-  const critico = hd.ef !== 'sinCritico' && Math.random() < (ha.ef === 'critico' || mv.critAlto ? 1 / 5 : 1 / 16);
-  const azar = 0.85 + Math.random() * 0.15;
+  const critico = hd.ef !== 'sinCritico' && azar() < (ha.ef === 'critico' || mv.critAlto ? 1 / 5 : 1 / 16);
+  const azarDanio = 0.85 + azar() * 0.15;
   if (ef === 0) return { danio: 0, ef, critico: false };
   let extra = 1;
   if (ha.ef === 'fuerza') extra *= 1.25;
@@ -1149,7 +1163,7 @@ function calcularDanio(at, de, mv) {
   if (bt.nieve > 0 && mv.tipo === 'HIELO') extra *= 1.3;
   if (ha.ef === 'filoRecio' && mv.corta) extra *= 1.5;
   if (hd.ef === 'ilusion' && !de.et.golpeado) extra *= 0.5;
-  return { danio: Math.max(1, Math.floor(base * stab * ef * (critico ? 1.5 : 1) * azar * extra)), ef, critico };
+  return { danio: Math.max(1, Math.floor(base * stab * ef * (critico ? 1.5 : 1) * azarDanio * extra)), ef, critico };
 }
 function nombreBatalla(m) {
   if (m === bt.yo) return nombreDe(m);
@@ -1419,7 +1433,7 @@ async function ejecutarMov(at, de, slot, quien) {
     await esperar(1);
   }
   bt.yDX = 0; bt.rDX = 0;
-  if (!(M.lluviaSegura && bt.lluvia > 0) && !(M.nieveSegura && bt.nieve > 0) && Math.random() * 100 >= M.prec) { await decir('¡Pero falló!', { auto: 40 }); return; }
+  if (!(M.lluviaSegura && bt.lluvia > 0) && !(M.nieveSegura && bt.nieve > 0) && azar() * 100 >= M.prec) { await decir('¡Pero falló!', { auto: 40 }); return; }
   if (M.pot && habDe(de).ef === 'maestroFuego' && ['PLANTA', 'ACERO', 'BICHO', 'HIELO'].includes(M.tipo)) {
     await anunciarHab(de);
     await decir(`¡El escudo de fuego frenó el ataque de ${nombreTipo(M.tipo)}!`, { auto: 50 });
@@ -1903,6 +1917,8 @@ function dibujar() {
   if (ui.mochila) dibujarMochila();
   if (ui.mapaArg) dibujarMapaArg();
   if (ui.teclado) dibujarTeclado();
+  if (ui.selector) dibujarSelector();
+  dibujarEstadoMP();
   if (ui.tienda) dibujarTienda();
   dibujarDialogo();
   dibujarMenu();
