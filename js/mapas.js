@@ -20,6 +20,7 @@ const PAL = {
   tala: { id: 'tala', piel: '#c89060', pelo: '#2a1a10', sombrero: '#3a3030', remera: '#c83a2a', raya: '#f0e0b0', pant: '#3a3a3a' },
   coplera: { id: 'coplera', piel: '#c89060', pelo: '#2a1a10', peloLargo: true, sombrero: '#5a4a3a', remera: '#3a8ac8', pant: '#c83a5a' },
   nieve: { id: 'nieve', piel: '#e8c0a0', pelo: '#f0f0f8', peloLargo: true, gorra: '#3a7ab0', remera: '#e8f4ff', raya: '#3a7ab0', pant: '#2a3a5a' },
+  almacenero: { id: 'almacenero', piel: '#e8b890', pelo: '#5a3a20', boina: '#3a3a5a', remera: '#3a8a4a', guardapolvo: true, pant: '#4a3a2a', barba: '#5a3a20' },
   nena: { id: 'nena', piel: '#f4c8a0', pelo: '#c08040', peloLargo: true, remera: '#f070a0', pant: '#4a6aa8' },
 };
 
@@ -723,7 +724,7 @@ function crearCentro(destino, ax, ay, idCentro) {
     grilla: desdeTexto([
       '#########',
       '#k_x_x_p#',
-      '#tt___tt#',
+      '#t____tt#',
       '#_______#',
       '#_______#',
       '#p_____p#',
@@ -751,6 +752,8 @@ function crearCentro(destino, ax, ay, idCentro) {
           guardar();
         },
       },
+      // El almacén está adentro de cada CEMIC
+      { id: 'almacenero', x: 2, y: 2, dir: 0, pal: PAL.almacenero, hablar: () => tienda() },
     ],
   };
 }

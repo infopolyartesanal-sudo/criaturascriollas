@@ -235,7 +235,7 @@ async function fundido(hacia, cuadros = 12) {
 function guardar() {
   try {
     localStorage.setItem(CLAVE_GUARDADO, JSON.stringify({
-      mapa: S.mapa, x: S.x, y: S.y, dir: S.dir, equipo: S.equipo, caja: S.caja, bolsa: S.bolsa, flags: S.flags,
+      mapa: S.mapa, x: S.x, y: S.y, dir: S.dir, equipo: S.equipo, caja: S.caja, bolsa: S.bolsa, flags: S.flags, plata: S.plata,
     }));
     return true;
   } catch (e) { return false; }
@@ -246,6 +246,7 @@ function cargar() {
     const d = JSON.parse(localStorage.getItem(CLAVE_GUARDADO));
     if (!d) return false;
     Object.assign(S, d);
+    if (typeof S.plata !== 'number') S.plata = 3000; // partidas de antes de que existiera la plata
     acomodarPosicion();
     return true;
   } catch (e) { return false; }
@@ -472,8 +473,88 @@ async function menuPrincipal() {
     } else return;
   }
 }
+async function usarPiedra(obj) {
+  const o = OBJETOS[obj];
+  if (!S.equipo.length) { await decir('No tenés criaturas.'); return; }
+  const idx = await pantallaEquipo({ modo: 'usar', msg: `¿A quién le das la ${o.nombre}?` });
+  if (idx < 0) return;
+  const m = S.equipo[idx];
+  const a = (ESPECIES[m.id].evoPiedra || {})[obj];
+  if (!a) { await decir(`A ${nombreDe(m)} no le hace nada.`); return; }
+  S.bolsa[obj]--;
+  await decir(`¡Felipe le dio la ${o.nombre} a ${nombreDe(m)}!`);
+  await evolucionar(m, a);
+}
+
+// ---------- Almacén (tienda) ----------
+async function tienda() {
+  await decir('ALMACENERO: ¡Buenas! ¿Qué vas a llevar?');
+  ui.tienda = { idx: 0, cant: 0 };
+  while (true) {
+    await esperar(1);
+    const t = ui.tienda, n = TIENDA.length + 1;
+    if (t.cant > 0) {
+      const obj = TIENDA[t.idx], precio = OBJETOS[obj].precio;
+      const max = Math.max(1, Math.min(99, Math.floor(S.plata / precio)));
+      if (pressed.up) t.cant = t.cant >= max ? 1 : t.cant + 1;
+      if (pressed.down) t.cant = t.cant <= 1 ? max : t.cant - 1;
+      if (pressed.right) t.cant = Math.min(max, t.cant + 10);
+      if (pressed.left) t.cant = Math.max(1, t.cant - 10);
+      if (pressed.b) t.cant = 0;
+      else if (pressed.a) {
+        const total = precio * t.cant, cant = t.cant;
+        t.cant = 0;
+        if (total > S.plata) { await decir('ALMACENERO: Uy, no te alcanza la plata. ¡Ganale a algún entrenador y volvé!'); continue; }
+        S.plata -= total;
+        S.bolsa[obj] = (S.bolsa[obj] || 0) + cant;
+        await decir(`¡Felipe compró ${cant} ${OBJETOS[obj].nombre}! ALMACENERO: ¡Gracias, vuelva prontos!`);
+        guardar();
+      }
+      continue;
+    }
+    if (pressed.up) t.idx = (t.idx - 1 + n) % n;
+    if (pressed.down) t.idx = (t.idx + 1) % n;
+    if (pressed.b || (pressed.a && t.idx === TIENDA.length)) break;
+    if (pressed.a) {
+      if (S.plata < OBJETOS[TIENDA[t.idx]].precio) { await decir('ALMACENERO: Uy, no te alcanza la plata para eso.'); continue; }
+      t.cant = 1;
+    }
+  }
+  ui.tienda = null;
+  await decir('ALMACENERO: ¡Chau, que te vaya lindo!');
+}
+function plataTxt(n) { return '$' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+function dibujarTienda() {
+  const t = ui.tienda;
+  sc.fillStyle = '#5a9a6a'; sc.fillRect(0, 0, W, H);
+  sc.fillStyle = '#4e8c5e'; for (let i = 0; i < H; i += 12) sc.fillRect(0, i, W, 6);
+  caja(4, 4, 84, 24, 'info'); txt('ALMACÉN', 14, 12, { t: 7 });
+  caja(4, 32, 84, 24, 'info'); txt(plataTxt(S.plata), 80, 40, { t: 7, al: 'right' });
+  sc.drawImage(spriteBoleadora(), 22, 62, 48, 48);
+  caja(96, 4, 140, 108, 'normal');
+  const items = [...TIENDA.map(k => [OBJETOS[k].nombre, plataTxt(OBJETOS[k].precio)]), ['SALIR', '']];
+  items.forEach(([nm, c], i) => {
+    const y = 13 + i * 15;
+    txt(nm, 112, y, { t: nm.length > 9 ? 6 : 7 });
+    if (c) txt(c, 228, y + 1, { t: 6, al: 'right', c: '#606060', sombra: null });
+    if (i === t.idx) flecha(103, y);
+  });
+  caja(4, 116, 232, 40, 'normal');
+  const sel = TIENDA[t.idx];
+  if (t.cant > 0) {
+    const o = OBJETOS[sel];
+    txt(`${o.nombre}  x${t.cant}`, 12, 124, { t: 7 });
+    txt(`Total: ${plataTxt(o.precio * t.cant)}`, 12, 139, { t: 7, c: o.precio * t.cant > S.plata ? '#d03030' : '#383838' });
+    txt('Flechas: cantidad', 228, 140, { t: 5, al: 'right', c: '#606060', sombra: null });
+  } else {
+    const d = sel ? OBJETOS[sel].desc + (S.bolsa[sel] ? ` (Tenés ${S.bolsa[sel]})` : '') : 'Salir del almacén.';
+    envolver(d, 212, 7).slice(0, 2).forEach((l, i) => txt(l, 12, 126 + i * 13, { t: 7 }));
+  }
+}
+
 async function usarObjetoMundo(obj) {
   const o = OBJETOS[obj];
+  if (o.piedra) { await usarPiedra(obj); return; }
   if (!o.cura) { await decir('Ahora no se puede usar eso.'); return; }
   if (!S.equipo.length) { await decir('No tenés criaturas.'); return; }
   const idx = await pantallaEquipo({ modo: 'usar', msg: `¿A quién le das el ${o.nombre}?` });
@@ -590,7 +671,8 @@ function dibujarMochila() {
   sc.fillStyle = '#e0a050'; sc.fillRect(0, 0, W, H);
   sc.fillStyle = '#d09040'; for (let i = 0; i < H; i += 12) sc.fillRect(0, i, W, 6);
   caja(4, 4, 84, 24, 'info'); txt('MOCHILA', 14, 12, { t: 7 });
-  sc.drawImage(spriteBoleadora(), 32, 44, 48, 48);
+  caja(4, 32, 84, 24, 'info'); txt(plataTxt(S.plata || 0), 80, 40, { t: 7, al: 'right' });
+  sc.drawImage(spriteBoleadora(), 22, 62, 48, 48);
   caja(96, 4, 140, 108, 'normal');
   const items = [...L.map(k => [OBJETOS[k].nombre, 'x' + S.bolsa[k]]), ['CERRAR', '']];
   items.forEach(([nm, c], i) => {
@@ -725,7 +807,7 @@ async function siNoTitulo() {
   return siNo('Si empezás una partida nueva se borra la anterior. ¿Seguro?');
 }
 async function nuevaPartida() {
-  Object.assign(S, { mapa: 'casa', x: 4, y: 4, dir: 0, equipo: [], caja: [], bolsa: {}, flags: {} });
+  Object.assign(S, { mapa: 'casa', x: 4, y: 4, dir: 0, equipo: [], caja: [], bolsa: {}, flags: {}, plata: 3000 });
   S.escena = 'intro';
   await fundido(0, 16);
   await decir('¡Hola! ¡Bienvenido al mundo de las CRIATURAS CRIOLLAS!');
@@ -871,6 +953,10 @@ async function batalla(op) {
   if (resultado === 'gana' && bt.ent) {
     bt.entVis = true; bt.entDX = 0; bt.rivalVis = false;
     await decir(`¡Le ganaste a ${bt.ent.nombre}!`);
+    const nivelMax = Math.max(...bt.equipoRival.map(m => m.nivel));
+    const premio = nivelMax * (bt.ent.nombre.startsWith('LÍDER') ? 200 : bt.ent.nombre === 'TOMI' ? 120 : 60);
+    S.plata = (S.plata || 0) + premio;
+    await decir(`¡Felipe ganó ${plataTxt(premio)} de premio!`);
   }
   if (resultado === 'pierde') {
     if (bt.ent && bt.ent.sinDerrota) {
@@ -1236,6 +1322,7 @@ async function usarObjetoBatalla(obj) {
     await decir(`${nombreDe(m)} recuperó energía.`, { auto: 40 });
     return 'usado';
   }
+  await decir('¡Ahora no se puede usar eso!');
   return 'nada';
 }
 async function tirarBoleadora() {
@@ -1436,6 +1523,7 @@ function dibujar() {
   if (ui.vista) dibujarVista();
   if (ui.equipo) dibujarEquipo();
   if (ui.mochila) dibujarMochila();
+  if (ui.tienda) dibujarTienda();
   dibujarDialogo();
   dibujarMenu();
   if (ui.fundido > 0) { sc.fillStyle = `rgba(0,0,0,${ui.fundido})`; sc.fillRect(0, 0, W, H); }

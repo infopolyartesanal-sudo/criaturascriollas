@@ -118,11 +118,16 @@ const MOVS = {
 };
 
 // ===== Objetos =====
+// precio: lo que sale en el ALMACÉN (en pesos). piedra: sirve para hacer evolucionar (ver evoPiedra en las especies)
 const OBJETOS = {
-  boleadora: { nombre: 'BOLEADORA', desc: 'Sirve para atrapar criaturas salvajes.' },
-  mate: { nombre: 'MATE', desc: 'Bien cebado. Recupera 20 PS.', cura: 20 },
-  alfajor: { nombre: 'ALFAJOR', desc: 'De dulce de leche. Recupera 50 PS.', cura: 50 },
+  boleadora: { nombre: 'BOLEADORA', precio: 200, desc: 'Sirve para atrapar criaturas salvajes.' },
+  mate: { nombre: 'MATE', precio: 150, desc: 'Bien cebado. Recupera 20 PS.', cura: 20 },
+  alfajor: { nombre: 'ALFAJOR', precio: 350, desc: 'De dulce de leche. Recupera 50 PS.', cura: 50 },
+  piedraNoche: { nombre: 'PIEDRA NOCHE', precio: 2500, piedra: true, desc: 'Una piedra oscura como la noche. Hace evolucionar a GARKOL.' },
+  nectarFloral: { nombre: 'NÉCTAR FLORAL', precio: 2500, piedra: true, desc: 'Néctar de flores del monte. Hace evolucionar a FAEVE.' },
 };
+// Lo que se vende en el ALMACÉN, en orden
+const TIENDA = ['boleadora', 'mate', 'alfajor', 'piedraNoche', 'nectarFloral'];
 
 // ===== Especies =====
 // base: ps, atk, def, vel
@@ -1057,7 +1062,7 @@ const ESPECIES = {
   },
   faeve: {
     nombre: 'Faeve', tipos: ['HADA'], base: { ps: 50, atk: 40, def: 45, vel: 60 }, captura: 75, exp: 62,
-    desc: 'el duendecillo de orejas como pétalos', evo: { nivel: 20, a: 'mythfae' },
+    desc: 'el duendecillo de orejas como pétalos', evo: { nivel: 20, a: 'mythfae' }, evoPiedra: { nectarFloral: 'mythfae' },
     movs: [[1, 'aranazo'], [1, 'encanto'], [6, 'brillo'], [12, 'mareo'], [18, 'polvo_lunar'], [24, 'vision']],
     sprite: [
       ['e', 25, 20, 6, 5, '#ffffff', 's'],
@@ -1155,7 +1160,7 @@ const ESPECIES = {
   },
   garkol: {
     nombre: 'Garkol', tipos: ['ROCA', 'FANTASMA'], base: { ps: 55, atk: 70, def: 75, vel: 45 }, captura: 90, exp: 70,
-    desc: 'la gárgola de las casas abandonadas', evo: { nivel: 35, a: 'gargorrupt' },
+    desc: 'la gárgola de las casas abandonadas', evoPiedra: { piedraNoche: 'gargorrupt' }, // idea de Felipe: evoluciona con la PIEDRA NOCHE
     movs: [[1, 'aranazo'], [1, 'susto'], [6, 'pedrada'], [12, 'silbido'], [17, 'alarido'], [23, 'derrumbe'], [32, 'payada']],
     sprite: [
       ['p', [[10, 12], [1, 6], [4, 20]], '#6a6878'], ['p', [[22, 12], [31, 6], [28, 20]], '#6a6878'],
