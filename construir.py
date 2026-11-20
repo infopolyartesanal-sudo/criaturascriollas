@@ -45,6 +45,9 @@ def construir():
     with open(os.path.join(RAIZ, 'docs', 'index.html'), 'w', encoding='utf-8') as fh:
         fh.write(html)
     open(os.path.join(RAIZ, 'docs', '.nojekyll'), 'w').close()
+    # También en la raíz del repo, por si GitHub Pages publica desde la raíz (o alguien abre ese index.html)
+    with open(os.path.join(RAIZ, 'index.html'), 'w', encoding='utf-8') as fh:
+        fh.write(html)
     print(f'Listo: dist/index.html ({len(html) // 1024} KB, {n} dibujos)')
 
 
