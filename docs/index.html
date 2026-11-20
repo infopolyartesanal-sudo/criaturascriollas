@@ -2541,7 +2541,7 @@ function curarCriatura(m) {
   m.ps = m.psMax;
   for (const mv of m.movs) mv.pp = MOVS[mv.id].pp;
 }
-function nombreDe(m) { return ESPECIES[m.id].nombre.toUpperCase(); }
+function nombreDe(m) { return m.apodo || ESPECIES[m.id].nombre.toUpperCase(); }
 function tiposDe(m) { return ESPECIES[m.id].tipos; }
 
 
@@ -7272,10 +7272,11 @@ async function pantallaEquipo(op) {
     if (pressed.a) {
       if (op.modo === 'ver') {
         const m = S.equipo[e.idx];
-        const r = await elegir(['DATOS', 'MOVIMIENTOS', 'SUBIR', 'SALIR'], { x: 140, y: 76, w: 96 });
+        const r = await elegir(['DATOS', 'MOVIMIENTOS', 'APODO', 'SUBIR', 'SALIR'], { x: 140, y: 60, w: 96 });
         if (r === 0) { await verDatos(m); }
         else if (r === 1) { await menuMovimientos(m); }
-        else if (r === 2 && e.idx > 0) {
+        else if (r === 2) { await ponerApodo(m); }
+        else if (r === 3 && e.idx > 0) {
           [S.equipo[e.idx - 1], S.equipo[e.idx]] = [S.equipo[e.idx], S.equipo[e.idx - 1]];
           e.idx--;
         }
@@ -7446,6 +7447,62 @@ function dibujarDatos(m) {
     sc.fillStyle = COLOR_TIPO[M.tipo]; sc.fillRect(190, y, 38, 8);
     txt(nombreTipo(M.tipo).slice(0, 6), 209, y + 1, { t: 5, c: '#fff', sombra: null, al: 'center' });
   });
+}
+
+// ---------- Apodos: teclado en pantalla ----------
+const TECLADO = [
+  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+  'K', 'L', 'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S',
+  'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '-', '.', '!',
+  '1', '2', '3', '4', '5', 'ESP', 'BORRAR', 'LISTO',
+];
+const MAX_APODO = 10;
+async function ponerApodo(m, sinCancelar) {
+  const especie = ESPECIES[m.id].nombre.toUpperCase();
+  const te = { m, especie, texto: m.apodo || '', idx: 0 };
+  ui.teclado = te;
+  while (true) {
+    await esperar(1);
+    const n = TECLADO.length, col = te.idx < 30 ? te.idx % 10 : te.idx - 30;
+    if (pressed.right) te.idx = (te.idx + 1) % n;
+    if (pressed.left) te.idx = (te.idx - 1 + n) % n;
+    if (pressed.down) te.idx = te.idx < 20 ? te.idx + 10 : te.idx < 30 ? 30 + Math.min(col, 7) : col;
+    if (pressed.up) te.idx = te.idx >= 30 ? 20 + col : te.idx >= 10 ? te.idx - 10 : 30 + Math.min(col, 7);
+    if (pressed.b) { if (te.texto) te.texto = te.texto.slice(0, -1); else if (!sinCancelar) { ui.teclado = null; return; } }
+    if (pressed.start) te.idx = TECLADO.indexOf('LISTO');
+    if (pressed.a) {
+      const k = TECLADO[te.idx];
+      if (k === 'LISTO') break;
+      if (k === 'BORRAR') te.texto = te.texto.slice(0, -1);
+      else if (te.texto.length < MAX_APODO) te.texto += k === 'ESP' ? ' ' : k;
+    }
+  }
+  ui.teclado = null;
+  const nuevo = te.texto.trim();
+  if (!nuevo || nuevo === especie) { delete m.apodo; await decir(`Le dejaste su nombre: ${especie}.`); }
+  else { m.apodo = nuevo; await decir(`¡Ahora se llama ${nuevo}!`); }
+}
+function dibujarTeclado() {
+  const te = ui.teclado;
+  sc.fillStyle = '#e8a050'; sc.fillRect(0, 0, W, H);
+  sc.fillStyle = '#d89040'; for (let i = 0; i < H; i += 12) sc.fillRect(0, i, W, 6);
+  caja(4, 4, 232, 42, 'info');
+  sc.imageSmoothingEnabled = false;
+  sc.drawImage(spriteCriatura(te.m.id), 8, 6, 36, 36);
+  txt(`Apodo para ${te.especie}:`, 48, 10, { t: 6, sombra: null, c: '#606060' });
+  sc.fillStyle = '#ffffff'; sc.fillRect(48, 22, 150, 16);
+  txt(te.texto + ((tick >> 4) % 2 === 0 && te.texto.length < MAX_APODO ? '_' : ''), 52, 26, { t: 8 });
+  txt(`${te.texto.length}/${MAX_APODO}`, 230, 30, { t: 5, al: 'right', sombra: null, c: '#606060' });
+  caja(4, 50, 232, 106, 'normal');
+  TECLADO.forEach((k, i) => {
+    let x, y, w;
+    if (i < 30) { x = 14 + (i % 10) * 22; y = 58 + Math.floor(i / 10) * 18; w = 18; }
+    else { const j = i - 30; const anchos = [16, 16, 16, 16, 16, 26, 40, 36]; x = 14; for (let q = 0; q < j; q++) x += anchos[q] + 4; y = 112; w = anchos[j]; }
+    const sel = i === te.idx;
+    sc.fillStyle = sel ? '#f8d030' : '#e8e8f0'; sc.fillRect(x, y, w, 14);
+    txt(k, x + w / 2, y + 4, { t: k.length > 1 ? 5 : 7, al: 'center', sombra: null });
+  });
+  txt('A: escribir   B: borrar   M: listo', 120, 140, { t: 5, al: 'center', sombra: null, c: '#606060' });
 }
 
 // ---------- Bicicleta ----------
@@ -8346,6 +8403,7 @@ async function tirarBoleadora() {
   if (exito) {
     await decir(`¡Bien! ¡Atrapaste a ${nombreDe(f)}!`);
     delete f.et;
+    if (await siNo(`¿Querés ponerle un apodo a ${nombreDe(f)}?`)) await ponerApodo(f, true);
     if (S.equipo.length < 6) S.equipo.push(f);
     else { S.caja.push(f); await decir(`${nombreDe(f)} fue enviado a la compu de la Profe Ceibo.`); }
     S.flags.atrapados = (S.flags.atrapados || 0) + 1;
@@ -8380,7 +8438,7 @@ async function evolucionar(m, nuevoId) {
   m.id = nuevoId;
   recalcular(m);
   m.ps += m.psMax - antes;
-  await decir(`¡Felicitaciones! ¡${viejo} evolucionó en ${nombreDe(m)}!`);
+  await decir(`¡Felicitaciones! ¡${viejo} evolucionó en ${ESPECIES[nuevoId].nombre.toUpperCase()}!`);
   await fundido(1, 10);
   ui.evo = null;
   S.escena = previa;
@@ -8524,6 +8582,7 @@ function dibujar() {
   if (ui.equipo) dibujarEquipo();
   if (ui.mochila) dibujarMochila();
   if (ui.mapaArg) dibujarMapaArg();
+  if (ui.teclado) dibujarTeclado();
   if (ui.tienda) dibujarTienda();
   dibujarDialogo();
   dibujarMenu();

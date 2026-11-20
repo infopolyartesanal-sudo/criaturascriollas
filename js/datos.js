@@ -1929,7 +1929,7 @@ function curarCriatura(m) {
   m.ps = m.psMax;
   for (const mv of m.movs) mv.pp = MOVS[mv.id].pp;
 }
-function nombreDe(m) { return ESPECIES[m.id].nombre.toUpperCase(); }
+function nombreDe(m) { return m.apodo || ESPECIES[m.id].nombre.toUpperCase(); }
 function tiposDe(m) { return ESPECIES[m.id].tipos; }
 
 
