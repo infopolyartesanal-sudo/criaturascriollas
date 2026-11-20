@@ -893,6 +893,7 @@ function uiTitulo() {
   txt('CRIATURAS', 120, 14, { t: 18, c: '#f8d030', sombra: '#a04020', al: 'center' });
   txt('CRIOLLAS', 120, 38, { t: 18, c: '#6cb4ee', sombra: '#1a3a6a', al: 'center' });
   txt('Una aventura por la Argentina', 120, 62, { t: 6, c: '#203048', sombra: '#ffffff', al: 'center' });
+  txt('VERSIÓN 7 GIMNASIOS · 20/11', 236, 152, { t: 5, c: '#ffffff', sombra: '#203048', al: 'right' });
   if (!ui.menu && (tick >> 5) % 2 === 0) txt('APRETÁ A PARA EMPEZAR', 120, 84, { t: 7, c: '#ffffff', sombra: '#203048', al: 'center' });
 }
 function dibujarIntro() {
