@@ -157,6 +157,7 @@ const OBJETOS = {
   nectarFloral: { nombre: 'NÉCTAR FLORAL', precio: 2500, piedra: true, desc: 'Néctar de flores del monte. Hace evolucionar a FAEVE.' },
   piedraAgua: { nombre: 'PIEDRA AGUA', precio: 2500, piedra: true, desc: 'Una piedra azul que gotea agua fresca. Hace evolucionar a CALDERITO.' },
   piedraTrueno: { nombre: 'PIEDRA TRUENO', precio: 2500, piedra: true, desc: 'Una piedra con un rayo adentro. Hace evolucionar a DYNACORE.' },
+  mapa: { nombre: 'MAPA', precio: 0, mapa: true, desc: 'El mapa de la Argentina. Muestra dónde estás y todos los lugares del viaje.' },
   velaAnima: { nombre: 'VELA ÁNIMA', precio: 2500, piedra: true, desc: 'Una vela que arde con fuego rosa y no se apaga. Hace evolucionar a FAEVE.' },
 };
 // Lo que se vende en el ALMACÉN, en orden
