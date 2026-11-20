@@ -582,9 +582,10 @@ async function pantallaEquipo(op) {
     if (pressed.a) {
       if (op.modo === 'ver') {
         const m = S.equipo[e.idx];
-        const r = await elegir(['DATOS', 'SUBIR', 'SALIR'], { x: 156, y: 92, w: 80 });
+        const r = await elegir(['DATOS', 'MOVIMIENTOS', 'SUBIR', 'SALIR'], { x: 140, y: 76, w: 96 });
         if (r === 0) { await verDatos(m); }
-        else if (r === 1 && e.idx > 0) {
+        else if (r === 1) { await menuMovimientos(m); }
+        else if (r === 2 && e.idx > 0) {
           [S.equipo[e.idx - 1], S.equipo[e.idx]] = [S.equipo[e.idx], S.equipo[e.idx - 1]];
           e.idx--;
         }
@@ -594,6 +595,110 @@ async function pantallaEquipo(op) {
       ui.equipo = null;
       return idx;
     }
+  }
+}
+// ---------- Movimientos: NIVEL (ya aprendidos, gratis) y TUTOR ----------
+function preEvos(id) {
+  const r = [];
+  for (const [k, e] of Object.entries(ESPECIES)) {
+    const viaNivel = e.evo && e.evo.a === id;
+    const viaPiedra = e.evoPiedra && Object.values(e.evoPiedra).includes(id);
+    if ((viaNivel || viaPiedra) && !r.includes(k)) r.push(k, ...preEvos(k));
+  }
+  return r;
+}
+// Los que ya aprendió por nivel (de su especie o de sus formas anteriores)
+function movsNivel(m) {
+  const ids = [];
+  for (const sp of [m.id, ...preEvos(m.id)])
+    for (const [nv, mv] of ESPECIES[sp].movs || []) if (nv <= m.nivel && MOVS[mv] && !ids.includes(mv)) ids.push(mv);
+  return ids.map(id => ({ id }));
+}
+// Los que todavía no aprendió por nivel + los extra del tutor (TUTOR en datos.js)
+function movsTutor(m) {
+  const ya = movsNivel(m).map(x => x.id), L = [];
+  for (const [nv, mv] of ESPECIES[m.id].movs || [])
+    if (nv > m.nivel && MOVS[mv] && !ya.includes(mv) && !L.some(x => x.id === mv)) L.push({ id: mv, nv });
+  for (const mv of (typeof TUTOR !== 'undefined' && TUTOR[m.id]) || [])
+    if (MOVS[mv] && !ya.includes(mv) && !L.some(x => x.id === mv)) L.push({ id: mv });
+  return L;
+}
+async function menuMovimientos(m) {
+  while (true) {
+    const r = await elegir(['NIVEL', 'TUTOR', 'SALIR'], { x: 140, y: 76, w: 96 });
+    if (r === 0) await listaMovimientos(m, 'nivel');
+    else if (r === 1) await listaMovimientos(m, 'tutor');
+    else return;
+  }
+}
+async function listaMovimientos(m, modo) {
+  const L = modo === 'nivel' ? movsNivel(m) : movsTutor(m);
+  if (!L.length) {
+    await decir(modo === 'nivel' ? `${nombreDe(m)} todavía no aprendió movimientos por nivel.`
+                                 : `El tutor todavía no tiene movimientos para enseñarle a ${nombreDe(m)}.`);
+    return;
+  }
+  const li = { m, modo, items: L, idx: 0, top: 0 };
+  ui.equipo.lista = li;
+  while (true) {
+    await esperar(1);
+    const n = li.items.length;
+    if (pressed.up) li.idx = (li.idx - 1 + n) % n;
+    if (pressed.down) li.idx = (li.idx + 1) % n;
+    if (li.idx < li.top) li.top = li.idx;
+    if (li.idx >= li.top + 6) li.top = li.idx - 5;
+    if (pressed.b) break;
+    if (pressed.a) {
+      const mv = li.items[li.idx].id, M = MOVS[mv];
+      if (m.movs.some(x => x.id === mv)) { await decir(`${nombreDe(m)} ya sabe ${M.nombre.toUpperCase()}.`); continue; }
+      if (m.movs.length < 4) {
+        const si = await siNo(`¿Querés que ${nombreDe(m)} aprenda ${M.nombre.toUpperCase()}?`);
+        if (!si) continue;
+      }
+      if (modo === 'tutor') await decir(`El tutor le enseña ${M.nombre.toUpperCase()} a ${nombreDe(m)}...`);
+      await aprender(m, mv);
+    }
+  }
+  ui.equipo.lista = null;
+}
+function descMov(M) {
+  const p = [];
+  if (M.pot) p.push(`POT ${M.pot}`); 
+  p.push(`PREC ${M.prec}`, `PP ${M.pp}`);
+  let extra = '';
+  if (M.ef === 'atk-') extra = 'Baja el ATAQUE del rival.';
+  else if (M.ef === 'def-') extra = 'Baja la DEFENSA del rival.';
+  else if (M.ef === 'def+') extra = 'Sube su DEFENSA.';
+  else if (M.ef === 'cura') extra = 'Recupera la mitad de sus PS.';
+  if (M.prio) extra = (extra ? extra + ' ' : '') + 'Ataca primero.';
+  return [p.join('   '), extra];
+}
+function dibujarListaMovs(li) {
+  const m = li.m;
+  caja(4, 4, 232, 24, 'info');
+  sc.imageSmoothingEnabled = false;
+  sc.drawImage(spriteCriatura(m.id), 8, 6, 20, 20);
+  txt(nombreDe(m), 32, 8, { t: 7 });
+  txt('Nv' + m.nivel, 32, 17, { t: 6, sombra: null, c: '#606060' });
+  txt(li.modo === 'nivel' ? 'NIVEL' : 'TUTOR', 228, 12, { t: 8, al: 'right', c: li.modo === 'nivel' ? '#2a6a2a' : '#a05020' });
+  caja(4, 30, 232, 84, 'normal');
+  li.items.slice(li.top, li.top + 6).forEach((it, k) => {
+    const i = li.top + k, M = MOVS[it.id], y = 38 + k * 12;
+    const sabe = m.movs.some(x => x.id === it.id);
+    txt(M.nombre.toUpperCase(), 20, y, { t: 6, c: sabe ? '#2a7a2a' : '#383838' });
+    sc.fillStyle = COLOR_TIPO[M.tipo]; sc.fillRect(118, y, 40, 8);
+    txt(nombreTipo(M.tipo).slice(0, 6), 138, y + 1, { t: 5, c: '#fff', sombra: null, al: 'center' });
+    const marca = sabe ? 'LO SABE' : (it.nv ? 'NV ' + it.nv : (li.modo === 'tutor' ? 'TUTOR' : ''));
+    txt(marca, 228, y + 1, { t: 5, al: 'right', sombra: null, c: sabe ? '#2a7a2a' : '#606060' });
+    if (i === li.idx) flecha(11, y, '#383838');
+  });
+  if (li.top + 6 < li.items.length && (tick >> 4) % 2 === 0) flechaAbajo(116, 106, '#383838');
+  if (!ui.dialogo) {
+    caja(4, 116, 232, 40, 'normal');
+    const [a, b2] = descMov(MOVS[li.items[li.idx].id]);
+    txt(a, 12, 123, { t: 6 });
+    if (b2) txt(b2, 12, 133, { t: 6 });
+    txt(li.modo === 'nivel' ? 'A: ENSEÑAR (GRATIS)   B: VOLVER' : 'A: QUE LO ENSEÑE EL TUTOR   B: VOLVER', 12, 144, { t: 5, sombra: null, c: '#606060' });
   }
 }
 async function verDatos(m) {
@@ -607,6 +712,7 @@ function dibujarEquipo() {
   sc.fillStyle = '#5a8ac0';
   for (let i = 0; i < W; i += 16) sc.fillRect(i, 0, 8, H);
   if (e.datos) { dibujarDatos(e.datos); return; }
+  if (e.lista) { dibujarListaMovs(e.lista); return; }
   S.equipo.forEach((m, i) => {
     const y = 4 + i * 22, sel = i === e.idx;
     caja(6, y, 228, 21, sel ? 'menu' : 'info');

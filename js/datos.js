@@ -127,6 +127,12 @@ const OBJETOS = {
   nectarFloral: { nombre: 'NÉCTAR FLORAL', precio: 2500, piedra: true, desc: 'Néctar de flores del monte. Hace evolucionar a FAEVE.' },
 };
 // Lo que se vende en el ALMACÉN, en orden
+// ===== Tutor de movimientos =====
+// Movimientos EXTRA que el TUTOR le puede enseñar a cada criatura (los elige Felipe).
+// El tutor ya ofrece solo los que la criatura aprende más adelante por nivel; acá van los demás.
+// Formato: idEspecie: ['idMovimiento', 'otroMovimiento'],   (los ids están en MOVS, más arriba)
+const TUTOR = {
+};
 const TIENDA = ['boleadora', 'mate', 'alfajor', 'piedraNoche', 'nectarFloral'];
 
 // ===== Especies =====
