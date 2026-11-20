@@ -57,7 +57,7 @@ const MOVS = {
   revolcon: { nombre: 'Revolcón', tipo: 'TIERRA', pot: 40, prec: 100, pp: 25 },
   picotazo: { nombre: 'Picotazo', tipo: 'VOLADOR', pot: 35, prec: 100, pp: 35 },
   rasante: { nombre: 'Rasante', tipo: 'VOLADOR', pot: 55, prec: 95, pp: 20 },
-  mordisco: { nombre: 'Mordisco', tipo: 'SINIESTRO', pot: 60, prec: 100, pp: 25 },
+  mordisco: { nombre: 'Mordisco', tipo: 'SINIESTRO', pot: 60, prec: 100, pp: 25, muerde: true },
   // --- nuevos (v2) ---
   semillazo: { nombre: 'Semillazo', tipo: 'PLANTA', pot: 80, prec: 100, pp: 15 },
   raizon: { nombre: 'Raizón', tipo: 'PLANTA', pot: 100, prec: 90, pp: 10 },
@@ -114,6 +114,13 @@ const MOVS = {
   reflejo: { nombre: 'Reflejo', tipo: 'ACERO', pot: 75, prec: 100, pp: 15 },
   cabeza_hierro: { nombre: 'Cabeza de Hierro', tipo: 'ACERO', pot: 90, prec: 100, pp: 10 },
   alarido: { nombre: 'Alarido', tipo: 'FANTASMA', pot: 70, prec: 100, pp: 15 },
+  // Región 5 (Somuncurá)
+  emboscada: { nombre: 'Emboscada', tipo: 'SINIESTRO', pot: 70, prec: 100, pp: 20 },
+  mordida_sombra: { nombre: 'Mordida Sombra', tipo: 'SINIESTRO', pot: 80, prec: 100, pp: 15, muerde: true },
+  noche_cerrada: { nombre: 'Noche Cerrada', tipo: 'SINIESTRO', pot: 95, prec: 90, pp: 10 },
+  luz_mala: { nombre: 'Luz Mala', tipo: 'FANTASMA', pot: 90, prec: 100, pp: 10 },
+  colmillo_niebla: { nombre: 'Colmillo Niebla', tipo: 'FANTASMA', pot: 75, prec: 100, pp: 15, muerde: true },
+  resplandor: { nombre: 'Resplandor', tipo: 'HADA', pot: 90, prec: 100, pp: 10 },
   forcejeo: { nombre: 'Forcejeo', tipo: 'NORMAL', pot: 40, prec: 100, pp: 1 },
 };
 
@@ -123,8 +130,9 @@ const OBJETOS = {
   boleadora: { nombre: 'BOLEADORA', precio: 200, desc: 'Sirve para atrapar criaturas salvajes.' },
   mate: { nombre: 'MATE', precio: 150, desc: 'Bien cebado. Recupera 20 PS.', cura: 20 },
   alfajor: { nombre: 'ALFAJOR', precio: 350, desc: 'De dulce de leche. Recupera 50 PS.', cura: 50 },
-  piedraNoche: { nombre: 'PIEDRA NOCHE', precio: 2500, piedra: true, desc: 'Una piedra oscura como la noche. Hace evolucionar a GARKOL.' },
+  piedraNoche: { nombre: 'PIEDRA NOCHE', precio: 2500, piedra: true, desc: 'Una piedra oscura como la noche. Hace evolucionar a GARKOL y a FAEVE.' },
   nectarFloral: { nombre: 'NÉCTAR FLORAL', precio: 2500, piedra: true, desc: 'Néctar de flores del monte. Hace evolucionar a FAEVE.' },
+  velaAnima: { nombre: 'VELA ÁNIMA', precio: 2500, piedra: true, desc: 'Una vela que arde con fuego rosa y no se apaga. Hace evolucionar a FAEVE.' },
 };
 // Lo que se vende en el ALMACÉN, en orden
 // ===== Tutor de movimientos =====
@@ -133,7 +141,7 @@ const OBJETOS = {
 // Formato: idEspecie: ['idMovimiento', 'otroMovimiento'],   (los ids están en MOVS, más arriba)
 const TUTOR = {
 };
-const TIENDA = ['boleadora', 'mate', 'alfajor', 'piedraNoche', 'nectarFloral'];
+const TIENDA = ['boleadora', 'mate', 'alfajor', 'piedraNoche', 'nectarFloral', 'velaAnima'];
 
 // ===== Especies =====
 // base: ps, atk, def, vel
@@ -1140,7 +1148,7 @@ const ESPECIES = {
   },
   faeve: {
     nombre: 'Faeve', tipos: ['HADA'], base: { ps: 50, atk: 40, def: 45, vel: 60 }, captura: 75, exp: 62,
-    desc: 'el duendecillo de orejas como pétalos', evo: { nivel: 20, a: 'mythfae' }, evoPiedra: { nectarFloral: 'mythfae' },
+    desc: 'el duendecillo de orejas como pétalos', evo: { nivel: 20, a: 'mythfae' }, evoPiedra: { nectarFloral: 'mythfae', piedraNoche: 'duskfae', velaAnima: 'wraithfae' },
     movs: [[1, 'aranazo'], [1, 'encanto'], [6, 'brillo'], [12, 'mareo'], [18, 'polvo_lunar'], [24, 'vision']],
     sprite: [
       ['e', 25, 20, 6, 5, '#ffffff', 's'],
@@ -1166,6 +1174,114 @@ const ESPECIES = {
       ['p', [[16, 5], [18, 7], [16, 9], [14, 7]], '#f85888'],
       ['e', 13, 12, 1.5, 1.8, '#4020a0', 's'], ['e', 19, 12, 1.5, 1.8, '#4020a0', 's'],
       ['d', 3, 14, '#f85888'], ['d', 29, 26, '#f85888'], ['d', 5, 26, '#ffe0f0'],
+    ],
+  },
+  // ===== Región 5: diseños de Felipe (Fantasma / Siniestro) =====
+  howlup: {
+    nombre: 'Howlup', tipos: ['DRAGON'], base: { ps: 55, atk: 70, def: 50, vel: 65 }, captura: 75, exp: 70,
+    desc: 'el dragoncito que le aúlla a la luna', evo: { nivel: 40, a: 'phantolycan' },
+    movs: [[1, 'aranazo'], [1, 'grunido'], [6, 'mordisco'], [12, 'aliento'], [18, 'susto'], [24, 'colmillo_niebla'], [32, 'garra_dragon'], [40, 'mordida_sombra'], [48, 'luz_mala'], [56, 'furia_dragon']],
+    sprite: [
+      ['e', 17, 29, 13, 2.5, '#2a2040', 's'],
+      ['p', [[22, 22], [30, 15], [28, 24]], '#4a4e6a'],
+      ['p', [[19, 17], [26, 10], [24, 19]], '#5a5e8a'],
+      ['e', 17, 22, 7, 6, '#4a4e6a'],
+      ['e', 15, 23, 4, 4, '#8a90b0'],
+      ['r', 11, 25, 3, 5, '#3a3e58'], ['r', 19, 25, 3, 5, '#3a3e58'],
+      ['e', 12, 13, 6, 5, '#4a4e6a'],
+      ['e', 8, 10, 3, 2.5, '#5a5e7a'],
+      ['p', [[13, 9], [16, 3], [17, 10]], '#2e3048'], ['p', [[10, 9], [10, 4], [13, 8]], '#2e3048'],
+      ['e', 12, 12, 1.6, 1.6, '#f8e060', 's'], ['d', 12, 12, '#202020'],
+      ['d', 5, 7, '#c0c8f0'], ['d', 4, 5, '#c0c8f0'], ['d', 3, 8, '#c0c8f0'],
+    ],
+  },
+  phantolycan: {
+    nombre: 'Phantolycan', tipos: ['DRAGON', 'FANTASMA'], base: { ps: 85, atk: 112, def: 78, vel: 100 }, captura: 45, exp: 245,
+    desc: 'el lobo dragón hecho de niebla',
+    movs: [[1, 'aranazo'], [1, 'grunido'], [6, 'mordisco'], [12, 'aliento'], [18, 'susto'], [24, 'colmillo_niebla'], [32, 'garra_dragon'], [40, 'mordida_sombra'], [48, 'luz_mala'], [56, 'furia_dragon']],
+    sprite: [
+      ['e', 16, 29, 14, 2.5, '#6a5a98', 's'],
+      ['p', [[24, 18], [31, 9], [30, 15], [31, 22], [26, 22]], '#7a70a8'],
+      ['p', [[14, 15], [19, 3], [22, 9], [26, 4], [24, 16]], '#5a4e88'],
+      ['r', 21, 21, 3, 8, '#2e2848'], ['r', 25, 21, 3, 7, '#2e2848'],
+      ['e', 17, 19, 9, 5, '#3a3458'],
+      ['p', [[10, 16], [14, 12], [18, 15], [22, 11], [26, 16]], '#7a70a8'],
+      ['r', 8, 21, 3, 8, '#2e2848'], ['r', 12, 22, 3, 7, '#2e2848'],
+      ['r', 8, 28, 3, 1, '#d0d0f0', 's'], ['r', 21, 28, 3, 1, '#d0d0f0', 's'],
+      ['e', 7, 14, 5, 4, '#3a3458'],
+      ['p', [[1, 16], [6, 13], [6, 18]], '#3a3458'],
+      ['p', [[5, 11], [6, 4], [9, 10]], '#2a2440'], ['p', [[8, 11], [12, 5], [12, 12]], '#2a2440'],
+      ['e', 6, 13, 1.7, 1.2, '#80f0f0', 's'],
+      ['d', 2, 17, '#ffffff'], ['d', 4, 17, '#ffffff'],
+      ['d', 28, 6, '#b0a8e0'], ['d', 3, 24, '#b0a8e0'], ['d', 30, 26, '#b0a8e0'],
+    ],
+  },
+  sparknight: {
+    nombre: 'Sparknight', tipos: ['DRAGON'], base: { ps: 50, atk: 65, def: 50, vel: 75 }, captura: 75, exp: 70,
+    desc: 'el dragoncito que se esconde entre las rocas', evo: { nivel: 36, a: 'umbratail' },
+    movs: [[1, 'aranazo'], [1, 'grunido'], [6, 'pique'], [12, 'aliento'], [18, 'mordisco'], [24, 'emboscada'], [30, 'garra_dragon'], [36, 'mordida_sombra'], [44, 'noche_cerrada'], [52, 'furia_dragon']],
+    sprite: [
+      ['e', 16, 30, 9, 1.5, '#303030', 's'],
+      ['p', [[21, 24], [30, 20], [29, 23], [22, 27]], '#3a3a44'], ['p', [[28, 18], [31, 17], [30, 22]], '#3a3a44'],
+      ['e', 16, 22, 7, 6, '#3a3a44'],
+      ['r', 10, 25, 4, 5, '#3a3a44'], ['r', 18, 25, 4, 5, '#3a3a44'],
+      ['r', 10, 28, 4, 2, '#f0f0f0', 's'], ['r', 18, 28, 4, 2, '#f0f0f0', 's'],
+      ['p', [[9, 9], [5, 2], [12, 7]], '#3a3a44'], ['p', [[21, 9], [25, 2], [18, 7]], '#3a3a44'],
+      ['e', 15, 12, 7, 6, '#3a3a44'],
+      ['d', 6, 3, '#f0f0f0'], ['d', 24, 3, '#f0f0f0'],
+      ['e', 12, 12, 2, 2.3, '#80e060', 's'], ['e', 18, 12, 2, 2.3, '#80e060', 's'],
+      ['r', 12, 11, 1, 3, '#101010', 's'], ['r', 18, 11, 1, 3, '#101010', 's'],
+      ['d', 15, 16, '#c06080'],
+    ],
+  },
+  umbratail: {
+    nombre: 'Umbratail', tipos: ['DRAGON', 'SINIESTRO'], base: { ps: 80, atk: 110, def: 75, vel: 115 }, captura: 45, exp: 245,
+    desc: 'el dragón negro que vuela sin hacer ruido',
+    movs: [[1, 'aranazo'], [1, 'grunido'], [6, 'pique'], [12, 'aliento'], [18, 'mordisco'], [24, 'emboscada'], [30, 'garra_dragon'], [36, 'mordida_sombra'], [44, 'noche_cerrada'], [52, 'furia_dragon']],
+    sprite: [
+      ['e', 16, 30, 13, 1.6, '#201828', 's'],
+      ['p', [[14, 15], [2, 2], [6, 10], [1, 13], [8, 17]], '#22202c'], ['p', [[18, 15], [30, 2], [26, 10], [31, 13], [24, 17]], '#22202c'],
+      ['p', [[13, 15], [5, 6], [8, 15]], '#3a3448', 's'], ['p', [[19, 15], [27, 6], [24, 15]], '#3a3448', 's'],
+      ['p', [[20, 24], [31, 27], [29, 29], [19, 27]], '#22202c'], ['p', [[29, 25], [31, 22], [31, 29]], '#22202c'],
+      ['e', 16, 21, 6, 6, '#22202c'],
+      ['r', 11, 24, 3, 6, '#22202c'], ['r', 18, 24, 3, 6, '#22202c'],
+      ['p', [[12, 10], [8, 6], [13, 8]], '#22202c'], ['p', [[20, 10], [24, 6], [19, 8]], '#22202c'],
+      ['e', 16, 11, 5, 4, '#22202c'],
+      ['e', 14, 11, 1.5, 1.2, '#c8f040', 's'], ['e', 18, 11, 1.5, 1.2, '#c8f040', 's'],
+      ['e', 16, 14.5, 1.6, 1, '#b060f0', 's'],
+      ['d', 16, 18, '#b060f0'], ['d', 16, 21, '#b060f0'], ['d', 16, 24, '#b060f0'],
+    ],
+  },
+  duskfae: {
+    nombre: 'Duskfae', tipos: ['HADA', 'SINIESTRO'], base: { ps: 70, atk: 95, def: 70, vel: 95 }, captura: 45, exp: 184,
+    desc: 'el duende oscuro que castiga a los que dañan la naturaleza',
+    movs: [[1, 'aranazo'], [1, 'encanto'], [6, 'brillo'], [12, 'mordisco'], [18, 'polvo_lunar'], [24, 'emboscada'], [32, 'mordida_sombra'], [40, 'resplandor'], [48, 'noche_cerrada']],
+    sprite: [
+      ['e', 26, 18, 5, 5, '#202030', 's'], ['e', 28, 13, 3, 3, '#303048', 's'], ['e', 29, 9, 2, 2, '#404060', 's'],
+      ['r', 11, 23, 3, 6, '#1a1a28'], ['r', 17, 23, 3, 6, '#1a1a28'],
+      ['r', 11, 28, 3, 1, '#ff40a0', 's'], ['r', 17, 28, 3, 1, '#ff40a0', 's'],
+      ['e', 15, 20, 8, 6, '#1a1a28'],
+      ['p', [[10, 9], [1, 1], [4, 8], [2, 11], [9, 13]], '#1a1a28'], ['p', [[20, 9], [29, 1], [26, 8], [28, 11], [21, 13]], '#1a1a28'],
+      ['p', [[9, 10], [3, 4], [8, 12]], '#ff40a0', 's'], ['p', [[21, 10], [27, 4], [22, 12]], '#ff40a0', 's'],
+      ['e', 15, 12, 7, 6, '#1a1a28'],
+      ['e', 12, 12, 1.7, 1.8, '#ff40a0', 's'], ['e', 18, 12, 1.7, 1.8, '#ff40a0', 's'],
+      ['r', 13, 15, 5, 1, '#ff80c0', 's'],
+    ],
+  },
+  wraithfae: {
+    nombre: 'Wraithfae', tipos: ['HADA', 'FANTASMA'], base: { ps: 75, atk: 90, def: 75, vel: 90 }, captura: 45, exp: 184,
+    desc: 'el ánima que atraviesa las paredes con polvo de estrellas',
+    movs: [[1, 'aranazo'], [1, 'encanto'], [6, 'brillo'], [12, 'susto'], [18, 'polvo_lunar'], [24, 'alarido'], [32, 'luz_mala'], [40, 'resplandor'], [48, 'payada']],
+    sprite: [
+      ['e', 16, 30, 7, 1.5, '#c0b0e0', 's'],
+      ['e', 26, 17, 4, 6, '#ff70b0', 's'], ['e', 27, 13, 2.5, 4, '#ffb0d8', 's'],
+      ['p', [[8, 18], [24, 18], [20, 27], [16, 25], [12, 28]], '#a8b4cc'],
+      ['e', 16, 18, 8, 5, '#a8b4cc'],
+      ['e', 9, 7, 2.5, 6, '#a8b4cc'], ['e', 23, 7, 2.5, 6, '#a8b4cc'],
+      ['e', 9, 8, 1, 3.5, '#ff90c8', 's'], ['e', 23, 8, 1, 3.5, '#ff90c8', 's'],
+      ['e', 16, 11, 7, 6, '#b8c4dc'],
+      ['e', 13, 11, 2, 2, '#f0f8ff', 's'], ['e', 19, 11, 2, 2, '#f0f8ff', 's'],
+      ['d', 4, 22, '#fff0a0'], ['d', 6, 26, '#ffd0f0'], ['d', 3, 17, '#fff0a0'], ['d', 28, 26, '#fff0a0'],
     ],
   },
   mimetit: {
@@ -1488,6 +1604,7 @@ const HABILIDADES = {
   monteBravo: { nombre: 'Monte Bravo', ef: 'apuro', tipo: 'PLANTA', desc: 'Con poca vida, sus ataques de Planta pegan mucho más.' },
   fogonInterior: { nombre: 'Fogón Interior', ef: 'apuro', tipo: 'FUEGO', desc: 'Con poca vida, sus ataques de Fuego pegan mucho más.' },
   correntada: { nombre: 'Correntada', ef: 'apuro', tipo: 'AGUA', desc: 'Con poca vida, sus ataques de Agua pegan mucho más.' },
+  maldicionLunar: { nombre: 'Maldición Lunar', ef: 'maldicion', desc: 'Sus mordiscos le devuelven la mitad del daño que hacen como PS.' },
 };
 const HAB_ESPECIE = {
   cuisito: 'monteBravo', cuison: 'monteBravo', zorrito: 'fogonInterior', zorrazo: 'fogonInterior',
@@ -1517,6 +1634,9 @@ const HAB_ESPECIE = {
   garkol: 'cuerpoMaldito', gargorrupt: 'cuerpoMaldito',
   venomin: 'pielToxica', glacivenom: 'pielToxica', glacivenom_supremo: 'pielToxica',
   pumita: 'intimidacion', pumentor: 'intimidacion',
+  howlup: { n: ['intimidacion', 'cuerpoMaldito'], o: 'maldicionLunar' }, phantolycan: { n: ['intimidacion', 'cuerpoMaldito'], o: 'maldicionLunar' },
+  sparknight: { n: ['intimidacion', 'ojoNocturno'] }, umbratail: { n: ['intimidacion', 'ojoNocturno'] },
+  duskfae: { n: ['veloEspejismo', 'cuerpoMaldito'] }, wraithfae: { n: ['cuerpoMaldito', 'veloEspejismo'] },
 };
 for (const id in ESPECIES) {
   const h = HAB_ESPECIE[id] || 'pasoLigero';

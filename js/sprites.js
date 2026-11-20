@@ -421,7 +421,7 @@ function crearEdificio(tipo, w, h, puerta) {
   const pared = tipo === 'lab' ? '#eef2f6' : tipo.startsWith('gimnasio') ? '#ece4f4' : tipo === 'adobe' ? '#e0c08a' : '#f6eedc';
   R(2, techoH - 4, ancho - 4, alto - techoH + 4, pared);
   R(2, alto - 3, ancho - 4, 3, '#a89878');
-  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#d84848', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', gimnasio4: '#3a7ab0', adobe: '#9a6a3a' };
+  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#d84848', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', gimnasio4: '#3a7ab0', gimnasio5: '#2a2040', adobe: '#9a6a3a' };
   const tc = TECHOS[tipo] || '#c8553a';
   R(0, 0, ancho, techoH, tc);
   let fila = 0;

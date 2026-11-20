@@ -21,6 +21,7 @@ const PAL = {
   coplera: { id: 'coplera', piel: '#c89060', pelo: '#2a1a10', peloLargo: true, sombrero: '#5a4a3a', remera: '#3a8ac8', pant: '#c83a5a' },
   nieve: { id: 'nieve', piel: '#e8c0a0', pelo: '#f0f0f8', peloLargo: true, gorra: '#3a7ab0', remera: '#e8f4ff', raya: '#3a7ab0', pant: '#2a3a5a' },
   almacenero: { id: 'almacenero', piel: '#e8b890', pelo: '#5a3a20', boina: '#3a3a5a', remera: '#3a8a4a', guardapolvo: true, pant: '#4a3a2a', barba: '#5a3a20' },
+  sombra: { id: 'sombra', piel: '#e8d0c0', pelo: '#1a1a2a', peloLargo: true, sombrero: '#1a1a1a', remera: '#4a2a6a', raya: '#b060f0', pant: '#1a1a2a' },
   nena: { id: 'nena', piel: '#f4c8a0', pelo: '#c08040', peloLargo: true, remera: '#f070a0', pant: '#4a6aa8' },
 };
 
@@ -673,6 +674,112 @@ function teñir(filas, cambios) { return filas.map(f => f.split('').map(c => cam
 const SERRANA = teñir(PUERTO, { Y: 'T', q: '=' });
 const VALLEFERTIL = teñir(TILCARA, { K: 'R' });
 const BARILOCHE = teñir(VILLA, { T: 'N' });
+// Región 5 (Río Negro): rutas dibujadas de abajo hacia arriba (después se giran) y pueblos
+const BOSQUE_ANDINO = [
+  'TTTTTTTTTT==TTTTTTTTTT',
+  'TT........==........TT',
+  'TT........==,,,,,,..TT',
+  'TT.......S==,,,,TT..TT',
+  'TT.,,,,,,.==,,,,TT..TT',
+  'TT.,,,RR,.==........TT',
+  'TT,,,,RR,.==....F...TT',
+  'TT,,,,,...==........TT',
+  'TT,,,=======........TT',
+  'TT,,,==,,,,.........TT',
+  'TT,,,==,,,,.TT..,,,.TT',
+  'TT..,==,,,..TT.F,,,.TT',
+  'TT..,==,,,......,,,,TT',
+  'TT..,==,,,......,,,,TT',
+  'TT~~~hh~~~~~~~~~~~~~TT',
+  'TT~~~hh~~~~~~~~~~~~~TT',
+  'TTF..==.....,,,,....TT',
+  'TT...==.....,,,,....TT',
+  'TT,,,==,,,..,,,,....TT',
+  'TT,,,==,,,.........FTT',
+  'TT,,,==,,,..........TT',
+  'TT...==.........F.F.TT',
+  'TT...==.............TT',
+  'TT...=======,,......TT',
+  'TT......,,==,,......TT',
+  'TT......,,==,,......TT',
+  'TT....TT..==........TT',
+  'TT....TT..==........TT',
+  'TT..F....S==........TT',
+  'TT........==........TT',
+  'TT........==........TT',
+  'TTTTTTTTTT==TTTTTTTTTT',
+];
+const LINEA_SUR = [
+  'NNNNNNNNNN==NNNNNNNNNN',
+  'NN--------==--------NN',
+  'NN--------==--------NN',
+  'NN----uuuS==--------NN',
+  'NN----uuu-==--------NN',
+  'NN--------==----uuuuNN',
+  'NN---RRRR-==----uuuuNN',
+  'NN---RRRRu==--------NN',
+  'NN-----uuu==--------NN',
+  'NN------uu==uu------NN',
+  'NN------uu==uuuu----NN',
+  'NN------uu==uuuuuuuuNN',
+  'NN-------u==uu-uuuRRNN',
+  'NN-------u==uu-uuuRRNN',
+  'NNuuuu----==-----RR-NN',
+  'NNuuu=======-----RR-NN',
+  'NN---==--uuuuu------NN',
+  'NN---==uuuuuuuRR----NN',
+  'NN---==uuuu---RR-NN-NN',
+  'NN---==--RRuuuuu-NN-NN',
+  'NN---==--RRuuuuu----NN',
+  'NN---==---uuuuuu----NN',
+  'NNuuu==uu-----------NN',
+  'NNuuu==uu-----------NN',
+  'NNuuu=======--------NN',
+  'NN-uuu----==--------NN',
+  'NN-uuu----==--------NN',
+  'NN--------==uuuuuu--NN',
+  'NN-------S==uuuuuu--NN',
+  'NN-uuuuu--==--------NN',
+  'NN-uuuuu--==--------NN',
+  'NNNNNNNNNN==NNNNNNNNNN',
+];
+const MESETA = [
+  'RRRRRRRRRR==RRRRRRRRRR',
+  'RR--uuuuuu==uuuu----RR',
+  'RR--uuRRuu==uuuu-RR-RR',
+  'RR----RR-S==-----RR-RR',
+  'RRRR------==--------RR',
+  'RRRR------==--------RR',
+  'RR--------==----RR--RR',
+  'RR--------==----RR--RR',
+  'RR--------==--------RR',
+  'RR--------==-uuuu---RR',
+  'RR--------==-uuuu---RR',
+  'RR--------==-uuuu---RR',
+  'RR-----uuu==-uuuu---RR',
+  'RR-----uuu==-----RR-RR',
+  'RR-uuu----==-----RR-RR',
+  'RR-uuu-uuu==--------RR',
+  'RR-uuu-uuu==--------RR',
+  'RR-----uuu==u-------RR',
+  'RR-----uuu==u-------RR',
+  'RR--------==u-------RR',
+  'RRRR------==---uuu--RR',
+  'RRRR------==---uuRR-RR',
+  'RR--------==---uuRRuRR',
+  'RR-----uuu==u---uuuuRR',
+  'RR-----uuu==u---uuuuRR',
+  'RR-----uuu==u-------RR',
+  'RR-----uuu==--------RR',
+  'RR--uuuuuu==--------RR',
+  'RR-uuuuuuS==-----RR-RR',
+  'RR-uuuuu--==-----RR-RR',
+  'RR--------==--------RR',
+  'RRRRRRRRRR==RRRRRRRRRR',
+];
+const ELBOLSON = teñir(PUERTO, { Y: 'N', q: '=' });
+const JACOBACCI = teñir(TILCARA, { C: 'N', K: 'R' });
+const SOMUNCURA = teñir(PUERTO, { Y: 'R', q: '=', '.': '-', F: '-' });
 const TAFI = [
   'RRRRRRRRRR==RRRRRRRRRRRR',
   'RR........==S.........RR',
@@ -2175,6 +2282,351 @@ const MAPAS = {
 
   centro9: crearCentro('bariloche', 5, 9, 'centro9'),
 
+  // ================= REGIÓN 5: RÍO NEGRO (BOSQUE ANDINO → LÍNEA SUR → SOMUNCURÁ) =================
+  // Las rutas se dibujan "de abajo hacia arriba" y se giran al final del archivo
+  ruta13: {
+    nombre: 'RUTA 13 · BOSQUE ANDINO',
+    exterior: true,
+    grilla: desdeTexto(BOSQUE_ANDINO),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'bariloche', ax: 10, ay: 22, dir: 1 },
+      { x: 11, y: 31, a: 'bariloche', ax: 11, ay: 22, dir: 1 },
+      { x: 10, y: 0, a: 'elbolson', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 0, a: 'elbolson', ax: 11, ay: 1, dir: 0 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 13 · BOSQUE ANDINO. Coihues, lagos y niebla. Dicen que en este bosque viven los duendes...',
+      '9,3': 'Al sur: EL BOLSÓN, al pie del cerro Piltriquitrón.',
+    },
+    encuentros: { lista: [['howlup', 16], ['faeve', 14], ['farolito', 12], ['garkol', 10], ['lechuzonte', 10], ['nevulon', 10], ['condorito', 8], ['pumentor', 8], ['candilejo', 4]], min: 44, max: 47 },
+    npcs: [
+      entrenadorNPC({
+        id: 'guarda_bosque', x: 7, y: 17, dir: 2, pal: PAL.guarda, nombre: 'GUARDAPARQUE NAHUEL',
+        equipo: [['lechuzonte', 45], ['howlup', 45], ['nevulon', 46]],
+        antes: ['GUARDAPARQUE NAHUEL: ¡Shhh! En la niebla del bosque se esconden criaturas que nunca viste. ¡Duelo!'],
+        gana: 'GUARDAPARQUE NAHUEL: ¡Uh! Me ganaste como una sombra.',
+        despues: 'GUARDAPARQUE NAHUEL: Los HOWLUP le aúllan a la luna. ¡Su sombra parece mucho más grande que ellos!',
+      }),
+      entrenadorNPC({
+        id: 'mochilera', x: 12, y: 7, dir: 2, pal: PAL.chica, nombre: 'MOCHILERA SOFI',
+        equipo: [['faeve', 45], ['candilejo', 46], ['garkol', 46]],
+        antes: ['MOCHILERA SOFI: ¡Vengo caminando desde Bariloche! ¿Peleamos para descansar las piernas?'],
+        gana: 'MOCHILERA SOFI: ¡Qué equipo que tenés!',
+        despues: 'MOCHILERA SOFI: Le di una VELA ÁNIMA a mi FAEVE... ¡y se volvió un fantasmita rosado! Se venden en el ALMACÉN.',
+      }),
+      {
+        id: 'duende_fan', x: 13, y: 27, dir: 2, pal: PAL.nene,
+        hablar: async () => {
+          await decir('NENE: ¿Sabías que en El Bolsón hay un bosque con árboles tallados? Tienen caras de duendes y de animales.');
+          await decir('Yo una vez vi un duende de verdad... ¡Era negro con ojos rosas y se reía!');
+        },
+      },
+    ],
+  },
+
+  elbolson: {
+    nombre: 'EL BOLSÓN',
+    exterior: true,
+    grilla: desdeTexto(ELBOLSON),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 15, y: 4, w: 5, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'casa', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 10, y: 0, a: 'ruta13', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 0, a: 'ruta13', ax: 11, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro10', ax: 4, ay: 6, dir: 1 },
+      { x: 23, y: 10, a: 'ruta14', ax: 10, ay: 30, dir: 1 },
+      { x: 23, y: 11, a: 'ruta14', ax: 11, ay: 30, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Al NORTE: RUTA 13, de vuelta a BARILOCHE. Al ESTE: RUTA 14, la LÍNEA SUR.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Con dulce de frambuesa casero!',
+      '19,9': 'FERIA ARTESANAL. Mates, tejidos, cerveza... ¡y dulces de frutas finas!',
+      '4,18': 'EL BOLSÓN. Valle de chacras y bosques, al pie del cerro Piltriquitrón.',
+    },
+    npcs: [
+      {
+        id: 'artesano', x: 8, y: 15, dir: 0, pal: PAL.abuelo,
+        hablar: async () => {
+          if (S.flags.regaloBolson) { await decir('ARTESANO: En el BOSQUE TALLADO hay más de cincuenta esculturas en los troncos. ¡Andá a verlo algún día!'); return; }
+          await decir('ARTESANO: ¡Bienvenido a El Bolsón! Tomá, para el camino.');
+          S.bolsa.mate = (S.bolsa.mate || 0) + 5;
+          S.flags.regaloBolson = true;
+          await decir('¡Felipe recibió 5 MATES!');
+          await decir('ARTESANO: Hacia el ESTE empieza la LÍNEA SUR: mucha meseta, poca gente y un viento que te despeina.');
+          guardar();
+        },
+      },
+      {
+        id: 'nena_bolson', x: 17, y: 18, dir: 2, pal: PAL.nena,
+        hablar: async () => {
+          await decir('NENA: La líder del GIMNASIO 5 vive en la MESETA DE SOMUNCURÁ. Se llama SOMBRA.');
+          await decir('Usa criaturas FANTASMA y SINIESTRO. ¡A mí me da un poquito de miedo!');
+        },
+      },
+    ],
+  },
+
+  centro10: crearCentro('elbolson', 5, 9, 'centro10'),
+
+  ruta14: {
+    nombre: 'RUTA 14 · LÍNEA SUR',
+    exterior: true,
+    grilla: desdeTexto(LINEA_SUR),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'elbolson', ax: 22, ay: 10, dir: 2 },
+      { x: 11, y: 31, a: 'elbolson', ax: 22, ay: 11, dir: 2 },
+      { x: 10, y: 0, a: 'jacobacci', ax: 1, ay: 10, dir: 3 },
+      { x: 11, y: 0, a: 'jacobacci', ax: 1, ay: 11, dir: 3 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 14 · LÍNEA SUR. La estepa de Río Negro: coirones, piedras y viento.',
+      '9,3': 'Al este: INGENIERO JACOBACCI, la estación de LA TROCHITA.',
+    },
+    encuentros: { lista: [['sparknight', 16], ['howlup', 12], ['vizcachita', 12], ['zorrazo', 10], ['terito', 10], ['candilejo', 10], ['garkol', 10], ['peludin', 8], ['condorito', 8]], min: 46, max: 49 },
+    npcs: [
+      entrenadorNPC({
+        id: 'arriero', x: 7, y: 9, dir: 3, pal: PAL.beto, nombre: 'ARRIERO JUAN',
+        equipo: [['zorrazo', 47], ['sparknight', 47], ['vizcachita', 48]],
+        antes: ['ARRIERO JUAN: ¡Epa, gurí! Acá en la meseta el que no pelea se vuela con el viento. ¡Duelo!'],
+        gana: 'ARRIERO JUAN: ¡Me dejaste de a pie!',
+        despues: 'ARRIERO JUAN: Los SPARKNIGHT se esconden entre las piedras. Cuando crecen se vuelven negros como la noche.',
+      }),
+      entrenadorNPC({
+        id: 'tejedora', x: 7, y: 21, dir: 2, pal: PAL.coplera, nombre: 'TEJEDORA AYELÉN',
+        equipo: [['candilejo', 47], ['howlup', 48], ['garkol', 48]],
+        antes: ['TEJEDORA AYELÉN: Tejo ponchos con lana de oveja... ¡y con mis criaturas te voy a enredar!'],
+        gana: 'TEJEDORA AYELÉN: ¡Se me deshizo el ovillo!',
+        despues: 'TEJEDORA AYELÉN: SOMBRA es la guardiana de las PIEDRAS QUE HABLAN. Las criaturas FANTASMA sufren con el FANTASMA y el SINIESTRO.',
+      }),
+      {
+        id: 'baqueano', x: 14, y: 2, dir: 0, pal: PAL.abuelo,
+        hablar: async () => {
+          await decir('BAQUEANO: ¿Ves esa luz que aparece y desaparece en el campo, de noche? Es la LUZ MALA.');
+          await decir('Los viejos dicen que no hay que seguirla nunca. ¡Algunas criaturas FANTASMA la usan para atacar!');
+        },
+      },
+    ],
+  },
+
+  jacobacci: {
+    nombre: 'INGENIERO JACOBACCI',
+    exterior: true,
+    grilla: desdeTexto(JACOBACCI),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 15, y: 4, w: 6, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 0, y: 10, a: 'ruta14', ax: 10, ay: 1, dir: 0 },
+      { x: 0, y: 11, a: 'ruta14', ax: 11, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro11', ax: 4, ay: 6, dir: 1 },
+      { x: 23, y: 10, a: 'ruta15', ax: 10, ay: 30, dir: 1 },
+      { x: 23, y: 11, a: 'ruta15', ax: 11, ay: 30, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Al OESTE: RUTA 14, hacia EL BOLSÓN. Al ESTE: RUTA 15, la MESETA DE SOMUNCURÁ.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Pasá a tomar unos mates!',
+      '19,9': 'ESTACIÓN DE LA TROCHITA. El Viejo Expreso Patagónico, un tren a vapor de hace cien años.',
+      '4,18': 'INGENIERO JACOBACCI. Un pueblo de la LÍNEA SUR, en el medio de la meseta rionegrina.',
+    },
+    npcs: [
+      tomiNPC({
+        id: 'tomi_jacobacci', x: 12, y: 16, dir: 2, bandera: 'tomi5', forma: 'final', nivel: 50,
+        equipo: [['arquitemplillo', 47], ['wandacoloso', 47], ['nevukhan', 48], ['gargorrupt', 48]],
+        antes: [
+          'TOMI: ¡Felipe! Llegué en LA TROCHITA. ¡Un tren a vapor de verdad, con humo y todo!',
+          'TOMI: Yo también voy al GIMNASIO 5. Pero antes... ¡veamos quién entrenó más en la Patagonia!',
+        ],
+        gana: 'TOMI: ¡No puede ser! Bueno... SOMBRA usa FANTASMA y SINIESTRO. ¡Llevá criaturas que les ganen!',
+        despues: 'TOMI: Me vuelvo en tren a entrenar. ¡Nos vemos en el próximo gimnasio, Felipe!',
+        premio: 5,
+      }),
+      {
+        id: 'maquinista', x: 19, y: 11, dir: 1, pal: PAL.beto,
+        hablar: async () => {
+          await decir('MAQUINISTA: ¡LA TROCHITA es tan angosta que las vías miden menos de un metro de ancho!');
+          await decir('Hace cien años llevaba lana por toda la meseta. ¡Ahora lleva turistas y criaturas curiosas!');
+        },
+      },
+    ],
+  },
+
+  centro11: crearCentro('jacobacci', 5, 9, 'centro11'),
+
+  ruta15: {
+    nombre: 'RUTA 15 · MESETA DE SOMUNCURÁ',
+    exterior: true,
+    grilla: desdeTexto(MESETA),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'jacobacci', ax: 22, ay: 10, dir: 2 },
+      { x: 11, y: 31, a: 'jacobacci', ax: 22, ay: 11, dir: 2 },
+      { x: 10, y: 0, a: 'somuncura', ax: 1, ay: 10, dir: 3 },
+      { x: 11, y: 0, a: 'somuncura', ax: 1, ay: 11, dir: 3 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 15 · MESETA DE SOMUNCURÁ. En mapuche, SOMUNCURÁ quiere decir "piedra que habla".',
+      '9,3': 'Al este: el PARAJE SOMUNCURÁ y el GIMNASIO 5.',
+    },
+    objetos: { R: 'Una roca de basalto llena de agujeros. Cuando sopla el viento... ¡parece que susurra!' },
+    encuentros: { lista: [['sparknight', 14], ['howlup', 14], ['candilejo', 12], ['garkol', 12], ['farolito', 10], ['faeve', 10], ['vizcachita', 8], ['zorrazo', 8], ['gargorrupt', 2]], min: 48, max: 51 },
+    npcs: [
+      entrenadorNPC({
+        id: 'paleonto', x: 12, y: 5, dir: 2, pal: PAL.ayudante, nombre: 'CIENTÍFICA MARA',
+        equipo: [['gargorrupt', 49], ['sparknight', 49], ['wandacoloso', 50]],
+        antes: ['CIENTÍFICA MARA: En la meseta hay ranitas que no viven en ningún otro lugar del mundo. ¡Y yo las cuido! ¡Duelo!'],
+        gana: 'CIENTÍFICA MARA: ¡Interesante! Lo voy a anotar en mi libreta.',
+        despues: 'CIENTÍFICA MARA: El viento sopla entre las rocas de basalto y hace ruidos raros. Por eso dicen que las piedras hablan.',
+      }),
+      entrenadorNPC({
+        id: 'cazafantasmas', x: 6, y: 9, dir: 3, pal: PAL.tomi, nombre: 'BUSCADOR DE ÁNIMAS LEO',
+        equipo: [['candilejo', 49], ['duskfae', 50], ['howlup', 50]],
+        antes: ['BUSCADOR LEO: ¡Estoy buscando la LUZ MALA! ¿No la viste? Bueno... ¡entonces peleemos!'],
+        gana: 'BUSCADOR LEO: ¡Me asustaste más que la Luz Mala!',
+        despues: 'BUSCADOR LEO: Contra FANTASMA y SINIESTRO van bien el HADA, la LUCHA y el BICHO... ¡pero ojo, que la LUCHA no le hace nada al FANTASMA!',
+      }),
+      entrenadorNPC({
+        id: 'ermitano', x: 13, y: 26, dir: 2, pal: PAL.abuelo, nombre: 'ERMITAÑO ANSELMO',
+        equipo: [['farolito', 49], ['wraithfae', 50], ['umbratail', 51]],
+        antes: ['ERMITAÑO ANSELMO: Hace cuarenta años que escucho a las piedras. Hoy me dijeron que ibas a venir.'],
+        gana: 'ERMITAÑO ANSELMO: Las piedras tenían razón: sos fuerte.',
+        despues: 'ERMITAÑO ANSELMO: SOMBRA entrena a oscuras. Adentro de su gimnasio casi no se ve nada.',
+      }),
+    ],
+  },
+
+  somuncura: {
+    nombre: 'PARAJE SOMUNCURÁ',
+    exterior: true,
+    grilla: desdeTexto(SOMUNCURA),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 14, y: 4, w: 7, h: 5, tipo: 'gimnasio5', puerta: 3, abre: true },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 0, y: 10, a: 'ruta15', ax: 10, ay: 1, dir: 0 },
+      { x: 0, y: 11, a: 'ruta15', ax: 11, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro12', ax: 4, ay: 6, dir: 1 },
+      { x: 17, y: 8, a: 'gimnasio5', ax: 5, ay: 10, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Al OESTE: RUTA 15, de vuelta a la LÍNEA SUR. Al SUR: hacia TIERRA DEL FUEGO (¡en construcción!).',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Hasta en el medio de la meseta!',
+      '19,9': 'GIMNASIO DE SOMUNCURÁ. Líder: SOMBRA, la que escucha a las piedras. Tipo FANTASMA y SINIESTRO.',
+      '4,18': 'PARAJE SOMUNCURÁ. Una meseta de piedra negra, más alta que las nubes de la estepa.',
+    },
+    objetos: { R: 'Una roca de basalto llena de agujeros. Cuando sopla el viento... ¡parece que susurra!' },
+    disparadores: [
+      {
+        prueba: (x, y) => y === 21,
+        accion: async () => {
+          await decir('Al SUR: el camino hacia TIERRA DEL FUEGO y el GIMNASIO 6... ¡Todavía está en construcción!');
+          await pasoForzado(1);
+        },
+      },
+    ],
+    npcs: [
+      {
+        id: 'poblador', x: 7, y: 11, dir: 0, pal: PAL.coplera,
+        hablar: async () => {
+          await decir('POBLADORA: Mi abuela decía que las piedras de la meseta guardan las voces de los que pasaron por acá.');
+          await decir('Cuando el viento sopla fuerte... ¡las escuchás hablar!');
+        },
+      },
+      {
+        id: 'nene_somun', x: 18, y: 18, dir: 2, pal: PAL.nene,
+        hablar: async () => {
+          if (S.flags.insignia5) await decir('NENE: ¡Le ganaste a SOMBRA! ¡Y en la oscuridad!');
+          else {
+            await decir('NENE: SOMBRA tiene criaturas FANTASMA y SINIESTRO. Su PHANTOLYCAN es un lobo dragón de niebla...');
+            await decir('¡Las criaturas HADA aguantan bien a las SINIESTRO, y las de FANTASMA y SINIESTRO les pegan fuerte a las FANTASMA!');
+          }
+        },
+      },
+    ],
+  },
+
+  centro12: crearCentro('somuncura', 5, 9, 'centro12'),
+
+  gimnasio5: {
+    nombre: 'GIMNASIO SOMUNCURÁ',
+    oscuro: true,
+    grilla: desdeTexto([
+      '###########',
+      '#a__vvv__a#',
+      '#R_RvvvR_R#',
+      '#__R___R__#',
+      '#R___R___R#',
+      '#__R___R__#',
+      '#R___R___R#',
+      '#_R_____R_#',
+      '#___R_R___#',
+      '#_________#',
+      '#_________#',
+      '#####m#####',
+    ]),
+    edificios: [],
+    salidas: [{ x: 5, y: 11, a: 'somuncura', ax: 17, ay: 9, dir: 0 }],
+    objetos: {
+      R: 'Una piedra de basalto de la meseta. Si acercás la oreja... ¡se oye un susurro!',
+      a: 'Cristales violetas que brillan apenas en la oscuridad.',
+    },
+    npcs: [
+      entrenadorNPC({
+        id: 'gim5_a', x: 8, y: 5, dir: 2, pal: PAL.sombra, nombre: 'MÉDIUM CLARA',
+        equipo: [['candilejo', 50], ['wraithfae', 50], ['gargorrupt', 51]],
+        antes: ['MÉDIUM CLARA: Uuuuh... ¿Quién anda ahí? ¡No se ve nada! ¡Peleemos a oscuras!'],
+        gana: 'MÉDIUM CLARA: Los espíritus me dijeron que ibas a ganar... y tenían razón.',
+        despues: 'MÉDIUM CLARA: Las criaturas FANTASMA no sienten los golpes NORMAL ni LUCHA. ¡Ojo con eso!',
+      }),
+      entrenadorNPC({
+        id: 'gim5_b', x: 2, y: 3, dir: 3, pal: PAL.tomi, nombre: 'MATERO NOCTURNO FIDEL',
+        equipo: [['duskfae', 51], ['umbratail', 51]],
+        antes: ['MATERO FIDEL: Tomo mate a la luz de la luna. ¡Y mis criaturas pelean mejor de noche!'],
+        gana: 'MATERO FIDEL: Se me lavó el mate...',
+        despues: 'MATERO FIDEL: SOMBRA tiene seis criaturas. ¡La última es la más fuerte!',
+      }),
+      {
+        id: 'sombra', x: 5, y: 1, dir: 0, pal: PAL.sombra,
+        hablar: async () => {
+          if (S.flags.insignia5) {
+            await decir('SOMBRA: Las piedras siguen hablando de vos, Felipe. Seguí hacia el sur, hasta el fin del mundo.');
+            return;
+          }
+          if (!S.flags.insignia4) {
+            await decir('SOMBRA: Primero conseguí la INSIGNIA GLACIAR de NIEVE, en Bariloche. Las piedras me lo dijeron.');
+            return;
+          }
+          await decir('SOMBRA: ...Shhh. ¿Lo escuchás? Es el viento entre las rocas. Las piedras de Somuncurá me contaron que venías.');
+          await decir('Soy SOMBRA, líder del GIMNASIO SOMUNCURÁ. Mis criaturas viven entre la niebla y la noche.');
+          await decir('Si me ganás, te llevás la INSIGNIA ECO. ¡Que la oscuridad te acompañe!');
+          const r = await batalla({ entrenador: { nombre: 'LÍDER SOMBRA', pal: PAL.sombra, equipo: [['gargorrupt', 50], ['wraithfae', 51], ['animaura', 51], ['duskfae', 52], ['umbratail', 52], ['phantolycan', 53]] } });
+          if (r === 'gana') {
+            S.flags.insignia5 = true;
+            S.flags.insignias = Math.max(S.flags.insignias || 0, 5);
+            await decir('SOMBRA: Encendiste una luz en mi oscuridad. Te la ganaste.');
+            await decir('¡Felipe recibió la INSIGNIA ECO!');
+            S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 5;
+            S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
+            S.bolsa.velaAnima = (S.bolsa.velaAnima || 0) + 1;
+            await decir('SOMBRA: Llevate estos ALFAJORES, BOLEADORAS y una VELA ÁNIMA. ¡Ya tenés cinco insignias!');
+            guardar();
+          }
+        },
+      },
+    ],
+  },
+
   // ================= LA SALAMANCA (GIMNASIO 2) =================
   gimnasio2: {
     nombre: 'LA SALAMANCA',
@@ -2273,12 +2725,21 @@ MAPAS.puerto.carteles['12,1'] = 'Al OESTE: RUTA 11. Hay que BAJAR por todo el pa
 // Bariloche: se llega BAJANDO desde la estepa (arriba); al SUR, la Ruta 13 (en construcción)
 moverSalidas('bariloche', 'estepa', [{ x: 10, y: 0 }, { x: 11, y: 0 }]);
 llegadas('estepa', 'bariloche', [{ ax: 10, ay: 1, dir: 0 }, { ax: 11, ay: 1, dir: 0 }]);
-MAPAS.bariloche.disparadores[0].prueba = (x, y) => y === 23;
-MAPAS.bariloche.disparadores[0].accion = async () => {
-  await decir('Al SUR: RUTA 13, hacia el GIMNASIO 5... ¡Todavía está en construcción! Muy pronto vas a poder seguir viaje.');
-  await pasoForzado(1);
-};
-MAPAS.bariloche.carteles['12,1'] = 'BARILOCHE. Al NORTE: la ESTEPA PATAGÓNICA. Al SUR: RUTA 13 (¡en construcción!).';
+MAPAS.bariloche.disparadores = [];
+MAPAS.bariloche.salidas.push(
+  { x: 10, y: 23, a: 'ruta13', ax: 10, ay: 30, dir: 1 },
+  { x: 11, y: 23, a: 'ruta13', ax: 11, ay: 30, dir: 1 },
+);
+MAPAS.bariloche.carteles['12,1'] = 'BARILOCHE. Al NORTE: la ESTEPA PATAGÓNICA. Al SUR: RUTA 13, el BOSQUE ANDINO y EL BOLSÓN.';
+// El Bolsón: se llega BAJANDO (arriba) y se sale al ESTE; se cierra el sur
+abrir('elbolson', [[10, 21], [11, 21]], 'N');
+abrir('elbolson', [[22, 10], [23, 10], [22, 11], [23, 11]], '=');
+// Jacobacci: se cruza de OESTE a ESTE
+abrir('jacobacci', [[10, 0], [11, 0], [10, 21], [11, 21]], 'N');
+abrir('jacobacci', [[0, 10], [1, 10], [0, 11], [1, 11], [22, 10], [23, 10], [22, 11], [23, 11]], '=');
+// Paraje Somuncurá: se llega desde el OESTE; arriba cerrado, abajo el camino en construcción
+abrir('somuncura', [[10, 0], [11, 0]], 'R');
+abrir('somuncura', [[0, 10], [1, 10], [0, 11], [1, 11]], '=');
 
 // --- Rutas: girarlas ---
 // cw = el "arriba" del dibujo pasa a ser el ESTE; ccw = pasa a ser el OESTE; 180 = pasa a ser el SUR
@@ -2315,6 +2776,10 @@ girarMapa('ruta2', '180');
 girarMapa('ruta3', 'cw');
 girarMapa('caldenal', '180');
 girarMapa('estepa', '180');
+// Región 5: Ruta 13 BAJA desde Bariloche; Rutas 14 y 15 van hacia el ESTE
+girarMapa('ruta13', '180');
+girarMapa('ruta14', 'cw');
+girarMapa('ruta15', 'cw');
 
 
 // ===== Escenas de la historia =====

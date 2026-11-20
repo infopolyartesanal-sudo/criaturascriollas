@@ -853,6 +853,13 @@ function dibujarMundo() {
     const enPasto = m.grilla[e.ty] && (m.grilla[e.ty][e.tx] === ',' || m.grilla[e.ty][e.tx] === 'u') && !(e.yo && S.moviendo && S.prog < 8);
     if (enPasto) b.drawImage(TILES[m.grilla[e.ty][e.tx]], 0, 9, 16, 7, e.x - cx, e.y - cy + 9, 16, 7);
   }
+  // Lugares oscuros (Gimnasio 5): solo se ve un círculo alrededor de Felipe
+  if (m.oscuro) {
+    const fx = ppx - cx + 8, fy = ppy - cy + 6;
+    const gr = b.createRadialGradient(fx, fy, 18, fx, fy, 70);
+    gr.addColorStop(0, 'rgba(12,4,28,0)'); gr.addColorStop(1, 'rgba(12,4,28,0.88)');
+    b.fillStyle = gr; b.fillRect(0, 0, W, H);
+  }
   // Nombre del lugar al entrar
   if (S.cartelLugar && S.cartelLugar.t > 0) S.cartelLugar.t--;
 }
@@ -1264,7 +1271,7 @@ async function ejecutarMov(at, de, slot, quien) {
     if (r.ef > 1) await decir('¡Es muy eficaz!', { auto: 40 });
     else if (r.ef < 1) await decir('No es muy eficaz...', { auto: 40 });
     if (hd.ef === 'maestroFuego' && r.danio > 0) await decir('¡Maestro de Fuego! El escudo de llamas achicó el golpe.', { auto: 40 });
-    await despuesDelGolpe(at, de, M);
+    await despuesDelGolpe(at, de, M, r.danio);
     if (slot.id === 'forcejeo') {
       at.ps = Math.max(0, at.ps - Math.max(1, Math.floor(at.psMax / 4)));
       await animarPS(at);
@@ -1345,8 +1352,14 @@ async function alEntrar(m) {
     await decir('¡El campo se inundó como un humedal del Litoral!', { auto: 50 });
   }
 }
-async function despuesDelGolpe(at, de, M) {
+async function despuesDelGolpe(at, de, M, danio = 0) {
   const ha = habDe(at), hd = habDe(de);
+  if (ha.ef === 'maldicion' && M.muerde && at.ps > 0 && at.ps < at.psMax && danio > 0) {
+    await anunciarHab(at);
+    at.ps = Math.min(at.psMax, at.ps + Math.max(1, Math.floor(danio / 2)));
+    await animarPS(at);
+    await decir(`${nombreBatalla(at)} recuperó PS con su mordida.`, { auto: 40 });
+  }
   if (de.ps > 0) {
     if (hd.ef === 'hervor' && (M.tipo === 'FUEGO' || M.tipo === 'AGUA')) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 2); }
     if (hd.ef === 'cobardia' && ['BICHO', 'FANTASMA', 'SINIESTRO'].includes(M.tipo)) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 1); }
