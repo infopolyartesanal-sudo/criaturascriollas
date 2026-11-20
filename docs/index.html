@@ -1907,6 +1907,77 @@ function curarCriatura(m) {
 function nombreDe(m) { return ESPECIES[m.id].nombre.toUpperCase(); }
 function tiposDe(m) { return ESPECIES[m.id].tipos; }
 
+
+// ===== Habilidades =====
+// Sacadas de la presentación de Felipe (las que no tenían, elegidas parecidas).
+// ef = qué hace en la batalla (lo maneja juego.js)
+const HABILIDADES = {
+  obrero: { nombre: 'Obrero', ef: 'obrero', desc: 'Cada vez que acierta un golpe, le sube el ATAQUE.' },
+  rocaSolida: { nombre: 'Roca Sólida', ef: 'filtro', desc: 'Los ataques muy eficaces le hacen menos daño.' },
+  filtro: { nombre: 'Filtro', ef: 'filtro', desc: 'Los ataques muy eficaces le hacen menos daño.' },
+  cromolente: { nombre: 'Cromolente', ef: 'cromolente', desc: 'Sus ataques poco eficaces pegan el doble.' },
+  robustez: { nombre: 'Robustez', ef: 'robustez', desc: 'Con la vida llena, aguanta cualquier golpe con 1 PS.' },
+  cuerpoPuro: { nombre: 'Cuerpo Puro', ef: 'cuerpoPuro', desc: 'Nadie le puede bajar el ATAQUE ni la DEFENSA.' },
+  espejoMagico: { nombre: 'Espejo Mágico', ef: 'espejo', desc: 'Si el rival le quiere bajar algo, se lo devuelve.' },
+  pielTosca: { nombre: 'Piel Tosca', ef: 'contacto', desc: 'El que lo golpea se lastima un poco.' },
+  cuerpoLlama: { nombre: 'Cuerpo Llama', ef: 'contacto', desc: 'Quema un poco al que lo golpea.' },
+  pielToxica: { nombre: 'Piel Tóxica', ef: 'contacto', desc: 'Su veneno helado lastima al que lo golpea.' },
+  cuerpoMaldito: { nombre: 'Cuerpo Maldito', ef: 'contacto', desc: 'El que lo golpea pierde un poco de vida.' },
+  gelido: { nombre: 'Gélido', ef: 'regenera', desc: 'Recupera un poco de PS en cada turno.' },
+  descansoRegio: { nombre: 'Descanso Regio', ef: 'regenera', desc: 'Tranquilo como un carpincho: recupera PS cada turno.' },
+  absorbeFuego: { nombre: 'Absorbe Fuego', ef: 'absorbeFuego', desc: 'Los ataques de Fuego lo curan en vez de lastimarlo.' },
+  colector: { nombre: 'Colector', ef: 'colector', desc: 'Los ataques de Agua no lo lastiman y le suben el ATAQUE.' },
+  hervor: { nombre: 'Hervor', ef: 'hervor', desc: 'Si le pegan con Fuego o Agua, se vuelve mucho más rápido.' },
+  cobardia: { nombre: 'Cobardía', ef: 'cobardia', desc: 'Si le pegan con Bicho, Fantasma o Siniestro, se vuelve más rápido.' },
+  mandibulaFuerte: { nombre: 'Mandíbula Fuerte', ef: 'fuerza', desc: 'Sus mordiscos son tremendos: pega más fuerte.' },
+  adaptable: { nombre: 'Adaptable', ef: 'adaptable', desc: 'Los ataques de su mismo tipo pegan todavía más.' },
+  intimidacion: { nombre: 'Intimidación', ef: 'intimidacion', desc: 'Al entrar asusta al rival y le baja el ATAQUE.' },
+  legadoGlaciar: { nombre: 'Legado Glaciar', ef: 'legado', desc: 'Al debilitarse deja un escudo de hielo: el que entra después tiene más DEFENSA.' },
+  humidogenesis: { nombre: 'Humidogénesis', ef: 'humedal', desc: 'Inunda el campo: sus ataques de Agua y Planta pegan más.' },
+  alasVentisca: { nombre: 'Alas de Ventisca', ef: 'alas', desc: 'Con la vida llena, sus ataques Volador salen primero.' },
+  nadoRapido: { nombre: 'Nado Rápido', ef: 'veloz', desc: 'Al entrar a pelear se vuelve más rápido.' },
+  clorofila: { nombre: 'Clorofila', ef: 'veloz', desc: 'Con el sol se apura: al entrar se vuelve más rápido.' },
+  pasoLigero: { nombre: 'Paso Ligero', ef: 'veloz', desc: 'Al entrar a pelear se vuelve más rápido.' },
+  cortinaNieve: { nombre: 'Cortina Nieve', ef: 'veloz', desc: 'Se escurre entre la nieve: al entrar se vuelve más rápido.' },
+  veloEspejismo: { nombre: 'Velo Espejismo', ef: 'veloz', desc: 'Distorsiona la luz: al entrar se vuelve más rápido.' },
+  garraAfilada: { nombre: 'Garra Afilada', ef: 'critico', desc: 'Hace golpes críticos mucho más seguido.' },
+  ojoNocturno: { nombre: 'Ojo Nocturno', ef: 'critico', desc: 'Ve los puntos débiles: hace más golpes críticos.' },
+  caparazon: { nombre: 'Caparazón', ef: 'sinCritico', desc: 'Su caparazón lo protege: no recibe golpes críticos.' },
+  ilusion: { nombre: 'Ilusión', ef: 'ilusion', desc: 'Se vuelve transparente: el primer golpe que recibe le hace la mitad.' },
+  impulso: { nombre: 'Impulso', ef: 'impulso', desc: 'Se emociona con el fuego: es más rápido en cada turno.' },
+  crisolMagma: { nombre: 'Crisol de Magma', ef: 'crisol', desc: 'Sus ataques de Fuego y Roca pegan más.' },
+  monteBravo: { nombre: 'Monte Bravo', ef: 'apuro', tipo: 'PLANTA', desc: 'Con poca vida, sus ataques de Planta pegan mucho más.' },
+  fogonInterior: { nombre: 'Fogón Interior', ef: 'apuro', tipo: 'FUEGO', desc: 'Con poca vida, sus ataques de Fuego pegan mucho más.' },
+  correntada: { nombre: 'Correntada', ef: 'apuro', tipo: 'AGUA', desc: 'Con poca vida, sus ataques de Agua pegan mucho más.' },
+};
+const HAB_ESPECIE = {
+  cuisito: 'monteBravo', cuison: 'monteBravo', zorrito: 'fogonInterior', zorrazo: 'fogonInterior',
+  carpinchu: 'descansoRegio', carpinchon: 'descansoRegio', terito: 'intimidacion', peludin: 'caparazon',
+  vizcachita: 'pasoLigero', hornerito: 'obrero', arquineo: 'obrero', arquitemplillo: 'obrero',
+  ramoa: 'monteBravo', lianaco: 'monteBravo', carayarbore: 'monteBravo',
+  flamartija: 'fogonInterior', dracobrasa: 'fogonInterior', ignidraxx: 'fogonInterior',
+  ajolodo: 'correntada', branquiotox: 'correntada', iberaxolot: 'correntada',
+  piquibrote: 'clorofila', piquibrasa: 'clorofila', piquillonco: 'clorofila',
+  chispuna: 'absorbeFuego', volcarin: 'crisolMagma', andragon: 'impulso',
+  yacarelito: 'mandibulaFuerte', yacarextro: 'mandibulaFuerte', iberadraco: 'mandibulaFuerte',
+  junquito: 'nadoRapido', totorarca: 'humidogenesis', ceibito: 'cuerpoPuro', anahisa: 'filtro',
+  larvin: 'adaptable', mosquillon: 'obrero', peluchin: 'pielTosca', capullon: 'pielTosca', polillaca: 'cromolente',
+  piedrin: 'robustez', micalonco: 'espejoMagico', geodin: 'robustez', wandacoloso: 'obrero',
+  cardito: 'clorofila', rodcardo: 'colector',
+  farolito: 'cuerpoLlama', candilejo: 'cuerpoLlama', animaura: 'cuerpoLlama',
+  lechucita: 'ojoNocturno', lechuzonte: 'ojoNocturno', condorito: 'garraAfilada',
+  pinguinoide: 'gelido', vientuino: 'gelido', glaciperador: 'alasVentisca',
+  glaciolito: 'robustez', morenacoloso: 'legadoGlaciar',
+  nevuki: 'cortinaNieve', nevulon: 'cortinaNieve', nevukhan: 'cortinaNieve',
+  espejito: 'espejoMagico', espejon: 'espejoMagico', espejonte: 'espejoMagico',
+  faeve: 'veloEspejismo', mythfae: 'veloEspejismo', mimetit: 'ilusion', espectradraco: 'ilusion',
+  rocori: 'rocaSolida', rocamonte: 'rocaSolida', rocantour: 'rocaSolida',
+  garkol: 'cuerpoMaldito', gargorrupt: 'cuerpoMaldito',
+  venomin: 'pielToxica', glacivenom: 'pielToxica', glacivenom_supremo: 'pielToxica',
+  pumita: 'intimidacion', pumentor: 'intimidacion',
+};
+for (const id in ESPECIES) ESPECIES[id].hab = HAB_ESPECIE[id] || 'pasoLigero';
+function habDe(m) { return HABILIDADES[ESPECIES[m.id].hab]; }
 </script>
 <script>
 // ===== mapas.js =====
@@ -4731,21 +4802,25 @@ function dibujarEquipo() {
   if (yMsg < 140 && !ui.dialogo) { caja(6, Math.max(yMsg, 136), 228, 20, 'normal'); txt(e.msg, 14, Math.max(yMsg, 136) + 7, { t: 6 }); }
 }
 function dibujarDatos(m) {
-  const esp = ESPECIES[m.id];
+  const esp = ESPECIES[m.id], h = habDe(m);
   caja(4, 4, 232, 152, 'info');
   sc.fillStyle = '#d8e8f8'; sc.fillRect(12, 12, 72, 72);
   sc.drawImage(spriteCriatura(m.id), 16, 16, 64, 64);
-  txt(nombreDe(m), 92, 14, { t: 8 });
-  txt('Nivel ' + m.nivel, 92, 28, { t: 7 });
-  esp.tipos.forEach((t, i) => insigniaTipo(t, 92 + i * 60, 40));
-  txt(`PS  ${m.ps}/${m.psMax}`, 92, 58, { t: 6 });
-  txt(`ATQ ${m.atk}   DEF ${m.def}`, 92, 68, { t: 6 });
-  txt(`VEL ${m.vel}`, 92, 78, { t: 6 });
-  const falta = expPara(m.nivel + 1) - m.exp;
-  txt(`EXP para subir: ${falta}`, 14, 92, { t: 6 });
+  txt(nombreDe(m), 92, 12, { t: 8 });
+  txt('Nivel ' + m.nivel, 92, 24, { t: 7 });
+  esp.tipos.forEach((t, i) => insigniaTipo(t, 92 + i * 60, 34));
+  txt(`PS  ${m.ps}/${m.psMax}`, 92, 50, { t: 6 });
+  txt(`ATQ ${m.atk}   DEF ${m.def}`, 92, 60, { t: 6 });
+  txt(`VEL ${m.vel}`, 92, 70, { t: 6 });
+  txt(`EXP para subir: ${expPara(m.nivel + 1) - m.exp}`, 92, 80, { t: 5, sombra: null, c: '#606060' });
+  // Habilidad
+  sc.fillStyle = '#e8dcb0'; rectRed(sc, 10, 89, 220, 26, 3); sc.fill();
+  txt('HABILIDAD:', 15, 93, { t: 6, c: '#a05020', sombra: null });
+  txt(h.nombre.toUpperCase(), 80, 93, { t: 6, c: '#203048', sombra: null });
+  envolver(h.desc, 208, 5).slice(0, 2).forEach((l, i) => txt(l, 15, 102 + i * 7, { t: 5, sombra: null, c: '#383838' }));
   m.movs.forEach((mv, i) => {
     const M = MOVS[mv.id];
-    const y = 104 + i * 12;
+    const y = 119 + i * 9;
     txt(M.nombre.toUpperCase(), 14, y, { t: 6 });
     txt(`PP ${mv.pp}/${M.pp}`, 120, y, { t: 6 });
     sc.fillStyle = COLOR_TIPO[M.tipo]; sc.fillRect(190, y, 38, 8);
@@ -4936,12 +5011,21 @@ function calcularDanio(at, de, mv) {
   const L = at.nivel;
   const a = at.atk * mult(at.et.atk), d = de.def * mult(de.et.def);
   let base = Math.floor(Math.floor(Math.floor(2 * L / 5 + 2) * mv.pot * a / d) / 50) + 2;
-  const stab = tiposDe(at).includes(mv.tipo) ? 1.5 : 1;
+  const ha = habDe(at), hd = habDe(de);
+  const stab = tiposDe(at).includes(mv.tipo) ? (ha.ef === 'adaptable' ? 2 : 1.5) : 1;
   const ef = eficacia(mv.tipo, tiposDe(de));
-  const critico = Math.random() < 1 / 16;
+  const critico = hd.ef !== 'sinCritico' && Math.random() < (ha.ef === 'critico' ? 1 / 5 : 1 / 16);
   const azar = 0.85 + Math.random() * 0.15;
   if (ef === 0) return { danio: 0, ef, critico: false };
-  return { danio: Math.max(1, Math.floor(base * stab * ef * (critico ? 1.5 : 1) * azar)), ef, critico };
+  let extra = 1;
+  if (ha.ef === 'fuerza') extra *= 1.25;
+  if (ha.ef === 'cromolente' && ef < 1) extra *= 2;
+  if (ha.ef === 'apuro' && mv.tipo === ha.tipo && at.ps <= at.psMax / 3) extra *= 1.5;
+  if (ha.ef === 'humedal' && (mv.tipo === 'AGUA' || mv.tipo === 'PLANTA')) extra *= 1.3;
+  if (ha.ef === 'crisol' && (mv.tipo === 'FUEGO' || mv.tipo === 'ROCA')) extra *= 1.3;
+  if (hd.ef === 'filtro' && ef > 1) extra *= 0.75;
+  if (hd.ef === 'ilusion' && !de.et.golpeado) extra *= 0.5;
+  return { danio: Math.max(1, Math.floor(base * stab * ef * (critico ? 1.5 : 1) * azar * extra)), ef, critico };
 }
 function nombreBatalla(m) {
   if (m === bt.yo) return nombreDe(m);
@@ -4975,7 +5059,7 @@ async function batalla(op) {
     bt.entVis = false;
     await sacarRival(equipoRival[0]);
   } else {
-    bt.rival = equipoRival[0]; bt.rival.et = { atk: 0, def: 0 }; bt.ps.r = bt.rival.ps;
+    bt.rival = equipoRival[0]; bt.rival.et = { atk: 0, def: 0, vel: 0 }; bt.ps.r = bt.rival.ps;
     bt.rivalVis = true; bt.rDX = 140;
     await fundido(0, 14);
     for (let i = 0; i < 24; i++) { bt.rDX = 140 * (1 - (i + 1) / 24); await esperar(1); }
@@ -5006,8 +5090,9 @@ async function batalla(op) {
     let orden = [{ q: 'rival', mv: movRival }];
     if (acc.t === 'mov') {
       const mio = { q: 'yo', mv: acc.mv };
-      const pm = MOVS[acc.mv.id].prio || 0, pr = MOVS[movRival.id].prio || 0;
-      const primeroYo = pm !== pr ? pm > pr : bt.yo.vel !== bt.rival.vel ? bt.yo.vel > bt.rival.vel : Math.random() < 0.5;
+      const pm = prioridad(bt.yo, acc.mv), pr = prioridad(bt.rival, movRival);
+      const vy = velocidad(bt.yo), vr = velocidad(bt.rival);
+      const primeroYo = pm !== pr ? pm > pr : vy !== vr ? vy > vr : Math.random() < 0.5;
       orden = primeroYo ? [mio, orden[0]] : [orden[0], mio];
     }
     for (const o of orden) {
@@ -5016,6 +5101,7 @@ async function batalla(op) {
       await ejecutarMov(at, de, o.mv, o.q);
       if (de.ps <= 0) break;
     }
+    await finDeTurno();
     if (bt.rival.ps <= 0) {
       await debilitar('r');
       await darExp();
@@ -5073,18 +5159,22 @@ async function batalla(op) {
 }
 
 async function sacarRival(m) {
-  bt.rival = m; m.et = { atk: 0, def: 0 }; bt.ps.r = m.ps;
+  bt.rival = m; m.et = { atk: 0, def: 0, vel: 0 }; bt.ps.r = m.ps;
   bt.rivalVis = true; bt.rDX = 0; bt.rDY = 0; bt.blanco.r = 8;
   for (let i = 0; i < 8; i++) { bt.blanco.r = 8 - i; await esperar(2); }
   bt.blanco.r = 0;
   await decir(`¡${bt.ent.nombre} sacó a ${nombreDe(m)}!`, { auto: 50 });
+  await alEntrar(m);
 }
 async function sacarPropio(m) {
-  bt.yo = m; m.et = { atk: 0, def: 0 }; bt.ps.y = m.ps;
+  bt.yo = m; m.et = { atk: 0, def: 0, vel: 0 }; bt.ps.y = m.ps;
   bt.idxMov = 0;
   bt.yoVis = true; bt.yDX = -90; bt.yDY = 0;
   for (let i = 0; i < 14; i++) { bt.yDX = -90 * (1 - (i + 1) / 14); await esperar(1); }
   await decir(`¡Adelante, ${nombreDe(m)}!`, { auto: 40 });
+  await alEntrar(m);
+  // La primera criatura rival entra antes que la nuestra: su habilidad se activa ahora
+  if (bt.rival && !bt.rival.et.entro) await alEntrar(bt.rival);
 }
 async function retirarPropio() {
   for (let i = 0; i < 10; i++) { bt.yDX = -9 * (i + 1); await esperar(1); }
@@ -5095,6 +5185,10 @@ async function debilitar(lado) {
   for (let i = 0; i < 16; i++) { if (lado === 'r') bt.rDY = (i + 1) * 4; else bt.yDY = (i + 1) * 4; await esperar(1); }
   if (lado === 'r') bt.rivalVis = false; else bt.yoVis = false;
   await decir(`¡${nombreBatalla(m)} se debilitó!`);
+  if (habDe(m).ef === 'legado') {
+    bt.escudo = bt.escudo || {}; bt.escudo[lado] = true;
+    await decir(`¡${habDe(m).nombre}! Dejó un escudo de hielo para el que entre después.`, { auto: 60 });
+  }
   if (lado === 'r') bt.rDY = 0; else bt.yDY = 0;
 }
 
@@ -5199,15 +5293,34 @@ async function ejecutarMov(at, de, slot, quien) {
   if (Math.random() * 100 >= M.prec) { await decir('¡Pero falló!', { auto: 40 }); return; }
   const ladoDe = quien === 'yo' ? 'r' : 'y';
   if (M.pot) {
+    const hd = habDe(de);
+    if (hd.ef === 'absorbeFuego' && M.tipo === 'FUEGO') {
+      await anunciarHab(de);
+      if (de.ps < de.psMax) { de.ps = Math.min(de.psMax, de.ps + Math.ceil(de.psMax / 4)); await animarPS(de); }
+      await decir(`¡El fuego no lastima a ${nombreBatalla(de)}, lo cura!`, { auto: 50 });
+      return;
+    }
+    if (hd.ef === 'colector' && M.tipo === 'AGUA') {
+      await anunciarHab(de);
+      await decir(`¡${nombreBatalla(de)} absorbió el agua!`, { auto: 40 });
+      await cambiarEtapa(de, 'atk', 1, true);
+      return;
+    }
     const r = calcularDanio(at, de, M);
     if (r.ef === 0) { await decir(`No afecta a ${nombreBatalla(de)}...`, { auto: 50 }); return; }
     bt.parp[ladoDe] = 16;
     await esperar(16);
+    const lleno = de.ps === de.psMax;
+    let aguanto = false;
+    if (hd.ef === 'robustez' && lleno && r.danio >= de.ps) { r.danio = de.ps - 1; aguanto = true; }
     de.ps = Math.max(0, de.ps - r.danio);
+    de.et.golpeado = true;
     await animarPS(de);
+    if (aguanto) { await anunciarHab(de); await decir(`¡${nombreBatalla(de)} aguantó el golpe!`, { auto: 40 }); }
     if (r.critico) await decir('¡Golpe crítico!', { auto: 40 });
     if (r.ef > 1) await decir('¡Es muy eficaz!', { auto: 40 });
     else if (r.ef < 1) await decir('No es muy eficaz...', { auto: 40 });
+    await despuesDelGolpe(at, de, M);
     if (slot.id === 'forcejeo') {
       at.ps = Math.max(0, at.ps - Math.max(1, Math.floor(at.psMax / 4)));
       await animarPS(at);
@@ -5223,7 +5336,17 @@ async function ejecutarMov(at, de, slot, quien) {
     return;
   }
   const [stat, signo] = [M.ef.slice(0, 3), M.ef[3]];
-  const objetivo = signo === '+' ? at : de;
+  let objetivo = signo === '+' ? at : de;
+  if (signo === '-' && habDe(de).ef === 'espejo' && habDe(at).ef !== 'espejo') {
+    await anunciarHab(de);
+    await decir(`¡${nombreBatalla(de)} se lo devolvió!`, { auto: 40 });
+    objetivo = at;
+  }
+  if (signo === '-' && habDe(objetivo).ef === 'cuerpoPuro') {
+    await anunciarHab(objetivo);
+    await decir(`¡A ${nombreBatalla(objetivo)} no le pueden bajar nada!`, { auto: 50 });
+    return;
+  }
   const nombreStat = stat === 'atk' ? 'ATAQUE' : 'DEFENSA';
   const nuevo = objetivo.et[stat] + (signo === '+' ? 1 : -1);
   if (nuevo < -6 || nuevo > 6) { await decir(`¡${nombreStat} de ${nombreBatalla(objetivo)} no puede cambiar más!`, { auto: 50 }); return; }
@@ -5231,6 +5354,74 @@ async function ejecutarMov(at, de, slot, quien) {
   bt.parp[objetivo === bt.yo ? 'y' : 'r'] = 10;
   await esperar(10);
   await decir(`¡${signo === '+' ? 'Subió' : 'Bajó'} el ${nombreStat} de ${nombreBatalla(objetivo)}!`, { auto: 50 });
+}
+
+// ---------- Habilidades en batalla ----------
+function velocidad(m) { return m.vel * mult(m.et.vel || 0); }
+function prioridad(m, slot) {
+  const M = MOVS[slot.id];
+  let p = M.prio || 0;
+  if (habDe(m).ef === 'alas' && M.tipo === 'VOLADOR' && m.ps === m.psMax) p += 1;
+  return p;
+}
+async function anunciarHab(m) {
+  bt.parp[m === bt.yo ? 'y' : 'r'] = 8;
+  await decir(`¡${habDe(m).nombre} de ${nombreBatalla(m)}!`, { auto: 40 });
+}
+async function cambiarEtapa(m, stat, n, callado) {
+  const nombres = { atk: 'ATAQUE', def: 'DEFENSA', vel: 'VELOCIDAD' };
+  const nuevo = Math.max(-6, Math.min(6, (m.et[stat] || 0) + n));
+  if (nuevo === (m.et[stat] || 0)) return;
+  m.et[stat] = nuevo;
+  await decir(`¡${n > 0 ? 'Subió' : 'Bajó'}${Math.abs(n) > 1 ? ' mucho' : ''} ${stat === 'def' ? 'la' : 'el'} ${nombres[stat]} de ${nombreBatalla(m)}!`, { auto: 45 });
+}
+async function alEntrar(m) {
+  if (!bt || m.et.entro) return;
+  m.et.entro = true;
+  const h = habDe(m), otro = m === bt.yo ? bt.rival : bt.yo;
+  const lado = m === bt.yo ? 'y' : 'r';
+  if (bt.escudo && bt.escudo[lado]) {
+    bt.escudo[lado] = false;
+    await decir(`¡El escudo de hielo protege a ${nombreBatalla(m)}!`, { auto: 45 });
+    await cambiarEtapa(m, 'def', 2);
+  }
+  if (h.ef === 'intimidacion') {
+    if (!otro || otro.ps <= 0) { m.et.entro = false; return; } // se activa cuando haya rival
+    await anunciarHab(m);
+    if (habDe(otro).ef === 'cuerpoPuro') await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
+    else await cambiarEtapa(otro, 'atk', -1);
+  } else if (h.ef === 'veloz') {
+    await anunciarHab(m); await cambiarEtapa(m, 'vel', 1);
+  } else if (h.ef === 'humedal') {
+    await anunciarHab(m);
+    await decir('¡El campo se inundó como un humedal del Litoral!', { auto: 50 });
+  }
+}
+async function despuesDelGolpe(at, de, M) {
+  const ha = habDe(at), hd = habDe(de);
+  if (de.ps > 0) {
+    if (hd.ef === 'hervor' && (M.tipo === 'FUEGO' || M.tipo === 'AGUA')) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 2); }
+    if (hd.ef === 'cobardia' && ['BICHO', 'FANTASMA', 'SINIESTRO'].includes(M.tipo)) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 1); }
+  }
+  if (ha.ef === 'obrero' && at.ps > 0 && (at.et.atk || 0) < 6) { await anunciarHab(at); await cambiarEtapa(at, 'atk', 1); }
+  if (hd.ef === 'contacto' && at.ps > 0) {
+    await anunciarHab(de);
+    at.ps = Math.max(0, at.ps - Math.max(1, Math.floor(at.psMax / 8)));
+    await animarPS(at);
+    await decir(`¡${nombreBatalla(at)} se lastimó al tocarlo!`, { auto: 40 });
+  }
+}
+async function finDeTurno() {
+  for (const m of [bt.yo, bt.rival]) {
+    if (!m || m.ps <= 0) continue;
+    const h = habDe(m);
+    if (h.ef === 'regenera' && m.ps < m.psMax) {
+      m.ps = Math.min(m.psMax, m.ps + Math.max(1, Math.floor(m.psMax / 16)));
+      await animarPS(m);
+      await decir(`¡${h.nombre}! ${nombreBatalla(m)} recuperó un poco de PS.`, { auto: 40 });
+    }
+    if (h.ef === 'impulso' && (m.et.vel || 0) < 6) { await anunciarHab(m); await cambiarEtapa(m, 'vel', 1); }
+  }
 }
 
 async function darExp() {
