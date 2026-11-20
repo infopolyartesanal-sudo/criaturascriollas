@@ -1,0 +1,199 @@
+'use strict';
+// ================= MÚSICA (8 bits, compuesta para el juego) =================
+// Tres temas originales: RUTA (para caminar), BATALLA y GIMNASIO (fanfarria épica para los
+// gimnasios y las peleas contra los líderes). Se generan con Web Audio, sin archivos.
+// Notas: 'C5/4' = do de la 5ª octava que dura 4 semicorcheas (16 = un compás). 'R' = silencio.
+// Batería: 'k' bombo, 's' redoblante, 'h' platillo.
+
+const CANCIONES = {
+  ruta: {
+    bpm: 118,
+    canales: [
+      { tipo: 'square', duty: 0.5, vol: 0.13, notas: [
+        'E5/2 G5/2 C6/4 B5/2 A5/2 G5/4', 'A5/2 G5/2 E5/2 D5/2 C5/4 D5/4',
+        'E5/2 G5/2 A5/4 G5/2 E5/2 C5/4', 'D5/2 E5/2 D5/2 C5/2 D5/8',
+        'E5/2 G5/2 C6/4 D6/2 C6/2 B5/4', 'A5/2 B5/2 C6/2 A5/2 G5/8',
+        'F5/2 A5/2 G5/2 E5/2 D5/2 E5/2 F5/4', 'E5/4 D5/4 C5/8'] },
+      { tipo: 'square', duty: 0.25, vol: 0.05, notas: [
+        'R/2 E4/2 R/2 G4/2 R/2 E4/2 R/2 G4/2', 'R/2 F4/2 R/2 A4/2 R/2 D4/2 R/2 B3/2',
+        'R/2 E4/2 R/2 A4/2 R/2 E4/2 R/2 C4/2', 'R/2 D4/2 R/2 G4/2 R/2 B3/2 R/2 D4/2',
+        'R/2 E4/2 R/2 G4/2 R/2 E4/2 R/2 G4/2', 'R/2 F4/2 R/2 A4/2 R/2 F4/2 R/2 C4/2',
+        'R/2 F4/2 R/2 A4/2 R/2 B3/2 R/2 D4/2', 'R/2 E4/2 R/2 G4/2 R/2 C4/2 R/2 E4/2'] },
+      { tipo: 'triangle', vol: 0.22, notas: [
+        'C3/4 G3/4 C3/4 G3/4', 'F3/4 C4/4 G2/4 D3/4', 'A2/4 E3/4 A2/4 E3/4', 'G2/4 D3/4 G2/4 D3/4',
+        'C3/4 G3/4 C3/4 G3/4', 'F3/4 C4/4 F3/4 C4/4', 'D3/4 A3/4 G2/4 D3/4', 'C3/4 G3/4 C3/8'] },
+      { tipo: 'bateria', vol: 0.06, notas: ['k/4 h/4 k/2 k/2 h/4'] },
+    ],
+  },
+  batalla: {
+    bpm: 160,
+    canales: [
+      { tipo: 'square', duty: 0.5, vol: 0.12, notas: [
+        'A5/2 R/2 A5/2 C6/2 B5/2 A5/2 G5/2 E5/2', 'F5/4 G5/2 A5/2 E5/8',
+        'A5/2 R/2 A5/2 C6/2 D6/2 C6/2 B5/2 G5/2', 'A5/4 B5/2 C6/2 E6/8',
+        'F6/2 E6/2 D6/2 C6/2 D6/4 B5/4', 'C6/2 B5/2 A5/2 G5/2 A5/4 E5/4',
+        'F5/2 G5/2 A5/2 B5/2 C6/2 D6/2 E6/4', 'E6/4 G#5/4 A5/8'] },
+      { tipo: 'square', duty: 0.25, vol: 0.05, notas: [
+        'E5/4 E5/4 E5/4 C5/4', 'C5/4 C5/4 C5/8', 'E5/4 E5/4 F5/4 D5/4', 'E5/4 G5/4 G5/8',
+        'A5/4 A5/4 F5/8', 'E5/4 E5/4 C5/8', 'D5/4 D5/4 F5/4 A5/4', 'B5/4 E5/4 E5/8'] },
+      { tipo: 'triangle', vol: 0.24, notas: [
+        'A2/2 A3/2 A2/2 A3/2 A2/2 A3/2 A2/2 A3/2', 'F2/2 F3/2 F2/2 F3/2 F2/2 F3/2 F2/2 F3/2',
+        'A2/2 A3/2 A2/2 A3/2 A2/2 A3/2 A2/2 A3/2', 'C3/2 C4/2 C3/2 C4/2 C3/2 C4/2 C3/2 C4/2',
+        'F2/2 F3/2 F2/2 F3/2 F2/2 F3/2 F2/2 F3/2', 'A2/2 A3/2 A2/2 A3/2 A2/2 A3/2 A2/2 A3/2',
+        'D3/2 D4/2 D3/2 D4/2 D3/2 D4/2 D3/2 D4/2', 'E2/2 E3/2 E2/2 E3/2 E2/2 E3/2 E2/2 E3/2'] },
+      { tipo: 'bateria', vol: 0.08, notas: ['k/2 h/2 s/2 h/2 k/2 k/2 s/2 h/2'] },
+    ],
+  },
+  // Fanfarria heroica para los gimnasios y los líderes: trompetas en re menor, saltos grandes y tambores
+  gimnasio: {
+    bpm: 128,
+    canales: [
+      { tipo: 'square', duty: 0.5, vol: 0.14, notas: [
+        'D5/6 A4/2 D5/2 F5/2 A5/4', 'G5/6 F5/2 E5/4 C5/4',
+        'D5/6 A4/2 D5/2 F5/2 A5/4', 'C6/8 A5/8',
+        'A#5/6 A5/2 G5/4 F5/4', 'G5/6 F5/2 E5/4 A5/4',
+        'D6/4 C6/2 A5/2 F5/4 G5/4', 'A5/12 R/4',
+        'F5/2 G5/2 A5/4 A5/2 A#5/2 C6/4', 'D6/6 C6/2 A#5/4 A5/4',
+        'G5/2 A5/2 A#5/4 A#5/2 C6/2 D6/4', 'E6/8 C#6/8',
+        'D6/6 A5/2 D6/2 F6/2 E6/4', 'D6/4 C6/4 A#5/4 A5/4',
+        'G5/2 A5/2 A#5/2 C6/2 C#6/4 E6/4', 'D6/12 R/4'] },
+      { tipo: 'square', duty: 0.25, vol: 0.06, notas: [
+        'F4/16', 'A#3/16', 'F4/16', 'A4/16', 'D4/16', 'E4/16', 'F4/8 A#4/8', 'C#4/12 R/4',
+        'C4/16', 'F4/16', 'D4/16', 'A4/8 E4/8', 'F4/16', 'F4/8 D4/8', 'A#4/8 A4/8', 'F4/12 R/4'] },
+      { tipo: 'triangle', vol: 0.26, notas: [
+        'D2/2 D2/2 D3/2 D2/2 D2/2 D2/2 D3/2 D2/2', 'A#1/2 A#1/2 A#2/2 A#1/2 C2/2 C2/2 C3/2 C2/2',
+        'D2/2 D2/2 D3/2 D2/2 D2/2 D2/2 D3/2 D2/2', 'F2/2 F2/2 F3/2 F2/2 F2/2 F2/2 F3/2 F2/2',
+        'A#1/2 A#1/2 A#2/2 A#1/2 A#1/2 A#1/2 A#2/2 A#1/2', 'C2/2 C2/2 C3/2 C2/2 A1/2 A1/2 A2/2 A1/2',
+        'D2/2 D2/2 D3/2 D2/2 G1/2 G1/2 G2/2 G1/2', 'A1/2 A1/2 A2/2 A1/2 A1/2 A1/2 A2/2 A1/2',
+        'F2/2 F2/2 F3/2 F2/2 F2/2 F2/2 F3/2 F2/2', 'A#1/2 A#1/2 A#2/2 A#1/2 A#1/2 A#1/2 A#2/2 A#1/2',
+        'G1/2 G1/2 G2/2 G1/2 G1/2 G1/2 G2/2 G1/2', 'A1/2 A1/2 A2/2 A1/2 A1/2 A1/2 A2/2 A1/2',
+        'D2/2 D2/2 D3/2 D2/2 D2/2 D2/2 D3/2 D2/2', 'A#1/2 A#1/2 A#2/2 A#1/2 F2/2 F2/2 F3/2 F2/2',
+        'G1/2 G1/2 G2/2 G1/2 A1/2 A1/2 A2/2 A1/2', 'D2/2 D2/2 D3/2 D2/2 D2/4 R/4'] },
+      { tipo: 'bateria', vol: 0.1, notas: [
+        'k/4 s/2 k/2 k/4 s/4', 'k/4 s/2 k/2 k/4 s/4', 'k/4 s/2 k/2 k/4 s/4', 'k/4 s/4 s/2 s/2 s/1 s/1 s/2',
+        'k/4 s/2 k/2 k/4 s/4', 'k/4 s/2 k/2 k/4 s/4', 'k/4 s/2 k/2 k/4 s/4', 'k/4 s/1 s/1 s/1 s/1 s/2 s/2 k/4'] },
+    ],
+  },
+};
+
+const NOTA_BASE = { C: -9, D: -7, E: -5, F: -4, G: -2, A: 0, B: 2 };
+function frecuencia(n) {
+  const m = n.match(/^([A-G])([#b]?)(\d)$/);
+  if (!m) return null;
+  let semis = NOTA_BASE[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0) + (Number(m[3]) - 4) * 12;
+  return 440 * Math.pow(2, semis / 12);
+}
+function prepararCancion(c) {
+  return c.canales.map(ch => {
+    const notas = ch.notas.join(' ').trim().split(/\s+/).map(t => { const [n, l] = t.split('/'); return [n, Number(l)]; });
+    const total = notas.reduce((a, x) => a + x[1], 0);
+    return { ...ch, lista: notas, total };
+  });
+}
+
+const MUS = { ctx: null, pista: null, gen: 0, maestro: null, canales: [], inicio: 0, ruido: null, prendida: true };
+try { MUS.prendida = localStorage.getItem('cc_musica') !== 'no'; } catch (e) {}
+
+function musicaIniciar() {
+  if (MUS.ctx) { if (MUS.ctx.state === 'suspended') MUS.ctx.resume(); return; }
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return;
+  MUS.ctx = new AC();
+  const n = MUS.ctx.sampleRate;
+  MUS.ruido = MUS.ctx.createBuffer(1, n, n);
+  const d = MUS.ruido.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+  MUS.ondas = {};
+}
+['keydown', 'pointerdown', 'touchstart'].forEach(ev => window.addEventListener(ev, musicaIniciar, { passive: true }));
+
+function ondaCuadrada(duty) {
+  const k = String(duty);
+  if (MUS.ondas[k]) return MUS.ondas[k];
+  const N = 32, re = new Float32Array(N), im = new Float32Array(N);
+  for (let i = 1; i < N; i++) re[i] = (2 / (i * Math.PI)) * Math.sin(i * Math.PI * duty);
+  return (MUS.ondas[k] = MUS.ctx.createPeriodicWave(re, im));
+}
+
+function musicaCambiar(pista) {
+  if (MUS.pista === pista) return;
+  MUS.pista = pista;
+  MUS.gen++;
+  const ctx = MUS.ctx; if (!ctx) return;
+  if (MUS.maestro) {
+    const viejo = MUS.maestro;
+    viejo.gain.setTargetAtTime(0, ctx.currentTime, 0.08);
+    setTimeout(() => viejo.disconnect(), 600);
+    MUS.maestro = null;
+  }
+  if (!pista || !MUS.prendida) return;
+  const c = CANCIONES[pista];
+  MUS.maestro = ctx.createGain(); MUS.maestro.gain.value = 0.4; MUS.maestro.connect(ctx.destination);
+  MUS.semi = 60 / c.bpm / 4;
+  MUS.canales = prepararCancion(c).map(ch => ({ ...ch, i: 0, t: ctx.currentTime + 0.1 }));
+}
+
+function tocarNota(ch, nota, t, dur) {
+  const ctx = MUS.ctx, out = MUS.maestro;
+  if (nota === 'R') return;
+  const g = ctx.createGain(); g.connect(out);
+  if (ch.tipo === 'bateria') {
+    if (nota === 'k') {
+      const o = ctx.createOscillator(); o.type = 'sine';
+      o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(40, t + 0.12);
+      g.gain.setValueAtTime(ch.vol * 4, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+      o.connect(g); o.start(t); o.stop(t + 0.16);
+    } else {
+      const s = ctx.createBufferSource(); s.buffer = MUS.ruido;
+      const f = ctx.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = nota === 'h' ? 7000 : 1500;
+      const largo = nota === 'h' ? 0.04 : 0.12;
+      g.gain.setValueAtTime(ch.vol * (nota === 'h' ? 0.8 : 2.2), t); g.gain.exponentialRampToValueAtTime(0.001, t + largo);
+      s.connect(f); f.connect(g); s.start(t, Math.random() * 0.5); s.stop(t + largo + 0.01);
+    }
+    return;
+  }
+  const fr = frecuencia(nota); if (!fr) return;
+  const o = ctx.createOscillator();
+  if (ch.tipo === 'square') o.setPeriodicWave(ondaCuadrada(ch.duty || 0.5)); else o.type = 'triangle';
+  o.frequency.setValueAtTime(fr, t);
+  const fin = t + dur * 0.92;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(ch.vol, t + 0.01);
+  if (ch.tipo === 'square') g.gain.setTargetAtTime(ch.vol * 0.6, t + 0.05, 0.1);
+  g.gain.setValueAtTime(g.gain.value, fin - 0.02);
+  g.gain.linearRampToValueAtTime(0, fin);
+  o.connect(g); o.start(t); o.stop(fin + 0.01);
+}
+
+// Qué tema corresponde ahora
+function pistaDeseada() {
+  if (S.escena === 'batalla' && bt) return bt.ent && /^LÍDER/.test(bt.ent.nombre) ? 'gimnasio' : 'batalla';
+  if (S.escena === 'mundo' || S.escena === 'titulo' || S.escena === 'intro') return /^gimnasio/.test(S.mapa) && S.escena === 'mundo' ? 'gimnasio' : 'ruta';
+  if (S.escena === 'evo') return MUS.pista;
+  return null;
+}
+
+function musicaTick() {
+  const ctx = MUS.ctx;
+  if (!ctx || ctx.state !== 'running') return;
+  musicaCambiar(MUS.prendida ? pistaDeseada() : null);
+  if (!MUS.maestro) return;
+  const hasta = ctx.currentTime + 0.25;
+  for (const ch of MUS.canales) {
+    if (ch.t < ctx.currentTime - 0.5) ch.t = ctx.currentTime + 0.05; // si la pestaña estuvo dormida
+    while (ch.t < hasta) {
+      const [nota, largo] = ch.lista[ch.i];
+      const dur = largo * MUS.semi;
+      tocarNota(ch, nota, ch.t, dur);
+      ch.t += dur;
+      ch.i = (ch.i + 1) % ch.lista.length;
+    }
+  }
+}
+
+function musicaAlternar() {
+  MUS.prendida = !MUS.prendida;
+  try { localStorage.setItem('cc_musica', MUS.prendida ? 'si' : 'no'); } catch (e) {}
+  MUS.pista = undefined;
+  musicaCambiar(MUS.prendida ? pistaDeseada() : null);
+}

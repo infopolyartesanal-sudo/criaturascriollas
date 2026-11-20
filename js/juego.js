@@ -460,7 +460,7 @@ async function encuentroSalvaje() {
 // ---------- Menú principal ----------
 async function menuPrincipal() {
   while (true) {
-    const r = await elegir(['EQUIPO', 'MOCHILA', 'GUARDAR', 'CERRAR'], { x: 156, y: 4, w: 80 });
+    const r = await elegir(['EQUIPO', 'MOCHILA', 'GUARDAR', MUS.prendida ? 'MÚSICA: SÍ' : 'MÚSICA: NO', 'CERRAR'], { x: 148, y: 4, w: 88 });
     if (r === 0) {
       if (!S.equipo.length) { await decir('Todavía no tenés criaturas.'); continue; }
       await pantallaEquipo({ modo: 'ver' });
@@ -470,6 +470,8 @@ async function menuPrincipal() {
     } else if (r === 2) {
       const ok = guardar();
       await decir(ok ? '¡La partida se guardó!' : 'No se pudo guardar la partida en este navegador.');
+    } else if (r === 3) {
+      musicaAlternar();
     } else return;
   }
 }
@@ -1500,6 +1502,7 @@ function dibujarVista() {
 function paso() {
   pressed = cola; cola = {};
   tick++;
+  musicaTick();
   const ws = esperas; esperas = [];
   for (const w of ws) { if (--w.n <= 0) w.r(); else esperas.push(w); }
   if (S.escena === 'mundo' && !S.ocupado) pasoMundo();

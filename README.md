@@ -27,6 +27,7 @@ Antes: https://criaturascriollas.netlify.app
 3. Conectalo: una `salida` es una baldosa que te lleva a otro mapa (`a`, `ax`, `ay`, `dir`). Hace falta una de ida y otra de vuelta.
 4. Entrenadores: `entrenadorNPC({...})` pelea una sola vez y recuerda que le ganaste.
 5. Criaturas nuevas van en `js/datos.js` (`ESPECIES`), y su dibujo en `img/<id>.png`.
+- `js/musica.js`: música original de 8 bits hecha con Web Audio (temas RUTA, BATALLA y GIMNASIO). Se puede apagar desde el menú (MÚSICA: SÍ/NO).
 - `js/juego.js`: motor del juego (mundo, diálogos, menús, batallas, evolución, guardado).
 - `img/`: dibujos de Felipe pasados a pixel-art (`<id>.png`, opcional `<id>_espalda.png`).
   Si una especie tiene dibujo, el juego usa ese; si no, usa el sprite hecho con figuras.

@@ -9,7 +9,7 @@
 import base64, json, os, re
 
 RAIZ = os.path.dirname(os.path.abspath(__file__))
-ORDEN = ['sprites.js', 'imagenes.js', 'datos.js', 'mapas.js', 'juego.js']
+ORDEN = ['sprites.js', 'imagenes.js', 'datos.js', 'mapas.js', 'musica.js', 'juego.js']
 
 
 def generar_imagenes():
