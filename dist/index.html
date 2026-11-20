@@ -1890,7 +1890,7 @@ function recalcular(m) {
   m.vel = Math.floor(2 * b.vel * L / 100) + 5;
 }
 function crearCriatura(id, nivel) {
-  const m = { id, nivel, exp: expPara(nivel), movs: [] };
+  const m = { id, nivel, exp: expPara(nivel), movs: [], habSlot: sortearHab(id) };
   recalcular(m);
   m.ps = m.psMax;
   for (const [nv, mv] of ESPECIES[id].movs) {
@@ -1945,6 +1945,7 @@ const HABILIDADES = {
   caparazon: { nombre: 'Caparazón', ef: 'sinCritico', desc: 'Su caparazón lo protege: no recibe golpes críticos.' },
   ilusion: { nombre: 'Ilusión', ef: 'ilusion', desc: 'Se vuelve transparente: el primer golpe que recibe le hace la mitad.' },
   impulso: { nombre: 'Impulso', ef: 'impulso', desc: 'Se emociona con el fuego: es más rápido en cada turno.' },
+  sequia: { nombre: 'Sequía', ef: 'sequia', desc: 'Al entrar sale un sol fuerte: los ataques de Fuego, Tierra y Roca pegan más.' },
   crisolMagma: { nombre: 'Crisol de Magma', ef: 'crisol', desc: 'Sus ataques de Fuego y Roca pegan más.' },
   monteBravo: { nombre: 'Monte Bravo', ef: 'apuro', tipo: 'PLANTA', desc: 'Con poca vida, sus ataques de Planta pegan mucho más.' },
   fogonInterior: { nombre: 'Fogón Interior', ef: 'apuro', tipo: 'FUEGO', desc: 'Con poca vida, sus ataques de Fuego pegan mucho más.' },
@@ -1955,7 +1956,10 @@ const HAB_ESPECIE = {
   carpinchu: 'descansoRegio', carpinchon: 'descansoRegio', terito: 'intimidacion', peludin: 'caparazon',
   vizcachita: 'pasoLigero', hornerito: 'obrero', arquineo: 'obrero', arquitemplillo: 'obrero',
   ramoa: 'monteBravo', lianaco: 'monteBravo', carayarbore: 'monteBravo',
-  flamartija: 'fogonInterior', dracobrasa: 'fogonInterior', ignidraxx: 'fogonInterior',
+  // Con varias: [normal 1, normal 2] y 'o' = oculta
+  flamartija: { n: ['fogonInterior', 'sequia'], o: 'impulso' },
+  dracobrasa: { n: ['fogonInterior', 'sequia'], o: 'impulso' },
+  ignidraxx: { n: ['fogonInterior', 'sequia'], o: 'impulso' },
   ajolodo: 'correntada', branquiotox: 'correntada', iberaxolot: 'correntada',
   piquibrote: 'clorofila', piquibrasa: 'clorofila', piquillonco: 'clorofila',
   chispuna: 'absorbeFuego', volcarin: 'crisolMagma', andragon: 'impulso',
@@ -1976,8 +1980,24 @@ const HAB_ESPECIE = {
   venomin: 'pielToxica', glacivenom: 'pielToxica', glacivenom_supremo: 'pielToxica',
   pumita: 'intimidacion', pumentor: 'intimidacion',
 };
-for (const id in ESPECIES) ESPECIES[id].hab = HAB_ESPECIE[id] || 'pasoLigero';
-function habDe(m) { return HABILIDADES[ESPECIES[m.id].hab]; }
+for (const id in ESPECIES) {
+  const h = HAB_ESPECIE[id] || 'pasoLigero';
+  ESPECIES[id].habs = typeof h === 'string' ? [h] : h.n;
+  ESPECIES[id].habOculta = typeof h === 'string' ? null : h.o || null;
+}
+// Cada criatura guarda qué habilidad le tocó (habSlot: 0, 1 u 'o' = oculta); al evolucionar conserva el lugar
+function habClave(m) {
+  const e = ESPECIES[m.id];
+  if (m.habSlot === 'o' && e.habOculta) return e.habOculta;
+  return e.habs[m.habSlot] || e.habs[0];
+}
+function habDe(m) { return HABILIDADES[habClave(m)]; }
+function esHabOculta(m) { return m.habSlot === 'o' && !!ESPECIES[m.id].habOculta; }
+function sortearHab(id) {
+  const e = ESPECIES[id];
+  if (e.habOculta && Math.random() < 0.1) return 'o';
+  return Math.floor(Math.random() * e.habs.length);
+}
 </script>
 <script>
 // ===== mapas.js =====
@@ -4817,6 +4837,7 @@ function dibujarDatos(m) {
   sc.fillStyle = '#e8dcb0'; rectRed(sc, 10, 89, 220, 26, 3); sc.fill();
   txt('HABILIDAD:', 15, 93, { t: 6, c: '#a05020', sombra: null });
   txt(h.nombre.toUpperCase(), 80, 93, { t: 6, c: '#203048', sombra: null });
+  if (esHabOculta(m)) txt('OCULTA', 224, 94, { t: 5, c: '#a040a0', sombra: null, al: 'right' });
   envolver(h.desc, 208, 5).slice(0, 2).forEach((l, i) => txt(l, 15, 102 + i * 7, { t: 5, sombra: null, c: '#383838' }));
   m.movs.forEach((mv, i) => {
     const M = MOVS[mv.id];
@@ -5023,6 +5044,7 @@ function calcularDanio(at, de, mv) {
   if (ha.ef === 'apuro' && mv.tipo === ha.tipo && at.ps <= at.psMax / 3) extra *= 1.5;
   if (ha.ef === 'humedal' && (mv.tipo === 'AGUA' || mv.tipo === 'PLANTA')) extra *= 1.3;
   if (ha.ef === 'crisol' && (mv.tipo === 'FUEGO' || mv.tipo === 'ROCA')) extra *= 1.3;
+  if (bt.sol > 0 && ['FUEGO', 'TIERRA', 'ROCA'].includes(mv.tipo)) extra *= 1.3;
   if (hd.ef === 'filtro' && ef > 1) extra *= 0.75;
   if (hd.ef === 'ilusion' && !de.et.golpeado) extra *= 0.5;
   return { danio: Math.max(1, Math.floor(base * stab * ef * (critico ? 1.5 : 1) * azar * extra)), ef, critico };
@@ -5392,6 +5414,10 @@ async function alEntrar(m) {
     else await cambiarEtapa(otro, 'atk', -1);
   } else if (h.ef === 'veloz') {
     await anunciarHab(m); await cambiarEtapa(m, 'vel', 1);
+  } else if (h.ef === 'sequia') {
+    await anunciarHab(m);
+    bt.sol = 5;
+    await decir('¡Salió un sol que raja la tierra! Los ataques de Fuego, Tierra y Roca pegan más.', { auto: 60 });
   } else if (h.ef === 'humedal') {
     await anunciarHab(m);
     await decir('¡El campo se inundó como un humedal del Litoral!', { auto: 50 });
@@ -5412,6 +5438,7 @@ async function despuesDelGolpe(at, de, M) {
   }
 }
 async function finDeTurno() {
+  if (bt.sol > 0 && --bt.sol === 0) await decir('El sol fuerte se fue.', { auto: 45 });
   for (const m of [bt.yo, bt.rival]) {
     if (!m || m.ps <= 0) continue;
     const h = habDe(m);
@@ -5565,7 +5592,8 @@ function elipse(ctx, x, y, rx, ry, c1, c2) {
 }
 function dibujarBatalla() {
   const g = b.createLinearGradient(0, 0, 0, 112);
-  g.addColorStop(0, '#f8f0c8'); g.addColorStop(1, '#d8f0b0');
+  if (bt.sol > 0) { g.addColorStop(0, '#ffd890'); g.addColorStop(1, '#f0d890'); }
+  else { g.addColorStop(0, '#f8f0c8'); g.addColorStop(1, '#d8f0b0'); }
   b.fillStyle = g; b.fillRect(0, 0, W, H);
   b.fillStyle = '#c8e8a0'; b.fillRect(0, 60, W, 52);
   elipse(b, 176, 64, 48, 11, '#a0d080', '#70a858');

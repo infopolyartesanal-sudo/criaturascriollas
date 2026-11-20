@@ -556,6 +556,7 @@ function dibujarDatos(m) {
   sc.fillStyle = '#e8dcb0'; rectRed(sc, 10, 89, 220, 26, 3); sc.fill();
   txt('HABILIDAD:', 15, 93, { t: 6, c: '#a05020', sombra: null });
   txt(h.nombre.toUpperCase(), 80, 93, { t: 6, c: '#203048', sombra: null });
+  if (esHabOculta(m)) txt('OCULTA', 224, 94, { t: 5, c: '#a040a0', sombra: null, al: 'right' });
   envolver(h.desc, 208, 5).slice(0, 2).forEach((l, i) => txt(l, 15, 102 + i * 7, { t: 5, sombra: null, c: '#383838' }));
   m.movs.forEach((mv, i) => {
     const M = MOVS[mv.id];
@@ -762,6 +763,7 @@ function calcularDanio(at, de, mv) {
   if (ha.ef === 'apuro' && mv.tipo === ha.tipo && at.ps <= at.psMax / 3) extra *= 1.5;
   if (ha.ef === 'humedal' && (mv.tipo === 'AGUA' || mv.tipo === 'PLANTA')) extra *= 1.3;
   if (ha.ef === 'crisol' && (mv.tipo === 'FUEGO' || mv.tipo === 'ROCA')) extra *= 1.3;
+  if (bt.sol > 0 && ['FUEGO', 'TIERRA', 'ROCA'].includes(mv.tipo)) extra *= 1.3;
   if (hd.ef === 'filtro' && ef > 1) extra *= 0.75;
   if (hd.ef === 'ilusion' && !de.et.golpeado) extra *= 0.5;
   return { danio: Math.max(1, Math.floor(base * stab * ef * (critico ? 1.5 : 1) * azar * extra)), ef, critico };
@@ -1131,6 +1133,10 @@ async function alEntrar(m) {
     else await cambiarEtapa(otro, 'atk', -1);
   } else if (h.ef === 'veloz') {
     await anunciarHab(m); await cambiarEtapa(m, 'vel', 1);
+  } else if (h.ef === 'sequia') {
+    await anunciarHab(m);
+    bt.sol = 5;
+    await decir('¡Salió un sol que raja la tierra! Los ataques de Fuego, Tierra y Roca pegan más.', { auto: 60 });
   } else if (h.ef === 'humedal') {
     await anunciarHab(m);
     await decir('¡El campo se inundó como un humedal del Litoral!', { auto: 50 });
@@ -1151,6 +1157,7 @@ async function despuesDelGolpe(at, de, M) {
   }
 }
 async function finDeTurno() {
+  if (bt.sol > 0 && --bt.sol === 0) await decir('El sol fuerte se fue.', { auto: 45 });
   for (const m of [bt.yo, bt.rival]) {
     if (!m || m.ps <= 0) continue;
     const h = habDe(m);
@@ -1304,7 +1311,8 @@ function elipse(ctx, x, y, rx, ry, c1, c2) {
 }
 function dibujarBatalla() {
   const g = b.createLinearGradient(0, 0, 0, 112);
-  g.addColorStop(0, '#f8f0c8'); g.addColorStop(1, '#d8f0b0');
+  if (bt.sol > 0) { g.addColorStop(0, '#ffd890'); g.addColorStop(1, '#f0d890'); }
+  else { g.addColorStop(0, '#f8f0c8'); g.addColorStop(1, '#d8f0b0'); }
   b.fillStyle = g; b.fillRect(0, 0, W, H);
   b.fillStyle = '#c8e8a0'; b.fillRect(0, 60, W, 52);
   elipse(b, 176, 64, 48, 11, '#a0d080', '#70a858');

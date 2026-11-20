@@ -1288,7 +1288,7 @@ function recalcular(m) {
   m.vel = Math.floor(2 * b.vel * L / 100) + 5;
 }
 function crearCriatura(id, nivel) {
-  const m = { id, nivel, exp: expPara(nivel), movs: [] };
+  const m = { id, nivel, exp: expPara(nivel), movs: [], habSlot: sortearHab(id) };
   recalcular(m);
   m.ps = m.psMax;
   for (const [nv, mv] of ESPECIES[id].movs) {
@@ -1343,6 +1343,7 @@ const HABILIDADES = {
   caparazon: { nombre: 'Caparazón', ef: 'sinCritico', desc: 'Su caparazón lo protege: no recibe golpes críticos.' },
   ilusion: { nombre: 'Ilusión', ef: 'ilusion', desc: 'Se vuelve transparente: el primer golpe que recibe le hace la mitad.' },
   impulso: { nombre: 'Impulso', ef: 'impulso', desc: 'Se emociona con el fuego: es más rápido en cada turno.' },
+  sequia: { nombre: 'Sequía', ef: 'sequia', desc: 'Al entrar sale un sol fuerte: los ataques de Fuego, Tierra y Roca pegan más.' },
   crisolMagma: { nombre: 'Crisol de Magma', ef: 'crisol', desc: 'Sus ataques de Fuego y Roca pegan más.' },
   monteBravo: { nombre: 'Monte Bravo', ef: 'apuro', tipo: 'PLANTA', desc: 'Con poca vida, sus ataques de Planta pegan mucho más.' },
   fogonInterior: { nombre: 'Fogón Interior', ef: 'apuro', tipo: 'FUEGO', desc: 'Con poca vida, sus ataques de Fuego pegan mucho más.' },
@@ -1353,7 +1354,10 @@ const HAB_ESPECIE = {
   carpinchu: 'descansoRegio', carpinchon: 'descansoRegio', terito: 'intimidacion', peludin: 'caparazon',
   vizcachita: 'pasoLigero', hornerito: 'obrero', arquineo: 'obrero', arquitemplillo: 'obrero',
   ramoa: 'monteBravo', lianaco: 'monteBravo', carayarbore: 'monteBravo',
-  flamartija: 'fogonInterior', dracobrasa: 'fogonInterior', ignidraxx: 'fogonInterior',
+  // Con varias: [normal 1, normal 2] y 'o' = oculta
+  flamartija: { n: ['fogonInterior', 'sequia'], o: 'impulso' },
+  dracobrasa: { n: ['fogonInterior', 'sequia'], o: 'impulso' },
+  ignidraxx: { n: ['fogonInterior', 'sequia'], o: 'impulso' },
   ajolodo: 'correntada', branquiotox: 'correntada', iberaxolot: 'correntada',
   piquibrote: 'clorofila', piquibrasa: 'clorofila', piquillonco: 'clorofila',
   chispuna: 'absorbeFuego', volcarin: 'crisolMagma', andragon: 'impulso',
@@ -1374,5 +1378,21 @@ const HAB_ESPECIE = {
   venomin: 'pielToxica', glacivenom: 'pielToxica', glacivenom_supremo: 'pielToxica',
   pumita: 'intimidacion', pumentor: 'intimidacion',
 };
-for (const id in ESPECIES) ESPECIES[id].hab = HAB_ESPECIE[id] || 'pasoLigero';
-function habDe(m) { return HABILIDADES[ESPECIES[m.id].hab]; }
+for (const id in ESPECIES) {
+  const h = HAB_ESPECIE[id] || 'pasoLigero';
+  ESPECIES[id].habs = typeof h === 'string' ? [h] : h.n;
+  ESPECIES[id].habOculta = typeof h === 'string' ? null : h.o || null;
+}
+// Cada criatura guarda qué habilidad le tocó (habSlot: 0, 1 u 'o' = oculta); al evolucionar conserva el lugar
+function habClave(m) {
+  const e = ESPECIES[m.id];
+  if (m.habSlot === 'o' && e.habOculta) return e.habOculta;
+  return e.habs[m.habSlot] || e.habs[0];
+}
+function habDe(m) { return HABILIDADES[habClave(m)]; }
+function esHabOculta(m) { return m.habSlot === 'o' && !!ESPECIES[m.id].habOculta; }
+function sortearHab(id) {
+  const e = ESPECIES[id];
+  if (e.habOculta && Math.random() < 0.1) return 'o';
+  return Math.floor(Math.random() * e.habs.length);
+}
