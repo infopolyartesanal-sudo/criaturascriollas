@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Criaturas Criollas</title>
+<style>body{background:#1a1a2e;color:#fff;font-family:sans-serif;text-align:center;padding-top:30vh}a{color:#f8d030}</style>
+</head>
+<body>
+<p>Criaturas Criollas se mudó a una dirección nueva...</p>
+<p><a id="ir" href="https://infopolyartesanal-sudo.github.io/criaturascriollas/">Tocá acá si no pasa nada</a></p>
+<script>
+// Esta página va en criaturascriollas.netlify.app: lleva al juego nuevo y le pasa la partida guardada.
+var url = 'https://infopolyartesanal-sudo.github.io/criaturascriollas/';
+try {
+  var partida = localStorage.getItem('criaturas_criollas_v1');
+  if (partida) url += '#partida=' + encodeURIComponent(partida);
+} catch (e) {}
+document.getElementById('ir').href = url;
+location.replace(url);
+</script>
+</body>
+</html>

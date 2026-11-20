@@ -1742,7 +1742,19 @@ function bucle(ahora) {
   requestAnimationFrame(bucle);
 }
 
+// Partida que llega desde la dirección vieja (criaturascriollas.netlify.app) en el enlace: #partida=...
+function importarPartidaDelEnlace() {
+  try {
+    const h = location.hash;
+    if (!h.startsWith('#partida=')) return;
+    const datos = decodeURIComponent(h.slice(9));
+    JSON.parse(datos); // que sea una partida de verdad
+    if (!hayPartida()) localStorage.setItem(CLAVE_GUARDADO, datos);
+    history.replaceState(null, '', location.pathname + location.search);
+  } catch (e) { /* enlace roto: se ignora */ }
+}
 async function iniciar() {
+  importarPartidaDelEnlace();
   ajustar();
   TILES = crearTiles();
   ui.fundido = 1;
