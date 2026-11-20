@@ -770,6 +770,7 @@ const OBJETOS = {
   piedraAgua: { nombre: 'PIEDRA AGUA', precio: 2500, piedra: true, desc: 'Una piedra azul que gotea agua fresca. Hace evolucionar a CALDERITO.' },
   piedraTrueno: { nombre: 'PIEDRA TRUENO', precio: 2500, piedra: true, desc: 'Una piedra con un rayo adentro. Hace evolucionar a DYNACORE.' },
   mapa: { nombre: 'MAPA', precio: 0, mapa: true, desc: 'El mapa de la Argentina. Muestra dónde estás y todos los lugares del viaje.' },
+  bici: { nombre: 'BICICLETA', precio: 0, bici: true, desc: 'Una bici para recorrer la Argentina el doble de rápido. Solo afuera.' },
   velaAnima: { nombre: 'VELA ÁNIMA', precio: 2500, piedra: true, desc: 'Una vela que arde con fuego rosa y no se apaga. Hace evolucionar a FAEVE.' },
 };
 // Lo que se vende en el ALMACÉN, en orden
@@ -6923,6 +6924,8 @@ function cargar() {
     Object.assign(S, d);
     if (typeof S.plata !== 'number') S.plata = 3000; // partidas de antes de que existiera la plata
     if (!S.bolsa.mapa) S.bolsa.mapa = 1; // el MAPA lo tienen todos
+    if (!S.bolsa.bici) S.bolsa.bici = 1; // la BICICLETA también
+    S.bici = false;
     acomodarPosicion();
     return true;
   } catch (e) { return false; }
@@ -6964,7 +6967,7 @@ function transitable(x, y) {
 function pasoMundo() {
   pasoSalvajes();
   if (S.moviendo) {
-    S.prog += held.b ? 4 : 2;
+    S.prog += S.bici ? 8 : held.b ? 4 : 2;
     if (S.prog >= 16) {
       S.prog = 0; S.moviendo = false;
       S.x += DX[S.dir]; S.y += DY[S.dir];
@@ -7016,6 +7019,7 @@ async function viajar(sal) {
   await fundido(1, 8);
   const antes = S.mapa;
   S.mapa = sal.a; S.x = sal.ax; S.y = sal.ay; S.dir = sal.dir;
+  if (!MAPAS[sal.a].exterior) S.bici = false; // adentro se camina
   if (MAPAS[sal.a].exterior && !(MAPAS[antes] && MAPAS[antes].nombre === MAPAS[sal.a].nombre)) {
     S.cartelLugar = { t: 110, txt: MAPAS[sal.a].nombre };
   }
@@ -7136,7 +7140,10 @@ async function encuentroSalvaje() {
 // ---------- Menú principal ----------
 async function menuPrincipal() {
   while (true) {
-    const r = await elegir(['EQUIPO', 'MOCHILA', 'GUARDAR', MUS.prendida ? 'MÚSICA: SÍ' : 'MÚSICA: NO', 'CERRAR'], { x: 148, y: 4, w: 88 });
+    const ops = ['EQUIPO', 'MOCHILA', ...(S.bolsa.bici ? [S.bici ? 'BAJAR BICI' : 'BICICLETA'] : []), 'GUARDAR', MUS.prendida ? 'MÚSICA: SÍ' : 'MÚSICA: NO', 'CERRAR'];
+    const op = ops[await elegir(ops, { x: 148, y: 4, w: 88 })];
+    if (op === 'BICICLETA' || op === 'BAJAR BICI') { await usarBici(); if (S.bici) return; continue; }
+    const r = ['EQUIPO', 'MOCHILA', 'GUARDAR', 'MÚSICA: SÍ', 'MÚSICA: NO'].indexOf(op);
     if (r === 0) {
       if (!S.equipo.length) { await decir('Todavía no tenés criaturas.'); continue; }
       await pantallaEquipo({ modo: 'ver' });
@@ -7146,7 +7153,7 @@ async function menuPrincipal() {
     } else if (r === 2) {
       const ok = guardar();
       await decir(ok ? '¡La partida se guardó!' : 'No se pudo guardar la partida en este navegador.');
-    } else if (r === 3) {
+    } else if (r === 3 || r === 4) {
       musicaAlternar();
     } else return;
   }
@@ -7233,6 +7240,7 @@ function dibujarTienda() {
 async function usarObjetoMundo(obj) {
   const o = OBJETOS[obj];
   if (o.mapa) { await pantallaMapa(); return; }
+  if (o.bici) { await usarBici(); return; }
   if (o.piedra) { await usarPiedra(obj); return; }
   if (!o.cura) { await decir('Ahora no se puede usar eso.'); return; }
   if (!S.equipo.length) { await decir('No tenés criaturas.'); return; }
@@ -7435,6 +7443,14 @@ function dibujarDatos(m) {
   });
 }
 
+// ---------- Bicicleta ----------
+async function usarBici() {
+  if (S.bici) { S.bici = false; await decir('Felipe se bajó de la BICICLETA.'); return; }
+  if (!mapa().exterior) { await decir('¡Adentro no se puede andar en bici! Usala afuera.'); return; }
+  S.bici = true;
+  await decir('¡Felipe se subió a la BICICLETA! ¡A pedalear!');
+}
+
 // ---------- Objeto MAPA: la Argentina con todos los lugares ----------
 // Contorno simplificado (longitud, latitud)
 const ARG_CONTORNO = [[-66, -21.8], [-64.3, -22], [-62.8, -22], [-61, -23.5], [-58.5, -24.8], [-57.6, -25.3], [-58.6, -27.3], [-56, -27.3], [-54.6, -25.6], [-53.7, -26.3], [-53.8, -27.2], [-55.7, -28.2], [-57.6, -30.2], [-58.2, -32.5], [-58.4, -34], [-57.2, -35.3], [-56.7, -36.4], [-57.5, -38.2], [-59, -38.8], [-62.3, -38.8], [-62.1, -40.6], [-65.1, -41], [-64.9, -42.2], [-63.6, -42.7], [-65.3, -43.3], [-67.5, -46], [-65.8, -47.8], [-68, -50.1], [-69.1, -51.6], [-68.4, -52.4], [-71.9, -52], [-72.3, -51], [-73.3, -50], [-72.6, -48], [-71.8, -46.5], [-71.6, -44], [-71.8, -42], [-71.4, -40], [-70.9, -37.5], [-70.1, -35], [-69.8, -33], [-70, -30], [-68.7, -27.5], [-68.5, -25], [-67, -23], [-66.9, -22.1]];
@@ -7557,6 +7573,21 @@ function dibujarMochila() {
 function dibujarPersonaje(pal, dir, frame, x, y) {
   b.drawImage(spriteChar(pal, dir, frame), Math.round(x), Math.round(y));
 }
+function dibujarBici(dir, x, y) {
+  x = Math.round(x); y = Math.round(y);
+  b.strokeStyle = '#202020'; b.lineWidth = 1.5;
+  b.fillStyle = '#d83030';
+  if (dir === 2 || dir === 3) { // de costado: dos ruedas
+    b.beginPath(); b.arc(x + 3, y + 13, 3, 0, Math.PI * 2); b.stroke();
+    b.beginPath(); b.arc(x + 13, y + 13, 3, 0, Math.PI * 2); b.stroke();
+    b.fillRect(x + 3, y + 10, 10, 2); b.fillRect(x + 7, y + 7, 2, 5);
+    b.fillStyle = '#404040'; b.fillRect(dir === 2 ? x + 1 : x + 12, y + 6, 3, 1.5);
+  } else { // de frente o de espaldas: una rueda y el manubrio
+    b.fillStyle = '#202020'; b.fillRect(x + 7, y + 10, 2, 7);
+    b.fillStyle = '#d83030'; b.fillRect(x + 7, y + 8, 2, 3);
+    b.fillStyle = '#404040'; b.fillRect(x + 3, y + (dir === 0 ? 9 : 7), 10, 1.5);
+  }
+}
 function dibujarMundo() {
   const m = mapa();
   const mw = m.grilla[0].length, mh = m.grilla.length;
@@ -7584,7 +7615,7 @@ function dibujarMundo() {
   }
   const entes = npcsVisibles().map(n => ({ y: n.y * T, x: n.x * T, pal: n.pal, dir: n.dir, f: 0, tx: n.x, ty: n.y }));
   let frame = 0;
-  if (S.moviendo) frame = S.prog < 10 ? 1 + S.pasoAlt : 0;
+  if (S.moviendo && !S.bici) frame = S.prog < 10 ? 1 + S.pasoAlt : 0;
   entes.push({ y: ppy, x: ppx, pal: PAL.felipe, dir: S.dir, f: frame, yo: true, tx: S.x, ty: S.y });
   prepararSalvajes();
   for (const c of SALV.lista) {
@@ -7607,6 +7638,7 @@ function dibujarMundo() {
       continue;
     }
     const bob = e.yo && frame ? -1 : 0;
+    if (e.yo && S.bici) { dibujarBici(e.dir, e.x - cx, e.y - cy); dibujarPersonaje(e.pal, e.dir, 0, e.x - cx, e.y - cy - 6); continue; }
     dibujarPersonaje(e.pal, e.dir, e.f, e.x - cx, e.y - cy - 3 + bob);
     const enPasto = m.grilla[e.ty] && (m.grilla[e.ty][e.tx] === ',' || m.grilla[e.ty][e.tx] === 'u') && !(e.yo && S.moviendo && S.prog < 8);
     if (enPasto) b.drawImage(TILES[m.grilla[e.ty][e.tx]], 0, 9, 16, 7, e.x - cx, e.y - cy + 9, 16, 7);
@@ -7681,7 +7713,7 @@ async function siNoTitulo() {
   return siNo('Si empezás una partida nueva se borra la anterior. ¿Seguro?');
 }
 async function nuevaPartida() {
-  Object.assign(S, { mapa: 'casa', x: 4, y: 4, dir: 0, equipo: [], caja: [], bolsa: { mapa: 1 }, flags: {}, plata: 3000 });
+  Object.assign(S, { mapa: 'casa', x: 4, y: 4, dir: 0, equipo: [], caja: [], bolsa: { mapa: 1, bici: 1 }, flags: {}, plata: 3000, bici: false });
   S.escena = 'intro';
   await fundido(0, 16);
   await decir('¡Hola! ¡Bienvenido al mundo de las CRIATURAS CRIOLLAS!');
