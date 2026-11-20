@@ -1318,9 +1318,9 @@ const MAPAS = {
     ],
     carteles: {
       '12,3': 'VILLA CAMALOTE, acá nomás al SUR. ¡Cuidado con los mosquitos!',
-      '13,32': 'RUTA 9 · ESTEROS DEL IBERÁ. Por el puente de madera se cruza la laguna.',
+      '13,32': 'RUTA 9 · ESTEROS DEL IBERÁ. Por el puente de madera se cruza la laguna. Dicen que en el pasto del pantano se esconden AJOLODO, como el inicial de Agua.',
     },
-    encuentros: { lista: [['mosquillon', 20], ['carpinchon', 18], ['junquito', 12], ['terito', 12], ['yacarelito', 10], ['totorarca', 8], ['ceibito', 6], ['lechucita', 5], ['faeve', 4], ['espejito', 3], ['anahisa', 2]], min: 31, max: 34 },
+    encuentros: { lista: [['mosquillon', 20], ['carpinchon', 18], ['junquito', 12], ['terito', 12], ['yacarelito', 10], ['totorarca', 8], ['ajolodo', 6], ['ceibito', 6], ['lechucita', 5], ['faeve', 4], ['espejito', 3], ['anahisa', 2]], min: 31, max: 34 }, // AJOLODO: inicial de Agua, en el pantano
     npcs: [
       entrenadorNPC({
         id: 'pescador', x: 12, y: 16, dir: 2, pal: PAL.pescador, nombre: 'PESCADOR RAÚL',
@@ -1584,10 +1584,10 @@ const MAPAS = {
       { x: 11, y: 0, a: 'calilegua', ax: 11, ay: 13, dir: 1 },
     ],
     carteles: {
-      '16,12': 'RUTA 7 · YUNGAS. La selva de las nubes: siempre hay neblina entre los árboles.',
+      '16,12': 'RUTA 7 · YUNGAS. La selva de las nubes: siempre hay neblina entre los árboles. Dicen que en el pasto alto del bosque se esconden RAMOA, como el inicial de Planta.',
       '13,30': 'Al norte: CALILEGUA. De ahí sale el camino al CHACO y al LITORAL.',
     },
-    encuentros: { lista: [['cuison', 18], ['capullon', 14], ['mosquillon', 12], ['arquineo', 12], ['carpinchon', 10], ['condorito', 10], ['cardito', 8], ['zorrazo', 8], ['polillaca', 3]], min: 25, max: 28 },
+    encuentros: { lista: [['cuison', 18], ['capullon', 14], ['mosquillon', 12], ['arquineo', 12], ['carpinchon', 10], ['condorito', 10], ['cardito', 8], ['zorrazo', 8], ['ramoa', 6], ['polillaca', 3]], min: 25, max: 28 }, // RAMOA: inicial de Planta, en el bosque
     npcs: [
       entrenadorNPC({
         id: 'pajarera', x: 12, y: 2, dir: 2, pal: PAL.chica, nombre: 'OBSERVADORA MECHI',
@@ -2237,10 +2237,10 @@ const MAPAS = {
       { x: 11, y: 0, a: 'tafi', ax: 11, ay: 20, dir: 1 },
     ],
     carteles: {
-      '9,30': 'RUTA 6 · VALLES CALCHAQUÍES. Cardones, viñedos y cerros de colores.',
+      '9,30': 'RUTA 6 · VALLES CALCHAQUÍES. Cardones, viñedos y cerros de colores. Dicen que entre los cerros, cerca de la cueva, se esconden FLAMARTIJA, como el inicial de Fuego.',
       '9,3': 'Al norte: TAFÍ DEL VALLE y LA SALAMANCA.',
     },
-    encuentros: { lista: [['cardito', 22], ['rocori', 16], ['piquibrote', 12], ['hornerito', 12], ['vizcachita', 12], ['farolito', 10], ['glaciolito', 6], ['garkol', 6], ['chispuna', 4]], min: 18, max: 22 },
+    encuentros: { lista: [['cardito', 22], ['rocori', 16], ['piquibrote', 12], ['hornerito', 12], ['vizcachita', 12], ['farolito', 10], ['flamartija', 6], ['glaciolito', 6], ['garkol', 6], ['chispuna', 4]], min: 18, max: 22 }, // FLAMARTIJA: inicial de Fuego, en la montaña camino a La Salamanca
     npcs: [
       entrenadorNPC({
         id: 'vinatero', x: 15, y: 23, dir: 2, pal: PAL.beto, nombre: 'VIÑATERO PANCHO',
