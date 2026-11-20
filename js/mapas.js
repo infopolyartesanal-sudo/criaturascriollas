@@ -2515,7 +2515,7 @@ const MAPAS = {
       '9,28': 'RUTA 13 · BOSQUE ANDINO. Coihues, lagos y niebla. Dicen que en este bosque viven los duendes...',
       '9,3': 'Al sur: EL BOLSÓN, al pie del cerro Piltriquitrón.',
     },
-    encuentros: { lista: [['howlup', 16], ['escarchin', 14], ['celestin', 10], ['faeve', 12], ['farolito', 12], ['garkol', 10], ['lechuzonte', 10], ['nevulon', 8], ['condorito', 8], ['pumentor', 6], ['candilejo', 4]], min: 34, max: 37 },
+    encuentros: { lista: [['howlup', 16], ['escarchin', 14], ['celestin', 10], ['faeve', 12], ['farolito', 12], ['garkol', 10], ['lechuzonte', 10], ['nevulon', 8], ['condorito', 8], ['pumentor', 6], ['candilejo', 4]], min: 24, max: 27 },
     npcs: [
       entrenadorNPC({
         id: 'guarda_bosque', x: 7, y: 17, dir: 2, pal: PAL.guarda, nombre: 'GUARDAPARQUE NAHUEL',
@@ -2604,7 +2604,7 @@ const MAPAS = {
       '9,28': 'RUTA 14 · LÍNEA SUR. La estepa de Río Negro: coirones, piedras y viento.',
       '9,3': 'Al este: INGENIERO JACOBACCI, la estación de LA TROCHITA.',
     },
-    encuentros: { lista: [['sparknight', 16], ['howlup', 12], ['vizcachita', 12], ['zorrazo', 10], ['terito', 10], ['candilejo', 10], ['garkol', 10], ['peludin', 8], ['condorito', 8]], min: 36, max: 39 },
+    encuentros: { lista: [['sparknight', 16], ['howlup', 12], ['vizcachita', 12], ['zorrazo', 10], ['terito', 10], ['candilejo', 10], ['garkol', 10], ['peludin', 8], ['condorito', 8]], min: 26, max: 29 },
     npcs: [
       entrenadorNPC({
         id: 'arriero', x: 7, y: 9, dir: 3, pal: PAL.beto, nombre: 'ARRIERO JUAN',
@@ -2693,7 +2693,7 @@ const MAPAS = {
       '9,3': 'Al este: el PARAJE SOMUNCURÁ y el GIMNASIO 5.',
     },
     objetos: { R: 'Una roca de basalto llena de agujeros. Cuando sopla el viento... ¡parece que susurra!' },
-    encuentros: { lista: [['sparknight', 14], ['howlup', 14], ['candilejo', 12], ['garkol', 12], ['farolito', 10], ['faeve', 10], ['vizcachita', 8], ['zorrazo', 8], ['gargorrupt', 2]], min: 38, max: 41 },
+    encuentros: { lista: [['sparknight', 14], ['howlup', 14], ['candilejo', 12], ['garkol', 12], ['farolito', 10], ['faeve', 10], ['vizcachita', 8], ['zorrazo', 8], ['gargorrupt', 2]], min: 28, max: 31 },
     npcs: [
       entrenadorNPC({
         id: 'paleonto', x: 12, y: 5, dir: 2, pal: PAL.ayudante, nombre: 'CIENTÍFICA MARA',
@@ -2853,7 +2853,7 @@ const MAPAS = {
       '9,3': 'Al sur: PUERTO MADRYN.',
     },
     objetos: { '~': '¡Allá lejos salta una ballena franca! Llegan a Península Valdés todos los inviernos.' },
-    encuentros: { lista: [['pinguinoide', 16], ['carpibarro', 14], ['celestin', 12], ['zorrazo', 10], ['vizcachita', 10], ['condorito', 10], ['sparknight', 8], ['peludin', 8], ['vientuino', 6], ['howlup', 6]], min: 42, max: 45 },
+    encuentros: { lista: [['pinguinoide', 16], ['carpibarro', 14], ['celestin', 12], ['zorrazo', 10], ['vizcachita', 10], ['condorito', 10], ['sparknight', 8], ['peludin', 8], ['vientuino', 6], ['howlup', 6]], min: 32, max: 35 },
     npcs: [
       entrenadorNPC({
         id: 'guardafauna', x: 12, y: 8, dir: 2, pal: PAL.guarda, nombre: 'GUARDAFAUNA LUCÍA',
@@ -2942,7 +2942,7 @@ const MAPAS = {
       '9,3': 'Al sur: RÍO GALLEGOS, la última ciudad antes del ESTRECHO DE MAGALLANES.',
     },
     objetos: { '~': 'El mar está helado y con olas grandes. ¡Mejor no meterse!' },
-    encuentros: { lista: [['pinguinoide', 14], ['vientuino', 12], ['carpibarro', 12], ['zorrazo', 10], ['nevulon', 10], ['glaciolito', 10], ['escarchin', 10], ['venomin', 8], ['glaciperador', 2]], min: 44, max: 47 },
+    encuentros: { lista: [['pinguinoide', 14], ['vientuino', 12], ['carpibarro', 12], ['zorrazo', 10], ['nevulon', 10], ['glaciolito', 10], ['escarchin', 10], ['venomin', 8], ['glaciperador', 2]], min: 34, max: 37 },
     npcs: [
       entrenadorNPC({
         id: 'esquilador', x: 12, y: 4, dir: 2, pal: PAL.beto, nombre: 'ESQUILADOR RAÚL',
@@ -3030,7 +3030,7 @@ const MAPAS = {
       '9,3': 'TIERRA DEL FUEGO. Al sur: USHUAIA, la ciudad del fin del mundo.',
     },
     objetos: { '~': 'El agua del Estrecho de Magallanes. ¡Acá se juntan el océano Atlántico y el Pacífico!' },
-    encuentros: { lista: [['pinguinoide', 12], ['vientuino', 12], ['carpibarro', 10], ['zorrazo', 10], ['escarchin', 10], ['nevulon', 10], ['lechuzonte', 10], ['glaciolito', 8], ['glyptopampa', 4], ['glaciperador', 4]], min: 46, max: 49 },
+    encuentros: { lista: [['pinguinoide', 12], ['vientuino', 12], ['carpibarro', 10], ['zorrazo', 10], ['escarchin', 10], ['nevulon', 10], ['lechuzonte', 10], ['glaciolito', 8], ['glyptopampa', 4], ['glaciperador', 4]], min: 36, max: 39 },
     npcs: [
       entrenadorNPC({
         id: 'castorero', x: 13, y: 11, dir: 2, pal: PAL.guarda, nombre: 'GUARDAPARQUE ANA',
@@ -3249,7 +3249,7 @@ const MAPAS = {
       '9,28': 'RUTA 19 · VALLE DE CATAMARCA. Cardones, olivos y cerros por todos lados.',
       '9,3': 'Al oeste: BELÉN, la ciudad del poncho.',
     },
-    encuentros: { lista: [['motorb', 14], ['calderito', 14], ['zorrazo', 12], ['cardito', 10], ['rodcardo', 8], ['piquibrote', 10], ['vizcachita', 10], ['condorito', 8], ['chispuna', 8], ['piquillonco', 4]], min: 50, max: 53 },
+    encuentros: { lista: [['motorb', 14], ['calderito', 14], ['zorrazo', 12], ['cardito', 10], ['rodcardo', 8], ['piquibrote', 10], ['vizcachita', 10], ['condorito', 8], ['chispuna', 8], ['piquillonco', 4]], min: 40, max: 43 },
     npcs: [
       entrenadorNPC({
         id: 'olivero', x: 12, y: 5, dir: 2, pal: PAL.beto, nombre: 'OLIVERO HÉCTOR',
@@ -3336,7 +3336,7 @@ const MAPAS = {
       '9,28': 'RUTA 20 · DUNAS DE TATÓN. ¡Las dunas de arena más altas del mundo!',
       '9,3': 'Al oeste: FIAMBALÁ y sus aguas termales.',
     },
-    encuentros: { lista: [['calderito', 14], ['dynacore', 12], ['chispuna', 12], ['volcarin', 12], ['zorrazo', 10], ['terito', 10], ['vizcachita', 10], ['candilejo', 8], ['laninger', 4]], min: 52, max: 55 },
+    encuentros: { lista: [['calderito', 14], ['dynacore', 12], ['chispuna', 12], ['volcarin', 12], ['zorrazo', 10], ['terito', 10], ['vizcachita', 10], ['candilejo', 8], ['laninger', 4]], min: 42, max: 45 },
     npcs: [
       entrenadorNPC({
         id: 'sandboard', x: 12, y: 5, dir: 2, pal: PAL.chica, nombre: 'SANDBOARDISTA FLOR',
@@ -3425,7 +3425,7 @@ const MAPAS = {
       '9,28': 'RUTA 21 · PUNA DE ATACAMA. Más de 4.000 metros de altura. ¡Caminá despacio que falta el aire!',
       '9,3': 'Al norte: la BASE del volcán OJOS DEL SALADO y el GIMNASIO 7.',
     },
-    encuentros: { lista: [['dynacore', 12], ['calderito', 12], ['volcarin', 12], ['laninger', 10], ['condorito', 10], ['glaciolito', 10], ['vientuino', 8], ['escarchin', 8], ['zorzaliente', 4], ['andragon', 3]], min: 54, max: 56 },
+    encuentros: { lista: [['dynacore', 12], ['calderito', 12], ['volcarin', 12], ['laninger', 10], ['condorito', 10], ['glaciolito', 10], ['vientuino', 8], ['escarchin', 8], ['zorzaliente', 4], ['andragon', 3]], min: 44, max: 46 },
     npcs: [
       entrenadorNPC({
         id: 'andinista_puna', x: 12, y: 15, dir: 2, pal: PAL.nieve, nombre: 'ANDINISTA CAMILA',
