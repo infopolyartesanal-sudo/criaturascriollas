@@ -3679,6 +3679,25 @@ const CATAMARCA = teñir(PUERTO, { Y: 'C', q: '=' });
 const BELEN = teñir(TILCARA, {});
 const FIAMBALA = teñir(PUERTO, { Y: 'C', q: '=', '.': '-', F: '-' });
 const OJOS = teñir(TILCARA, { C: 'N', K: 'R', '.': '-' });
+// Desvío de la Ruta 2: el pantano del Bañado del Río Salado (se entra por el OESTE)
+const BANADO = [
+  'TTTTTTTTTTTTTTTTTTTTTTTT',
+  'TT,,,~~~~,,,,TT,,,,~~~TT',
+  'TT,,,~~~~,,,,,,,,,,~~~TT',
+  'TT,,,,,,,,~~~~,,,F,,,,TT',
+  'TT..,,,,,,~~~~,,,,,,..TT',
+  'TT..F,,,,,,,,,,~~~~,,,TT',
+  'TT....,,,,,,,,,~~~~,,.TT',
+  '==========,,,,,,,,,,..TT',
+  '==========,,,,~~~,,,..TT',
+  'TT..~~~~..,,,,~~~,,,,.TT',
+  'TT..~~~~.,,,,,,,,,F,,.TT',
+  'TT,,,,,..,,,~~~~~,,,,,TT',
+  'TT,,,,,,,,,,~~~~~,,S,.TT',
+  'TT,,F,,,~~~,,,,,,,,,,.TT',
+  'TT,,,,,,~~~,,,,,,,,,,,TT',
+  'TTTTTTTTTTTTTTTTTTTTTTTT',
+];
 const TAFI = [
   'RRRRRRRRRR==RRRRRRRRRRRR',
   'RR........==S.........RR',
@@ -4649,6 +4668,31 @@ const MAPAS = {
     ],
   },
   // ================= PAMPA Y CÓRDOBA =================
+  banado: {
+    nombre: 'BAÑADO DEL RÍO SALADO',
+    exterior: true,
+    grilla: desdeTexto(BANADO),
+    edificios: [],
+    salidas: [
+      { x: 0, y: 7, a: 'pampa', ax: 20, ay: 12, dir: 2 },
+      { x: 0, y: 8, a: 'pampa', ax: 20, ay: 13, dir: 2 },
+    ],
+    carteles: {
+      '19,12': 'BAÑADO DEL RÍO SALADO. Juncos, lagunitas y barro: acá viven criaturas de PLANTA, AGUA, TIERRA y VENENO. ¡Y dicen que también AJOLODO!',
+    },
+    objetos: { '~': 'Agua quieta y oscura del bañado. Se ven burbujitas... ¿será una criatura?' },
+    encuentros: { lista: [['junquito', 14], ['carpinchu', 12], ['cuisito', 12], ['ajolodo', 10], ['larvin', 10], ['peludin', 10], ['ceibito', 8], ['hornerito', 8], ['yacarelito', 6], ['mosquillon', 6], ['capullon', 4]], min: 4, max: 8 },
+    npcs: [
+      {
+        id: 'pescador_banado', x: 21, y: 9, dir: 2, pal: PAL.pescador,
+        hablar: async () => {
+          await decir('PESCADOR: ¡Shhh, que se espantan las tarariras! Este bañado se llena con el agua del río Salado.');
+          await decir('Entre los juncos se esconden AJOLODO, JUNQUITO y CARPINCHU. Y ojo con los mosquitos: ¡algunos tienen VENENO!');
+        },
+      },
+    ],
+  },
+
   pampa: {
     nombre: 'RUTA 2 · LLANURA PAMPEANA',
     exterior: true,
@@ -6409,6 +6453,14 @@ girarMapa('ruta3', 'cw');
 girarMapa('caldenal', '180');
 girarMapa('estepa', '180');
 // Región 5: Ruta 13 BAJA desde Bariloche; Rutas 14 y 15 van hacia el ESTE
+// Ruta 2 (Llanura Pampeana): desvío al ESTE, justo al sur del río, hacia el Bañado del Río Salado
+abrir('pampa', [[20, 12], [21, 12], [20, 13], [21, 13]], '=');
+MAPAS.pampa.salidas.push(
+  { x: 21, y: 12, a: 'banado', ax: 1, ay: 7, dir: 3 },
+  { x: 21, y: 13, a: 'banado', ax: 1, ay: 8, dir: 3 },
+);
+abrir('pampa', [[19, 14]], 'S');
+MAPAS.pampa.carteles['19,14'] = 'Al ESTE, siguiendo el río: el BAÑADO DEL RÍO SALADO. ¡Un pantano lleno de criaturas!';
 girarMapa('ruta13', '180');
 girarMapa('ruta14', 'cw');
 girarMapa('ruta15', 'cw');
