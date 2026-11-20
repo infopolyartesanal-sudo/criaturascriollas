@@ -130,6 +130,18 @@ function barra(x, y, w, frac, color) {
   sc.fillStyle = color; sc.fillRect(x, y, Math.max(0, Math.round(w * Math.max(0, Math.min(1, frac)))), 3);
 }
 function colorPS(f) { return f > 0.5 ? '#58d080' : f > 0.2 ? '#f8c830' : '#f05030'; }
+// Tipos chiquitos para la caja de batalla (achica la letra si no entran)
+function tiposChicos(tipos, x, y, ancho) {
+  let t = 5;
+  const largo = tt => tipos.reduce((a, tp) => a + nombreTipo(tp).length * tt + 6, 0) + (tipos.length - 1) * 2;
+  if (largo(t) > ancho) t = 4;
+  for (const tp of tipos) {
+    const n = nombreTipo(tp), w = n.length * t + 6;
+    sc.fillStyle = COLOR_TIPO[tp]; rectRed(sc, x, y, w, 9, 2); sc.fill();
+    txt(n, x + w / 2, y + (9 - t) / 2, { t, c: '#ffffff', sombra: tono(COLOR_TIPO[tp], 0.6), al: 'center' });
+    x += w + 2;
+  }
+}
 function insigniaTipo(tipo, x, y) {
   sc.fillStyle = COLOR_TIPO[tipo]; rectRed(sc, x, y, 56, 11, 2); sc.fill();
   txt(nombreTipo(tipo), x + 28, y + 2, { t: 6, c: '#ffffff', sombra: tono(COLOR_TIPO[tipo], 0.6), al: 'center' });
@@ -992,12 +1004,12 @@ async function tirarBoleadora() {
   // vuelo
   for (let i = 0; i <= 26; i++) {
     const t = i / 26;
-    bt.bola = { x: 50 + (176 - 50) * t, y: 100 - Math.sin(t * Math.PI) * 70 + (40 - 100) * t, ang: i * 0.6 };
+    bt.bola = { x: 50 + (176 - 50) * t, y: 100 - Math.sin(t * Math.PI) * 70 + (34 - 100) * t, ang: i * 0.6 };
     await esperar(1);
   }
   bt.blanco.r = 8; await esperar(6);
   bt.rivalVis = false; bt.blanco.r = 0;
-  for (let i = 0; i <= 10; i++) { bt.bola = { x: 176, y: 40 + i * 2.4, ang: 0 }; await esperar(1); }
+  for (let i = 0; i <= 10; i++) { bt.bola = { x: 176, y: 34 + i * 2.4, ang: 0 }; await esperar(1); }
   for (let s = 0; s < Math.min(sacudidas, 3); s++) {
     await esperar(16);
     for (let i = 0; i < 12; i++) { bt.bola.ang = Math.sin(i / 12 * Math.PI * 2) * 0.5; await esperar(1); }
@@ -1069,13 +1081,13 @@ function dibujarBatalla() {
   g.addColorStop(0, '#f8f0c8'); g.addColorStop(1, '#d8f0b0');
   b.fillStyle = g; b.fillRect(0, 0, W, H);
   b.fillStyle = '#c8e8a0'; b.fillRect(0, 60, W, 52);
-  elipse(b, 176, 70, 48, 11, '#a0d080', '#70a858');
+  elipse(b, 176, 64, 48, 11, '#a0d080', '#70a858');
   elipse(b, 64, 112, 60, 13, '#a0d080', '#70a858');
-  if (bt.entVis && bt.ent) b.drawImage(spriteChar(bt.ent.pal, 0, 0), 152 + (bt.entDX || 0), 14, 48, 48);
+  if (bt.entVis && bt.ent) b.drawImage(spriteChar(bt.ent.pal, 0, 0), 152 + (bt.entDX || 0), 8, 48, 48);
   if (bt.rival && bt.rivalVis && !(bt.parp.r > 0 && (bt.parp.r-- >> 1) % 2)) {
     const sp = spriteCriatura(bt.rival.id);
-    b.save(); b.beginPath(); b.rect(0, 0, W, 72); b.clip();
-    b.drawImage(bt.blanco.r > 0 ? silueta(sp) : sp, 144 + bt.rDX, 8 + bt.rDY, 64, 64);
+    b.save(); b.beginPath(); b.rect(0, 0, W, 66); b.clip();
+    b.drawImage(bt.blanco.r > 0 ? silueta(sp) : sp, 144 + bt.rDX, 2 + bt.rDY, 64, 64);
     b.restore();
   }
   if (bt.yo && bt.yoVis && !(bt.parp.y > 0 && (bt.parp.y-- >> 1) % 2)) {
@@ -1098,8 +1110,9 @@ function cajaInfo(m, x, y, w, h, mio) {
   const f = ps / m.psMax;
   txt('PS', x + 9, y + 17, { t: 6, c: '#e09000', sombra: null });
   barra(x + 25, y + 18, w - 34, f, colorPS(f));
+  tiposChicos(tiposDe(m), x + 8, mio ? y + 34 : y + 25, w - 16);
   if (mio) {
-    txt(`${Math.ceil(ps)}/${m.psMax}`, x + w - 8, y + 25, { t: 7, al: 'right' });
+    txt(`${Math.ceil(ps)}/${m.psMax}`, x + w - 8, y + 24, { t: 7, al: 'right' });
     const fe = (m.exp - expPara(m.nivel)) / (expPara(m.nivel + 1) - expPara(m.nivel));
     sc.fillStyle = '#404848'; sc.fillRect(x + 8, y + h - 6, w - 16, 3);
     sc.fillStyle = '#40a8f8'; sc.fillRect(x + 8, y + h - 6, Math.round((w - 16) * Math.max(0, Math.min(1, fe))), 3);
@@ -1107,8 +1120,8 @@ function cajaInfo(m, x, y, w, h, mio) {
 }
 function uiBatalla() {
   if (!bt) return;
-  if (bt.rival && bt.rivalVis) cajaInfo(bt.rival, 8, 10, 108, 30, false);
-  if (bt.yo && bt.yoVis) cajaInfo(bt.yo, 124, 72, 112, 40, true);
+  if (bt.rival && bt.rivalVis) cajaInfo(bt.rival, 8, 8, 108, 40, false);
+  if (bt.yo && bt.yoVis) cajaInfo(bt.yo, 124, 62, 112, 50, true);
   caja(0, 112, W, 48, 'batalla');
   const mn = bt.menu;
   if (!mn || ui.dialogo || ui.equipo || ui.mochila) return;
