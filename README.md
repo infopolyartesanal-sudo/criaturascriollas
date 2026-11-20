@@ -12,6 +12,7 @@ Antes: https://criaturascriollas.netlify.app
 - `js/sprites.js`: motor de pixel-art, personajes, baldosas y edificios.
 - `js/datos.js`: los 18 tipos, movimientos, objetos y especies.
 - `js/mapas.js`: todos los lugares e historia. Recorrido: Pueblo Tero → Llanura Pampeana → Villa Serrana (Córdoba) → Sierras → Travesía → Valle Fértil (Gimnasio 1, Psíquico) → Talampaya → Valles Calchaquíes → Tafí del Valle (Gimnasio 2, Roca, en la cueva La Salamanca) → Yungas → Calilegua (desvío al norte: Quebrada, Tilcara, Salinas Grandes, Susques) → El Impenetrable → Esteros del Iberá → Villa Camalote → Selva Misionera → Minas de Wanda → Puerto Wanda (Gimnasio 3, Planta) → Caldenal Pampeano → Estepa Patagónica → Bariloche (Gimnasio 4, Hielo).
+- El viaje sigue la forma de Argentina: Córdoba → San Juan al OESTE, San Juan → Jujuy al NORTE, Jujuy → Chaco al ESTE, Chaco → Iberá BAJANDO, Iberá → Misiones al ESTE, y de Misiones a Bariloche se BAJA. Las rutas se dibujan siempre "de abajo hacia arriba" y al final de `js/mapas.js` (`girarMapa`) se giran; ahí también se abren los costados de los pueblos (`abrir`, `moverSalidas`).
 - Cada pueblo tiene un CEMIC (`crearCentro`), donde curan a las criaturas.
 - Gimnasios 1 a 4: el líder lleva 5 criaturas. Gimnasios 5 a 8: 6 criaturas.
 

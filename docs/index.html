@@ -2997,7 +2997,7 @@ const MAPAS = {
       { x: 11, y: 0, a: 'villa', ax: 11, ay: 22, dir: 1 },
     ],
     carteles: {
-      '12,3': 'VILLA CAMALOTE, acá nomás al norte. ¡Cuidado con los mosquitos!',
+      '12,3': 'VILLA CAMALOTE, acá nomás al SUR. ¡Cuidado con los mosquitos!',
       '13,32': 'RUTA 9 · ESTEROS DEL IBERÁ. Por el puente de madera se cruza la laguna.',
     },
     encuentros: { lista: [['mosquillon', 20], ['carpinchon', 18], ['junquito', 12], ['terito', 12], ['yacarelito', 10], ['totorarca', 8], ['ceibito', 6], ['lechucita', 5], ['faeve', 4], ['espejito', 3], ['anahisa', 2]], min: 31, max: 34 },
@@ -3145,7 +3145,7 @@ const MAPAS = {
     ],
     carteles: {
       '8,15': 'RUTA 10 · SELVA MISIONERA. La tierra es colorada por el hierro de las piedras.',
-      '14,29': 'Al norte: MINAS DE WANDA y PUERTO WANDA, con el GIMNASIO DE PLANTA.',
+      '14,29': 'Al ESTE: MINAS DE WANDA y PUERTO WANDA, con el GIMNASIO DE PLANTA.',
     },
     encuentros: { lista: [['capullon', 20], ['cuison', 18], ['arquineo', 14], ['piedrin', 12], ['mosquillon', 10], ['zorrazo', 8], ['piquibrasa', 6], ['ceibito', 6], ['polillaca', 4], ['pumita', 3]], min: 32, max: 35 },
     npcs: [
@@ -3747,7 +3747,7 @@ const MAPAS = {
     ],
     carteles: {
       '9,30': 'RUTA 3 · SIERRAS DE CÓRDOBA. Cruzá el arroyo por el puentecito.',
-      '9,3': 'Al norte: la TRAVESÍA hacia SAN JUAN. ¡Llevá agua y mates!',
+      '9,3': 'Al OESTE: la TRAVESÍA hacia SAN JUAN. ¡Llevá agua y mates!',
     },
     encuentros: { lista: [['piedrin', 22], ['hornerito', 14], ['zorrito', 12], ['condorito', 12], ['peluchin', 10], ['espejito', 10], ['pumita', 10], ['faeve', 6], ['carpinchu', 4]], min: 7, max: 11 },
     npcs: [
@@ -3788,7 +3788,7 @@ const MAPAS = {
     ],
     carteles: {
       '9,30': 'RUTA 4 · TRAVESÍA SANJUANINA. Desierto, jarillas y mucho sol.',
-      '9,3': 'Al norte: VALLE FÉRTIL y el GIMNASIO DEL VALLE DE LA LUNA.',
+      '9,3': 'Al OESTE: VALLE FÉRTIL y el GIMNASIO DEL VALLE DE LA LUNA.',
     },
     encuentros: { lista: [['vizcachita', 18], ['lechucita', 16], ['piedrin', 14], ['espejito', 14], ['pumita', 12], ['mimetit', 10], ['faeve', 8], ['cardito', 8]], min: 10, max: 14 },
     npcs: [
@@ -4233,6 +4233,92 @@ const MAPAS = {
     ],
   },
 };
+
+// ================= EL MAPA CON LA FORMA DE ARGENTINA =================
+// Las rutas se dibujan "de abajo hacia arriba", pero en el país el viaje sube y baja:
+// Córdoba → San Juan va al OESTE, Jujuy → Chaco al ESTE, Chaco → Iberá BAJA,
+// Iberá → Misiones al ESTE, y de Misiones a la Patagonia se BAJA todo.
+// Acá se giran esas rutas y se abren los costados de los pueblos que hacen falta.
+function abrir(id, celdas, letra) { for (const [x, y] of celdas) MAPAS[id].grilla[y][x] = letra; }
+function moverSalidas(id, haciaMapa, nuevas) {
+  const ss = MAPAS[id].salidas.filter(s => s.a === haciaMapa);
+  ss.forEach((s, i) => Object.assign(s, nuevas[i]));
+}
+function llegadas(desde, haciaMapa, nuevas) { moverSalidas(desde, haciaMapa, nuevas); }
+
+// --- Pueblos: abrir los costados nuevos y cerrar los viejos ---
+// Villa Serrana: sale al OESTE hacia las Sierras
+abrir('serrana', [[10, 0], [11, 0]], 'T');
+abrir('serrana', [[0, 10], [1, 10], [0, 11], [1, 11]], '=');
+moverSalidas('serrana', 'sierras', [{ x: 0, y: 10 }, { x: 0, y: 11 }]);
+llegadas('sierras', 'serrana', [{ ax: 1, ay: 10, dir: 3 }, { ax: 1, ay: 11, dir: 3 }]);
+MAPAS.serrana.carteles['12,1'] = 'VILLA SERRANA. Al OESTE: RUTA 3, las SIERRAS DE CÓRDOBA y, más lejos, SAN JUAN.';
+// Valle Fértil: se llega desde el ESTE (la Travesía)
+abrir('vallefertil', [[10, 21], [11, 21]], 'C');
+abrir('vallefertil', [[22, 10], [23, 10], [22, 11], [23, 11]], '=');
+moverSalidas('vallefertil', 'travesia', [{ x: 23, y: 10 }, { x: 23, y: 11 }]);
+llegadas('travesia', 'vallefertil', [{ ax: 22, ay: 10, dir: 2 }, { ax: 22, ay: 11, dir: 2 }]);
+MAPAS.vallefertil.carteles['12,1'] = 'Al NORTE: RUTA 5, hacia TALAMPAYA y TUCUMÁN. Al ESTE: la TRAVESÍA, de vuelta a Córdoba.';
+// Villa Camalote: se llega BAJANDO desde los Esteros (arriba) y se sigue al ESTE hacia la selva
+abrir('villa', [[10, 23], [11, 23]], 'T');
+abrir('villa', [[21, 10], [22, 10], [23, 10], [21, 11], [22, 11], [23, 11]], 'h');
+moverSalidas('villa', 'ruta2', [{ x: 10, y: 0 }, { x: 11, y: 0 }]);
+moverSalidas('villa', 'ruta3', [{ x: 23, y: 10 }, { x: 23, y: 11 }]);
+llegadas('ruta2', 'villa', [{ ax: 10, ay: 1, dir: 0 }, { ax: 11, ay: 1, dir: 0 }]);
+llegadas('ruta3', 'villa', [{ ax: 22, ay: 10, dir: 2 }, { ax: 22, ay: 11, dir: 2 }]);
+MAPAS.villa.carteles['12,1'] = 'Al NORTE: RUTA 9, los ESTEROS DEL IBERÁ. Al ESTE, cruzando el puente: RUTA 10, la SELVA MISIONERA.';
+// Puerto Wanda: hacia el sur se sale por el OESTE
+abrir('puerto', [[10, 0], [11, 0]], 'Y');
+abrir('puerto', [[0, 10], [1, 10], [0, 11], [1, 11]], 'q');
+moverSalidas('puerto', 'caldenal', [{ x: 0, y: 10 }, { x: 0, y: 11 }]);
+llegadas('caldenal', 'puerto', [{ ax: 1, ay: 10, dir: 3 }, { ax: 1, ay: 11, dir: 3 }]);
+MAPAS.puerto.carteles['12,1'] = 'Al OESTE: RUTA 11. Hay que BAJAR por todo el país hasta el CALDENAL PAMPEANO y la PATAGONIA.';
+// Bariloche: se llega BAJANDO desde la estepa (arriba); al SUR, la Ruta 13 (en construcción)
+moverSalidas('bariloche', 'estepa', [{ x: 10, y: 0 }, { x: 11, y: 0 }]);
+llegadas('estepa', 'bariloche', [{ ax: 10, ay: 1, dir: 0 }, { ax: 11, ay: 1, dir: 0 }]);
+MAPAS.bariloche.disparadores[0].prueba = (x, y) => y === 23;
+MAPAS.bariloche.disparadores[0].accion = async () => {
+  await decir('Al SUR: RUTA 13, hacia el GIMNASIO 5... ¡Todavía está en construcción! Muy pronto vas a poder seguir viaje.');
+  await pasoForzado(1);
+};
+MAPAS.bariloche.carteles['12,1'] = 'BARILOCHE. Al NORTE: la ESTEPA PATAGÓNICA. Al SUR: RUTA 13 (¡en construcción!).';
+
+// --- Rutas: girarlas ---
+// cw = el "arriba" del dibujo pasa a ser el ESTE; ccw = pasa a ser el OESTE; 180 = pasa a ser el SUR
+const GIROS = { cw: [2, 3, 1, 0], ccw: [3, 2, 0, 1], '180': [1, 0, 3, 2] };
+function girarPunto(giro, x, y, w, h) {
+  if (giro === 'cw') return [h - 1 - y, x];
+  if (giro === 'ccw') return [y, w - 1 - x];
+  return [w - 1 - x, h - 1 - y];
+}
+function girarMapa(id, giro) {
+  const m = MAPAS[id], g = m.grilla, h = g.length, w = g[0].length;
+  const P = (x, y) => girarPunto(giro, x, y, w, h), D = d => GIROS[giro][d];
+  // las llegadas desde otros mapas
+  for (const otro of Object.values(MAPAS)) for (const s of otro.salidas || []) {
+    if (s.a !== id) continue;
+    [s.ax, s.ay] = P(s.ax, s.ay); s.dir = D(s.dir);
+  }
+  const nw = giro === '180' ? w : h, nh = giro === '180' ? h : w;
+  const ng = Array.from({ length: nh }, () => Array(nw));
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const [a, b] = P(x, y); ng[b][a] = g[y][x]; }
+  m.grilla = ng;
+  for (const s of m.salidas || []) [s.x, s.y] = P(s.x, s.y);
+  for (const n of m.npcs || []) { [n.x, n.y] = P(n.x, n.y); n.dir = D(n.dir); }
+  if (m.carteles) {
+    const c = {};
+    for (const [k, v] of Object.entries(m.carteles)) { const [x, y] = k.split(',').map(Number); const [a, b] = P(x, y); c[a + ',' + b] = v; }
+    m.carteles = c;
+  }
+}
+girarMapa('sierras', 'ccw');
+girarMapa('travesia', 'ccw');
+girarMapa('chaco', 'cw');
+girarMapa('ruta2', '180');
+girarMapa('ruta3', 'cw');
+girarMapa('caldenal', '180');
+girarMapa('estepa', '180');
+
 
 // ===== Escenas de la historia =====
 // Tomi siempre se queda con el inicial que le gana al tuyo
