@@ -761,7 +761,7 @@ function calcularDanio(at, de, mv) {
   if (ha.ef === 'fuerza') extra *= 1.25;
   if (ha.ef === 'garra') extra *= 1.3;
   if (ha.ef === 'poderSolar' && bt.sol > 0) extra *= 1.5;
-  if (hd.ef === 'maestroFuego') extra *= ef < 1 ? 0.5 : 0.7;
+  if (hd.ef === 'maestroFuego') extra *= ef > 1 ? 0.7 : 0.5; // muy eficaces -30%, el resto -50%
   if (ha.ef === 'cromolente' && ef < 1) extra *= 2;
   if (ha.ef === 'apuro' && mv.tipo === ha.tipo && at.ps <= at.psMax / 3) extra *= 1.5;
   if (ha.ef === 'humedal' && (mv.tipo === 'AGUA' || mv.tipo === 'PLANTA')) extra *= 1.3;
