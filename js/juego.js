@@ -669,6 +669,7 @@ function descMov(M) {
   if (M.ef === 'atk-') extra = 'Baja el ATAQUE del rival.';
   else if (M.ef === 'def-') extra = 'Baja la DEFENSA del rival.';
   else if (M.ef === 'def+') extra = 'Sube su DEFENSA.';
+  else if (M.ef === 'atk++') extra = 'Sube mucho su ATAQUE.';
   else if (M.ef === 'cura') extra = 'Recupera la mitad de sus PS.';
   if (M.prio) extra = (extra ? extra + ' ' : '') + 'Ataca primero.';
   return [p.join('   '), extra];
@@ -965,6 +966,8 @@ function calcularDanio(at, de, mv) {
   if (ha.ef === 'crisol' && (mv.tipo === 'FUEGO' || mv.tipo === 'ROCA')) extra *= 1.3;
   if (bt.sol > 0 && ['FUEGO', 'TIERRA', 'ROCA'].includes(mv.tipo)) extra *= 1.3;
   if (hd.ef === 'filtro' && ef > 1) extra *= 0.75;
+  if (hd.ef === 'animaGlacial' && de.ps === de.psMax) extra *= 0.5;
+  if (ha.ef === 'filoRecio' && mv.corta) extra *= 1.5;
   if (hd.ef === 'ilusion' && !de.et.golpeado) extra *= 0.5;
   return { danio: Math.max(1, Math.floor(base * stab * ef * (critico ? 1.5 : 1) * azar * extra)), ef, critico };
 }
@@ -1293,18 +1296,26 @@ async function ejecutarMov(at, de, slot, quien) {
     await decir(`¡${nombreBatalla(de)} se lo devolvió!`, { auto: 40 });
     objetivo = at;
   }
-  if (signo === '-' && habDe(objetivo).ef === 'cuerpoPuro') {
+  if (signo === '-' && ['cuerpoPuro', 'animaGlacial'].includes(habDe(objetivo).ef)) {
     await anunciarHab(objetivo);
     await decir(`¡A ${nombreBatalla(objetivo)} no le pueden bajar nada!`, { auto: 50 });
     return;
   }
   const nombreStat = stat === 'atk' ? 'ATAQUE' : 'DEFENSA';
-  const nuevo = objetivo.et[stat] + (signo === '+' ? 1 : -1);
+  const cuanto = M.ef.length > 4 ? 2 : 1;
+  const nuevo = Math.max(-6, Math.min(6, objetivo.et[stat] + (signo === '+' ? cuanto : -cuanto)));
+  if (nuevo === objetivo.et[stat]) { await decir(`¡${nombreStat} de ${nombreBatalla(objetivo)} no puede cambiar más!`, { auto: 50 }); return; }
   if (nuevo < -6 || nuevo > 6) { await decir(`¡${nombreStat} de ${nombreBatalla(objetivo)} no puede cambiar más!`, { auto: 50 }); return; }
   objetivo.et[stat] = nuevo;
   bt.parp[objetivo === bt.yo ? 'y' : 'r'] = 10;
   await esperar(10);
-  await decir(`¡${signo === '+' ? 'Subió' : 'Bajó'} el ${nombreStat} de ${nombreBatalla(objetivo)}!`, { auto: 50 });
+  await decir(`¡${signo === '+' ? 'Subió' : 'Bajó'}${cuanto > 1 ? ' mucho' : ''} ${stat === 'atk' ? 'el' : 'la'} ${nombreStat} de ${nombreBatalla(objetivo)}!`, { auto: 50 });
+  if (signo === '-' && objetivo !== at) await competitivo(objetivo);
+}
+async function competitivo(m) {
+  if (habDe(m).ef !== 'competitivo' || m.ps <= 0) return;
+  await anunciarHab(m);
+  await cambiarEtapa(m, 'atk', 2);
 }
 
 // ---------- Habilidades en batalla ----------
@@ -1324,7 +1335,7 @@ async function cambiarEtapa(m, stat, n, callado) {
   const nuevo = Math.max(-6, Math.min(6, (m.et[stat] || 0) + n));
   if (nuevo === (m.et[stat] || 0)) return;
   m.et[stat] = nuevo;
-  await decir(`¡${n > 0 ? 'Subió' : 'Bajó'}${Math.abs(n) > 1 ? ' mucho' : ''} ${stat === 'def' ? 'la' : 'el'} ${nombres[stat]} de ${nombreBatalla(m)}!`, { auto: 45 });
+  await decir(`¡${n > 0 ? 'Subió' : 'Bajó'}${Math.abs(n) > 1 ? ' mucho' : ''} ${stat === 'atk' ? 'el' : 'la'} ${nombres[stat]} de ${nombreBatalla(m)}!`, { auto: 45 });
 }
 async function alEntrar(m) {
   if (!bt || m.et.entro) return;
@@ -1339,8 +1350,13 @@ async function alEntrar(m) {
   if (h.ef === 'intimidacion') {
     if (!otro || otro.ps <= 0) { m.et.entro = false; return; } // se activa cuando haya rival
     await anunciarHab(m);
-    if (habDe(otro).ef === 'cuerpoPuro') await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
-    else await cambiarEtapa(otro, 'atk', -1);
+    if (['cuerpoPuro', 'animaGlacial'].includes(habDe(otro).ef)) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
+    else { await cambiarEtapa(otro, 'atk', -1); await competitivo(otro); }
+  } else if (h.ef === 'espadaRuinosa') {
+    if (!otro || otro.ps <= 0) { m.et.entro = false; return; }
+    await anunciarHab(m);
+    if (['cuerpoPuro', 'animaGlacial'].includes(habDe(otro).ef)) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
+    else { await cambiarEtapa(otro, 'def', -1); await competitivo(otro); }
   } else if (h.ef === 'veloz') {
     await anunciarHab(m); await cambiarEtapa(m, 'vel', 1);
   } else if (h.ef === 'sequia') {
@@ -1364,6 +1380,8 @@ async function despuesDelGolpe(at, de, M, danio = 0) {
     if (hd.ef === 'hervor' && (M.tipo === 'FUEGO' || M.tipo === 'AGUA')) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 2); }
     if (hd.ef === 'cobardia' && ['BICHO', 'FANTASMA', 'SINIESTRO'].includes(M.tipo)) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 1); }
   }
+  if (hd.ef === 'justiciero' && de.ps > 0 && M.tipo === 'SINIESTRO') { await anunciarHab(de); await cambiarEtapa(de, 'atk', 1); }
+  if (ha.ef === 'furiaAndina' && de.ps <= 0 && at.ps > 0) { await anunciarHab(at); await cambiarEtapa(at, 'atk', 1); }
   if (ha.ef === 'obrero' && at.ps > 0 && (at.et.atk || 0) < 6) { await anunciarHab(at); await cambiarEtapa(at, 'atk', 1); }
   if (hd.ef === 'contacto' && at.ps > 0) {
     await anunciarHab(de);
@@ -1387,6 +1405,7 @@ async function finDeTurno() {
       await animarPS(m);
       await decir(`¡${h.nombre}! El sol fuerte le quita PS a ${nombreBatalla(m)}.`, { auto: 45 });
     }
+    if (h.ef === 'animaGlacial' && (m.et.vel || 0) < 6) { await anunciarHab(m); await cambiarEtapa(m, 'vel', 1); }
     if (h.ef === 'impulso' && (m.et.vel || 0) < 6) { await anunciarHab(m); await cambiarEtapa(m, 'vel', 1); }
   }
 }

@@ -2299,7 +2299,7 @@ const MAPAS = {
       '9,28': 'RUTA 13 · BOSQUE ANDINO. Coihues, lagos y niebla. Dicen que en este bosque viven los duendes...',
       '9,3': 'Al sur: EL BOLSÓN, al pie del cerro Piltriquitrón.',
     },
-    encuentros: { lista: [['howlup', 16], ['faeve', 14], ['farolito', 12], ['garkol', 10], ['lechuzonte', 10], ['nevulon', 10], ['condorito', 8], ['pumentor', 8], ['candilejo', 4]], min: 44, max: 47 },
+    encuentros: { lista: [['howlup', 16], ['escarchin', 14], ['faeve', 12], ['farolito', 12], ['garkol', 10], ['lechuzonte', 10], ['nevulon', 8], ['condorito', 8], ['pumentor', 6], ['candilejo', 4]], min: 44, max: 47 },
     npcs: [
       entrenadorNPC({
         id: 'guarda_bosque', x: 7, y: 17, dir: 2, pal: PAL.guarda, nombre: 'GUARDAPARQUE NAHUEL',
@@ -2548,7 +2548,7 @@ const MAPAS = {
         hablar: async () => {
           if (S.flags.insignia5) await decir('NENE: ¡Le ganaste a SOMBRA! ¡Y en la oscuridad!');
           else {
-            await decir('NENE: SOMBRA tiene criaturas FANTASMA y SINIESTRO. Su PHANTOLYCAN es un lobo dragón de niebla...');
+            await decir('NENE: SOMBRA tiene criaturas FANTASMA y SINIESTRO. Su ANDESPECTRO es el espíritu de un guerrero de la cordillera...');
             await decir('¡Las criaturas HADA aguantan bien a las SINIESTRO, y las de FANTASMA y SINIESTRO les pegan fuerte a las FANTASMA!');
           }
         },
@@ -2584,7 +2584,7 @@ const MAPAS = {
     npcs: [
       entrenadorNPC({
         id: 'gim5_a', x: 8, y: 5, dir: 2, pal: PAL.sombra, nombre: 'MÉDIUM CLARA',
-        equipo: [['candilejo', 50], ['wraithfae', 50], ['gargorrupt', 51]],
+        equipo: [['candilejo', 50], ['glaciar', 50], ['gargorrupt', 51]],
         antes: ['MÉDIUM CLARA: Uuuuh... ¿Quién anda ahí? ¡No se ve nada! ¡Peleemos a oscuras!'],
         gana: 'MÉDIUM CLARA: Los espíritus me dijeron que ibas a ganar... y tenían razón.',
         despues: 'MÉDIUM CLARA: Las criaturas FANTASMA no sienten los golpes NORMAL ni LUCHA. ¡Ojo con eso!',
@@ -2610,7 +2610,7 @@ const MAPAS = {
           await decir('SOMBRA: ...Shhh. ¿Lo escuchás? Es el viento entre las rocas. Las piedras de Somuncurá me contaron que venías.');
           await decir('Soy SOMBRA, líder del GIMNASIO SOMUNCURÁ. Mis criaturas viven entre la niebla y la noche.');
           await decir('Si me ganás, te llevás la INSIGNIA ECO. ¡Que la oscuridad te acompañe!');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER SOMBRA', pal: PAL.sombra, equipo: [['gargorrupt', 50], ['wraithfae', 51], ['animaura', 51], ['duskfae', 52], ['umbratail', 52], ['phantolycan', 53]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER SOMBRA', pal: PAL.sombra, equipo: [['wraithfae', 50], ['duskfae', 51] /* lugar de COBIJOSO */, ['phantolycan', 51] /* lugar de YAGUARALBA */, ['umbratail', 52], ['umbracor', 52], ['andespectro', 53]] } });
           if (r === 'gana') {
             S.flags.insignia5 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 5);

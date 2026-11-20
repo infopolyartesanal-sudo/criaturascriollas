@@ -724,6 +724,11 @@ const MOVS = {
   luz_mala: { nombre: 'Luz Mala', tipo: 'FANTASMA', pot: 90, prec: 100, pp: 10 },
   colmillo_niebla: { nombre: 'Colmillo Niebla', tipo: 'FANTASMA', pot: 75, prec: 100, pp: 15, muerde: true },
   resplandor: { nombre: 'Resplandor', tipo: 'HADA', pot: 90, prec: 100, pp: 10 },
+  // Diseños de Poly: línea de Andespectro y Umbracor
+  tajo_espectral: { nombre: 'Tajo Espectral', tipo: 'FANTASMA', pot: 80, prec: 100, pp: 15, corta: true },
+  tajo_abisal: { nombre: 'Tajo Abisal', tipo: 'SINIESTRO', pot: 85, prec: 95, pp: 10, corta: true },
+  puno_hielo: { nombre: 'Puño Hielo', tipo: 'HIELO', pot: 75, prec: 100, pp: 15 },
+  danza_espada: { nombre: 'Danza Espada', tipo: 'NORMAL', pot: 0, prec: 100, pp: 20, ef: 'atk++' },
   forcejeo: { nombre: 'Forcejeo', tipo: 'NORMAL', pot: 40, prec: 100, pp: 1 },
 };
 
@@ -1887,6 +1892,89 @@ const ESPECIES = {
       ['d', 4, 22, '#fff0a0'], ['d', 6, 26, '#ffd0f0'], ['d', 3, 17, '#fff0a0'], ['d', 28, 26, '#fff0a0'],
     ],
   },
+  // ===== Diseños de Poly (Gimnasio 5) =====
+  escarchin: {
+    nombre: 'Escarchín', tipos: ['HIELO'], base: { ps: 45, atk: 55, def: 55, vel: 50 }, captura: 75, exp: 64,
+    desc: 'el pequeño explorador de hielo de la cordillera', evo: { nivel: 28, a: 'glaciar' },
+    movs: [[1, 'aranazo'], [1, 'escarcha'], [6, 'nevada'], [11, 'pique'], [16, 'granizo'], [22, 'puno_hielo'], [28, 'susto'], [33, 'tajo_espectral'], [38, 'rayo_hielo'], [44, 'danza_espada'], [50, 'luz_mala']],
+    sprite: [
+      ['e', 16, 30, 11, 1.5, '#7090b0', 's'],
+      ['p', [[22, 22], [31, 18], [30, 24], [24, 26]], '#a8d0f0'], ['p', [[27, 20], [31, 12], [30, 21]], '#78b8f0'],
+      ['p', [[14, 16], [16, 7], [19, 15]], '#78b8f0'], ['p', [[18, 16], [21, 9], [23, 17]], '#5aa0e8'],
+      ['p', [[22, 18], [25, 12], [26, 19]], '#78b8f0'], ['p', [[16, 15], [18, 9], [20, 15]], '#3a4a70'],
+      ['e', 18, 22, 8, 5, '#c8e4f8'],
+      ['e', 15, 24, 4, 3, '#f4f8fc', 's'],
+      ['r', 11, 24, 3, 5, '#c8e4f8'], ['r', 21, 24, 3, 5, '#c8e4f8'],
+      ['r', 11, 28, 3, 2, '#283050', 's'], ['r', 21, 28, 3, 2, '#283050', 's'],
+      ['e', 10, 15, 6, 5, '#d8ecfa'], ['e', 5, 17, 3, 2, '#e8f4fc'],
+      ['p', [[8, 11], [9, 2], [12, 10]], '#78b8f0'], ['p', [[11, 11], [14, 3], [15, 12]], '#a8d8f8'], ['p', [[6, 12], [4, 5], [8, 11]], '#5aa0e8'],
+      ['e', 9, 15, 1.8, 2, '#2a6ad8', 's'], ['d', 9, 14, '#ffffff'],
+    ],
+  },
+  glaciar: {
+    nombre: 'Glaciar', tipos: ['HIELO', 'FANTASMA'], base: { ps: 70, atk: 92, def: 80, vel: 85 }, captura: 45, exp: 150,
+    desc: 'el guerrero de hielo con cuchillas en las muñecas', evo: { nivel: 46, a: 'andespectro' },
+    movs: [[1, 'aranazo'], [1, 'escarcha'], [6, 'nevada'], [11, 'pique'], [16, 'granizo'], [22, 'puno_hielo'], [28, 'susto'], [33, 'tajo_espectral'], [38, 'rayo_hielo'], [44, 'danza_espada'], [50, 'luz_mala']],
+    sprite: [
+      ['e', 16, 31, 8, 1, '#405070', 's'],
+      ['p', [[8, 18], [3, 30], [10, 21]], '#a8d8f8'], ['p', [[24, 18], [29, 30], [22, 21]], '#a8d8f8'],
+      ['r', 12, 20, 3, 10, '#1e2a48'], ['r', 17, 20, 3, 10, '#1e2a48'],
+      ['r', 12, 22, 3, 4, '#d8ecfa'], ['r', 17, 22, 3, 4, '#d8ecfa'],
+      ['r', 11, 29, 4, 2, '#1e2a48'], ['r', 17, 29, 4, 2, '#1e2a48'],
+      ['r', 8, 12, 3, 9, '#1e2a48'], ['r', 21, 12, 3, 9, '#1e2a48'],
+      ['p', [[11, 11], [21, 11], [19, 21], [13, 21]], '#1e2a48'],
+      ['p', [[13, 12], [19, 12], [16, 19]], '#d8ecfa'],
+      ['p', [[7, 13], [4, 4], [11, 11]], '#78b8f0'], ['p', [[25, 13], [28, 4], [21, 11]], '#78b8f0'],
+      ['e', 16, 8, 3.5, 3.5, '#d8ecfa'],
+      ['p', [[13, 7], [13, 0], [16, 5]], '#a8d8f8'], ['p', [[16, 5], [19, 0], [19, 7]], '#78b8f0'],
+      ['d', 15, 8, '#2a6ad8'], ['d', 17, 8, '#2a6ad8'],
+    ],
+  },
+  andespectro: {
+    nombre: 'Andespectro', tipos: ['HIELO', 'FANTASMA'], base: { ps: 80, atk: 122, def: 82, vel: 112 }, captura: 45, exp: 250,
+    desc: 'el espíritu del guerrero de la cordillera, con espada y escudo de hielo',
+    movs: [[1, 'aranazo'], [1, 'escarcha'], [6, 'nevada'], [11, 'pique'], [16, 'granizo'], [22, 'puno_hielo'], [28, 'susto'], [33, 'tajo_espectral'], [38, 'rayo_hielo'], [44, 'danza_espada'], [50, 'luz_mala']],
+    sprite: [
+      ['e', 16, 28, 13, 3, '#5a2a90', 's'],
+      ['p', [[2, 27], [5, 17], [8, 27]], '#9a50e0', 's'], ['p', [[24, 27], [28, 16], [31, 27]], '#9a50e0', 's'],
+      ['p', [[11, 20], [7, 29], [11, 30], [15, 22]], '#1a2040'], ['p', [[17, 20], [22, 29], [26, 30], [20, 20]], '#1a2040'],
+      ['e', 16, 17, 5, 5, '#1a2040'],
+      ['p', [[14, 14], [18, 14], [16, 20]], '#4a7ad8'],
+      ['p', [[11, 16], [0, 27], [2, 28], [13, 18]], '#a8d8f8'], ['r', 11, 15, 3, 3, '#3a2a70'],
+      ['p', [[20, 8], [29, 10], [28, 24], [21, 22]], '#6a4ae0'],
+      ['p', [[22, 10], [27, 11], [26, 20], [22, 18]], '#9a8af8', 's'],
+      ['d', 24, 15, '#f0e0ff'], ['d', 26, 15, '#f0e0ff'], ['r', 24, 17, 3, 1, '#f0e0ff', 's'],
+      ['e', 15, 9, 3.5, 3.5, '#1a2040'],
+      ['p', [[13, 8], [10, 1], [15, 6]], '#4a7ad8'], ['p', [[15, 6], [18, 0], [18, 8]], '#6a9af0'], ['p', [[17, 8], [22, 3], [19, 10]], '#4a7ad8'],
+      ['r', 13, 11, 4, 1, '#2a3060', 's'],
+      ['e', 14, 9, 1.4, 1, '#c070ff', 's'],
+    ],
+  },
+  umbracor: {
+    nombre: 'Umbracor', tipos: ['SINIESTRO', 'ACERO'], base: { ps: 95, atk: 122, def: 112, vel: 60 }, captura: 45, exp: 250,
+    desc: 'el caballero de la sombra, espíritu de un guerrero antiguo',
+    movs: [[1, 'aranazo'], [1, 'grunido'], [6, 'garra_metal'], [12, 'mordisco'], [18, 'emboscada'], [26, 'cabeza_hierro'], [34, 'tajo_abisal'], [42, 'danza_espada'], [50, 'noche_cerrada']],
+    sprite: [
+      ['e', 16, 29, 14, 3, '#3a1a5a', 's'],
+      ['p', [[1, 29], [4, 13], [8, 29]], '#7a3ab0', 's'], ['p', [[24, 29], [28, 11], [31, 29]], '#7a3ab0', 's'],
+      ['p', [[9, 10], [23, 10], [28, 28], [4, 28]], '#2a1a3a'],
+      ['r', 11, 21, 4, 9, '#3a3a48'], ['r', 17, 21, 4, 9, '#3a3a48'],
+      ['r', 11, 23, 4, 2, '#8a8aa0', 's'], ['r', 17, 23, 4, 2, '#8a8aa0', 's'],
+      ['r', 22, 12, 3, 9, '#3a3a48'],
+      ['p', [[9, 10], [23, 10], [21, 22], [11, 22]], '#3a3a48'],
+      ['e', 16, 15.5, 5.5, 4, '#7a1840', 's'],
+      ['p', [[11, 13], [12.5, 16], [14, 13]], '#f0f0f8', 's'], ['p', [[14, 13], [15.5, 16], [17, 13]], '#f0f0f8', 's'],
+      ['p', [[17, 13], [18.5, 16], [20, 13]], '#f0f0f8', 's'], ['p', [[20, 13], [21, 15], [21.5, 13]], '#f0f0f8', 's'],
+      ['p', [[12, 19], [13.5, 16], [15, 19]], '#f0f0f8', 's'], ['p', [[15, 19], [16.5, 16], [18, 19]], '#f0f0f8', 's'], ['p', [[18, 19], [19.5, 16.5], [21, 19]], '#f0f0f8', 's'],
+      ['p', [[4, 12], [9, 7], [12, 12]], '#8a8aa0'], ['p', [[28, 12], [23, 7], [20, 12]], '#8a8aa0'],
+      ['e', 16, 7, 4, 3.5, '#3a3a48'],
+      ['p', [[12, 6], [9, 0], [14, 4]], '#3a3a48'], ['p', [[20, 6], [23, 0], [18, 4]], '#3a3a48'],
+      ['d', 14, 7, '#ff3030'], ['d', 18, 7, '#ff3030'],
+      ['r', 7, 12, 3, 8, '#3a3a48'],
+      ['p', [[9, 18], [0, 31], [3, 31], [11, 20]], '#c0c0d4'], ['p', [[9, 19], [1, 30], [2, 30.5], [10, 20]], '#e8e8f8', 's'],
+      ['r', 7, 17, 5, 2, '#5a3a8a', 's'],
+    ],
+  },
   mimetit: {
     nombre: 'Mimetit', tipos: ['DRAGON', 'PSIQUICO'], base: { ps: 50, atk: 55, def: 48, vel: 68 }, captura: 45, exp: 70,
     desc: 'el dragoncito que se vuelve transparente', evo: { nivel: 35, a: 'espectradraco' },
@@ -2207,6 +2295,12 @@ const HABILIDADES = {
   monteBravo: { nombre: 'Monte Bravo', ef: 'apuro', tipo: 'PLANTA', desc: 'Con poca vida, sus ataques de Planta pegan mucho más.' },
   fogonInterior: { nombre: 'Fogón Interior', ef: 'apuro', tipo: 'FUEGO', desc: 'Con poca vida, sus ataques de Fuego pegan mucho más.' },
   correntada: { nombre: 'Correntada', ef: 'apuro', tipo: 'AGUA', desc: 'Con poca vida, sus ataques de Agua pegan mucho más.' },
+  competitivo: { nombre: 'Competitivo', ef: 'competitivo', desc: 'Si el rival le baja algo, se enoja y le sube mucho el ATAQUE.' },
+  animaGlacial: { nombre: 'Ánima Glacial', ef: 'animaGlacial', desc: 'Con la vida llena recibe la mitad de daño. No le bajan nada y se apura cada turno.' },
+  espadaRuinosa: { nombre: 'Espada Ruinosa', ef: 'espadaRuinosa', desc: 'Al entrar muestra su espada: le baja la DEFENSA al rival.' },
+  furiaAndina: { nombre: 'Furia Andina', ef: 'furiaAndina', desc: 'Cada vez que debilita a una criatura, le sube el ATAQUE.' },
+  filoRecio: { nombre: 'Filo Recio', ef: 'filoRecio', desc: 'Sus ataques de corte (tajos) pegan un 50% más.' },
+  justiciero: { nombre: 'Justiciero', ef: 'justiciero', desc: 'Si le pegan con Siniestro, le sube el ATAQUE.' },
   maldicionLunar: { nombre: 'Maldición Lunar', ef: 'maldicion', desc: 'Sus mordiscos le devuelven la mitad del daño que hacen como PS.' },
 };
 const HAB_ESPECIE = {
@@ -2239,6 +2333,8 @@ const HAB_ESPECIE = {
   pumita: 'intimidacion', pumentor: 'intimidacion',
   howlup: { n: ['intimidacion', 'cuerpoMaldito'], o: 'maldicionLunar' }, phantolycan: { n: ['intimidacion', 'cuerpoMaldito'], o: 'maldicionLunar' },
   sparknight: { n: ['intimidacion', 'ojoNocturno'] }, umbratail: { n: ['intimidacion', 'ojoNocturno'] },
+  escarchin: { n: ['cortinaNieve', 'cuerpoPuro'], o: 'animaGlacial' }, glaciar: { n: ['cuerpoPuro', 'competitivo'], o: 'animaGlacial' },
+  andespectro: { n: ['espadaRuinosa', 'competitivo'], o: 'furiaAndina' }, umbracor: { n: ['intimidacion', 'filoRecio'], o: 'justiciero' },
   duskfae: { n: ['veloEspejismo', 'cuerpoMaldito'] }, wraithfae: { n: ['cuerpoMaldito', 'veloEspejismo'] },
 };
 for (const id in ESPECIES) {
@@ -4563,7 +4659,7 @@ const MAPAS = {
       '9,28': 'RUTA 13 · BOSQUE ANDINO. Coihues, lagos y niebla. Dicen que en este bosque viven los duendes...',
       '9,3': 'Al sur: EL BOLSÓN, al pie del cerro Piltriquitrón.',
     },
-    encuentros: { lista: [['howlup', 16], ['faeve', 14], ['farolito', 12], ['garkol', 10], ['lechuzonte', 10], ['nevulon', 10], ['condorito', 8], ['pumentor', 8], ['candilejo', 4]], min: 44, max: 47 },
+    encuentros: { lista: [['howlup', 16], ['escarchin', 14], ['faeve', 12], ['farolito', 12], ['garkol', 10], ['lechuzonte', 10], ['nevulon', 8], ['condorito', 8], ['pumentor', 6], ['candilejo', 4]], min: 44, max: 47 },
     npcs: [
       entrenadorNPC({
         id: 'guarda_bosque', x: 7, y: 17, dir: 2, pal: PAL.guarda, nombre: 'GUARDAPARQUE NAHUEL',
@@ -4812,7 +4908,7 @@ const MAPAS = {
         hablar: async () => {
           if (S.flags.insignia5) await decir('NENE: ¡Le ganaste a SOMBRA! ¡Y en la oscuridad!');
           else {
-            await decir('NENE: SOMBRA tiene criaturas FANTASMA y SINIESTRO. Su PHANTOLYCAN es un lobo dragón de niebla...');
+            await decir('NENE: SOMBRA tiene criaturas FANTASMA y SINIESTRO. Su ANDESPECTRO es el espíritu de un guerrero de la cordillera...');
             await decir('¡Las criaturas HADA aguantan bien a las SINIESTRO, y las de FANTASMA y SINIESTRO les pegan fuerte a las FANTASMA!');
           }
         },
@@ -4848,7 +4944,7 @@ const MAPAS = {
     npcs: [
       entrenadorNPC({
         id: 'gim5_a', x: 8, y: 5, dir: 2, pal: PAL.sombra, nombre: 'MÉDIUM CLARA',
-        equipo: [['candilejo', 50], ['wraithfae', 50], ['gargorrupt', 51]],
+        equipo: [['candilejo', 50], ['glaciar', 50], ['gargorrupt', 51]],
         antes: ['MÉDIUM CLARA: Uuuuh... ¿Quién anda ahí? ¡No se ve nada! ¡Peleemos a oscuras!'],
         gana: 'MÉDIUM CLARA: Los espíritus me dijeron que ibas a ganar... y tenían razón.',
         despues: 'MÉDIUM CLARA: Las criaturas FANTASMA no sienten los golpes NORMAL ni LUCHA. ¡Ojo con eso!',
@@ -4874,7 +4970,7 @@ const MAPAS = {
           await decir('SOMBRA: ...Shhh. ¿Lo escuchás? Es el viento entre las rocas. Las piedras de Somuncurá me contaron que venías.');
           await decir('Soy SOMBRA, líder del GIMNASIO SOMUNCURÁ. Mis criaturas viven entre la niebla y la noche.');
           await decir('Si me ganás, te llevás la INSIGNIA ECO. ¡Que la oscuridad te acompañe!');
-          const r = await batalla({ entrenador: { nombre: 'LÍDER SOMBRA', pal: PAL.sombra, equipo: [['gargorrupt', 50], ['wraithfae', 51], ['animaura', 51], ['duskfae', 52], ['umbratail', 52], ['phantolycan', 53]] } });
+          const r = await batalla({ entrenador: { nombre: 'LÍDER SOMBRA', pal: PAL.sombra, equipo: [['wraithfae', 50], ['duskfae', 51] /* lugar de COBIJOSO */, ['phantolycan', 51] /* lugar de YAGUARALBA */, ['umbratail', 52], ['umbracor', 52], ['andespectro', 53]] } });
           if (r === 'gana') {
             S.flags.insignia5 = true;
             S.flags.insignias = Math.max(S.flags.insignias || 0, 5);
@@ -5974,6 +6070,7 @@ function descMov(M) {
   if (M.ef === 'atk-') extra = 'Baja el ATAQUE del rival.';
   else if (M.ef === 'def-') extra = 'Baja la DEFENSA del rival.';
   else if (M.ef === 'def+') extra = 'Sube su DEFENSA.';
+  else if (M.ef === 'atk++') extra = 'Sube mucho su ATAQUE.';
   else if (M.ef === 'cura') extra = 'Recupera la mitad de sus PS.';
   if (M.prio) extra = (extra ? extra + ' ' : '') + 'Ataca primero.';
   return [p.join('   '), extra];
@@ -6270,6 +6367,8 @@ function calcularDanio(at, de, mv) {
   if (ha.ef === 'crisol' && (mv.tipo === 'FUEGO' || mv.tipo === 'ROCA')) extra *= 1.3;
   if (bt.sol > 0 && ['FUEGO', 'TIERRA', 'ROCA'].includes(mv.tipo)) extra *= 1.3;
   if (hd.ef === 'filtro' && ef > 1) extra *= 0.75;
+  if (hd.ef === 'animaGlacial' && de.ps === de.psMax) extra *= 0.5;
+  if (ha.ef === 'filoRecio' && mv.corta) extra *= 1.5;
   if (hd.ef === 'ilusion' && !de.et.golpeado) extra *= 0.5;
   return { danio: Math.max(1, Math.floor(base * stab * ef * (critico ? 1.5 : 1) * azar * extra)), ef, critico };
 }
@@ -6598,18 +6697,26 @@ async function ejecutarMov(at, de, slot, quien) {
     await decir(`¡${nombreBatalla(de)} se lo devolvió!`, { auto: 40 });
     objetivo = at;
   }
-  if (signo === '-' && habDe(objetivo).ef === 'cuerpoPuro') {
+  if (signo === '-' && ['cuerpoPuro', 'animaGlacial'].includes(habDe(objetivo).ef)) {
     await anunciarHab(objetivo);
     await decir(`¡A ${nombreBatalla(objetivo)} no le pueden bajar nada!`, { auto: 50 });
     return;
   }
   const nombreStat = stat === 'atk' ? 'ATAQUE' : 'DEFENSA';
-  const nuevo = objetivo.et[stat] + (signo === '+' ? 1 : -1);
+  const cuanto = M.ef.length > 4 ? 2 : 1;
+  const nuevo = Math.max(-6, Math.min(6, objetivo.et[stat] + (signo === '+' ? cuanto : -cuanto)));
+  if (nuevo === objetivo.et[stat]) { await decir(`¡${nombreStat} de ${nombreBatalla(objetivo)} no puede cambiar más!`, { auto: 50 }); return; }
   if (nuevo < -6 || nuevo > 6) { await decir(`¡${nombreStat} de ${nombreBatalla(objetivo)} no puede cambiar más!`, { auto: 50 }); return; }
   objetivo.et[stat] = nuevo;
   bt.parp[objetivo === bt.yo ? 'y' : 'r'] = 10;
   await esperar(10);
-  await decir(`¡${signo === '+' ? 'Subió' : 'Bajó'} el ${nombreStat} de ${nombreBatalla(objetivo)}!`, { auto: 50 });
+  await decir(`¡${signo === '+' ? 'Subió' : 'Bajó'}${cuanto > 1 ? ' mucho' : ''} ${stat === 'atk' ? 'el' : 'la'} ${nombreStat} de ${nombreBatalla(objetivo)}!`, { auto: 50 });
+  if (signo === '-' && objetivo !== at) await competitivo(objetivo);
+}
+async function competitivo(m) {
+  if (habDe(m).ef !== 'competitivo' || m.ps <= 0) return;
+  await anunciarHab(m);
+  await cambiarEtapa(m, 'atk', 2);
 }
 
 // ---------- Habilidades en batalla ----------
@@ -6629,7 +6736,7 @@ async function cambiarEtapa(m, stat, n, callado) {
   const nuevo = Math.max(-6, Math.min(6, (m.et[stat] || 0) + n));
   if (nuevo === (m.et[stat] || 0)) return;
   m.et[stat] = nuevo;
-  await decir(`¡${n > 0 ? 'Subió' : 'Bajó'}${Math.abs(n) > 1 ? ' mucho' : ''} ${stat === 'def' ? 'la' : 'el'} ${nombres[stat]} de ${nombreBatalla(m)}!`, { auto: 45 });
+  await decir(`¡${n > 0 ? 'Subió' : 'Bajó'}${Math.abs(n) > 1 ? ' mucho' : ''} ${stat === 'atk' ? 'el' : 'la'} ${nombres[stat]} de ${nombreBatalla(m)}!`, { auto: 45 });
 }
 async function alEntrar(m) {
   if (!bt || m.et.entro) return;
@@ -6644,8 +6751,13 @@ async function alEntrar(m) {
   if (h.ef === 'intimidacion') {
     if (!otro || otro.ps <= 0) { m.et.entro = false; return; } // se activa cuando haya rival
     await anunciarHab(m);
-    if (habDe(otro).ef === 'cuerpoPuro') await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
-    else await cambiarEtapa(otro, 'atk', -1);
+    if (['cuerpoPuro', 'animaGlacial'].includes(habDe(otro).ef)) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
+    else { await cambiarEtapa(otro, 'atk', -1); await competitivo(otro); }
+  } else if (h.ef === 'espadaRuinosa') {
+    if (!otro || otro.ps <= 0) { m.et.entro = false; return; }
+    await anunciarHab(m);
+    if (['cuerpoPuro', 'animaGlacial'].includes(habDe(otro).ef)) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
+    else { await cambiarEtapa(otro, 'def', -1); await competitivo(otro); }
   } else if (h.ef === 'veloz') {
     await anunciarHab(m); await cambiarEtapa(m, 'vel', 1);
   } else if (h.ef === 'sequia') {
@@ -6669,6 +6781,8 @@ async function despuesDelGolpe(at, de, M, danio = 0) {
     if (hd.ef === 'hervor' && (M.tipo === 'FUEGO' || M.tipo === 'AGUA')) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 2); }
     if (hd.ef === 'cobardia' && ['BICHO', 'FANTASMA', 'SINIESTRO'].includes(M.tipo)) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 1); }
   }
+  if (hd.ef === 'justiciero' && de.ps > 0 && M.tipo === 'SINIESTRO') { await anunciarHab(de); await cambiarEtapa(de, 'atk', 1); }
+  if (ha.ef === 'furiaAndina' && de.ps <= 0 && at.ps > 0) { await anunciarHab(at); await cambiarEtapa(at, 'atk', 1); }
   if (ha.ef === 'obrero' && at.ps > 0 && (at.et.atk || 0) < 6) { await anunciarHab(at); await cambiarEtapa(at, 'atk', 1); }
   if (hd.ef === 'contacto' && at.ps > 0) {
     await anunciarHab(de);
@@ -6692,6 +6806,7 @@ async function finDeTurno() {
       await animarPS(m);
       await decir(`¡${h.nombre}! El sol fuerte le quita PS a ${nombreBatalla(m)}.`, { auto: 45 });
     }
+    if (h.ef === 'animaGlacial' && (m.et.vel || 0) < 6) { await anunciarHab(m); await cambiarEtapa(m, 'vel', 1); }
     if (h.ef === 'impulso' && (m.et.vel || 0) < 6) { await anunciarHab(m); await cambiarEtapa(m, 'vel', 1); }
   }
 }
