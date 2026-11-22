@@ -382,6 +382,19 @@ function crearTiles() {
     R(x, 0, 0, 16, 16, '#e0c890');
     sobre(x, [['p', [[0, 16], [8, 1], [16, 16]], '#7a6a6a'], ['p', [[5, 7], [8, 1], [11, 7], [9, 6], [8, 8], [6, 6]], '#ffffff'], ['p', [[8, 1], [16, 16], [12, 16], [10, 8]], '#5a4a4a', 'c']]);
   });
+  // Se rompen con el PICO: X roca (sobre arena), Z bloque de hielo (sobre nieve), O roca de cueva
+  const grietas = (x, c) => { R(x, 7, 4, 1, 3, c); R(x, 8, 7, 2, 1, c); R(x, 10, 8, 1, 3, c); R(x, 5, 10, 2, 1, c); };
+  t['X'] = mk(x => { arena(x); sobre(x, [['e', 8, 9, 7, 6, '#8a7a6a'], ['e', 6, 7, 3, 2, '#aa9c8a', 's']]); grietas(x, '#3a2e24'); });
+  t['Z'] = mk(x => {
+    t['w'] && x.drawImage(t['w'], 0, 0);
+    sobre(x, [['r', 1, 2, 14, 13, '#9ad8f0'], ['r', 2, 3, 5, 4, '#d8f4ff', 's'], ['r', 1, 12, 14, 3, '#70b0d0', 's']]);
+    grietas(x, '#3a78a0');
+  });
+  t['O'] = mk(x => {
+    R(x, 0, 0, 16, 16, '#9a8670');
+    sobre(x, [['e', 8, 9, 7, 6, '#6a5a4a'], ['e', 6, 7, 3, 2, '#8a7a68', 's']]);
+    grietas(x, '#2a2018');
+  });
   // Interiores
   t['_'] = mk(piso);
   t['#'] = mk(x => {

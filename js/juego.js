@@ -251,6 +251,10 @@ function cargar() {
     // La BICICLETA se gana con la 2ª insignia (ROCÍO); las partidas viejas la reciben si ya la tienen
     if (S.flags.insignia2) S.bolsa.bici = 1; else delete S.bolsa.bici;
     S.bici = false;
+    // La BALSA (MAREA, 6ª insignia) y el PICO (CENIZA, 7ª): las partidas viejas los reciben si ya tienen la insignia
+    if (S.flags.insignia6) S.bolsa.balsa = 1;
+    if (S.flags.insignia7) S.bolsa.pico = 1;
+    restaurarRocas();
     acomodarPosicion();
     return true;
   } catch (e) { return false; }
@@ -258,7 +262,7 @@ function cargar() {
 // Si el mapa cambió desde la última partida guardada, lleva a Felipe a un lugar seguro
 function acomodarPosicion() {
   const m = MAPAS[S.mapa];
-  const ok = m && m.grilla[S.y] && CAMINABLE.has(m.grilla[S.y][S.x]) &&
+  const ok = m && m.grilla[S.y] && (CAMINABLE.has(m.grilla[S.y][S.x]) || (m.grilla[S.y][S.x] === '~' && S.bolsa.balsa)) &&
     !((m.edificios || []).some(e => S.x >= e.x && S.x < e.x + e.w && S.y >= e.y && S.y < e.y + e.h));
   if (ok) return;
   const c = S.flags && S.flags.centro;
@@ -269,6 +273,12 @@ function curarEquipo() { S.equipo.forEach(curarCriatura); }
 
 // ================= MUNDO =================
 function mapa() { return MAPAS[S.mapa]; }
+// Felipe va en BALSA si está parado en el agua (o se está metiendo)
+function enAgua(m = mapa()) {
+  const aca = m.grilla[S.y] && m.grilla[S.y][S.x] === '~';
+  const va = S.moviendo && S.prog >= 8 && m.grilla[S.y + DY[S.dir]] && m.grilla[S.y + DY[S.dir]][S.x + DX[S.dir]] === '~';
+  return aca || va;
+}
 function npcsVisibles(m = mapa()) { return (m.npcs || []).filter(n => !n.visible || n.visible()); }
 function npcPorId(id) { return npcsVisibles().find(n => n.id === id); }
 function npcEn(x, y) { return npcsVisibles().find(n => n.x === x && n.y === y); }
@@ -284,9 +294,35 @@ function transitable(x, y) {
     const esPuerta = e.abre && x === e.x + e.puerta && y === e.y + e.h - 1;
     if (!esPuerta) return false;
   }
-  if (!CAMINABLE.has(m.grilla[y][x])) return false;
+  const ch = m.grilla[y][x];
+  if (!CAMINABLE.has(ch) && !(ch === '~' && S.bolsa.balsa)) return false;
   if (npcEn(x, y)) return false;
   return true;
+}
+// ---------- Rocas y bloques de hielo que se rompen con el PICO ----------
+// Se guardan en S.flags.rocas = { mapa: ['x,y', ...] }; ROCAS_ORIG recuerda dónde estaban para empezar de nuevo
+const ROMPIBLE = { X: '-', Z: 'w', O: ':' };
+const ROCAS_ORIG = [];
+for (const [id, m] of Object.entries(MAPAS)) m.grilla.forEach((f, y) => f.forEach((c, x) => { if (ROMPIBLE[c]) ROCAS_ORIG.push([id, x, y, c]); }));
+function restaurarRocas() {
+  for (const [id, x, y, c] of ROCAS_ORIG) MAPAS[id].grilla[y][x] = c;
+  const r = (S.flags && S.flags.rocas) || {};
+  for (const id in r) for (const k of r[id]) {
+    const [x, y] = k.split(',').map(Number);
+    const c = MAPAS[id] && MAPAS[id].grilla[y] && MAPAS[id].grilla[y][x];
+    if (ROMPIBLE[c]) MAPAS[id].grilla[y][x] = ROMPIBLE[c];
+  }
+}
+async function romperRoca(x, y, ch) {
+  const hielo = ch === 'Z';
+  const que = hielo ? 'un bloque de HIELO' : 'una ROCA';
+  if (!S.bolsa.pico) { await decir(`Hay ${que} con grietas que tapa el camino. Con un PICO se podría romper.`); return; }
+  if (!(await siNo(`Hay ${que} con grietas. ¿La rompés con el PICO?`))) return;
+  for (let i = 0; i < 2; i++) { ui.flash = 1; await esperar(3); ui.flash = 0; await esperar(3); }
+  mapa().grilla[y][x] = ROMPIBLE[ch];
+  S.flags.rocas = S.flags.rocas || {};
+  (S.flags.rocas[S.mapa] = S.flags.rocas[S.mapa] || []).push(x + ',' + y);
+  await decir(hielo ? '¡CRAC! ¡Felipe rompió el hielo con el PICO!' : '¡PUM! ¡Felipe rompió la roca con el PICO!');
 }
 
 function pasoMundo() {
@@ -314,7 +350,10 @@ function pasoMundo() {
   if (S.giro > 0) { S.giro--; return; }
   const choca = S.equipo.some(e => e.ps > 0) && salvajeOcupa(S.x + DX[d], S.y + DY[d]);
   if (choca) { correr(pelearSalvajeVisible(choca)); return; }
-  if (transitable(S.x + DX[d], S.y + DY[d])) { S.moviendo = true; S.prog = 0; }
+  if (transitable(S.x + DX[d], S.y + DY[d])) {
+    if (S.bici && mapa().grilla[S.y + DY[d]][S.x + DX[d]] === '~') S.bici = false; // al agua se va en BALSA
+    S.moviendo = true; S.prog = 0;
+  }
 }
 
 async function correr(promesa) {
@@ -366,6 +405,8 @@ async function interactuar(x, y) {
   if (y < 0 || y >= m.grilla.length || x < 0 || x >= m.grilla[0].length) return;
   const ch = m.grilla[y][x];
   if (ch === 'S' && m.carteles && m.carteles[x + ',' + y]) { correr(decir(m.carteles[x + ',' + y])); return; }
+  if (ROMPIBLE[ch]) { correr(romperRoca(x, y, ch)); return; }
+  if (ch === '~' && !S.bolsa.balsa && m.exterior) { correr(decir('El agua es muy profunda para cruzar caminando. Con una BALSA se podría.')); return; }
   if (m.objetos && m.objetos[ch]) { correr(decir(m.objetos[ch])); return; }
 }
 
@@ -569,6 +610,8 @@ async function usarObjetoMundo(obj) {
   const o = OBJETOS[obj];
   if (o.mapa) { await pantallaMapa(); return; }
   if (o.bici) { await usarBici(); return; }
+  if (o.balsa) { await decir('Caminá hacia el agua y Felipe se sube a la BALSA solo.'); return; }
+  if (o.pico) { await decir('Ponete enfrente de una roca o un bloque de hielo con grietas y apretá A.'); return; }
   if (o.piedra) { await usarPiedra(obj); return; }
   if (!o.cura) { await decir('Ahora no se puede usar eso.'); return; }
   if (!S.equipo.length) { await decir('No tenés criaturas.'); return; }
@@ -1034,6 +1077,15 @@ function dibujarMundo() {
     }
     const bob = e.yo && frame ? -1 : 0;
     if (e.yo && S.bici) { dibujarBici(e.dir, e.x - cx, e.y - cy); dibujarPersonaje(e.pal, e.dir, 0, e.x - cx, e.y - cy - 6); continue; }
+    if (e.yo && enAgua(m)) {
+      const ola = ((tick >> 3) % 2) ? 1 : 0, bx = Math.round(e.x - cx), by = Math.round(e.y - cy) + ola;
+      b.fillStyle = '#5a3a1a'; b.fillRect(bx, by + 8, 16, 7);
+      b.fillStyle = '#9a6a3a'; b.fillRect(bx + 1, by + 8, 14, 2); b.fillRect(bx + 1, by + 11, 14, 2);
+      b.fillStyle = '#c8945a'; b.fillRect(bx + 1, by + 8, 14, 1); b.fillRect(bx + 1, by + 11, 14, 1);
+      b.fillStyle = '#e8f4ff'; b.fillRect(bx - 1, by + 14, 3, 1); b.fillRect(bx + 14, by + 14, 3, 1);
+      dibujarPersonaje(e.pal, e.dir, 0, e.x - cx, e.y - cy - 4 + ola);
+      continue;
+    }
     dibujarPersonaje(e.pal, e.dir, e.f, e.x - cx, e.y - cy - 3 + bob);
     const enPasto = m.grilla[e.ty] && (m.grilla[e.ty][e.tx] === ',' || m.grilla[e.ty][e.tx] === 'u') && !(e.yo && S.moviendo && S.prog < 8);
     if (enPasto) b.drawImage(TILES[m.grilla[e.ty][e.tx]], 0, 9, 16, 7, e.x - cx, e.y - cy + 9, 16, 7);
@@ -1078,7 +1130,7 @@ function uiTitulo() {
   txt('CRIATURAS', 120, 14, { t: 18, c: '#f8d030', sombra: '#a04020', al: 'center' });
   txt('CRIOLLAS', 120, 38, { t: 18, c: '#6cb4ee', sombra: '#1a3a6a', al: 'center' });
   txt('Una aventura por la Argentina', 120, 62, { t: 6, c: '#203048', sombra: '#ffffff', al: 'center' });
-  txt('VERSIÓN 8 GIMNASIOS + MULTI · 22/11', 236, 152, { t: 5, c: '#ffffff', sombra: '#203048', al: 'right' });
+  txt('VERSIÓN 8 GIMNASIOS + BALSA Y PICO · 22/11', 236, 152, { t: 5, c: '#ffffff', sombra: '#203048', al: 'right' });
   if (!ui.menu && (tick >> 5) % 2 === 0) txt('APRETÁ A PARA EMPEZAR', 120, 84, { t: 7, c: '#ffffff', sombra: '#203048', al: 'center' });
 }
 function dibujarIntro() {
@@ -1110,6 +1162,7 @@ async function siNoTitulo() {
 }
 async function nuevaPartida() {
   Object.assign(S, { mapa: 'casa', x: 4, y: 4, dir: 0, equipo: [], caja: [], bolsa: { mapa: 1 }, flags: {}, plata: 3000, bici: false });
+  restaurarRocas();
   S.escena = 'intro';
   await fundido(0, 16);
   await decir('¡Hola! ¡Bienvenido al mundo de las CRIATURAS CRIOLLAS!');

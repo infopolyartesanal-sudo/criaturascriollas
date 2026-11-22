@@ -982,9 +982,9 @@ const PUNA_ATACAMA = [
   'NN------------==----NN',
   'NN------------==----NN',
   'NN--uuu-------==----NN',
-  'NN--uuu-------==----NN',
-  'NNwwwwwwwwwwww==wwwwNN',
-  'NNwwwwwwwwwwww==wwwwNN',
+  'NN~~~~~~~~~~~~~~~~~~NN',
+  'NN~~~~~~~~~~~~~~~~~~NN',
+  'NN~~~~~~~~~~~~~~~~~~NN',
   'NN-----------u==uuu-NN',
   'NN-----------u==uuu-NN',
   'NN--------======uuu-NN',
@@ -1019,9 +1019,9 @@ const LAGUNA_BRAVA = [
   'NNNN-uuuu------==---NN',
   'NNNN-uuuu-=======---NN',
   'NN--------==--------NN',
-  'NN~~~~~~~~hh~~~~~~~~NN',
-  'NN~~~~~~~~hh~~~~~~~~NN',
-  'NN-F--uuuu==--------NN',
+  'NN~~~~~~~~~~~~~~~~~~NN',
+  'NN~~~~~~~~~~~~~~~~~~NN',
+  'NN~~~~~~~~~~~~~~~~~~NN',
   'NN---uuuuu==uuuu----NN',
   'NNRR-uuuu-==uuuu----NN',
   'NNRR-uuuu-==uuuuuuuuNN',
@@ -1032,72 +1032,81 @@ const LAGUNA_BRAVA = [
   'NN------uu==u-------NN',
   'NNNNNNNNNN==NNNNNNNNNN',
 ];
-const BARREAL = [
-  'NNNNNNNNNN==NNNNNNNNNN',
-  'NN--------==--------NN',
-  'NN--------==--uuuuu-NN',
-  'NN-------S==u-uuuuu-NN',
-  'NN-------u==u-------NN',
-  'NN--------==------K-NN',
-  'NN--------==--------NN',
-  'NN-----K--==--------NN',
-  'NN--K-----==-uuuuu--NN',
-  'NN--------==-uuuuu--NN',
-  'NN------uu==uu---K--NN',
-  'NN------uu==uu------NN',
-  'NNuuuuuuuu==uuu-----NN',
-  'NNuuu=======uuu-----NN',
-  'NNuuu==u------------NN',
-  'NNuuu==---------RR--NN',
-  'NN---==-------uuRRu-NN',
-  'NN---==-------uuuuCCNN',
-  'NN---==----uuCCuuuCCNN',
-  'NN---=======uCC-----NN',
-  'NN--------==--------NN',
-  'NN--------==-RR-----NN',
-  'NN---uuu--==-RRK----NN',
-  'NN--CCuu--==-uuuK---NN',
-  'NN--CCuu--==-uuu----NN',
-  'NN--------==--------NN',
-  'NN---uuuuu==--------NN',
-  'NN---uuuuu==uuuuu---NN',
-  'NN--CC-uuS==uuuuu---NN',
-  'NN--CC-uuu==uuuuu---NN',
-  'NN-----K--==--K----KNN',
-  'NNNNNNNNNN==NNNNNNNNNN',
+const CUEVA_ANDES = [
+  'RRRRRRRRRR::RRRRRRRRRR',
+  'RR::::::::::::::::::RR',
+  'RR::Raa:::S:::aaR:::RR',
+  'RR::RRR::::::::RR:::RR',
+  'RR::::::::::::::::::RR',
+  'RRRRRRRRROOORRRRRRRRRR',
+  'RR::::::::::::::::::RR',
+  'RR::::RR:::::RR:::::RR',
+  'RR::::RR:::::RR:::::RR',
+  'RRRRRRRRRRRRRRRR::::RR',
+  'RR::::::::::::::::::RR',
+  'RR::aa:::RRRR:::::::RR',
+  'RR::::::::RR:::::RR:RR',
+  'RR::::RR::::::::::::RR',
+  'RR::::RRRRRRRRRRRRRRRR',
+  'RR::::::::::::::::::RR',
+  'RR:::::::::RR:::::::RR',
+  'RR::RR:::::RR:::aa::RR',
+  'RR::RR::::::::::::::RR',
+  'RRRRRRRRROOORRRRRRRRRR',
+  'RR::::::::::::::::::RR',
+  'RR:::RR:::::::RR::::RR',
+  'RR:::RR::RRRR:RR::::RR',
+  'RR:::::::RRRR:::::::RR',
+  'RRRRRRRR::::::RRRRRRRR',
+  'RR::::::::::::::::::RR',
+  'RR::aaR:::::::Raa:::RR',
+  'RR::RRR:::::::RRR:::RR',
+  'RR:::::::S::::::::::RR',
+  'RR::::::::::::::::::RR',
+  'RR::::::::::::::::::RR',
+  'RRRRRRRRRR::RRRRRRRRRR',
 ];
-const HORCONES = [
+// Ascenso al Aconcagua: se SUBE (no se gira); hay que romper rocas y bloques de hielo con el PICO
+const ASCENSO = [
   'NNNNNNNNNN==NNNNNNNNNN',
-  'NN--------==--------NN',
-  'NN--uuuu--==uuu-----NN',
-  'NN--uuuu-S==uuu-----NN',
-  'NN--uuuuuu==uuu-----NN',
-  'NN--uuuuuu==uuuuuu--NN',
-  'NN---uuuuu=======u--NN',
-  'NN---uuuuu-----==u--NN',
-  'NN-------------==--RNN',
-  'NN--uuuuuu-----==---NN',
-  'NN--uuuuuu-----==---NN',
-  'NN--uuuu-------==---NN',
-  'NN-------------==uu-NN',
-  'NN----------R--==uu-NN',
-  'NN-------------==---NN',
-  'NN-------------==-NNNN',
-  'NN-RR----------==-NNNN',
-  'NN-RRR---------==---NN',
-  'NN--NN----=======---NN',
-  'NN--NN----==--------NN',
-  'NN--------==--------NN',
-  'NN--------==--uuuu--NN',
-  'NN--------==--uuuu--NN',
-  'NN--------==--uuuu--NN',
-  'NN---R----==--------NN',
   'NNwwwwwwww==wwwwwwwwNN',
-  'NNwwwwwwww==wwwwwwwwNN',
-  'NN-------u==uuu-uuu-NN',
-  'NN-------S==uuuuuuu-NN',
-  'NN--------==uuuuuuu-NN',
-  'NN--R-----==--------NN',
+  'NNwwRRwwwwwwwwwwRRwwNN',
+  'NNwwRRwwwSwwwwwwRRwwNN',
+  'NNwwwwwwwwwwwwwwwwwwNN',
+  'NNNNNNNNNNZZNNNNNNNNNN',
+  'NNwwwwwwwwwwwwwwwwwwNN',
+  'NNwwwwNNNwwwwwwNNNwwNN',
+  'NNww--NNN------NNN--NN',
+  'NN----------------uuNN',
+  'NNuu----RR------uuuuNN',
+  'NNuu----RR------uuuuNN',
+  'NNNNNNNNNNNNNNXNNNNNNN',
+  'NN------------------NN',
+  'NN--uuuu----RR------NN',
+  'NN--uuuu----RR--uu--NN',
+  'NN--------------uu--NN',
+  'NNNNNNNNXNNNNNNNNNNNNN',
+  'NN------------------NN',
+  'NN--RR------uuuuu---NN',
+  'NN--RR------uuuuu---NN',
+  'NN------NNN---------NN',
+  'NN------NNN----RR---NN',
+  'NN------------------NN',
+  'NNNNNNNNNNNNNNNNXNNNNN',
+  'NN------------------NN',
+  'NN--uuuu-----uuuu---NN',
+  'NN--uuuu-----uuuu---NN',
+  'NN------RR----------NN',
+  'NN------RR----------NN',
+  'NN------------------NN',
+  'NNuuu----------uuu--NN',
+  'NNuuu----RR----uuu--NN',
+  'NN-------RR---------NN',
+  'NN------------------NN',
+  'NN--uu--------uu----NN',
+  'NN--uu---S==--uu----NN',
+  'NN--------==--------NN',
+  'NN--------==--------NN',
   'NNNNNNNNNN==NNNNNNNNNN',
 ];
 const RODEO = teñir(PUERTO, { Y: 'N', q: '=', '.': '-', F: '-' });
@@ -3389,6 +3398,9 @@ const MAPAS = {
             S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 5;
             S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
             await decir('MAREA: Llevate estos ALFAJORES y BOLEADORAS. ¡Ya tenés seis insignias!');
+            S.bolsa.balsa = 1;
+            await decir('MAREA: Y tomá mi BALSA. Con ella vas a poder cruzar lagunas, ríos y el mar. ¡Más adelante la vas a necesitar!');
+            await decir('¡Felipe recibió la BALSA!');
             guardar();
           }
         },
@@ -3630,9 +3642,10 @@ const MAPAS = {
       { x: 11, y: 0, a: 'ojos', ax: 11, ay: 20, dir: 1 },
     ],
     carteles: {
-      '9,28': 'RUTA 21 · PUNA DE ATACAMA. Más de 4.000 metros de altura. ¡Caminá despacio que falta el aire!',
+      '9,28': 'RUTA 21 · PUNA DE ATACAMA. Más adelante la SALINA está inundada: ¡hay que cruzarla en BALSA!',
       '9,3': 'Al norte: la BASE del volcán OJOS DEL SALADO y el GIMNASIO 7.',
     },
+    objetos: { '~': 'La SALINA se inundó con el deshielo. El agua es salada y helada... ¡y muy profunda!' },
     encuentros: { lista: [['dynacore', 12], ['calderito', 12], ['volcarin', 12], ['laninger', 10], ['condorito', 10], ['glaciolito', 10], ['vientuino', 8], ['escarchin', 8], ['zorzaliente', 4], ['andragon', 3]], min: 54, max: 56 },
     npcs: [
       entrenadorNPC({
@@ -3763,6 +3776,9 @@ const MAPAS = {
             S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 5;
             S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
             await decir('CENIZA: Llevate estos ALFAJORES y BOLEADORAS. ¡Siete insignias! Ya solo te falta el ACONCAGUA.');
+            S.bolsa.pico = 1;
+            await decir('CENIZA: Y llevate mi PICO. El camino al ACONCAGUA está lleno de derrumbes: ¡con esto rompés rocas y hielo!');
+            await decir('¡Felipe recibió el PICO!');
             guardar();
           }
         },
@@ -3770,7 +3786,7 @@ const MAPAS = {
     ],
   },
 
-  // ================= REGIÓN 8: CUYO Y EL ACONCAGUA (LAGUNA BRAVA → RODEO → BARREAL → USPALLATA → HORCONES → PLAZA DE MULAS) =================
+  // ================= REGIÓN 8: CUYO Y EL ACONCAGUA (LAGUNA BRAVA en BALSA → RODEO → CUEVA DE LOS ANDES → USPALLATA → ASCENSO AL ACONCAGUA con el PICO → PLAZA DE MULAS) =================
   ruta22: {
     nombre: 'RUTA 22 · LAGUNA BRAVA',
     exterior: true,
@@ -3783,7 +3799,7 @@ const MAPAS = {
       { x: 11, y: 0, a: 'rodeo', ax: 11, ay: 1, dir: 0 },
     ],
     carteles: {
-      '9,28': 'RUTA 22 · LAGUNA BRAVA. Una laguna salada a 4.300 metros, llena de flamencos rosados.',
+      '9,28': 'RUTA 22 · LAGUNA BRAVA. Una laguna salada a 4.300 metros, llena de flamencos. No hay puente: ¡se cruza en BALSA!',
       '9,3': 'Al sur: RODEO, en SAN JUAN.',
     },
     objetos: { '~': 'El agua de la LAGUNA BRAVA es salada y helada. ¡Allá lejos hay cientos de flamencos!' },
@@ -3804,7 +3820,7 @@ const MAPAS = {
         despues: 'ARRIERO VICENTE: En la cordillera viven dragones. Los PEBBLEBY lamen las piedras porque les gustan los minerales.',
       }),
       {
-        id: 'flamencos', x: 13, y: 22, dir: 2, pal: PAL.chica,
+        id: 'flamencos', x: 17, y: 23, dir: 2, pal: PAL.chica,
         hablar: async () => {
           await decir('CHICA: ¿Viste a los flamencos? Duermen parados en una sola pata... ¡y no se caen!');
           await decir('Más al sur, en el ACONCAGUA, dicen que hay una líder que entrena DRAGONES. ¡Qué miedo!');
@@ -3831,7 +3847,7 @@ const MAPAS = {
       { x: 11, y: 21, a: 'ruta23', ax: 11, ay: 30, dir: 1 },
     ],
     carteles: {
-      '12,1': 'Al NORTE: RUTA 22, la LAGUNA BRAVA. Al SUR: RUTA 23, BARREAL y MENDOZA.',
+      '12,1': 'Al NORTE: RUTA 22, la LAGUNA BRAVA. Al SUR: la CUEVA DE LOS ANDES, hacia MENDOZA.',
       '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Con uvas y pasas de uva sanjuaninas!',
       '19,9': 'DIQUE CUESTA DEL VIENTO. ¡El mejor viento del mundo para hacer windsurf!',
       '4,18': 'RODEO, SAN JUAN. Un pueblo de álamos, viento y montañas.',
@@ -3862,9 +3878,11 @@ const MAPAS = {
   centro20: crearCentro('rodeo', 5, 9, 'centro20'),
 
   ruta23: {
-    nombre: 'RUTA 23 · BARREAL',
+    nombre: 'CUEVA DE LOS ANDES',
     exterior: true,
-    grilla: desdeTexto(BARREAL),
+    cueva: true,
+    oscuro: true,
+    grilla: desdeTexto(CUEVA_ANDES),
     edificios: [],
     salidas: [
       { x: 10, y: 31, a: 'rodeo', ax: 10, ay: 20, dir: 1 },
@@ -3873,32 +3891,37 @@ const MAPAS = {
       { x: 11, y: 0, a: 'uspallata', ax: 11, ay: 1, dir: 0 },
     ],
     carteles: {
-      '9,28': 'RUTA 23 · BARREAL. La PAMPA DEL LEONCITO: un lago seco tan liso que se anda en carros a vela.',
-      '9,3': 'Al sur: USPALLATA, en MENDOZA.',
+      '9,28': 'CUEVA DE LOS ANDES. Un túnel viejo de mineros por debajo de la cordillera. ¡Hay derrumbes!',
+      '10,2': 'Al sur: la salida a USPALLATA, en MENDOZA.',
     },
-    encuentros: { lista: [['filodrac', 14], ['patagon', 12], ['pebbleby', 12], ['dracotox', 10], ['howlup', 10], ['sparknight', 10], ['estepasaurio', 8], ['mimetit', 8], ['zorzaliente', 8], ['rocori', 8]], min: 58, max: 61 },
+    objetos: {
+      R: 'La pared de la cueva. Está fría y húmeda.',
+      a: 'Cristales de cuarzo que brillan en la oscuridad.',
+    },
+    encuentros: { lista: [['pebbleby', 14], ['filodrac', 12], ['dracotox', 12], ['rocori', 10], ['geodin', 10], ['glaciolito', 10], ['mimetit', 8], ['howlup', 8], ['patagon', 8], ['ironboulder', 4]], min: 58, max: 61 },
     npcs: [
-      entrenadorNPC({
-        id: 'astronoma', x: 12, y: 6, dir: 2, pal: PAL.luna, nombre: 'ASTRÓNOMA VERA',
-        equipo: [['espejonte', 69], ['espectradraco', 70], ['lechuzonte', 70]],
-        antes: ['ASTRÓNOMA VERA: Acá cerca está el observatorio EL LEONCITO. ¡El cielo más limpio del país! ¿Peleamos bajo las estrellas?'],
-        gana: 'ASTRÓNOMA VERA: ¡Ganaste! Tenés una estrella de la suerte.',
-        despues: 'ASTRÓNOMA VERA: Desde acá se ven miles de estrellas. Algunas criaturas DRAGÓN dicen que vinieron del cielo...',
-      }),
-      entrenadorNPC({
-        id: 'carrovelista', x: 9, y: 21, dir: 3, pal: PAL.piloto, nombre: 'CARROVELISTA NICO',
-        equipo: [['zorzaliente', 69], ['espadonix', 70], ['noxidragon', 71]],
-        antes: ['CARROVELISTA NICO: ¡Con el viento a favor mi carro a vela va a cien por hora! ¡A ver si me alcanzás!'],
-        gana: 'CARROVELISTA NICO: ¡Me quedé sin viento!',
-        despues: 'CARROVELISTA NICO: Las criaturas de ACERO como ESPADÓNIX aguantan casi todo. ¡Usá FUEGO, LUCHA o TIERRA!',
-      }),
       {
-        id: 'baqueano_barreal', x: 12, y: 25, dir: 2, pal: PAL.abuelo,
+        id: 'minero_cueva', x: 8, y: 20, dir: 0, pal: PAL.almacenero,
         hablar: async () => {
-          await decir('BAQUEANO: Por este valle pasó el ejército de SAN MARTÍN para cruzar los Andes y liberar a Chile.');
-          await decir('Cruzaron montañas altísimas, con nieve y sin casi nada de aire. ¡Unos valientes!');
+          await decir('MINERO: ¡Cuidado! Hubo un derrumbe y las piedras taparon el túnel.');
+          if (S.bolsa.pico) await decir('MINERO: ¡Pero vos tenés un PICO! Ponete enfrente de las rocas con grietas y apretá A.');
+          else await decir('MINERO: Con un PICO de minero se pueden romper. CENIZA, la del volcán, tiene uno...');
         },
       },
+      entrenadorNPC({
+        id: 'espeleologa', x: 8, y: 16, dir: 3, pal: PAL.coplera, nombre: 'ESPELEÓLOGA MARA',
+        equipo: [['espectradraco', 69], ['wandacoloso', 70], ['noxidragon', 70]],
+        antes: ['ESPELEÓLOGA MARA: Exploro cuevas hace veinte años. ¡Y en la oscuridad mis criaturas son imbatibles!'],
+        gana: 'ESPELEÓLOGA MARA: ¡Me apagaste la linterna!',
+        despues: 'ESPELEÓLOGA MARA: En las cuevas viven muchas criaturas de ROCA. ¡El AGUA y la PLANTA les ganan!',
+      }),
+      entrenadorNPC({
+        id: 'minero_ivan', x: 16, y: 12, dir: 2, pal: PAL.beto, nombre: 'MINERO IVÁN',
+        equipo: [['ironboulder', 70], ['micalonco', 70], ['rocantour', 71]],
+        antes: ['MINERO IVÁN: ¡Estas piedras son mías! Si las querés romper, primero ganame.'],
+        gana: 'MINERO IVÁN: Está bien, rompé lo que quieras.',
+        despues: 'MINERO IVÁN: IRONBOULDER se come los minerales de la cueva. ¡Por eso tiene la panza encendida!',
+      }),
     ],
   },
 
@@ -3916,11 +3939,11 @@ const MAPAS = {
       { x: 10, y: 0, a: 'ruta23', ax: 10, ay: 1, dir: 0 },
       { x: 11, y: 0, a: 'ruta23', ax: 11, ay: 1, dir: 0 },
       { x: 5, y: 8, a: 'centro21', ax: 4, ay: 6, dir: 1 },
-      { x: 0, y: 10, a: 'ruta24', ax: 10, ay: 30, dir: 1 },
-      { x: 0, y: 11, a: 'ruta24', ax: 11, ay: 30, dir: 1 },
+      { x: 0, y: 10, a: 'ruta24', ax: 10, ay: 38, dir: 1 },
+      { x: 0, y: 11, a: 'ruta24', ax: 11, ay: 38, dir: 1 },
     ],
     carteles: {
-      '12,1': 'Al NORTE: RUTA 23, BARREAL y SAN JUAN. Al OESTE: RUTA 24, la QUEBRADA DE HORCONES y el ACONCAGUA.',
+      '12,1': 'Al NORTE: la CUEVA DE LOS ANDES, hacia SAN JUAN. Al OESTE: el ASCENSO AL ACONCAGUA. ¡Llevá el PICO!',
       '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Con tortitas mendocinas!',
       '19,9': 'LAS BÓVEDAS. Hornos antiguos donde se fundían metales de la montaña.',
       '4,18': 'USPALLATA, MENDOZA. Un valle verde de álamos en medio de la cordillera.',
@@ -3950,44 +3973,45 @@ const MAPAS = {
   centro21: crearCentro('uspallata', 5, 9, 'centro21'),
 
   ruta24: {
-    nombre: 'RUTA 24 · QUEBRADA DE HORCONES',
+    nombre: 'ASCENSO AL ACONCAGUA',
     exterior: true,
-    grilla: desdeTexto(HORCONES),
+    grilla: desdeTexto(ASCENSO),
     edificios: [],
     salidas: [
-      { x: 10, y: 31, a: 'uspallata', ax: 1, ay: 10, dir: 3 },
-      { x: 11, y: 31, a: 'uspallata', ax: 1, ay: 11, dir: 3 },
-      { x: 10, y: 0, a: 'plaza', ax: 22, ay: 10, dir: 2 },
-      { x: 11, y: 0, a: 'plaza', ax: 22, ay: 11, dir: 2 },
+      { x: 10, y: 39, a: 'uspallata', ax: 1, ay: 10, dir: 3 },
+      { x: 11, y: 39, a: 'uspallata', ax: 1, ay: 11, dir: 3 },
+      { x: 10, y: 0, a: 'plaza', ax: 10, ay: 20, dir: 1 },
+      { x: 11, y: 0, a: 'plaza', ax: 11, ay: 20, dir: 1 },
     ],
     carteles: {
-      '9,28': 'RUTA 24 · QUEBRADA DE HORCONES. Pasando el PUENTE DEL INCA, un puente de piedra que hizo el agua.',
-      '9,3': 'Al oeste: PLAZA DE MULAS, la base del ACONCAGUA y el GIMNASIO 8.',
+      '9,36': 'ASCENSO AL ACONCAGUA. El camino está tapado de rocas y hielo: ¡rompelos con el PICO y subí!',
+      '9,3': 'Arriba: PLAZA DE MULAS, la base del ACONCAGUA y el GIMNASIO 8. ¡Ya casi llegás!',
     },
-    objetos: { w: 'Hielo de un glaciar del ACONCAGUA. ¡Resbala mucho!' },
+    objetos: { w: 'Nieve dura y resbalosa. ¡Pisá con cuidado!', R: 'Una piedra enorme. Esta no tiene grietas: no se puede romper.' },
     encuentros: { lista: [['condorito', 14], ['filodrac', 12], ['glaciolito', 12], ['escarchin', 12], ['estepasaurio', 10], ['vientuino', 10], ['andragon', 8], ['ironboulder', 6], ['espadonix', 6], ['noxidragon', 4]], min: 60, max: 63 },
     npcs: [
+      {
+        id: 'guarda_horcones', x: 9, y: 37, dir: 3, pal: PAL.guarda,
+        hablar: async () => {
+          await decir('GUARDAPARQUE: ¡Bienvenido al PARQUE PROVINCIAL ACONCAGUA! Desde acá se sube a pie hasta PLAZA DE MULAS.');
+          if (S.bolsa.pico) await decir('Hubo avalanchas y el camino está tapado. Con tu PICO podés romper las rocas y el hielo con grietas.');
+          else await decir('Hubo avalanchas y el camino está tapado. Sin un PICO no vas a poder subir.');
+        },
+      },
       entrenadorNPC({
         id: 'guia_horcones', x: 12, y: 9, dir: 2, pal: PAL.nieve, nombre: 'GUÍA DE MONTAÑA PAZ',
         equipo: [['glaciperador', 71], ['pampadon', 72], ['andespectro', 72]],
-        antes: ['GUÍA PAZ: ¿Querés subir al ACONCAGUA? ¡Es la montaña más alta de América! Primero demostrame que estás preparado.'],
-        gana: 'GUÍA PAZ: Estás listo. Pero subí despacio, que falta el aire.',
+        antes: ['GUÍA PAZ: ¡Llegaste hasta acá rompiendo piedras! Antes del último tramo, demostrame que estás preparado.'],
+        gana: 'GUÍA PAZ: Estás listo. Subí despacio, que falta el aire.',
         despues: 'GUÍA PAZ: El ACONCAGUA mide casi 7.000 metros. ¡Desde la cumbre se ve el océano Pacífico!',
       }),
       entrenadorNPC({
-        id: 'mulero', x: 14, y: 14, dir: 2, pal: PAL.beto, nombre: 'MULERO RAMÓN',
+        id: 'mulero', x: 6, y: 23, dir: 3, pal: PAL.beto, nombre: 'MULERO RAMÓN',
         equipo: [['ironboulder', 72], ['turborush', 72], ['latigacer', 73]],
         antes: ['MULERO RAMÓN: Mis mulas llevan las mochilas de los andinistas hasta PLAZA DE MULAS. ¡Y mis criaturas, a vos te llevan por delante!'],
         gana: 'MULERO RAMÓN: ¡Ufa! Mejor vuelvo con mis mulas.',
         despues: 'MULERO RAMÓN: LATIGÁCER tiene una cola de acero que corta como una espada. ¡Ojo con su LÁTIGO METÁLICO!',
       }),
-      {
-        id: 'guarda_horcones', x: 9, y: 20, dir: 3, pal: PAL.guarda,
-        hablar: async () => {
-          await decir('GUARDAPARQUE: ¡Bienvenido al PARQUE PROVINCIAL ACONCAGUA! Acá se cuida la montaña: nada de basura, eh.');
-          await decir('Si tus criaturas se cansan, seguí hasta PLAZA DE MULAS. Ahí hay un CEMIC.');
-        },
-      },
     ],
   },
 
@@ -4002,13 +4026,13 @@ const MAPAS = {
       { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
     ],
     salidas: [
-      { x: 23, y: 10, a: 'ruta24', ax: 11, ay: 1, dir: 0 },
-      { x: 23, y: 11, a: 'ruta24', ax: 10, ay: 1, dir: 0 },
+      { x: 10, y: 21, a: 'ruta24', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 21, a: 'ruta24', ax: 11, ay: 1, dir: 0 },
       { x: 5, y: 8, a: 'centro22', ax: 4, ay: 6, dir: 1 },
       { x: 17, y: 8, a: 'gimnasio8', ax: 5, ay: 10, dir: 1 },
     ],
     carteles: {
-      '12,1': 'Arriba: la cumbre del ACONCAGUA, 6.961 metros. ¡Todavía no se puede subir! Al ESTE: RUTA 24, hacia USPALLATA.',
+      '12,1': 'Arriba: la cumbre del ACONCAGUA, 6.961 metros. ¡Todavía no se puede subir! Abajo: el ASCENSO, de vuelta a USPALLATA.',
       '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡El CEMIC más alto de América!',
       '19,9': 'GIMNASIO ACONCAGUA. Líder: CUMBRE, la domadora de dragones. Tipo DRAGÓN.',
       '4,18': 'PLAZA DE MULAS. El campamento base del ACONCAGUA, a 4.300 metros de altura.',
@@ -4240,8 +4264,7 @@ MAPAS.ojos.salidas.push(
 MAPAS.ojos.carteles['12,1'] = 'Arriba: el volcán OJOS DEL SALADO. Al SUR: RUTA 21, a FIAMBALÁ. Al OESTE: RUTA 22, por la cordillera hacia el ACONCAGUA.';
 abrir('uspallata', [[10, 21], [11, 21]], 'T');
 abrir('uspallata', [[0, 10], [1, 10], [0, 11], [1, 11]], '=');
-abrir('plaza', [[10, 0], [11, 0], [10, 21], [11, 21]], 'N');
-abrir('plaza', [[22, 10], [23, 10], [22, 11], [23, 11]], '=');
+abrir('plaza', [[10, 0], [11, 0]], 'N');
 abrir('somuncura', [[0, 10], [1, 10], [0, 11], [1, 11]], '=');
 
 // --- Rutas: girarlas ---
@@ -4304,10 +4327,9 @@ girarMapa('ruta18', '180');
 // Región 7: hacia el OESTE por Catamarca; la Ruta 21 sube derecho a la Puna
 girarMapa('ruta19', 'ccw');
 girarMapa('ruta20', 'ccw');
-// Región 8: las Rutas 22 y 23 BAJAN por la cordillera; la 24 va al OESTE hacia el Aconcagua
+// Región 8: la Ruta 22 y la Cueva de los Andes BAJAN por la cordillera; el Ascenso al Aconcagua SUBE (no se gira)
 girarMapa('ruta22', '180');
 girarMapa('ruta23', '180');
-girarMapa('ruta24', 'ccw');
 
 
 // ===== Escenas de la historia =====

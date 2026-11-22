@@ -166,6 +166,8 @@ const OBJETOS = {
   piedraTrueno: { nombre: 'PIEDRA TRUENO', precio: 2500, piedra: true, desc: 'Una piedra con un rayo adentro. Hace evolucionar a DYNACORE.' },
   mapa: { nombre: 'MAPA', precio: 0, mapa: true, desc: 'El mapa de la Argentina. Muestra dónde estás y todos los lugares del viaje.' },
   bici: { nombre: 'BICICLETA', precio: 0, bici: true, desc: 'La bici de montaña de ROCÍO. Recorre la Argentina el doble de rápido. Solo afuera.' },
+  balsa: { nombre: 'BALSA', precio: 0, balsa: true, desc: 'La balsa de MAREA. Caminá hacia el agua y cruzás lagunas, ríos y el mar.' },
+  pico: { nombre: 'PICO', precio: 0, pico: true, desc: 'El pico de minero de CENIZA. Mirá una roca o un bloque de hielo con grietas y apretá A.' },
   velaAnima: { nombre: 'VELA ÁNIMA', precio: 2500, piedra: true, desc: 'Una vela que arde con fuego rosa y no se apaga. Hace evolucionar a FAEVE.' },
 };
 // Lo que se vende en el ALMACÉN, en orden
