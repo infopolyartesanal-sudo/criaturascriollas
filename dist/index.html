@@ -535,7 +535,7 @@ function crearEdificio(tipo, w, h, puerta) {
   const pared = tipo === 'lab' ? '#eef2f6' : tipo.startsWith('gimnasio') ? '#ece4f4' : tipo === 'adobe' ? '#e0c08a' : '#f6eedc';
   R(2, techoH - 4, ancho - 4, alto - techoH + 4, pared);
   R(2, alto - 3, ancho - 4, 3, '#a89878');
-  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#d84848', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', gimnasio4: '#3a7ab0', gimnasio5: '#2a2040', gimnasio6: '#c83a3a', gimnasio7: '#e06a20', adobe: '#9a6a3a' };
+  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#d84848', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', gimnasio4: '#3a7ab0', gimnasio5: '#2a2040', gimnasio6: '#c83a3a', gimnasio7: '#e06a20', gimnasio8: '#3a3a8a', adobe: '#9a6a3a' };
   const tc = TECHOS[tipo] || '#c8553a';
   R(0, 0, ancho, techoH, tc);
   let fila = 0;
@@ -756,6 +756,13 @@ const MOVS = {
   tajo_glacial: { nombre: 'Tajo Glacial', tipo: 'HIELO', pot: 90, prec: 95, pp: 10, critAlto: true, nieveSegura: true },
   envoltura: { nombre: 'Envoltura Sombría', tipo: 'FANTASMA', pot: 80, prec: 100, pp: 15 },
   garra_eclipse: { nombre: 'Garra Eclipse', tipo: 'SINIESTRO', pot: 90, prec: 100, pp: 10, corta: true },
+  // Región 8 (Cuyo y el Aconcagua): dragones de Felipe
+  tajo_espejo: { nombre: 'Tajo Espejo', tipo: 'ACERO', pot: 70, prec: 100, pp: 20, corta: true },
+  latigo_metalico: { nombre: 'Látigo Metálico', tipo: 'ACERO', pot: 85, prec: 100, pp: 15, critAlto: true, corta: true },
+  pulso_dragon: { nombre: 'Pulso Dragón', tipo: 'DRAGON', pot: 85, prec: 100, pp: 10 },
+  erupcion_geoda: { nombre: 'Erupción Geoda', tipo: 'TIERRA', pot: 90, prec: 100, pp: 10 },
+  aliento_toxico: { nombre: 'Aliento Tóxico', tipo: 'VENENO', pot: 90, prec: 100, pp: 10 },
+  martillazo: { nombre: 'Martillazo', tipo: 'TIERRA', pot: 95, prec: 90, pp: 10 },
   forcejeo: { nombre: 'Forcejeo', tipo: 'NORMAL', pot: 40, prec: 100, pp: 1 },
 };
 
@@ -2515,6 +2522,238 @@ const ESPECIES = {
       ['e', 10, 5, 1.5, 1.5, '#f85888', 's'],
     ],
   },
+  // ================= REGIÓN 8 (Cuyo y el Aconcagua): dragones de Felipe =================
+  // --- Pebbleby → Ironboulder (diapositivas 135-137) ---
+  pebbleby: {
+    nombre: 'Pebbleby', tipos: ['DRAGON'], base: { ps: 55, atk: 55, def: 65, vel: 30 }, captura: 45, exp: 62,
+    desc: 'el dragoncito que lame piedras', evo: { nivel: 30, a: 'ironboulder' },
+    movs: [[1, 'embestida'], [1, 'bolita'], [6, 'pedrada'], [11, 'aliento'], [16, 'adobe'], [21, 'derrumbe'], [26, 'garra_dragon']],
+    sprite: [
+      ['e', 23, 10, 4.5, 3, '#e8dcc8', 's'], ['e', 25, 13, 3.5, 2, '#d8ccb8', 's'],
+      ['p', [[22, 21], [31, 25], [29, 27], [21, 27]], '#988870'],
+      ['e', 11, 28, 3.5, 2.5, '#7a6a52'], ['e', 21, 28, 3.5, 2.5, '#7a6a52'],
+      ['e', 16, 20, 9, 8.5, '#a89880'],
+      ['e', 14, 22, 5.5, 5.5, '#ecdfc2', 's'],
+      ['e', 20, 15, 1.6, 1.1, '#887860', 'c'], ['e', 23, 19, 1.4, 1, '#887860', 'c'], ['e', 21, 24, 1.4, 1, '#887860', 'c'],
+      ['e', 12, 12, 7, 6, '#b4a48a'],
+      ['p', [[10, 7], [11, 3], [14, 7]], '#e8e0c8'], ['p', [[15, 8], [18, 5], [18, 10]], '#e8e0c8'],
+      ['e', 9, 11, 2, 2.3, '#201810'], ['d', 9, 10, '#ffffff'],
+      ['e', 9, 21, 2, 2.5, '#988870'],
+      ['r', 4, 14, 3, 1, '#d86070'],
+      ['e', 3, 17, 2.5, 2, '#78808a'], ['d', 2, 16, '#a8b0b8'],
+    ],
+  },
+  ironboulder: {
+    nombre: 'Ironboulder', tipos: ['DRAGON', 'ROCA'], base: { ps: 85, atk: 100, def: 120, vel: 45 }, captura: 45, exp: 232,
+    desc: 'el dragón horno de las montañas',
+    movs: [[1, 'embestida'], [1, 'bolita'], [6, 'pedrada'], [11, 'aliento'], [16, 'adobe'], [21, 'derrumbe'], [26, 'garra_dragon'], [30, 'erupcion_geoda'], [36, 'lavazo'], [42, 'filo_mica'], [48, 'furia_dragon'], [54, 'terremoto']],
+    sprite: [
+      ['e', 19, 6, 6.5, 3, '#d4dce4', 's'], ['e', 24, 9, 5, 2.2, '#b8c2cc', 's'], ['e', 18, 6, 4, 1.5, '#f0f4f8', 's'],
+      ['p', [[22, 21], [28, 19], [29, 24], [22, 27]], '#6a5a4a'],
+      ['e', 28, 21, 3.2, 3.2, '#4a4444'],
+      ['p', [[27, 18], [28, 15], [29.5, 18]], '#e0d8c8'], ['p', [[30, 20], [32, 21], [30.5, 22.5]], '#e0d8c8'], ['p', [[27, 24], [28, 26.5], [29.5, 24]], '#e0d8c8'],
+      ['r', 8, 26, 6, 5, '#5a4a3a'], ['r', 19, 26, 6, 5, '#5a4a3a'],
+      ['r', 7, 30, 7, 2, '#3e3228'], ['r', 18, 30, 7, 2, '#3e3228'],
+      ['e', 16, 19, 12, 9, '#7a6a5a'],
+      ['e', 14, 23, 4.5, 3.4, '#4a3428', 'c'], ['e', 14, 23, 3.2, 2.2, '#c04a18', 'c'], ['e', 14, 23.4, 2, 1.2, '#f8b040', 's'],
+      ['r', 19, 18, 3, 1, '#e07028', 'c'], ['r', 21, 19, 1, 2, '#e07028', 'c'], ['r', 9, 19, 2, 1, '#e07028', 'c'],
+      ['e', 19, 13, 2.2, 1.6, '#9a8a78', 'c'], ['e', 24, 16, 2, 1.5, '#9a8a78', 'c'], ['e', 22, 21, 2, 1.5, '#9a8a78', 'c'], ['e', 14, 12, 1.8, 1.4, '#9a8a78', 'c'],
+      ['e', 7, 15, 6.5, 5.5, '#8a7a68'],
+      ['r', 1, 16, 9, 4, '#7a6a5a'],
+      ['r', 1, 18, 7, 1.5, '#f8a040'], ['d', 2, 20, '#f06020'], ['d', 5, 20, '#f06020'],
+      ['r', 3, 11, 8, 2, '#4a3a2c'], ['e', 4, 10, 1.6, 1.4, '#9a8a78'],
+      ['r', 6, 13, 2, 1, '#f8d040'],
+      ['e', 6, 22, 2.2, 2.6, '#6a5a4a'],
+    ],
+  },
+  // --- Filodrac → Espadónix → Latigácer (diapositivas 157-161) ---
+  filodrac: {
+    nombre: 'Filodrac', tipos: ['DRAGON', 'ACERO'], base: { ps: 50, atk: 62, def: 62, vel: 56 }, captura: 45, exp: 64,
+    desc: 'el dragoncito de armadura pulida', evo: { nivel: 34, a: 'espadonix' },
+    movs: [[1, 'aranazo'], [1, 'coletazo'], [6, 'garra_metal'], [11, 'aliento'], [16, 'tajo_espejo'], [22, 'danza_espada'], [28, 'garra_dragon']],
+    sprite: [
+      ['p', [[20, 21], [29, 17], [31, 19], [22, 26]], '#8a96aa'],
+      ['p', [[28, 14], [31.5, 16], [30, 20]], '#eef2f8'],
+      ['r', 9, 24, 3, 6, '#5a6478'], ['r', 18, 24, 3, 6, '#5a6478'],
+      ['r', 8, 29, 5, 2, '#3e4656'], ['r', 17, 29, 5, 2, '#3e4656'],
+      ['e', 15, 21, 8, 5, '#a8b4c8'],
+      ['e', 14, 24, 6, 2, '#e6ecf4', 's'],
+      ['r', 11, 18, 5, 1, '#ffffff', 'c'],
+      ['p', [[13, 19], [23, 11], [22, 20]], '#6a8ad0'],
+      ['p', [[16, 18], [23, 11], [21, 15]], '#9ab4ec', 'c'],
+      ['e', 8, 15, 4.5, 4, '#b8c4d8'],
+      ['p', [[1, 16], [6, 12.5], [7, 18]], '#b8c4d8'],
+      ['p', [[7, 11], [13, 7], [11, 13]], '#6a8ad0'],
+      ['r', 5, 14, 2, 1.2, '#201030'], ['d', 5, 13, '#ffffff'],
+      ['r', 2, 17, 4, 1, '#5a6478'],
+    ],
+  },
+  espadonix: {
+    nombre: 'Espadónix', tipos: ['DRAGON', 'ACERO'], base: { ps: 62, atk: 82, def: 80, vel: 74 }, captura: 45, exp: 150,
+    desc: 'el dragón de alas de navaja', evo: { nivel: 52, a: 'latigacer' },
+    movs: [[1, 'aranazo'], [1, 'coletazo'], [6, 'garra_metal'], [11, 'aliento'], [16, 'tajo_espejo'], [22, 'danza_espada'], [28, 'garra_dragon'], [34, 'cabeza_hierro'], [40, 'pulso_dragon'], [46, 'garra_eclipse']],
+    sprite: [
+      ['p', [[14, 16], [21, 1], [25, 5], [30, 1], [26, 17]], '#4a68b0'],
+      ['p', [[21, 1], [25, 5], [23, 6]], '#eef2fa'], ['p', [[25, 5], [30, 1], [27, 7]], '#eef2fa'],
+      ['p', [[17, 15], [21, 5], [24, 9], [24, 15]], '#7a98dc', 'c'],
+      ['p', [[20, 23], [30, 25], [30, 28], [20, 27]], '#8a96aa'],
+      ['r', 23, 24, 1, 4, '#4a5468', 'c'], ['r', 26, 24, 1, 4, '#4a5468', 'c'], ['r', 29, 25, 1, 3, '#4a5468', 'c'],
+      ['p', [[29, 23], [31.8, 26.5], [29, 30]], '#eef2fa'],
+      ['r', 10, 25, 3, 6, '#4a5468'], ['r', 18, 25, 3, 6, '#4a5468'],
+      ['p', [[8, 31], [10, 29], [14, 29], [14, 31]], '#30384a'], ['p', [[16, 31], [18, 29], [22, 29], [22, 31]], '#30384a'],
+      ['e', 15, 22, 8, 5.5, '#a0acc0'],
+      ['e', 14, 25, 6, 2, '#e6ecf4', 's'],
+      ['p', [[7, 20], [9, 9], [13, 9], [15, 20]], '#a8b4c8'],
+      ['r', 9, 12, 4, 1, '#6a7488', 'c'], ['r', 9, 15, 5, 1, '#6a7488', 'c'],
+      ['e', 8, 8, 4, 3.5, '#b8c4d8'],
+      ['p', [[0, 9.5], [5, 6], [6, 11]], '#b8c4d8'],
+      ['p', [[8, 5], [11, 0], [12, 6]], '#6a8ad0'], ['p', [[11, 6], [15, 3], [13, 8]], '#6a8ad0'],
+      ['r', 5, 7, 2, 1.2, '#201030'], ['d', 5, 6, '#9ad0ff'],
+      ['p', [[7, 18], [3, 22], [5, 23], [8, 20]], '#8a96aa'],
+    ],
+  },
+  latigacer: {
+    nombre: 'Latigácer', tipos: ['DRAGON', 'ACERO'], base: { ps: 76, atk: 110, def: 95, vel: 92 }, captura: 45, exp: 262,
+    desc: 'el dragón de la cola de látigo',
+    movs: [[1, 'aranazo'], [1, 'coletazo'], [6, 'garra_metal'], [11, 'aliento'], [16, 'tajo_espejo'], [22, 'danza_espada'], [28, 'garra_dragon'], [34, 'cabeza_hierro'], [40, 'pulso_dragon'], [46, 'garra_eclipse'], [52, 'latigo_metalico'], [58, 'furia_dragon']],
+    sprite: [
+      ['p', [[13, 15], [16, 3], [21, 7], [26, 2], [23, 17]], '#2e3c6a'],
+      ['p', [[16, 3], [21, 7], [19, 7]], '#e4eaf4'], ['p', [[21, 7], [26, 2], [24, 8]], '#e4eaf4'],
+      ['p', [[16, 13], [17, 6], [21, 9], [22, 15]], '#4a5c9a', 'c'],
+      ['e', 22, 27, 3.2, 2.2, '#b8c2d2'], ['e', 25.5, 25, 2.8, 2, '#c4ccda'], ['e', 28, 21.5, 2.4, 2, '#b8c2d2'],
+      ['e', 29, 17, 2.2, 2, '#c4ccda'], ['e', 28.5, 12.5, 2, 1.8, '#b8c2d2'], ['e', 27, 9, 1.7, 1.6, '#c4ccda'],
+      ['p', [[25, 8], [24, 3], [31, 4], [28, 6], [27, 9]], '#f4f8fc'], ['d', 25, 4, '#8a94a8'],
+      ['r', 12, 24, 3, 6, '#6a7488'], ['r', 17, 24, 3, 6, '#6a7488'],
+      ['p', [[9, 31], [11, 29], [15, 29], [15, 31]], '#3e4656'], ['p', [[15, 31], [17, 29], [21, 29], [21, 31]], '#3e4656'],
+      ['e', 16, 21, 5.5, 6.5, '#d0d8e4'],
+      ['r', 13, 17, 6, 1, '#8a94a8', 'c'], ['r', 13, 20, 6, 1, '#8a94a8', 'c'], ['r', 13, 23, 6, 1, '#8a94a8', 'c'],
+      ['r', 17, 16, 2, 8, '#ffffff', 'c'],
+      ['p', [[12, 17], [7, 21], [9, 23], [13, 20]], '#a8b2c4'], ['p', [[7, 21], [5, 23], [8, 23]], '#f4f8fc'],
+      ['p', [[12, 15], [8, 6], [11, 5], [16, 14]], '#c0c8d6'],
+      ['p', [[10, 8], [13, 6], [12, 10]], '#8a94a8'], ['p', [[11, 11], [15, 9], [13, 13]], '#8a94a8'],
+      ['e', 8.5, 5, 3.5, 2.8, '#d8e0ea'],
+      ['p', [[1, 6], [7, 3], [8, 7.5]], '#d8e0ea'],
+      ['p', [[8, 3], [9, 0], [11, 3]], '#8a94a8'], ['p', [[10, 3.5], [14, 1], [12, 5]], '#8a94a8'],
+      ['r', 5, 4, 2, 1.2, '#e03030'],
+      ['r', 2, 6.5, 5, 0.8, '#4a5468'],
+    ],
+  },
+  // --- Dracotox → Noxidragón (tabla de dragones, diapositiva 220) ---
+  dracotox: {
+    nombre: 'Dracotox', tipos: ['VENENO', 'DRAGON'], base: { ps: 55, atk: 62, def: 55, vel: 58 }, captura: 45, exp: 66,
+    desc: 'el dragoncito de colmillos tóxicos', evo: { nivel: 40, a: 'noxidragon' },
+    movs: [[1, 'embestida'], [1, 'chillido'], [6, 'acido'], [11, 'aliento'], [16, 'mordisco'], [22, 'polvo_toxico'], [28, 'garra_dragon'], [34, 'toxibomba']],
+    sprite: [
+      ['p', [[17, 15], [25, 9], [27, 16], [21, 19]], '#6a3098'],
+      ['p', [[19, 16], [25, 11], [25, 15]], '#a070d8', 'c'],
+      ['e', 26, 26, 4, 3, '#7a40b0'], ['e', 26, 26, 1.8, 1.2, '#e8dca8', 's'],
+      ['r', 10, 25, 3, 5, '#4a2070'], ['r', 18, 25, 3, 5, '#4a2070'],
+      ['e', 16, 22, 8, 5.5, '#7a40b0'],
+      ['e', 15, 25, 6, 2.2, '#e8dca8', 's'],
+      ['e', 18, 19, 1.4, 1, '#c8f060', 'c'], ['e', 21, 22, 1.2, 0.9, '#c8f060', 'c'], ['e', 13, 20, 1.2, 0.9, '#4a2070', 'c'],
+      ['e', 9, 15, 5.5, 4.5, '#8a50c0'],
+      ['p', [[1, 15], [6, 12], [7, 18]], '#8a50c0'],
+      ['r', 2, 17, 5, 1, '#d03040'], ['d', 3, 17, '#ffffff'], ['d', 5, 17, '#ffffff'],
+      ['d', 3, 19, '#b8f050'], ['d', 3, 20, '#88d030'],
+      ['p', [[9, 11], [12, 7], [12, 12]], '#4a2070'], ['p', [[11, 12], [15, 9], [14, 14]], '#4a2070'],
+      ['r', 6, 13, 2, 1.2, '#f8d040'], ['d', 6, 13, '#201010'],
+    ],
+  },
+  noxidragon: {
+    nombre: 'Noxidragón', tipos: ['VENENO', 'DRAGON'], base: { ps: 85, atk: 102, def: 80, vel: 90 }, captura: 45, exp: 240,
+    desc: 'el dragón serpiente del veneno',
+    movs: [[1, 'embestida'], [1, 'chillido'], [6, 'acido'], [11, 'aliento'], [16, 'mordisco'], [22, 'polvo_toxico'], [28, 'garra_dragon'], [34, 'toxibomba'], [40, 'aliento_toxico'], [46, 'pulso_dragon'], [52, 'estallido'], [58, 'furia_dragon']],
+    sprite: [
+      ['p', [[16, 13], [23, 2], [31, 5], [30, 14], [23, 15]], '#6a34a8'],
+      ['p', [[19, 12], [23, 4], [29, 7], [28, 13]], '#a478dc', 'c'],
+      ['r', 23, 4, 1, 10, '#5a2890', 'c'], ['r', 26, 6, 1, 7, '#5a2890', 'c'],
+      ['e', 27, 25, 4, 3.6, '#6a30a0'], ['e', 27, 25, 1.9, 1.5, '#f0ecf6', 's'],
+      ['p', [[20, 27], [25, 22], [27, 24], [22, 29]], '#6a30a0'],
+      ['r', 12, 27, 3, 4, '#4a1c78'], ['r', 20, 27, 3, 4, '#4a1c78'],
+      ['e', 17, 25, 7.5, 4.6, '#7a40b8'],
+      ['e', 16, 26.5, 5.5, 2.4, '#f2eef6', 's'],
+      ['p', [[9, 19], [10, 9], [16, 8], [18, 21]], '#7a40b8'],
+      ['p', [[10, 19], [11, 11], [13.5, 11], [14, 20]], '#f2eef6'],
+      ['e', 16, 15, 1.4, 1, '#4a1c78', 'c'], ['e', 17, 19, 1.2, 0.9, '#4a1c78', 'c'], ['e', 21, 23, 1.4, 1, '#4a1c78', 'c'],
+      ['d', 15, 12, '#f2eef6'], ['d', 22, 25, '#f2eef6'],
+      ['e', 10, 7, 5, 3.5, '#8a50c8'],
+      ['p', [[1, 5], [8, 3], [9, 7]], '#8a50c8'],
+      ['p', [[1, 7], [9, 7], [4, 10]], '#d03040'],
+      ['p', [[3, 10.5], [9, 8], [9, 11]], '#8a50c8'],
+      ['d', 3, 7, '#ffffff'], ['d', 6, 7, '#ffffff'], ['d', 5, 9, '#ffffff'],
+      ['p', [[12, 4], [16, 0], [15, 5]], '#4a1c78'], ['p', [[13, 6], [18, 3], [16, 8]], '#4a1c78'],
+      ['r', 8, 5, 2, 1.2, '#f8d040'], ['d', 8, 5, '#201010'],
+      ['p', [[9, 17], [5, 21], [7, 22], [10, 19]], '#6a34a8'],
+    ],
+  },
+  // --- Patagón → Estepasaurio → Pampadón (diapositivas 121-125); Pampadón con forma de tiburón martillo (pedido de Poly) ---
+  patagon: {
+    nombre: 'Patagón', tipos: ['DRAGON'], base: { ps: 58, atk: 70, def: 50, vel: 45 }, captura: 45, exp: 60,
+    desc: 'la cría de dragón de la estepa', evo: { nivel: 25, a: 'estepasaurio' },
+    movs: [[1, 'embestida'], [1, 'grunido'], [6, 'revolcon'], [11, 'aliento'], [16, 'mordisco'], [21, 'barrazo']],
+    sprite: [
+      ['p', [[22, 22], [29, 18], [28, 23], [30, 28], [22, 26]], '#3e5a7a'],
+      ['p', [[14, 14], [19, 6], [21, 15]], '#2a405a'], ['p', [[18, 8], [19, 6], [20, 11]], '#e2cf98'],
+      ['e', 11, 28, 3.5, 2.5, '#2a405a'], ['e', 21, 28, 3.5, 2.5, '#2a405a'],
+      ['e', 16, 21, 9, 7, '#4a6a8c'],
+      ['e', 13, 24, 6, 4, '#e2cf98', 's'],
+      ['r', 18, 17, 1, 4, '#8a6a3a', 'c'], ['r', 21, 18, 1, 4, '#8a6a3a', 'c'],
+      ['e', 8, 16, 7, 5, '#4a6a8c'],
+      ['p', [[0, 17], [4, 13], [6, 19]], '#4a6a8c'],
+      ['r', 1, 18, 9, 1.5, '#5a1818'], ['d', 2, 18, '#ffffff'], ['d', 4, 18, '#ffffff'], ['d', 6, 18, '#ffffff'], ['d', 8, 18, '#ffffff'],
+      ['e', 7, 20, 4, 1.6, '#e2cf98', 's'],
+      ['r', 6, 14, 2, 2, '#f8e060'], ['d', 6, 15, '#101010'],
+      ['p', [[9, 21], [5, 25], [9, 24]], '#2a405a'],
+    ],
+  },
+  estepasaurio: {
+    nombre: 'Estepasaurio', tipos: ['DRAGON', 'TIERRA'], base: { ps: 72, atk: 88, def: 68, vel: 62 }, captura: 45, exp: 144,
+    desc: 'el saurio que corre por la estepa', evo: { nivel: 38, a: 'pampadon' },
+    movs: [[1, 'embestida'], [1, 'grunido'], [6, 'revolcon'], [11, 'aliento'], [16, 'mordisco'], [21, 'barrazo'], [25, 'remolino'], [30, 'garra_dragon']],
+    sprite: [
+      ['p', [[20, 22], [28, 17], [27, 23], [30, 30], [21, 27]], '#34506e'],
+      ['p', [[14, 13], [22, 2], [23, 14]], '#26405a'], ['p', [[20, 5], [22, 2], [22.5, 9]], '#e2cf98'],
+      ['r', 10, 24, 4, 6, '#26405a'], ['r', 17, 24, 4, 6, '#26405a'],
+      ['r', 9, 29, 6, 2, '#1c2e42'], ['r', 16, 29, 6, 2, '#1c2e42'],
+      ['e', 15, 19, 7, 7, '#42628a'],
+      ['e', 13, 21, 4.5, 4.5, '#e2cf98', 's'],
+      ['r', 17, 14, 1, 6, '#8a6a3a', 'c'], ['r', 20, 16, 1, 5, '#8a6a3a', 'c'], ['r', 15, 13, 1, 3, '#8a6a3a', 'c'],
+      ['p', [[9, 17], [3, 21], [5, 23], [10, 20]], '#42628a'], ['p', [[4, 19], [1, 25], [6, 22]], '#26405a'],
+      ['e', 9, 11, 7, 3.6, '#4c6e96'],
+      ['e', 3, 10.5, 2.2, 2.4, '#4c6e96'], ['e', 15, 10.5, 2.2, 2.4, '#4c6e96'],
+      ['r', 2, 10, 2, 1.5, '#f8e060'], ['r', 14.5, 10, 2, 1.5, '#f8e060'],
+      ['e', 9, 14, 3.5, 2, '#4c6e96'],
+      ['r', 6, 14.5, 6, 1, '#5a1818'], ['d', 7, 14, '#ffffff'], ['d', 9, 14, '#ffffff'], ['d', 11, 14, '#ffffff'],
+      ['r', 4, 9, 10, 1, '#6a90b8', 'c'],
+    ],
+  },
+  pampadon: {
+    nombre: 'Pampadón', tipos: ['DRAGON', 'TIERRA'], base: { ps: 105, atk: 125, def: 90, vel: 80 }, captura: 45, exp: 270,
+    desc: 'el dragón martillo que hace temblar la pampa',
+    movs: [[1, 'embestida'], [1, 'grunido'], [6, 'revolcon'], [11, 'aliento'], [16, 'mordisco'], [21, 'barrazo'], [25, 'remolino'], [30, 'garra_dragon'], [38, 'martillazo'], [44, 'terremoto'], [50, 'pulso_dragon'], [56, 'furia_dragon']],
+    sprite: [
+      ['p', [[21, 21], [27, 18], [31, 11], [29.5, 21], [31.5, 31], [27, 26], [21, 27]], '#2a405a'],
+      ['p', [[29, 13], [31, 11], [30, 17]], '#e2cf98'], ['p', [[29.5, 27], [31.5, 31], [29, 30]], '#e2cf98'],
+      ['p', [[15, 13], [21, 2], [23, 15]], '#2a405a'], ['p', [[19.5, 5], [21, 2], [21.5, 8]], '#e2cf98'],
+      ['r', 9, 25, 5, 5, '#2a405a'], ['r', 17, 25, 5, 5, '#2a405a'],
+      ['p', [[7, 31], [8, 29], [15, 29], [15, 31]], '#1c2e42'], ['p', [[16, 31], [17, 29], [23, 29], [23, 31]], '#1c2e42'],
+      ['d', 7, 31, '#e2cf98'], ['d', 16, 31, '#e2cf98'],
+      ['e', 15, 20, 8, 7.5, '#3e5a7a'],
+      ['e', 14, 22, 5, 5, '#e2cf98', 's'],
+      ['r', 18, 14, 1, 7, '#7a5a30', 'c'], ['r', 21, 16, 1, 6, '#7a5a30', 'c'], ['r', 16, 13, 1, 3, '#7a5a30', 'c'],
+      ['p', [[8, 16], [3, 21], [5, 23], [9, 20]], '#3e5a7a'],
+      ['p', [[4, 18], [0, 25], [5, 22]], '#2a405a'], ['p', [[2, 22], [0, 25], [3, 23]], '#e2cf98'],
+      ['r', 3, 21, 3, 2, '#e8e0d0'],
+      ['e', 12, 12, 4, 3.5, '#3e5a7a'],
+      ['r', 3, 5, 18, 4.6, '#4a6a8c'],
+      ['e', 3, 7.2, 2.6, 2.6, '#4a6a8c'], ['e', 21, 7.2, 2.6, 2.6, '#4a6a8c'],
+      ['r', 3, 5, 18, 1, '#6a8aac', 'c'],
+      ['r', 0.5, 6, 2.5, 2, '#f8e060'], ['r', 21, 6, 2.5, 2, '#f8e060'], ['d', 1, 7, '#101010'], ['d', 22, 7, '#101010'],
+      ['e', 12, 11, 4.5, 2.4, '#4a6a8c'],
+      ['r', 8.5, 11.5, 7, 1.2, '#5a1818'], ['d', 9, 11, '#ffffff'], ['d', 11, 11, '#ffffff'], ['d', 13, 11, '#ffffff'], ['d', 15, 11, '#ffffff'],
+      ['e', 12, 13.5, 3.5, 1.2, '#e2cf98', 's'],
+    ],
+  },
 };
 
 // ===== Criaturas individuales =====
@@ -2613,6 +2852,12 @@ const HABILIDADES = {
   marLlamas: { nombre: 'Mar Llamas', ef: 'apuro', tipo: 'FUEGO', desc: 'Con poca vida, sus ataques de Fuego pegan mucho más.' },
   punoFerreo: { nombre: 'Puño Férreo', ef: 'punoFerreo', desc: 'Sus puñetazos y ganchos pegan un 30% más.' },
   audaz: { nombre: 'Audaz', ef: 'audaz', desc: 'Sus ataques Normal y Lucha también le pegan a los Fantasma.' },
+  gula: { nombre: 'Gula', ef: 'regenera', desc: 'Lame piedras llenas de minerales: recupera un poco de PS cada turno.' },
+  ignifugo: { nombre: 'Ignífugo', ef: 'ignifugo', desc: 'Su panza aguanta el calor: los ataques de Fuego le hacen la mitad.' },
+  cabezaRoca: { nombre: 'Cabeza Roca', ef: 'cabezaRoca', desc: 'Nunca se lastima al golpear y sus ataques de Roca pegan un 20% más.' },
+  cortante: { nombre: 'Cortante', ef: 'filoRecio', desc: 'Sus ataques de corte (tajos y látigos) pegan un 50% más.' },
+  impasible: { nombre: 'Impasible', ef: 'impasible', desc: 'Nada lo asusta: si le pegan un golpe muy eficaz, se vuelve más rápido.' },
+  aceroTemplado: { nombre: 'Acero Templado', ef: 'templado', desc: 'Sus ataques de Acero pegan un 50% más.' },
   maldicionLunar: { nombre: 'Maldición Lunar', ef: 'maldicion', desc: 'Sus mordiscos le devuelven la mitad del daño que hacen como PS.' },
 };
 const HAB_ESPECIE = {
@@ -2657,6 +2902,13 @@ const HAB_ESPECIE = {
   azularza: { n: ['nadoRapido', 'vientoAfin'], o: 'llovizna' },
   escarchin: { n: ['cortinaNieve', 'cuerpoPuro'], o: 'animaGlacial' }, glaciar: { n: ['cuerpoPuro', 'competitivo'], o: 'animaGlacial' },
   andespectro: { n: ['espadaRuinosa', 'competitivo'], o: 'furiaAndina' }, umbracor: { n: ['intimidacion', 'filoRecio'], o: 'justiciero' },
+  // Región 8: las de Pebbleby, Ironboulder y la línea de Filodrac son de Felipe; las de Dracotox y Patagón, elegidas por Claude (Felipe las puede cambiar)
+  pebbleby: { n: ['gula', 'robustez'], o: 'ignifugo' }, ironboulder: { n: ['cabezaRoca', 'robustez'], o: 'crisolMagma' },
+  filodrac: { n: ['cuerpoPuro', 'garraDura'], o: 'espejoMagico' }, espadonix: { n: ['cortante', 'garraDura'], o: 'espejoMagico' },
+  latigacer: { n: ['cortante', 'impasible'], o: 'aceroTemplado' },
+  dracotox: { n: ['pielToxica', 'intimidacion'] }, noxidragon: { n: ['pielToxica', 'intimidacion'] },
+  patagon: { n: ['intimidacion', 'garraAfilada'], o: 'furiaAndina' }, estepasaurio: { n: ['intimidacion', 'garraAfilada'], o: 'furiaAndina' },
+  pampadon: { n: ['intimidacion', 'garraAfilada'], o: 'furiaAndina' },
   duskfae: { n: ['veloEspejismo', 'cuerpoMaldito'] }, wraithfae: { n: ['cuerpoMaldito', 'veloEspejismo'] },
 };
 for (const id in ESPECIES) {
@@ -2706,6 +2958,7 @@ const PAL = {
   almacenero: { id: 'almacenero', piel: '#e8b890', pelo: '#5a3a20', boina: '#3a3a5a', remera: '#3a8a4a', guardapolvo: true, pant: '#4a3a2a', barba: '#5a3a20' },
   sombra: { id: 'sombra', piel: '#e8d0c0', pelo: '#1a1a2a', peloLargo: true, sombrero: '#1a1a1a', remera: '#4a2a6a', raya: '#b060f0', pant: '#1a1a2a' },
   marea: { id: 'marea', piel: '#f0d0b8', pelo: '#2a3a5a', peloLargo: true, gorra: '#e8f0f8', remera: '#2a6ab0', raya: '#f0f0f0', pant: '#1a2a4a' },
+  cumbre: { id: 'cumbre', piel: '#e0b088', pelo: '#e8e8f0', peloLargo: true, gorra: '#5a3ab0', remera: '#3a2a7a', raya: '#f8d040', pant: '#2a2a3a' },
   ceniza: { id: 'ceniza', piel: '#d8a070', pelo: '#c03020', peloLargo: true, remera: '#e06a20', raya: '#f8d040', pant: '#3a2a2a' },
   piloto: { id: 'piloto', piel: '#e8b890', pelo: '#3a2a1a', gorra: '#1a2a5a', remera: '#f0f0f8', raya: '#1a2a5a', pant: '#1a2a5a' },
   nena: { id: 'nena', piel: '#f4c8a0', pelo: '#c08040', peloLargo: true, remera: '#f070a0', pant: '#4a6aa8' },
@@ -3679,6 +3932,112 @@ const CATAMARCA = teñir(PUERTO, { Y: 'C', q: '=' });
 const BELEN = teñir(TILCARA, {});
 const FIAMBALA = teñir(PUERTO, { Y: 'C', q: '=', '.': '-', F: '-' });
 const OJOS = teñir(TILCARA, { C: 'N', K: 'R', '.': '-' });
+// Región 8 (Cuyo y el Aconcagua): rutas 22 y 23 BAJAN por la cordillera (180), la 24 va al OESTE (ccw) hacia el Aconcagua
+const LAGUNA_BRAVA = [
+  'NNNNNNNNNN==NNNNNNNNNN',
+  'NN--------==--------NN',
+  'NN---NN---==---uuuuuNN',
+  'NN---NN--S==---uuuuuNN',
+  'NN-------u==u--uuuuuNN',
+  'NN-----uuu==u-------NN',
+  'NN-uuuuuuu==----F---NN',
+  'NN-uuuuuuu==------F-NN',
+  'NN--F-----==--------NN',
+  'NN--------==--------NN',
+  'NN--------==--F-----NN',
+  'NN--------==--------NN',
+  'NN----uuuu==--------NN',
+  'NN----uuuu==--------NN',
+  'NN-uuNNuuu=======---NN',
+  'NN-RRNNuu------==---NN',
+  'NN-RR-uuu------==---NN',
+  'NNNN-uuuu------==---NN',
+  'NNNN-uuuu-=======---NN',
+  'NN--------==--------NN',
+  'NN~~~~~~~~hh~~~~~~~~NN',
+  'NN~~~~~~~~hh~~~~~~~~NN',
+  'NN-F--uuuu==--------NN',
+  'NN---uuuuu==uuuu----NN',
+  'NNRR-uuuu-==uuuu----NN',
+  'NNRR-uuuu-==uuuuuuuuNN',
+  'NN------F-==uuuuuuuuNN',
+  'NN--------==-uuuuuuuNN',
+  'NN-------S==---uuuNNNN',
+  'NN----F-uu==u--uuuNNNN',
+  'NN------uu==u-------NN',
+  'NNNNNNNNNN==NNNNNNNNNN',
+];
+const BARREAL = [
+  'NNNNNNNNNN==NNNNNNNNNN',
+  'NN--------==--------NN',
+  'NN--------==--uuuuu-NN',
+  'NN-------S==u-uuuuu-NN',
+  'NN-------u==u-------NN',
+  'NN--------==------K-NN',
+  'NN--------==--------NN',
+  'NN-----K--==--------NN',
+  'NN--K-----==-uuuuu--NN',
+  'NN--------==-uuuuu--NN',
+  'NN------uu==uu---K--NN',
+  'NN------uu==uu------NN',
+  'NNuuuuuuuu==uuu-----NN',
+  'NNuuu=======uuu-----NN',
+  'NNuuu==u------------NN',
+  'NNuuu==---------RR--NN',
+  'NN---==-------uuRRu-NN',
+  'NN---==-------uuuuCCNN',
+  'NN---==----uuCCuuuCCNN',
+  'NN---=======uCC-----NN',
+  'NN--------==--------NN',
+  'NN--------==-RR-----NN',
+  'NN---uuu--==-RRK----NN',
+  'NN--CCuu--==-uuuK---NN',
+  'NN--CCuu--==-uuu----NN',
+  'NN--------==--------NN',
+  'NN---uuuuu==--------NN',
+  'NN---uuuuu==uuuuu---NN',
+  'NN--CC-uuS==uuuuu---NN',
+  'NN--CC-uuu==uuuuu---NN',
+  'NN-----K--==--K----KNN',
+  'NNNNNNNNNN==NNNNNNNNNN',
+];
+const HORCONES = [
+  'NNNNNNNNNN==NNNNNNNNNN',
+  'NN--------==--------NN',
+  'NN--uuuu--==uuu-----NN',
+  'NN--uuuu-S==uuu-----NN',
+  'NN--uuuuuu==uuu-----NN',
+  'NN--uuuuuu==uuuuuu--NN',
+  'NN---uuuuu=======u--NN',
+  'NN---uuuuu-----==u--NN',
+  'NN-------------==--RNN',
+  'NN--uuuuuu-----==---NN',
+  'NN--uuuuuu-----==---NN',
+  'NN--uuuu-------==---NN',
+  'NN-------------==uu-NN',
+  'NN----------R--==uu-NN',
+  'NN-------------==---NN',
+  'NN-------------==-NNNN',
+  'NN-RR----------==-NNNN',
+  'NN-RRR---------==---NN',
+  'NN--NN----=======---NN',
+  'NN--NN----==--------NN',
+  'NN--------==--------NN',
+  'NN--------==--uuuu--NN',
+  'NN--------==--uuuu--NN',
+  'NN--------==--uuuu--NN',
+  'NN---R----==--------NN',
+  'NNwwwwwwww==wwwwwwwwNN',
+  'NNwwwwwwww==wwwwwwwwNN',
+  'NN-------u==uuu-uuu-NN',
+  'NN-------S==uuuuuuu-NN',
+  'NN--------==uuuuuuu-NN',
+  'NN--R-----==--------NN',
+  'NNNNNNNNNN==NNNNNNNNNN',
+];
+const RODEO = teñir(PUERTO, { Y: 'N', q: '=', '.': '-', F: '-' });
+const USPALLATA = teñir(TILCARA, { C: 'T', K: 'T', '-': '.' });
+const PLAZA_MULAS = teñir(TILCARA, { C: 'N', K: 'R', '.': 'w' });
 // Desvío de la Ruta 2: el pantano del Bañado del Río Salado (se entra por el OESTE)
 const BANADO = [
   'TTTTTTTTTTTTTTTTTTTTTTTT',
@@ -6346,6 +6705,341 @@ const MAPAS = {
     ],
   },
 
+  // ================= REGIÓN 8: CUYO Y EL ACONCAGUA (LAGUNA BRAVA → RODEO → BARREAL → USPALLATA → HORCONES → PLAZA DE MULAS) =================
+  ruta22: {
+    nombre: 'RUTA 22 · LAGUNA BRAVA',
+    exterior: true,
+    grilla: desdeTexto(LAGUNA_BRAVA),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'ojos', ax: 1, ay: 10, dir: 3 },
+      { x: 11, y: 31, a: 'ojos', ax: 1, ay: 11, dir: 3 },
+      { x: 10, y: 0, a: 'rodeo', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 0, a: 'rodeo', ax: 11, ay: 1, dir: 0 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 22 · LAGUNA BRAVA. Una laguna salada a 4.300 metros, llena de flamencos rosados.',
+      '9,3': 'Al sur: RODEO, en SAN JUAN.',
+    },
+    objetos: { '~': 'El agua de la LAGUNA BRAVA es salada y helada. ¡Allá lejos hay cientos de flamencos!' },
+    encuentros: { lista: [['dracotox', 14], ['pebbleby', 14], ['patagon', 12], ['celestin', 10], ['glaciolito', 10], ['condorito', 10], ['escarchin', 8], ['vientuino', 8], ['volcarin', 8], ['filodrac', 6]], min: 56, max: 59 },
+    npcs: [
+      entrenadorNPC({
+        id: 'guarda_brava', x: 12, y: 9, dir: 2, pal: PAL.guarda, nombre: 'GUARDAPARQUE INÉS',
+        equipo: [['azularza', 67], ['dracotox', 67], ['glaciorka', 68]],
+        antes: ['GUARDAPARQUE INÉS: ¡Shhh! No asustes a los flamencos. Si querés pasar, primero mostrame qué tan bien cuidás a tus criaturas.'],
+        gana: 'GUARDAPARQUE INÉS: Muy bien. Se nota que las cuidás.',
+        despues: 'GUARDAPARQUE INÉS: Los flamencos son rosados por lo que comen: unos bichitos chiquitos de la laguna.',
+      }),
+      entrenadorNPC({
+        id: 'arriero_brava', x: 9, y: 19, dir: 3, pal: PAL.beto, nombre: 'ARRIERO VICENTE',
+        equipo: [['ironboulder', 68], ['laninger', 68], ['estepasaurio', 69]],
+        antes: ['ARRIERO VICENTE: Por estos cerros pasaban las caravanas de mulas a Chile. ¡Y yo todavía los cruzo! ¿Me ganás?'],
+        gana: 'ARRIERO VICENTE: ¡Qué guacho! Me ganaste de punta a punta.',
+        despues: 'ARRIERO VICENTE: En la cordillera viven dragones. Los PEBBLEBY lamen las piedras porque les gustan los minerales.',
+      }),
+      {
+        id: 'flamencos', x: 13, y: 22, dir: 2, pal: PAL.chica,
+        hablar: async () => {
+          await decir('CHICA: ¿Viste a los flamencos? Duermen parados en una sola pata... ¡y no se caen!');
+          await decir('Más al sur, en el ACONCAGUA, dicen que hay una líder que entrena DRAGONES. ¡Qué miedo!');
+        },
+      },
+    ],
+  },
+
+  rodeo: {
+    nombre: 'RODEO',
+    exterior: true,
+    grilla: desdeTexto(RODEO),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 15, y: 4, w: 5, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 10, y: 0, a: 'ruta22', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 0, a: 'ruta22', ax: 11, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro20', ax: 4, ay: 6, dir: 1 },
+      { x: 10, y: 21, a: 'ruta23', ax: 10, ay: 30, dir: 1 },
+      { x: 11, y: 21, a: 'ruta23', ax: 11, ay: 30, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Al NORTE: RUTA 22, la LAGUNA BRAVA. Al SUR: RUTA 23, BARREAL y MENDOZA.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Con uvas y pasas de uva sanjuaninas!',
+      '19,9': 'DIQUE CUESTA DEL VIENTO. ¡El mejor viento del mundo para hacer windsurf!',
+      '4,18': 'RODEO, SAN JUAN. Un pueblo de álamos, viento y montañas.',
+    },
+    npcs: [
+      {
+        id: 'windsurf', x: 7, y: 11, dir: 0, pal: PAL.pescador,
+        hablar: async () => {
+          if (S.flags.regaloRodeo) { await decir('WINDSURFISTA: Acá el viento sopla todas las tardes. ¡Mis criaturas de VOLADOR vuelan solas!'); return; }
+          await decir('WINDSURFISTA: ¡Ey, viajero! ¿Vas para el ACONCAGUA? Allá arriba hace un frío tremendo.');
+          await decir('Tomá, llevate estos ALFAJORES para el camino.');
+          S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 3;
+          S.flags.regaloRodeo = true;
+          await decir('¡Felipe recibió 3 ALFAJORES!');
+          guardar();
+        },
+      },
+      {
+        id: 'nena_rodeo', x: 17, y: 18, dir: 2, pal: PAL.nena,
+        hablar: async () => {
+          await decir('NENA: La líder del ÚLTIMO GIMNASIO es CUMBRE. ¡Vive en PLAZA DE MULAS, al pie del ACONCAGUA!');
+          await decir('Usa criaturas de tipo DRAGÓN. ¡Al DRAGÓN le ganan el HIELO, el HADA... y otro DRAGÓN!');
+        },
+      },
+    ],
+  },
+
+  centro20: crearCentro('rodeo', 5, 9, 'centro20'),
+
+  ruta23: {
+    nombre: 'RUTA 23 · BARREAL',
+    exterior: true,
+    grilla: desdeTexto(BARREAL),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'rodeo', ax: 10, ay: 20, dir: 1 },
+      { x: 11, y: 31, a: 'rodeo', ax: 11, ay: 20, dir: 1 },
+      { x: 10, y: 0, a: 'uspallata', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 0, a: 'uspallata', ax: 11, ay: 1, dir: 0 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 23 · BARREAL. La PAMPA DEL LEONCITO: un lago seco tan liso que se anda en carros a vela.',
+      '9,3': 'Al sur: USPALLATA, en MENDOZA.',
+    },
+    encuentros: { lista: [['filodrac', 14], ['patagon', 12], ['pebbleby', 12], ['dracotox', 10], ['howlup', 10], ['sparknight', 10], ['estepasaurio', 8], ['mimetit', 8], ['zorzaliente', 8], ['rocori', 8]], min: 58, max: 61 },
+    npcs: [
+      entrenadorNPC({
+        id: 'astronoma', x: 12, y: 6, dir: 2, pal: PAL.luna, nombre: 'ASTRÓNOMA VERA',
+        equipo: [['espejonte', 69], ['espectradraco', 70], ['lechuzonte', 70]],
+        antes: ['ASTRÓNOMA VERA: Acá cerca está el observatorio EL LEONCITO. ¡El cielo más limpio del país! ¿Peleamos bajo las estrellas?'],
+        gana: 'ASTRÓNOMA VERA: ¡Ganaste! Tenés una estrella de la suerte.',
+        despues: 'ASTRÓNOMA VERA: Desde acá se ven miles de estrellas. Algunas criaturas DRAGÓN dicen que vinieron del cielo...',
+      }),
+      entrenadorNPC({
+        id: 'carrovelista', x: 9, y: 21, dir: 3, pal: PAL.piloto, nombre: 'CARROVELISTA NICO',
+        equipo: [['zorzaliente', 69], ['espadonix', 70], ['noxidragon', 71]],
+        antes: ['CARROVELISTA NICO: ¡Con el viento a favor mi carro a vela va a cien por hora! ¡A ver si me alcanzás!'],
+        gana: 'CARROVELISTA NICO: ¡Me quedé sin viento!',
+        despues: 'CARROVELISTA NICO: Las criaturas de ACERO como ESPADÓNIX aguantan casi todo. ¡Usá FUEGO, LUCHA o TIERRA!',
+      }),
+      {
+        id: 'baqueano_barreal', x: 12, y: 25, dir: 2, pal: PAL.abuelo,
+        hablar: async () => {
+          await decir('BAQUEANO: Por este valle pasó el ejército de SAN MARTÍN para cruzar los Andes y liberar a Chile.');
+          await decir('Cruzaron montañas altísimas, con nieve y sin casi nada de aire. ¡Unos valientes!');
+        },
+      },
+    ],
+  },
+
+  uspallata: {
+    nombre: 'USPALLATA',
+    exterior: true,
+    grilla: desdeTexto(USPALLATA),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 15, y: 4, w: 5, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'casa', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 10, y: 0, a: 'ruta23', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 0, a: 'ruta23', ax: 11, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro21', ax: 4, ay: 6, dir: 1 },
+      { x: 0, y: 10, a: 'ruta24', ax: 10, ay: 30, dir: 1 },
+      { x: 0, y: 11, a: 'ruta24', ax: 11, ay: 30, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Al NORTE: RUTA 23, BARREAL y SAN JUAN. Al OESTE: RUTA 24, la QUEBRADA DE HORCONES y el ACONCAGUA.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Con tortitas mendocinas!',
+      '19,9': 'LAS BÓVEDAS. Hornos antiguos donde se fundían metales de la montaña.',
+      '4,18': 'USPALLATA, MENDOZA. Un valle verde de álamos en medio de la cordillera.',
+    },
+    npcs: [
+      tomiNPC({
+        id: 'tomi_uspallata', x: 12, y: 16, dir: 2, bandera: 'tomi8', forma: 'final', nivel: 72,
+        equipo: [['arquitemplillo', 69], ['wandacoloso', 70], ['nevukhan', 70], ['gargorrupt', 70], ['umbratail', 71]],
+        antes: [
+          'TOMI: ¡Felipe! Sabía que ibas a pasar por acá. ¡Yo también voy al ACONCAGUA!',
+          'TOMI: Pero antes... ¡nuestra última pelea antes del último gimnasio! ¡Con todo!',
+        ],
+        gana: 'TOMI: ¡No puede ser! Sos el mejor entrenador que conozco, Felipe. ¡Andá y ganale a CUMBRE!',
+        despues: 'TOMI: CUMBRE usa DRAGONES. Yo llevaría HIELO, HADA y DRAGÓN. ¡Te espero arriba!',
+        premio: 5,
+      }),
+      {
+        id: 'senor_uspallata', x: 7, y: 11, dir: 0, pal: PAL.abuelo,
+        hablar: async () => {
+          await decir('SEÑOR: En Uspallata los álamos se ponen amarillos en otoño. ¡Parece que el valle se prende fuego!');
+          await decir('Por esta ruta pasan los camiones que cruzan a Chile por el paso CRISTO REDENTOR.');
+        },
+      },
+    ],
+  },
+
+  centro21: crearCentro('uspallata', 5, 9, 'centro21'),
+
+  ruta24: {
+    nombre: 'RUTA 24 · QUEBRADA DE HORCONES',
+    exterior: true,
+    grilla: desdeTexto(HORCONES),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'uspallata', ax: 1, ay: 10, dir: 3 },
+      { x: 11, y: 31, a: 'uspallata', ax: 1, ay: 11, dir: 3 },
+      { x: 10, y: 0, a: 'plaza', ax: 22, ay: 10, dir: 2 },
+      { x: 11, y: 0, a: 'plaza', ax: 22, ay: 11, dir: 2 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 24 · QUEBRADA DE HORCONES. Pasando el PUENTE DEL INCA, un puente de piedra que hizo el agua.',
+      '9,3': 'Al oeste: PLAZA DE MULAS, la base del ACONCAGUA y el GIMNASIO 8.',
+    },
+    objetos: { w: 'Hielo de un glaciar del ACONCAGUA. ¡Resbala mucho!' },
+    encuentros: { lista: [['condorito', 14], ['filodrac', 12], ['glaciolito', 12], ['escarchin', 12], ['estepasaurio', 10], ['vientuino', 10], ['andragon', 8], ['ironboulder', 6], ['espadonix', 6], ['noxidragon', 4]], min: 60, max: 63 },
+    npcs: [
+      entrenadorNPC({
+        id: 'guia_horcones', x: 12, y: 9, dir: 2, pal: PAL.nieve, nombre: 'GUÍA DE MONTAÑA PAZ',
+        equipo: [['glaciperador', 71], ['pampadon', 72], ['andespectro', 72]],
+        antes: ['GUÍA PAZ: ¿Querés subir al ACONCAGUA? ¡Es la montaña más alta de América! Primero demostrame que estás preparado.'],
+        gana: 'GUÍA PAZ: Estás listo. Pero subí despacio, que falta el aire.',
+        despues: 'GUÍA PAZ: El ACONCAGUA mide casi 7.000 metros. ¡Desde la cumbre se ve el océano Pacífico!',
+      }),
+      entrenadorNPC({
+        id: 'mulero', x: 14, y: 14, dir: 2, pal: PAL.beto, nombre: 'MULERO RAMÓN',
+        equipo: [['ironboulder', 72], ['turborush', 72], ['latigacer', 73]],
+        antes: ['MULERO RAMÓN: Mis mulas llevan las mochilas de los andinistas hasta PLAZA DE MULAS. ¡Y mis criaturas, a vos te llevan por delante!'],
+        gana: 'MULERO RAMÓN: ¡Ufa! Mejor vuelvo con mis mulas.',
+        despues: 'MULERO RAMÓN: LATIGÁCER tiene una cola de acero que corta como una espada. ¡Ojo con su LÁTIGO METÁLICO!',
+      }),
+      {
+        id: 'guarda_horcones', x: 9, y: 20, dir: 3, pal: PAL.guarda,
+        hablar: async () => {
+          await decir('GUARDAPARQUE: ¡Bienvenido al PARQUE PROVINCIAL ACONCAGUA! Acá se cuida la montaña: nada de basura, eh.');
+          await decir('Si tus criaturas se cansan, seguí hasta PLAZA DE MULAS. Ahí hay un CEMIC.');
+        },
+      },
+    ],
+  },
+
+  plaza: {
+    nombre: 'PLAZA DE MULAS',
+    exterior: true,
+    grilla: desdeTexto(PLAZA_MULAS),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 14, y: 4, w: 7, h: 5, tipo: 'gimnasio8', puerta: 3, abre: true },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 23, y: 10, a: 'ruta24', ax: 11, ay: 1, dir: 0 },
+      { x: 23, y: 11, a: 'ruta24', ax: 10, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro22', ax: 4, ay: 6, dir: 1 },
+      { x: 17, y: 8, a: 'gimnasio8', ax: 5, ay: 10, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Arriba: la cumbre del ACONCAGUA, 6.961 metros. ¡Todavía no se puede subir! Al ESTE: RUTA 24, hacia USPALLATA.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡El CEMIC más alto de América!',
+      '19,9': 'GIMNASIO ACONCAGUA. Líder: CUMBRE, la domadora de dragones. Tipo DRAGÓN.',
+      '4,18': 'PLAZA DE MULAS. El campamento base del ACONCAGUA, a 4.300 metros de altura.',
+    },
+    npcs: [
+      {
+        id: 'bruno_plaza', x: 7, y: 11, dir: 0, pal: PAL.beto,
+        hablar: async () => {
+          await decir('ANDINISTA BRUNO: ¡Felipe! ¿Te acordás de mí? Te peleé en el gimnasio de Bariloche.');
+          await decir('Te dije que subí el ACONCAGUA tres veces. ¡Ahora voy por la cuarta!');
+        },
+      },
+      {
+        id: 'nene_plaza', x: 19, y: 11, dir: 1, pal: PAL.nene,
+        hablar: async () => {
+          if (S.flags.insignia8) await decir('NENE: ¡Le ganaste a CUMBRE! ¡Tenés las OCHO insignias! Sos el mejor entrenador de la Argentina.');
+          else {
+            await decir('NENE: CUMBRE tiene seis DRAGONES. ¡Y cada uno tiene otro tipo más: FUEGO, ROCA, ACERO, VENENO, TIERRA y AGUA!');
+            await decir('Al DRAGÓN le ganan el HIELO, el HADA y el DRAGÓN. ¡Pero cuidado: el ACERO aguanta el HIELO y el HADA!');
+          }
+        },
+      },
+    ],
+  },
+
+  centro22: crearCentro('plaza', 5, 9, 'centro22'),
+
+  gimnasio8: {
+    nombre: 'GIMNASIO ACONCAGUA',
+    grilla: desdeTexto([
+      '###########',
+      '#a_wvvvw_a#',
+      '#RR_vvv_RR#',
+      '#R_______R#',
+      '#__ww_ww__#',
+      '#_RwwRwwR_#',
+      '#__ww_ww__#',
+      '#R_______R#',
+      '#RR_w_w_RR#',
+      '#_________#',
+      '#_________#',
+      '#####m#####',
+    ]),
+    edificios: [],
+    salidas: [{ x: 5, y: 11, a: 'plaza', ax: 17, ay: 9, dir: 0 }],
+    objetos: {
+      R: 'Una piedra de la montaña con marcas de garras. ¡Algo muy grande la arañó!',
+      a: 'Escamas de dragón que brillan como piedras preciosas.',
+    },
+    npcs: [
+      entrenadorNPC({
+        id: 'gim8_a', x: 7, y: 3, dir: 2, pal: PAL.guarda, nombre: 'DOMADOR JULIO',
+        equipo: [['espadonix', 71], ['estepasaurio', 71], ['ironboulder', 72]],
+        antes: ['DOMADOR JULIO: Entreno dragones desde chiquito. ¡Mirá qué escamas! ¿Te animás?'],
+        gana: 'DOMADOR JULIO: ¡Me ganaste! Mis dragones necesitan más entrenamiento.',
+        despues: 'DOMADOR JULIO: Los ataques de DRAGÓN no le hacen nada a las criaturas de HADA. ¡Acordate!',
+      }),
+      entrenadorNPC({
+        id: 'gim8_b', x: 2, y: 6, dir: 3, pal: PAL.nieve, nombre: 'ANDINISTA SOFÍA',
+        equipo: [['noxidragon', 72], ['phantolycan', 72], ['umbratail', 73]],
+        antes: ['ANDINISTA SOFÍA: Subí hasta acá con mis dragones en la mochila. ¡Ahora vas a ver lo que pueden hacer!'],
+        gana: 'ANDINISTA SOFÍA: Bueno... me quedo a mirar cómo le ganás a CUMBRE.',
+        despues: 'ANDINISTA SOFÍA: La última criatura de CUMBRE es PAMPADÓN, el dragón martillo. ¡Hace temblar toda la montaña!',
+      }),
+      {
+        id: 'cumbre', x: 5, y: 1, dir: 0, pal: PAL.cumbre,
+        hablar: async () => {
+          if (S.flags.insignia8) {
+            await decir('CUMBRE: Ya sos un gran entrenador, Felipe. Pero la montaña todavía guarda un secreto...');
+            await decir('Dicen que allá arriba, en la cumbre, algo muy antiguo está dormido. Algún día vas a poder subir.');
+            return;
+          }
+          if (!S.flags.insignia7) {
+            await decir('CUMBRE: Primero conseguí la INSIGNIA VOLCÁN de CENIZA, en el OJOS DEL SALADO. Después volvé.');
+            return;
+          }
+          await decir('CUMBRE: Llegaste al techo de América. Muy pocos entrenadores suben hasta acá.');
+          await decir('Soy CUMBRE, líder del GIMNASIO ACONCAGUA. Mis dragones nacieron entre las nubes y la roca.');
+          await decir('Si me ganás, te llevás la INSIGNIA CUMBRE: la última. ¡Que ruja la montaña!');
+          // Equipo pedido por Poly (22/11): Ignidraxx, Ironboulder, Latigácer, Noxidragón, Pampadón (tiburón martillo) e Iberadraco.
+          const r = await batalla({ entrenador: { nombre: 'LÍDER CUMBRE', pal: PAL.cumbre, equipo: [['noxidragon', 72], ['ironboulder', 72], ['iberadraco', 73], ['ignidraxx', 73], ['latigacer', 74, { hab: 'cortante' }], ['pampadon', 75, { hab: 'intimidacion' }]] } });
+          if (r === 'gana') {
+            S.flags.insignia8 = true;
+            S.flags.insignias = Math.max(S.flags.insignias || 0, 8);
+            await decir('CUMBRE: La montaña se quedó en silencio... Te ganaste la insignia, Felipe.');
+            await decir('¡Felipe recibió la INSIGNIA CUMBRE!');
+            S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 5;
+            S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
+            await decir('CUMBRE: Llevate estos ALFAJORES y BOLEADORAS. ¡Tenés las OCHO insignias de la Argentina!');
+            guardar();
+          }
+        },
+      },
+    ],
+  },
+
   // ================= LA SALAMANCA (GIMNASIO 2) =================
   gimnasio2: {
     nombre: 'LA SALAMANCA',
@@ -6472,6 +7166,17 @@ abrir('belen', [[0, 10], [1, 10], [0, 11], [1, 11], [22, 10], [23, 10], [22, 11]
 abrir('fiambala', [[10, 21], [11, 21]], 'C');
 abrir('fiambala', [[22, 10], [23, 10], [22, 11], [23, 11]], '=');
 abrir('ojos', [[10, 0], [11, 0]], 'N');
+// Región 8: desde Ojos del Salado se sale por el OESTE a la cordillera y se BAJA hasta el Aconcagua
+abrir('ojos', [[0, 10], [1, 10], [0, 11], [1, 11]], '=');
+MAPAS.ojos.salidas.push(
+  { x: 0, y: 10, a: 'ruta22', ax: 10, ay: 30, dir: 1 },
+  { x: 0, y: 11, a: 'ruta22', ax: 11, ay: 30, dir: 1 },
+);
+MAPAS.ojos.carteles['12,1'] = 'Arriba: el volcán OJOS DEL SALADO. Al SUR: RUTA 21, a FIAMBALÁ. Al OESTE: RUTA 22, por la cordillera hacia el ACONCAGUA.';
+abrir('uspallata', [[10, 21], [11, 21]], 'T');
+abrir('uspallata', [[0, 10], [1, 10], [0, 11], [1, 11]], '=');
+abrir('plaza', [[10, 0], [11, 0], [10, 21], [11, 21]], 'N');
+abrir('plaza', [[22, 10], [23, 10], [22, 11], [23, 11]], '=');
 abrir('somuncura', [[0, 10], [1, 10], [0, 11], [1, 11]], '=');
 
 // --- Rutas: girarlas ---
@@ -6534,6 +7239,10 @@ girarMapa('ruta18', '180');
 // Región 7: hacia el OESTE por Catamarca; la Ruta 21 sube derecho a la Puna
 girarMapa('ruta19', 'ccw');
 girarMapa('ruta20', 'ccw');
+// Región 8: las Rutas 22 y 23 BAJAN por la cordillera; la 24 va al OESTE hacia el Aconcagua
+girarMapa('ruta22', '180');
+girarMapa('ruta23', '180');
+girarMapa('ruta24', 'ccw');
 
 
 // ===== Escenas de la historia =====
@@ -7724,8 +8433,9 @@ const LUGAR_GEO = {
   ruta13: [-71.4, -41.6], elbolson: [-71.5, -42], ruta14: [-70.3, -41.6], jacobacci: [-69.5, -41.3], ruta15: [-68, -41.3], somuncura: [-66.9, -41.2],
   ruta16: [-64.6, -42.4], madryn: [-65.1, -42.8], ruta17: [-67, -47.3], gallegos: [-69.2, -51.6], ruta18: [-68.6, -53.1], ushuaia: [-68.3, -54.7],
   catamarca: [-65.8, -28.5], ruta19: [-66.5, -27.9], belen: [-67, -27.6], ruta20: [-67.3, -27.5], fiambala: [-67.6, -27.7], ruta21: [-68, -27.4], ojos: [-68.5, -27.1],
+  ruta22: [-68.9, -28.5], rodeo: [-69.15, -30.2], ruta23: [-69.4, -31.5], uspallata: [-69.35, -32.6], ruta24: [-69.6, -32.75], plaza: [-69.88, -32.65],
 };
-const GIMNASIOS_GEO = [['vallefertil', 1], ['tafi', 2], ['puerto', 3], ['bariloche', 4], ['somuncura', 5], ['ushuaia', 6], ['ojos', 7]];
+const GIMNASIOS_GEO = [['vallefertil', 1], ['tafi', 2], ['puerto', 3], ['bariloche', 4], ['somuncura', 5], ['ushuaia', 6], ['ojos', 7], ['plaza', 8]];
 function lugarExterior(id) {
   let m = id, n = 0;
   while (MAPAS[m] && !MAPAS[m].exterior && n++ < 4) m = (MAPAS[m].salidas[0] || {}).a;
@@ -7944,7 +8654,7 @@ function uiTitulo() {
   txt('CRIATURAS', 120, 14, { t: 18, c: '#f8d030', sombra: '#a04020', al: 'center' });
   txt('CRIOLLAS', 120, 38, { t: 18, c: '#6cb4ee', sombra: '#1a3a6a', al: 'center' });
   txt('Una aventura por la Argentina', 120, 62, { t: 6, c: '#203048', sombra: '#ffffff', al: 'center' });
-  txt('VERSIÓN 7 GIMNASIOS + MULTI · 20/11', 236, 152, { t: 5, c: '#ffffff', sombra: '#203048', al: 'right' });
+  txt('VERSIÓN 8 GIMNASIOS + MULTI · 22/11', 236, 152, { t: 5, c: '#ffffff', sombra: '#203048', al: 'right' });
   if (!ui.menu && (tick >> 5) % 2 === 0) txt('APRETÁ A PARA EMPEZAR', 120, 84, { t: 7, c: '#ffffff', sombra: '#203048', al: 'center' });
 }
 function dibujarIntro() {
@@ -8030,6 +8740,9 @@ function calcularDanio(at, de, mv) {
   if (hd.ef === 'pielHelada') extra *= 0.85;
   if (bt.nieve > 0 && mv.tipo === 'HIELO') extra *= 1.3;
   if (ha.ef === 'filoRecio' && mv.corta) extra *= 1.5;
+  if (ha.ef === 'templado' && mv.tipo === 'ACERO') extra *= 1.5;
+  if (ha.ef === 'cabezaRoca' && mv.tipo === 'ROCA') extra *= 1.2;
+  if (hd.ef === 'ignifugo' && mv.tipo === 'FUEGO') extra *= 0.5;
   if (hd.ef === 'ilusion' && !de.et.golpeado) extra *= 0.5;
   return { danio: Math.max(1, Math.floor(base * stab * ef * (critico ? 1.5 : 1) * azarDanio * extra)), ef, critico };
 }
@@ -8355,7 +9068,7 @@ async function ejecutarMov(at, de, slot, quien) {
     else if (r.ef < 1) await decir('No es muy eficaz...', { auto: 40 });
     if (hd.ef === 'maestroFuego' && r.danio > 0) await decir('¡Maestro de Fuego! El escudo de llamas achicó el golpe.', { auto: 40 });
     await despuesDelGolpe(at, de, M, r.danio);
-    if (slot.id === 'forcejeo') {
+    if (slot.id === 'forcejeo' && habDe(at).ef !== 'cabezaRoca') {
       at.ps = Math.max(0, at.ps - Math.max(1, Math.floor(at.psMax / 4)));
       await animarPS(at);
       await decir(`¡${nombreBatalla(at)} también se lastimó!`, { auto: 40 });
@@ -8478,6 +9191,7 @@ async function despuesDelGolpe(at, de, M, danio = 0) {
   if (de.ps > 0) {
     if (hd.ef === 'hervor' && (M.tipo === 'FUEGO' || M.tipo === 'AGUA')) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 2); }
     if (hd.ef === 'cobardia' && ['BICHO', 'FANTASMA', 'SINIESTRO'].includes(M.tipo)) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 1); }
+    if (hd.ef === 'impasible' && danio > 0 && eficacia(M.tipo, tiposDe(de)) > 1) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 1); }
   }
   if (hd.ef === 'geotermica' && de.ps <= 0 && at.ps > 0) {
     await anunciarHab(de);

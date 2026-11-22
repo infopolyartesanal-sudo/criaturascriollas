@@ -857,8 +857,9 @@ const LUGAR_GEO = {
   ruta13: [-71.4, -41.6], elbolson: [-71.5, -42], ruta14: [-70.3, -41.6], jacobacci: [-69.5, -41.3], ruta15: [-68, -41.3], somuncura: [-66.9, -41.2],
   ruta16: [-64.6, -42.4], madryn: [-65.1, -42.8], ruta17: [-67, -47.3], gallegos: [-69.2, -51.6], ruta18: [-68.6, -53.1], ushuaia: [-68.3, -54.7],
   catamarca: [-65.8, -28.5], ruta19: [-66.5, -27.9], belen: [-67, -27.6], ruta20: [-67.3, -27.5], fiambala: [-67.6, -27.7], ruta21: [-68, -27.4], ojos: [-68.5, -27.1],
+  ruta22: [-68.9, -28.5], rodeo: [-69.15, -30.2], ruta23: [-69.4, -31.5], uspallata: [-69.35, -32.6], ruta24: [-69.6, -32.75], plaza: [-69.88, -32.65],
 };
-const GIMNASIOS_GEO = [['vallefertil', 1], ['tafi', 2], ['puerto', 3], ['bariloche', 4], ['somuncura', 5], ['ushuaia', 6], ['ojos', 7]];
+const GIMNASIOS_GEO = [['vallefertil', 1], ['tafi', 2], ['puerto', 3], ['bariloche', 4], ['somuncura', 5], ['ushuaia', 6], ['ojos', 7], ['plaza', 8]];
 function lugarExterior(id) {
   let m = id, n = 0;
   while (MAPAS[m] && !MAPAS[m].exterior && n++ < 4) m = (MAPAS[m].salidas[0] || {}).a;
@@ -1077,7 +1078,7 @@ function uiTitulo() {
   txt('CRIATURAS', 120, 14, { t: 18, c: '#f8d030', sombra: '#a04020', al: 'center' });
   txt('CRIOLLAS', 120, 38, { t: 18, c: '#6cb4ee', sombra: '#1a3a6a', al: 'center' });
   txt('Una aventura por la Argentina', 120, 62, { t: 6, c: '#203048', sombra: '#ffffff', al: 'center' });
-  txt('VERSIÓN 7 GIMNASIOS + MULTI · 20/11', 236, 152, { t: 5, c: '#ffffff', sombra: '#203048', al: 'right' });
+  txt('VERSIÓN 8 GIMNASIOS + MULTI · 22/11', 236, 152, { t: 5, c: '#ffffff', sombra: '#203048', al: 'right' });
   if (!ui.menu && (tick >> 5) % 2 === 0) txt('APRETÁ A PARA EMPEZAR', 120, 84, { t: 7, c: '#ffffff', sombra: '#203048', al: 'center' });
 }
 function dibujarIntro() {
@@ -1163,6 +1164,9 @@ function calcularDanio(at, de, mv) {
   if (hd.ef === 'pielHelada') extra *= 0.85;
   if (bt.nieve > 0 && mv.tipo === 'HIELO') extra *= 1.3;
   if (ha.ef === 'filoRecio' && mv.corta) extra *= 1.5;
+  if (ha.ef === 'templado' && mv.tipo === 'ACERO') extra *= 1.5;
+  if (ha.ef === 'cabezaRoca' && mv.tipo === 'ROCA') extra *= 1.2;
+  if (hd.ef === 'ignifugo' && mv.tipo === 'FUEGO') extra *= 0.5;
   if (hd.ef === 'ilusion' && !de.et.golpeado) extra *= 0.5;
   return { danio: Math.max(1, Math.floor(base * stab * ef * (critico ? 1.5 : 1) * azarDanio * extra)), ef, critico };
 }
@@ -1488,7 +1492,7 @@ async function ejecutarMov(at, de, slot, quien) {
     else if (r.ef < 1) await decir('No es muy eficaz...', { auto: 40 });
     if (hd.ef === 'maestroFuego' && r.danio > 0) await decir('¡Maestro de Fuego! El escudo de llamas achicó el golpe.', { auto: 40 });
     await despuesDelGolpe(at, de, M, r.danio);
-    if (slot.id === 'forcejeo') {
+    if (slot.id === 'forcejeo' && habDe(at).ef !== 'cabezaRoca') {
       at.ps = Math.max(0, at.ps - Math.max(1, Math.floor(at.psMax / 4)));
       await animarPS(at);
       await decir(`¡${nombreBatalla(at)} también se lastimó!`, { auto: 40 });
@@ -1611,6 +1615,7 @@ async function despuesDelGolpe(at, de, M, danio = 0) {
   if (de.ps > 0) {
     if (hd.ef === 'hervor' && (M.tipo === 'FUEGO' || M.tipo === 'AGUA')) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 2); }
     if (hd.ef === 'cobardia' && ['BICHO', 'FANTASMA', 'SINIESTRO'].includes(M.tipo)) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 1); }
+    if (hd.ef === 'impasible' && danio > 0 && eficacia(M.tipo, tiposDe(de)) > 1) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 1); }
   }
   if (hd.ef === 'geotermica' && de.ps <= 0 && at.ps > 0) {
     await anunciarHab(de);

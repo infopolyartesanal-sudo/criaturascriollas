@@ -23,6 +23,7 @@ const PAL = {
   almacenero: { id: 'almacenero', piel: '#e8b890', pelo: '#5a3a20', boina: '#3a3a5a', remera: '#3a8a4a', guardapolvo: true, pant: '#4a3a2a', barba: '#5a3a20' },
   sombra: { id: 'sombra', piel: '#e8d0c0', pelo: '#1a1a2a', peloLargo: true, sombrero: '#1a1a1a', remera: '#4a2a6a', raya: '#b060f0', pant: '#1a1a2a' },
   marea: { id: 'marea', piel: '#f0d0b8', pelo: '#2a3a5a', peloLargo: true, gorra: '#e8f0f8', remera: '#2a6ab0', raya: '#f0f0f0', pant: '#1a2a4a' },
+  cumbre: { id: 'cumbre', piel: '#e0b088', pelo: '#e8e8f0', peloLargo: true, gorra: '#5a3ab0', remera: '#3a2a7a', raya: '#f8d040', pant: '#2a2a3a' },
   ceniza: { id: 'ceniza', piel: '#d8a070', pelo: '#c03020', peloLargo: true, remera: '#e06a20', raya: '#f8d040', pant: '#3a2a2a' },
   piloto: { id: 'piloto', piel: '#e8b890', pelo: '#3a2a1a', gorra: '#1a2a5a', remera: '#f0f0f8', raya: '#1a2a5a', pant: '#1a2a5a' },
   nena: { id: 'nena', piel: '#f4c8a0', pelo: '#c08040', peloLargo: true, remera: '#f070a0', pant: '#4a6aa8' },
@@ -996,6 +997,112 @@ const CATAMARCA = teñir(PUERTO, { Y: 'C', q: '=' });
 const BELEN = teñir(TILCARA, {});
 const FIAMBALA = teñir(PUERTO, { Y: 'C', q: '=', '.': '-', F: '-' });
 const OJOS = teñir(TILCARA, { C: 'N', K: 'R', '.': '-' });
+// Región 8 (Cuyo y el Aconcagua): rutas 22 y 23 BAJAN por la cordillera (180), la 24 va al OESTE (ccw) hacia el Aconcagua
+const LAGUNA_BRAVA = [
+  'NNNNNNNNNN==NNNNNNNNNN',
+  'NN--------==--------NN',
+  'NN---NN---==---uuuuuNN',
+  'NN---NN--S==---uuuuuNN',
+  'NN-------u==u--uuuuuNN',
+  'NN-----uuu==u-------NN',
+  'NN-uuuuuuu==----F---NN',
+  'NN-uuuuuuu==------F-NN',
+  'NN--F-----==--------NN',
+  'NN--------==--------NN',
+  'NN--------==--F-----NN',
+  'NN--------==--------NN',
+  'NN----uuuu==--------NN',
+  'NN----uuuu==--------NN',
+  'NN-uuNNuuu=======---NN',
+  'NN-RRNNuu------==---NN',
+  'NN-RR-uuu------==---NN',
+  'NNNN-uuuu------==---NN',
+  'NNNN-uuuu-=======---NN',
+  'NN--------==--------NN',
+  'NN~~~~~~~~hh~~~~~~~~NN',
+  'NN~~~~~~~~hh~~~~~~~~NN',
+  'NN-F--uuuu==--------NN',
+  'NN---uuuuu==uuuu----NN',
+  'NNRR-uuuu-==uuuu----NN',
+  'NNRR-uuuu-==uuuuuuuuNN',
+  'NN------F-==uuuuuuuuNN',
+  'NN--------==-uuuuuuuNN',
+  'NN-------S==---uuuNNNN',
+  'NN----F-uu==u--uuuNNNN',
+  'NN------uu==u-------NN',
+  'NNNNNNNNNN==NNNNNNNNNN',
+];
+const BARREAL = [
+  'NNNNNNNNNN==NNNNNNNNNN',
+  'NN--------==--------NN',
+  'NN--------==--uuuuu-NN',
+  'NN-------S==u-uuuuu-NN',
+  'NN-------u==u-------NN',
+  'NN--------==------K-NN',
+  'NN--------==--------NN',
+  'NN-----K--==--------NN',
+  'NN--K-----==-uuuuu--NN',
+  'NN--------==-uuuuu--NN',
+  'NN------uu==uu---K--NN',
+  'NN------uu==uu------NN',
+  'NNuuuuuuuu==uuu-----NN',
+  'NNuuu=======uuu-----NN',
+  'NNuuu==u------------NN',
+  'NNuuu==---------RR--NN',
+  'NN---==-------uuRRu-NN',
+  'NN---==-------uuuuCCNN',
+  'NN---==----uuCCuuuCCNN',
+  'NN---=======uCC-----NN',
+  'NN--------==--------NN',
+  'NN--------==-RR-----NN',
+  'NN---uuu--==-RRK----NN',
+  'NN--CCuu--==-uuuK---NN',
+  'NN--CCuu--==-uuu----NN',
+  'NN--------==--------NN',
+  'NN---uuuuu==--------NN',
+  'NN---uuuuu==uuuuu---NN',
+  'NN--CC-uuS==uuuuu---NN',
+  'NN--CC-uuu==uuuuu---NN',
+  'NN-----K--==--K----KNN',
+  'NNNNNNNNNN==NNNNNNNNNN',
+];
+const HORCONES = [
+  'NNNNNNNNNN==NNNNNNNNNN',
+  'NN--------==--------NN',
+  'NN--uuuu--==uuu-----NN',
+  'NN--uuuu-S==uuu-----NN',
+  'NN--uuuuuu==uuu-----NN',
+  'NN--uuuuuu==uuuuuu--NN',
+  'NN---uuuuu=======u--NN',
+  'NN---uuuuu-----==u--NN',
+  'NN-------------==--RNN',
+  'NN--uuuuuu-----==---NN',
+  'NN--uuuuuu-----==---NN',
+  'NN--uuuu-------==---NN',
+  'NN-------------==uu-NN',
+  'NN----------R--==uu-NN',
+  'NN-------------==---NN',
+  'NN-------------==-NNNN',
+  'NN-RR----------==-NNNN',
+  'NN-RRR---------==---NN',
+  'NN--NN----=======---NN',
+  'NN--NN----==--------NN',
+  'NN--------==--------NN',
+  'NN--------==--uuuu--NN',
+  'NN--------==--uuuu--NN',
+  'NN--------==--uuuu--NN',
+  'NN---R----==--------NN',
+  'NNwwwwwwww==wwwwwwwwNN',
+  'NNwwwwwwww==wwwwwwwwNN',
+  'NN-------u==uuu-uuu-NN',
+  'NN-------S==uuuuuuu-NN',
+  'NN--------==uuuuuuu-NN',
+  'NN--R-----==--------NN',
+  'NNNNNNNNNN==NNNNNNNNNN',
+];
+const RODEO = teñir(PUERTO, { Y: 'N', q: '=', '.': '-', F: '-' });
+const USPALLATA = teñir(TILCARA, { C: 'T', K: 'T', '-': '.' });
+const PLAZA_MULAS = teñir(TILCARA, { C: 'N', K: 'R', '.': 'w' });
 // Desvío de la Ruta 2: el pantano del Bañado del Río Salado (se entra por el OESTE)
 const BANADO = [
   'TTTTTTTTTTTTTTTTTTTTTTTT',
@@ -3663,6 +3770,341 @@ const MAPAS = {
     ],
   },
 
+  // ================= REGIÓN 8: CUYO Y EL ACONCAGUA (LAGUNA BRAVA → RODEO → BARREAL → USPALLATA → HORCONES → PLAZA DE MULAS) =================
+  ruta22: {
+    nombre: 'RUTA 22 · LAGUNA BRAVA',
+    exterior: true,
+    grilla: desdeTexto(LAGUNA_BRAVA),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'ojos', ax: 1, ay: 10, dir: 3 },
+      { x: 11, y: 31, a: 'ojos', ax: 1, ay: 11, dir: 3 },
+      { x: 10, y: 0, a: 'rodeo', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 0, a: 'rodeo', ax: 11, ay: 1, dir: 0 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 22 · LAGUNA BRAVA. Una laguna salada a 4.300 metros, llena de flamencos rosados.',
+      '9,3': 'Al sur: RODEO, en SAN JUAN.',
+    },
+    objetos: { '~': 'El agua de la LAGUNA BRAVA es salada y helada. ¡Allá lejos hay cientos de flamencos!' },
+    encuentros: { lista: [['dracotox', 14], ['pebbleby', 14], ['patagon', 12], ['celestin', 10], ['glaciolito', 10], ['condorito', 10], ['escarchin', 8], ['vientuino', 8], ['volcarin', 8], ['filodrac', 6]], min: 56, max: 59 },
+    npcs: [
+      entrenadorNPC({
+        id: 'guarda_brava', x: 12, y: 9, dir: 2, pal: PAL.guarda, nombre: 'GUARDAPARQUE INÉS',
+        equipo: [['azularza', 67], ['dracotox', 67], ['glaciorka', 68]],
+        antes: ['GUARDAPARQUE INÉS: ¡Shhh! No asustes a los flamencos. Si querés pasar, primero mostrame qué tan bien cuidás a tus criaturas.'],
+        gana: 'GUARDAPARQUE INÉS: Muy bien. Se nota que las cuidás.',
+        despues: 'GUARDAPARQUE INÉS: Los flamencos son rosados por lo que comen: unos bichitos chiquitos de la laguna.',
+      }),
+      entrenadorNPC({
+        id: 'arriero_brava', x: 9, y: 19, dir: 3, pal: PAL.beto, nombre: 'ARRIERO VICENTE',
+        equipo: [['ironboulder', 68], ['laninger', 68], ['estepasaurio', 69]],
+        antes: ['ARRIERO VICENTE: Por estos cerros pasaban las caravanas de mulas a Chile. ¡Y yo todavía los cruzo! ¿Me ganás?'],
+        gana: 'ARRIERO VICENTE: ¡Qué guacho! Me ganaste de punta a punta.',
+        despues: 'ARRIERO VICENTE: En la cordillera viven dragones. Los PEBBLEBY lamen las piedras porque les gustan los minerales.',
+      }),
+      {
+        id: 'flamencos', x: 13, y: 22, dir: 2, pal: PAL.chica,
+        hablar: async () => {
+          await decir('CHICA: ¿Viste a los flamencos? Duermen parados en una sola pata... ¡y no se caen!');
+          await decir('Más al sur, en el ACONCAGUA, dicen que hay una líder que entrena DRAGONES. ¡Qué miedo!');
+        },
+      },
+    ],
+  },
+
+  rodeo: {
+    nombre: 'RODEO',
+    exterior: true,
+    grilla: desdeTexto(RODEO),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 15, y: 4, w: 5, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 10, y: 0, a: 'ruta22', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 0, a: 'ruta22', ax: 11, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro20', ax: 4, ay: 6, dir: 1 },
+      { x: 10, y: 21, a: 'ruta23', ax: 10, ay: 30, dir: 1 },
+      { x: 11, y: 21, a: 'ruta23', ax: 11, ay: 30, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Al NORTE: RUTA 22, la LAGUNA BRAVA. Al SUR: RUTA 23, BARREAL y MENDOZA.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Con uvas y pasas de uva sanjuaninas!',
+      '19,9': 'DIQUE CUESTA DEL VIENTO. ¡El mejor viento del mundo para hacer windsurf!',
+      '4,18': 'RODEO, SAN JUAN. Un pueblo de álamos, viento y montañas.',
+    },
+    npcs: [
+      {
+        id: 'windsurf', x: 7, y: 11, dir: 0, pal: PAL.pescador,
+        hablar: async () => {
+          if (S.flags.regaloRodeo) { await decir('WINDSURFISTA: Acá el viento sopla todas las tardes. ¡Mis criaturas de VOLADOR vuelan solas!'); return; }
+          await decir('WINDSURFISTA: ¡Ey, viajero! ¿Vas para el ACONCAGUA? Allá arriba hace un frío tremendo.');
+          await decir('Tomá, llevate estos ALFAJORES para el camino.');
+          S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 3;
+          S.flags.regaloRodeo = true;
+          await decir('¡Felipe recibió 3 ALFAJORES!');
+          guardar();
+        },
+      },
+      {
+        id: 'nena_rodeo', x: 17, y: 18, dir: 2, pal: PAL.nena,
+        hablar: async () => {
+          await decir('NENA: La líder del ÚLTIMO GIMNASIO es CUMBRE. ¡Vive en PLAZA DE MULAS, al pie del ACONCAGUA!');
+          await decir('Usa criaturas de tipo DRAGÓN. ¡Al DRAGÓN le ganan el HIELO, el HADA... y otro DRAGÓN!');
+        },
+      },
+    ],
+  },
+
+  centro20: crearCentro('rodeo', 5, 9, 'centro20'),
+
+  ruta23: {
+    nombre: 'RUTA 23 · BARREAL',
+    exterior: true,
+    grilla: desdeTexto(BARREAL),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'rodeo', ax: 10, ay: 20, dir: 1 },
+      { x: 11, y: 31, a: 'rodeo', ax: 11, ay: 20, dir: 1 },
+      { x: 10, y: 0, a: 'uspallata', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 0, a: 'uspallata', ax: 11, ay: 1, dir: 0 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 23 · BARREAL. La PAMPA DEL LEONCITO: un lago seco tan liso que se anda en carros a vela.',
+      '9,3': 'Al sur: USPALLATA, en MENDOZA.',
+    },
+    encuentros: { lista: [['filodrac', 14], ['patagon', 12], ['pebbleby', 12], ['dracotox', 10], ['howlup', 10], ['sparknight', 10], ['estepasaurio', 8], ['mimetit', 8], ['zorzaliente', 8], ['rocori', 8]], min: 58, max: 61 },
+    npcs: [
+      entrenadorNPC({
+        id: 'astronoma', x: 12, y: 6, dir: 2, pal: PAL.luna, nombre: 'ASTRÓNOMA VERA',
+        equipo: [['espejonte', 69], ['espectradraco', 70], ['lechuzonte', 70]],
+        antes: ['ASTRÓNOMA VERA: Acá cerca está el observatorio EL LEONCITO. ¡El cielo más limpio del país! ¿Peleamos bajo las estrellas?'],
+        gana: 'ASTRÓNOMA VERA: ¡Ganaste! Tenés una estrella de la suerte.',
+        despues: 'ASTRÓNOMA VERA: Desde acá se ven miles de estrellas. Algunas criaturas DRAGÓN dicen que vinieron del cielo...',
+      }),
+      entrenadorNPC({
+        id: 'carrovelista', x: 9, y: 21, dir: 3, pal: PAL.piloto, nombre: 'CARROVELISTA NICO',
+        equipo: [['zorzaliente', 69], ['espadonix', 70], ['noxidragon', 71]],
+        antes: ['CARROVELISTA NICO: ¡Con el viento a favor mi carro a vela va a cien por hora! ¡A ver si me alcanzás!'],
+        gana: 'CARROVELISTA NICO: ¡Me quedé sin viento!',
+        despues: 'CARROVELISTA NICO: Las criaturas de ACERO como ESPADÓNIX aguantan casi todo. ¡Usá FUEGO, LUCHA o TIERRA!',
+      }),
+      {
+        id: 'baqueano_barreal', x: 12, y: 25, dir: 2, pal: PAL.abuelo,
+        hablar: async () => {
+          await decir('BAQUEANO: Por este valle pasó el ejército de SAN MARTÍN para cruzar los Andes y liberar a Chile.');
+          await decir('Cruzaron montañas altísimas, con nieve y sin casi nada de aire. ¡Unos valientes!');
+        },
+      },
+    ],
+  },
+
+  uspallata: {
+    nombre: 'USPALLATA',
+    exterior: true,
+    grilla: desdeTexto(USPALLATA),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 15, y: 4, w: 5, h: 4, tipo: 'casa2', puerta: 2, abre: false },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'casa', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 10, y: 0, a: 'ruta23', ax: 10, ay: 1, dir: 0 },
+      { x: 11, y: 0, a: 'ruta23', ax: 11, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro21', ax: 4, ay: 6, dir: 1 },
+      { x: 0, y: 10, a: 'ruta24', ax: 10, ay: 30, dir: 1 },
+      { x: 0, y: 11, a: 'ruta24', ax: 11, ay: 30, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Al NORTE: RUTA 23, BARREAL y SAN JUAN. Al OESTE: RUTA 24, la QUEBRADA DE HORCONES y el ACONCAGUA.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡Con tortitas mendocinas!',
+      '19,9': 'LAS BÓVEDAS. Hornos antiguos donde se fundían metales de la montaña.',
+      '4,18': 'USPALLATA, MENDOZA. Un valle verde de álamos en medio de la cordillera.',
+    },
+    npcs: [
+      tomiNPC({
+        id: 'tomi_uspallata', x: 12, y: 16, dir: 2, bandera: 'tomi8', forma: 'final', nivel: 72,
+        equipo: [['arquitemplillo', 69], ['wandacoloso', 70], ['nevukhan', 70], ['gargorrupt', 70], ['umbratail', 71]],
+        antes: [
+          'TOMI: ¡Felipe! Sabía que ibas a pasar por acá. ¡Yo también voy al ACONCAGUA!',
+          'TOMI: Pero antes... ¡nuestra última pelea antes del último gimnasio! ¡Con todo!',
+        ],
+        gana: 'TOMI: ¡No puede ser! Sos el mejor entrenador que conozco, Felipe. ¡Andá y ganale a CUMBRE!',
+        despues: 'TOMI: CUMBRE usa DRAGONES. Yo llevaría HIELO, HADA y DRAGÓN. ¡Te espero arriba!',
+        premio: 5,
+      }),
+      {
+        id: 'senor_uspallata', x: 7, y: 11, dir: 0, pal: PAL.abuelo,
+        hablar: async () => {
+          await decir('SEÑOR: En Uspallata los álamos se ponen amarillos en otoño. ¡Parece que el valle se prende fuego!');
+          await decir('Por esta ruta pasan los camiones que cruzan a Chile por el paso CRISTO REDENTOR.');
+        },
+      },
+    ],
+  },
+
+  centro21: crearCentro('uspallata', 5, 9, 'centro21'),
+
+  ruta24: {
+    nombre: 'RUTA 24 · QUEBRADA DE HORCONES',
+    exterior: true,
+    grilla: desdeTexto(HORCONES),
+    edificios: [],
+    salidas: [
+      { x: 10, y: 31, a: 'uspallata', ax: 1, ay: 10, dir: 3 },
+      { x: 11, y: 31, a: 'uspallata', ax: 1, ay: 11, dir: 3 },
+      { x: 10, y: 0, a: 'plaza', ax: 22, ay: 10, dir: 2 },
+      { x: 11, y: 0, a: 'plaza', ax: 22, ay: 11, dir: 2 },
+    ],
+    carteles: {
+      '9,28': 'RUTA 24 · QUEBRADA DE HORCONES. Pasando el PUENTE DEL INCA, un puente de piedra que hizo el agua.',
+      '9,3': 'Al oeste: PLAZA DE MULAS, la base del ACONCAGUA y el GIMNASIO 8.',
+    },
+    objetos: { w: 'Hielo de un glaciar del ACONCAGUA. ¡Resbala mucho!' },
+    encuentros: { lista: [['condorito', 14], ['filodrac', 12], ['glaciolito', 12], ['escarchin', 12], ['estepasaurio', 10], ['vientuino', 10], ['andragon', 8], ['ironboulder', 6], ['espadonix', 6], ['noxidragon', 4]], min: 60, max: 63 },
+    npcs: [
+      entrenadorNPC({
+        id: 'guia_horcones', x: 12, y: 9, dir: 2, pal: PAL.nieve, nombre: 'GUÍA DE MONTAÑA PAZ',
+        equipo: [['glaciperador', 71], ['pampadon', 72], ['andespectro', 72]],
+        antes: ['GUÍA PAZ: ¿Querés subir al ACONCAGUA? ¡Es la montaña más alta de América! Primero demostrame que estás preparado.'],
+        gana: 'GUÍA PAZ: Estás listo. Pero subí despacio, que falta el aire.',
+        despues: 'GUÍA PAZ: El ACONCAGUA mide casi 7.000 metros. ¡Desde la cumbre se ve el océano Pacífico!',
+      }),
+      entrenadorNPC({
+        id: 'mulero', x: 14, y: 14, dir: 2, pal: PAL.beto, nombre: 'MULERO RAMÓN',
+        equipo: [['ironboulder', 72], ['turborush', 72], ['latigacer', 73]],
+        antes: ['MULERO RAMÓN: Mis mulas llevan las mochilas de los andinistas hasta PLAZA DE MULAS. ¡Y mis criaturas, a vos te llevan por delante!'],
+        gana: 'MULERO RAMÓN: ¡Ufa! Mejor vuelvo con mis mulas.',
+        despues: 'MULERO RAMÓN: LATIGÁCER tiene una cola de acero que corta como una espada. ¡Ojo con su LÁTIGO METÁLICO!',
+      }),
+      {
+        id: 'guarda_horcones', x: 9, y: 20, dir: 3, pal: PAL.guarda,
+        hablar: async () => {
+          await decir('GUARDAPARQUE: ¡Bienvenido al PARQUE PROVINCIAL ACONCAGUA! Acá se cuida la montaña: nada de basura, eh.');
+          await decir('Si tus criaturas se cansan, seguí hasta PLAZA DE MULAS. Ahí hay un CEMIC.');
+        },
+      },
+    ],
+  },
+
+  plaza: {
+    nombre: 'PLAZA DE MULAS',
+    exterior: true,
+    grilla: desdeTexto(PLAZA_MULAS),
+    edificios: [
+      { x: 3, y: 5, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 14, y: 4, w: 7, h: 5, tipo: 'gimnasio8', puerta: 3, abre: true },
+      { x: 3, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+      { x: 14, y: 13, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 23, y: 10, a: 'ruta24', ax: 11, ay: 1, dir: 0 },
+      { x: 23, y: 11, a: 'ruta24', ax: 10, ay: 1, dir: 0 },
+      { x: 5, y: 8, a: 'centro22', ax: 4, ay: 6, dir: 1 },
+      { x: 17, y: 8, a: 'gimnasio8', ax: 5, ay: 10, dir: 1 },
+    ],
+    carteles: {
+      '12,1': 'Arriba: la cumbre del ACONCAGUA, 6.961 metros. ¡Todavía no se puede subir! Al ESTE: RUTA 24, hacia USPALLATA.',
+      '8,9': 'CEMIC. Curamos a tus criaturas gratis. ¡El CEMIC más alto de América!',
+      '19,9': 'GIMNASIO ACONCAGUA. Líder: CUMBRE, la domadora de dragones. Tipo DRAGÓN.',
+      '4,18': 'PLAZA DE MULAS. El campamento base del ACONCAGUA, a 4.300 metros de altura.',
+    },
+    npcs: [
+      {
+        id: 'bruno_plaza', x: 7, y: 11, dir: 0, pal: PAL.beto,
+        hablar: async () => {
+          await decir('ANDINISTA BRUNO: ¡Felipe! ¿Te acordás de mí? Te peleé en el gimnasio de Bariloche.');
+          await decir('Te dije que subí el ACONCAGUA tres veces. ¡Ahora voy por la cuarta!');
+        },
+      },
+      {
+        id: 'nene_plaza', x: 19, y: 11, dir: 1, pal: PAL.nene,
+        hablar: async () => {
+          if (S.flags.insignia8) await decir('NENE: ¡Le ganaste a CUMBRE! ¡Tenés las OCHO insignias! Sos el mejor entrenador de la Argentina.');
+          else {
+            await decir('NENE: CUMBRE tiene seis DRAGONES. ¡Y cada uno tiene otro tipo más: FUEGO, ROCA, ACERO, VENENO, TIERRA y AGUA!');
+            await decir('Al DRAGÓN le ganan el HIELO, el HADA y el DRAGÓN. ¡Pero cuidado: el ACERO aguanta el HIELO y el HADA!');
+          }
+        },
+      },
+    ],
+  },
+
+  centro22: crearCentro('plaza', 5, 9, 'centro22'),
+
+  gimnasio8: {
+    nombre: 'GIMNASIO ACONCAGUA',
+    grilla: desdeTexto([
+      '###########',
+      '#a_wvvvw_a#',
+      '#RR_vvv_RR#',
+      '#R_______R#',
+      '#__ww_ww__#',
+      '#_RwwRwwR_#',
+      '#__ww_ww__#',
+      '#R_______R#',
+      '#RR_w_w_RR#',
+      '#_________#',
+      '#_________#',
+      '#####m#####',
+    ]),
+    edificios: [],
+    salidas: [{ x: 5, y: 11, a: 'plaza', ax: 17, ay: 9, dir: 0 }],
+    objetos: {
+      R: 'Una piedra de la montaña con marcas de garras. ¡Algo muy grande la arañó!',
+      a: 'Escamas de dragón que brillan como piedras preciosas.',
+    },
+    npcs: [
+      entrenadorNPC({
+        id: 'gim8_a', x: 7, y: 3, dir: 2, pal: PAL.guarda, nombre: 'DOMADOR JULIO',
+        equipo: [['espadonix', 71], ['estepasaurio', 71], ['ironboulder', 72]],
+        antes: ['DOMADOR JULIO: Entreno dragones desde chiquito. ¡Mirá qué escamas! ¿Te animás?'],
+        gana: 'DOMADOR JULIO: ¡Me ganaste! Mis dragones necesitan más entrenamiento.',
+        despues: 'DOMADOR JULIO: Los ataques de DRAGÓN no le hacen nada a las criaturas de HADA. ¡Acordate!',
+      }),
+      entrenadorNPC({
+        id: 'gim8_b', x: 2, y: 6, dir: 3, pal: PAL.nieve, nombre: 'ANDINISTA SOFÍA',
+        equipo: [['noxidragon', 72], ['phantolycan', 72], ['umbratail', 73]],
+        antes: ['ANDINISTA SOFÍA: Subí hasta acá con mis dragones en la mochila. ¡Ahora vas a ver lo que pueden hacer!'],
+        gana: 'ANDINISTA SOFÍA: Bueno... me quedo a mirar cómo le ganás a CUMBRE.',
+        despues: 'ANDINISTA SOFÍA: La última criatura de CUMBRE es PAMPADÓN, el dragón martillo. ¡Hace temblar toda la montaña!',
+      }),
+      {
+        id: 'cumbre', x: 5, y: 1, dir: 0, pal: PAL.cumbre,
+        hablar: async () => {
+          if (S.flags.insignia8) {
+            await decir('CUMBRE: Ya sos un gran entrenador, Felipe. Pero la montaña todavía guarda un secreto...');
+            await decir('Dicen que allá arriba, en la cumbre, algo muy antiguo está dormido. Algún día vas a poder subir.');
+            return;
+          }
+          if (!S.flags.insignia7) {
+            await decir('CUMBRE: Primero conseguí la INSIGNIA VOLCÁN de CENIZA, en el OJOS DEL SALADO. Después volvé.');
+            return;
+          }
+          await decir('CUMBRE: Llegaste al techo de América. Muy pocos entrenadores suben hasta acá.');
+          await decir('Soy CUMBRE, líder del GIMNASIO ACONCAGUA. Mis dragones nacieron entre las nubes y la roca.');
+          await decir('Si me ganás, te llevás la INSIGNIA CUMBRE: la última. ¡Que ruja la montaña!');
+          // Equipo pedido por Poly (22/11): Ignidraxx, Ironboulder, Latigácer, Noxidragón, Pampadón (tiburón martillo) e Iberadraco.
+          const r = await batalla({ entrenador: { nombre: 'LÍDER CUMBRE', pal: PAL.cumbre, equipo: [['noxidragon', 72], ['ironboulder', 72], ['iberadraco', 73], ['ignidraxx', 73], ['latigacer', 74, { hab: 'cortante' }], ['pampadon', 75, { hab: 'intimidacion' }]] } });
+          if (r === 'gana') {
+            S.flags.insignia8 = true;
+            S.flags.insignias = Math.max(S.flags.insignias || 0, 8);
+            await decir('CUMBRE: La montaña se quedó en silencio... Te ganaste la insignia, Felipe.');
+            await decir('¡Felipe recibió la INSIGNIA CUMBRE!');
+            S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 5;
+            S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
+            await decir('CUMBRE: Llevate estos ALFAJORES y BOLEADORAS. ¡Tenés las OCHO insignias de la Argentina!');
+            guardar();
+          }
+        },
+      },
+    ],
+  },
+
   // ================= LA SALAMANCA (GIMNASIO 2) =================
   gimnasio2: {
     nombre: 'LA SALAMANCA',
@@ -3789,6 +4231,17 @@ abrir('belen', [[0, 10], [1, 10], [0, 11], [1, 11], [22, 10], [23, 10], [22, 11]
 abrir('fiambala', [[10, 21], [11, 21]], 'C');
 abrir('fiambala', [[22, 10], [23, 10], [22, 11], [23, 11]], '=');
 abrir('ojos', [[10, 0], [11, 0]], 'N');
+// Región 8: desde Ojos del Salado se sale por el OESTE a la cordillera y se BAJA hasta el Aconcagua
+abrir('ojos', [[0, 10], [1, 10], [0, 11], [1, 11]], '=');
+MAPAS.ojos.salidas.push(
+  { x: 0, y: 10, a: 'ruta22', ax: 10, ay: 30, dir: 1 },
+  { x: 0, y: 11, a: 'ruta22', ax: 11, ay: 30, dir: 1 },
+);
+MAPAS.ojos.carteles['12,1'] = 'Arriba: el volcán OJOS DEL SALADO. Al SUR: RUTA 21, a FIAMBALÁ. Al OESTE: RUTA 22, por la cordillera hacia el ACONCAGUA.';
+abrir('uspallata', [[10, 21], [11, 21]], 'T');
+abrir('uspallata', [[0, 10], [1, 10], [0, 11], [1, 11]], '=');
+abrir('plaza', [[10, 0], [11, 0], [10, 21], [11, 21]], 'N');
+abrir('plaza', [[22, 10], [23, 10], [22, 11], [23, 11]], '=');
 abrir('somuncura', [[0, 10], [1, 10], [0, 11], [1, 11]], '=');
 
 // --- Rutas: girarlas ---
@@ -3851,6 +4304,10 @@ girarMapa('ruta18', '180');
 // Región 7: hacia el OESTE por Catamarca; la Ruta 21 sube derecho a la Puna
 girarMapa('ruta19', 'ccw');
 girarMapa('ruta20', 'ccw');
+// Región 8: las Rutas 22 y 23 BAJAN por la cordillera; la 24 va al OESTE hacia el Aconcagua
+girarMapa('ruta22', '180');
+girarMapa('ruta23', '180');
+girarMapa('ruta24', 'ccw');
 
 
 // ===== Escenas de la historia =====
