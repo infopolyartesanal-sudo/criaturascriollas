@@ -146,6 +146,7 @@ const MOVS = {
   garra_eclipse: { nombre: 'Garra Eclipse', tipo: 'SINIESTRO', pot: 90, prec: 100, pp: 10, corta: true },
   // Región 8 (Cuyo y el Aconcagua): dragones de Felipe
   tajo_espejo: { nombre: 'Tajo Espejo', tipo: 'ACERO', pot: 70, prec: 100, pp: 20, corta: true },
+  rugido_titan: { nombre: 'Rugido del Titán', tipo: 'PSIQUICO', pot: 110, prec: 90, pp: 5 },
   latigo_metalico: { nombre: 'Látigo Metálico', tipo: 'ACERO', pot: 85, prec: 100, pp: 15, critAlto: true, corta: true },
   pulso_dragon: { nombre: 'Pulso Dragón', tipo: 'DRAGON', pot: 85, prec: 100, pp: 10 },
   erupcion_geoda: { nombre: 'Erupción Geoda', tipo: 'TIERRA', pot: 90, prec: 100, pp: 10 },
@@ -2144,6 +2145,33 @@ const ESPECIES = {
       ['e', 12, 13.5, 3.5, 1.2, '#e2cf98', 's'],
     ],
   },
+  // ===== REGIOHM, el titán primigenio (diapositivas 196-204 de Felipe). Corona del Infinito: cambia de tipo cada turno =====
+  regiohm: {
+    nombre: 'Regiohm', tipos: ['PSIQUICO', 'NORMAL'], base: { ps: 125, atk: 120, def: 110, vel: 90 }, captura: 25, exp: 300,
+    desc: 'el titán primigenio, origen de las seis gemas',
+    movs: [[1, 'embestida'], [1, 'mareo'], [20, 'vision'], [40, 'resplandor'], [50, 'tajo_abisal'], [60, 'trueno'], [70, 'cabeza_hierro'], [75, 'troncazo'], [80, 'rugido_titan']],
+    sprite: [
+      // piernas de mármol
+      ['r', 9, 23, 5, 8, '#e4ded2'], ['r', 18, 23, 5, 8, '#e4ded2'],
+      ['r', 8, 29, 7, 2, '#c8a040'], ['r', 17, 29, 7, 2, '#c8a040'],
+      // brazos y puños enormes
+      ['e', 5, 16, 4, 6, '#ece6da'], ['e', 27, 16, 4, 6, '#ece6da'],
+      ['e', 4.5, 23, 3.5, 3, '#ddd6c8'], ['e', 27.5, 23, 3.5, 3, '#ddd6c8'],
+      ['r', 2, 14, 6, 1.5, '#d8a830', 'c'], ['r', 24, 14, 6, 1.5, '#d8a830', 'c'],
+      // torso con relieves dorados
+      ['e', 16, 16, 10, 9, '#f2ede4'],
+      ['r', 6, 11, 20, 1.5, '#d8a830', 'c'], ['r', 6, 21, 20, 1.5, '#d8a830', 'c'],
+      // portal cósmico del pecho
+      ['e', 16, 16, 4.8, 4.8, '#3a1a6a', 's'], ['e', 16, 16, 3, 3, '#8a4ae0', 's'], ['e', 16, 16, 1.3, 1.3, '#f0d8ff', 's'],
+      // las seis gemas
+      ['d', 16, 10, '#f070c0'], ['d', 21, 13, '#a060f0'], ['d', 21, 19, '#e03030'],
+      ['d', 16, 22, '#f8d040'], ['d', 11, 19, '#3a8af0'], ['d', 11, 13, '#40d080'],
+      // cabeza con corona dorada
+      ['e', 16, 6, 4.5, 4, '#f2ede4'],
+      ['p', [[11, 4], [12, 0], [14, 3], [16, 0], [18, 3], [20, 0], [21, 4]], '#d8a830'],
+      ['r', 13, 6, 2, 1, '#ff3030', 's'], ['r', 17, 6, 2, 1, '#ff3030', 's'],
+    ],
+  },
 };
 
 // ===== Criaturas individuales =====
@@ -2171,13 +2199,14 @@ function curarCriatura(m) {
   for (const mv of m.movs) mv.pp = MOVS[mv.id].pp;
 }
 function nombreDe(m) { return m.apodo || ESPECIES[m.id].nombre.toUpperCase(); }
-function tiposDe(m) { return ESPECIES[m.id].tipos; }
+function tiposDe(m) { return (m.et && m.et.tipos) || ESPECIES[m.id].tipos; } // Regiohm cambia de tipo en batalla (m.et.tipos)
 
 
 // ===== Habilidades =====
 // Sacadas de la presentación de Felipe (las que no tenían, elegidas parecidas).
 // ef = qué hace en la batalla (lo maneja juego.js)
 const HABILIDADES = {
+  coronaInfinito: { nombre: 'Corona del Infinito', ef: 'corona', desc: 'Cada turno las seis gemas giran: cambia su segundo tipo y le borra las mejoras al rival.' },
   obrero: { nombre: 'Obrero', ef: 'obrero', desc: 'Cada vez que acierta un golpe, le sube el ATAQUE.' },
   rocaSolida: { nombre: 'Roca Sólida', ef: 'filtro', desc: 'Los ataques muy eficaces le hacen menos daño.' },
   filtro: { nombre: 'Filtro', ef: 'filtro', desc: 'Los ataques muy eficaces le hacen menos daño.' },
@@ -2299,6 +2328,7 @@ const HAB_ESPECIE = {
   dracotox: { n: ['pielToxica', 'intimidacion'] }, noxidragon: { n: ['pielToxica', 'intimidacion'] },
   patagon: { n: ['intimidacion', 'garraAfilada'], o: 'furiaAndina' }, estepasaurio: { n: ['intimidacion', 'garraAfilada'], o: 'furiaAndina' },
   pampadon: { n: ['intimidacion', 'garraAfilada'], o: 'furiaAndina' },
+  regiohm: 'coronaInfinito',
   duskfae: { n: ['veloEspejismo', 'cuerpoMaldito'] }, wraithfae: { n: ['cuerpoMaldito', 'veloEspejismo'] },
 };
 for (const id in ESPECIES) {

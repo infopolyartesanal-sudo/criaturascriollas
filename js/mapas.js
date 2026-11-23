@@ -4101,8 +4101,9 @@ const MAPAS = {
         id: 'cumbre', x: 5, y: 1, dir: 0, pal: PAL.cumbre,
         hablar: async () => {
           if (S.flags.insignia8) {
-            await decir('CUMBRE: Ya sos un gran entrenador, Felipe. Pero la montaña todavía guarda un secreto...');
-            await decir('Dicen que allá arriba, en la cumbre, algo muy antiguo está dormido. Algún día vas a poder subir.');
+            if (S.flags.regiohmAtrapado) { await decir('CUMBRE: ¡Calmaste a REGIOHM! La montaña está en paz gracias a vos, Felipe.'); return; }
+            await decir('CUMBRE: ¡Felipe! Los SEIS CLANES de las gemas subieron a la cumbre. ¡Quieren despertar al TITÁN que duerme ahí!');
+            await decir('Ya tenés las OCHO insignias: podés subir. Salí de PLAZA DE MULAS hacia el NORTE. ¡Cuidate mucho!');
             return;
           }
           if (!S.flags.insignia7) {
@@ -4123,6 +4124,8 @@ const MAPAS = {
             S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 5;
             await decir('CUMBRE: Llevate estos ALFAJORES y BOLEADORAS. ¡Tenés las OCHO insignias de la Argentina!');
             guardar();
+            await decir('...¡Mirá! Allá arriba, en la cumbre, hay una luz VIOLETA. ¡Los SEIS CLANES de las gemas subieron juntos!');
+            await decir('CUMBRE: Quieren despertar a REGIOHM, el TITÁN que duerme en el ACONCAGUA. ¡Subí por el NORTE de PLAZA DE MULAS y frenalos!');
           }
         },
       },
@@ -4330,6 +4333,231 @@ girarMapa('ruta20', 'ccw');
 // Región 8: la Ruta 22 y la Cueva de los Andes BAJAN por la cordillera; el Ascenso al Aconcagua SUBE (no se gira)
 girarMapa('ruta22', '180');
 girarMapa('ruta23', '180');
+
+// ===== LOS SEIS CLANES DE LAS GEMAS (presentación de Felipe, diapositivas 189-204) =====
+// Todos son PSÍQUICOS + el segundo tipo de su gema. Cada clan corta el paso DOS veces en el viaje
+// (un RECLUTA y su JEFE parados en la salida del pueblo); después del Gimnasio 8 se juntan en la cumbre
+// del ACONCAGUA para despertar a REGIOHM. Nombres de clanes y jefes: propuestos por Claude, Felipe los puede cambiar.
+Object.assign(PAL, {
+  clanMente: { id: 'clanMente', piel: '#f0c8a8', pelo: '#2a1a2a', gorra: '#c030a0', remera: '#2a1a3a', raya: '#f070c0', pant: '#1a1a2a' },
+  clanAlma: { id: 'clanAlma', piel: '#f0c8a8', pelo: '#3a2a4a', gorra: '#8a4ae0', remera: '#e8d8f8', raya: '#a060f0', pant: '#3a2a5a' },
+  clanRealidad: { id: 'clanRealidad', piel: '#e8c0a0', pelo: '#1a1a1a', gorra: '#1a1a1a', remera: '#3a1010', raya: '#e03030', pant: '#101010' },
+  clanPoder: { id: 'clanPoder', piel: '#d8a070', pelo: '#2a1a10', gorra: '#e03030', remera: '#7a1a2a', raya: '#f8d040', pant: '#2a1a1a' },
+  clanEspacio: { id: 'clanEspacio', piel: '#e8c0a0', pelo: '#1a2a4a', gorra: '#2a5ac8', remera: '#1a2a5a', raya: '#f8d040', pant: '#101a3a' },
+  clanTiempo: { id: 'clanTiempo', piel: '#e0b088', pelo: '#3a3a2a', gorra: '#c8a040', remera: '#2a4a3a', raya: '#40d080', pant: '#2a2a1a' },
+  cortex: { id: 'cortex', piel: '#f0c8a8', pelo: '#e8e8f0', capa: true, sombrero: '#c030a0', remera: '#c030a0', raya: '#f8f8f8', pant: '#1a1a2a', barba: '#e8e8f0' },
+  anima: { id: 'anima', piel: '#f4d8c0', pelo: '#e8d8f8', peloLargo: true, remera: '#8a4ae0', raya: '#f8f8ff', pant: '#3a2a5a', guardapolvo: true },
+  ilusion: { id: 'ilusion', piel: '#e8c0a0', pelo: '#e03030', peloLargo: true, sombrero: '#1a1a1a', remera: '#1a1a1a', raya: '#e03030', pant: '#3a1010' },
+  mazo: { id: 'mazo', piel: '#c89060', pelo: '#1a1a1a', boina: '#e03030', remera: '#e03030', raya: '#f8d040', pant: '#2a1a1a', barba: '#1a1a1a' },
+  cometa: { id: 'cometa', piel: '#e8c0a0', pelo: '#f8d040', gorra: '#1a2a5a', remera: '#2a5ac8', raya: '#f8d040', pant: '#101a3a' },
+  clepsidra: { id: 'clepsidra', piel: '#e0b088', pelo: '#40d080', peloLargo: true, sombrero: '#c8a040', remera: '#c8a040', raya: '#2a4a3a', pant: '#2a2a1a' },
+});
+
+const CLANES = {
+  mente: { nombre: 'CLAN MENTE', gema: 'GEMA DE LA MENTE', guardian: 'REGIMENTO', tipo: 'PSÍQUICO', jefe: 'CÓRTEX', palJefe: 'cortex', pal: 'clanMente' },
+  alma: { nombre: 'CLAN ALMA', gema: 'GEMA DEL ALMA', guardian: 'REGIANIMA', tipo: 'PSÍQUICO y HADA', jefe: 'ÁNIMA', palJefe: 'anima', pal: 'clanAlma' },
+  poder: { nombre: 'CLAN PODER', gema: 'GEMA DEL PODER', guardian: 'REGIPULSO', tipo: 'PSÍQUICO y LUCHA', jefe: 'MAZO', palJefe: 'mazo', pal: 'clanPoder' },
+  realidad: { nombre: 'CLAN REALIDAD', gema: 'GEMA DE LA REALIDAD', guardian: 'REGIFRACTO', tipo: 'PSÍQUICO y SINIESTRO', jefe: 'ILUSIÓN', palJefe: 'ilusion', pal: 'clanRealidad' },
+  espacio: { nombre: 'CLAN ESPACIO', gema: 'GEMA DEL ESPACIO', guardian: 'REGIÓRBITA', tipo: 'PSÍQUICO y ELÉCTRICO', jefe: 'COMETA', palJefe: 'cometa', pal: 'clanEspacio' },
+  tiempo: { nombre: 'CLAN TIEMPO', gema: 'GEMA DEL TIEMPO', guardian: 'REGICRONO', tipo: 'PSÍQUICO y ACERO', jefe: 'CLEPSIDRA', palJefe: 'clepsidra', pal: 'clanTiempo' },
+};
+
+// Un encuentro: RECLUTA + JEFE parados en las dos baldosas de la salida. Se van recién cuando les ganás a los dos.
+function encuentroClan(o) {
+  const c = CLANES[o.clan], vez = o.vez;
+  const idR = `clan_${o.clan}${vez}_r`, idJ = `clan_${o.clan}${vez}_j`;
+  const listo = () => S.flags['ent_' + idR] && S.flags['ent_' + idJ];
+  const recluta = entrenadorNPC({
+    id: idR, x: o.r[0], y: o.r[1], dir: o.dir, pal: PAL[c.pal], nombre: 'RECLUTA DEL ' + c.nombre,
+    equipo: o.recluta,
+    antes: vez === 1
+      ? [`RECLUTA: ¡Alto ahí! Por acá no pasa nadie. ¡Somos el ${c.nombre}!`, `Buscamos la ${c.gema}. ¡Y ningún chico nos va a molestar!`]
+      : [`RECLUTA: ¡Otra vez vos! El ${c.nombre} no se olvida de los que lo molestan.`, '¡Esta vez no pasás!'],
+    gana: 'RECLUTA: ¡No puede ser! ¡Jefe, ayúdeme!',
+    despues: `RECLUTA: Nuestras criaturas son todas PSÍQUICAS... ¡y además ${c.tipo === 'PSÍQUICO' ? 'nada más que PSÍQUICAS' : c.tipo.split(' y ')[1]}!`,
+  });
+  const jefe = entrenadorNPC({
+    id: idJ, x: o.j[0], y: o.j[1], dir: o.dir, pal: PAL[c.palJefe], nombre: 'JEFE ' + c.jefe,
+    equipo: o.jefe,
+    antes: vez === 1
+      ? [`${c.jefe}: Así que vos sos el famoso Felipe... Soy ${c.jefe}, jefe del ${c.nombre}.`,
+        `En la ${c.gema} duerme ${c.guardian}, su guardián. Cuando lo tengamos, nada nos va a parar.`,
+        '¡Correte del camino, nene!']
+      : [`${c.jefe}: Felipe... ya tenemos a ${c.guardian} bajo nuestro control.`,
+        'Los seis clanes nos vamos a juntar en la cumbre del ACONCAGUA. Ahí está dormido el TITÁN de todas las gemas.',
+        '¡Y vos no vas a llegar!'],
+    gana: vez === 1
+      ? `${c.jefe}: Grr... Ganaste esta vez. Pero el ${c.nombre} va a volver. ¡Nos vamos!`
+      : `${c.jefe}: No importa. El plan ya está en marcha. ¡Nos vemos en el ACONCAGUA, Felipe!`,
+    despues: `${c.jefe}: ...`,
+  });
+  recluta.visible = () => !listo();
+  jefe.visible = () => !listo();
+  const m = MAPAS[o.mapa];
+  m.npcs.push(recluta, jefe);
+  // Si Felipe quiere salir por ahí (zona = las dos baldosas antes de la salida), el clan le corta el paso.
+  // Si pierde una batalla, vuelve al CEMIC; así que después de esto, o les ganó a los dos o ya no está acá.
+  m.disparadores = (m.disparadores || []).concat([{
+    prueba: (x, y) => !listo() && o.zona.some(([zx, zy]) => zx === x && zy === y),
+    accion: async () => {
+      const r = npcPorId(idR), j = npcPorId(idJ);
+      for (const n of [r, j]) if (n) n.dir = Math.abs(n.x - S.x) > Math.abs(n.y - S.y) ? (n.x > S.x ? 2 : 3) : (n.y > S.y ? 1 : 0);
+      await decir(vez === 1 ? `¡Alto! ¡El ${c.nombre} te corta el paso!` : `¡Alto! ¡El ${c.nombre} otra vez!`);
+      if (!S.flags['ent_' + idR]) await recluta.hablar();
+      if (S.flags['ent_' + idR] && !S.flags['ent_' + idJ] && S.mapa === o.mapa) await jefe.hablar();
+    },
+  }]);
+}
+
+// Primera vuelta (antes del Gimnasio 5) y segunda vuelta (del 5 al 8), cada vez más fuertes
+const ENCUENTROS_CLANES = [
+  { clan: 'mente', vez: 1, mapa: 'serrana', zona: [[1, 10], [1, 11]], r: [2, 9], j: [2, 12], dir: 3,
+    recluta: [['lechucita', 9], ['espejito', 10]], jefe: [['condorito', 11], ['lechucita', 11], ['mimetit', 13]] },
+  { clan: 'alma', vez: 1, mapa: 'tafi', zona: [[10, 1], [11, 1]], r: [9, 2], j: [12, 2], dir: 0,
+    recluta: [['anahisa', 25], ['mythfae', 26]], jefe: [['lechuzonte', 26], ['anahisa', 27], ['mythfae', 29]] },
+  { clan: 'poder', vez: 1, mapa: 'villa', zona: [[22, 10], [22, 11]], r: [21, 9], j: [20, 9], dir: 2,
+    recluta: [['pumentor', 31], ['braspuma', 32]], jefe: [['lechuzonte', 32], ['braspuma', 33], ['pumentor', 35]] },
+  { clan: 'realidad', vez: 1, mapa: 'puerto', zona: [[1, 10], [1, 11]], r: [2, 9], j: [2, 12], dir: 3,
+    recluta: [['yaguaraba', 37], ['espejonte', 37]], jefe: [['duskfae', 38], ['umbracor', 39], ['mythfae', 39], ['yaguaraba', 40]] },
+  { clan: 'espacio', vez: 1, mapa: 'bariloche', zona: [[10, 22], [11, 22]], r: [9, 22], j: [12, 22], dir: 1,
+    recluta: [['dynacore', 43], ['lechuzonte', 43]], jefe: [['condorito', 44], ['dynacore', 44], ['espectradraco', 45], ['turborush', 47]] },
+  { clan: 'tiempo', vez: 1, mapa: 'jacobacci', zona: [[22, 10], [22, 11]], r: [21, 9], j: [21, 12], dir: 2,
+    recluta: [['espejonte', 47], ['umbracor', 48]], jefe: [['espadonix', 48], ['umbracor', 49], ['espectradraco', 49], ['espejonte', 51]] },
+  { clan: 'mente', vez: 2, mapa: 'madryn', zona: [[10, 20], [11, 20]], r: [9, 20], j: [12, 20], dir: 1,
+    recluta: [['lechuzonte', 54], ['condorito', 55]], jefe: [['condorito', 55], ['lechuzonte', 56], ['espejonte', 56], ['mythfae', 57], ['espectradraco', 58]] },
+  { clan: 'alma', vez: 2, mapa: 'gallegos', zona: [[10, 20], [11, 20]], r: [9, 20], j: [12, 20], dir: 1,
+    recluta: [['anahisa', 56], ['mythfae', 57]], jefe: [['wraithfae', 57], ['anahisa', 58], ['duskfae', 58], ['lechuzonte', 58], ['mythfae', 60]] },
+  { clan: 'poder', vez: 2, mapa: 'belen', zona: [[1, 10], [1, 11]], r: [2, 9], j: [2, 12], dir: 3,
+    recluta: [['pumentor', 61], ['braspuma', 62]], jefe: [['lechuzonte', 62], ['carayarbore', 63], ['braspuma', 63], ['espejonte', 63], ['pumentor', 65]] },
+  { clan: 'realidad', vez: 2, mapa: 'fiambala', zona: [[10, 1], [11, 1]], r: [9, 2], j: [12, 2], dir: 0,
+    recluta: [['yaguaraba', 63], ['duskfae', 64]], jefe: [['umbratail', 64], ['umbracor', 65], ['mythfae', 65], ['yaguaraba', 65], ['duskfae', 67]] },
+  { clan: 'espacio', vez: 2, mapa: 'rodeo', zona: [[10, 20], [11, 20]], r: [9, 20], j: [12, 20], dir: 1,
+    recluta: [['turborush', 67], ['espectradraco', 68]], jefe: [['condorito', 68], ['lechuzonte', 69], ['espectradraco', 69], ['mythfae', 70], ['turborush', 71]] },
+  { clan: 'tiempo', vez: 2, mapa: 'uspallata', zona: [[1, 10], [1, 11]], r: [2, 9], j: [2, 12], dir: 3,
+    recluta: [['espejonte', 69], ['latigacer', 70]], jefe: [['umbracor', 70], ['latigacer', 71], ['espectradraco', 71], ['pumentor', 71], ['espejonte', 73]] },
+];
+ENCUENTROS_CLANES.forEach(encuentroClan);
+
+// ===== LA CUMBRE DEL ACONCAGUA: los clanes despiertan a REGIOHM =====
+const CIMA = [
+  'NNNNNNNNNNNNNNNNNNNNNN',
+  'NNNNNNNwwwwwwwwNNNNNNN',
+  'NNNNNwwwwwwwwwwwwNNNNN',
+  'NNNNwwwwwwwwwwwwwwNNNN',
+  'NNNwwwwwwwwwwwwwwwwNNN',
+  'NNNwwwwwwwwwwwwwwwwNNN',
+  'NNwwwwwwwwwwwwwwwwwwNN',
+  'NNwwwwwwwwwwwwwwwwwwNN',
+  'NNwwwwwwwwwwwwwwwwwwNN',
+  'NNNwwwwwwwwwwwwwwwwNNN',
+  'NNNwwwwwwwwwwwwwwwwNNN',
+  'NNNNwwwwwwwwwwwwwwNNNN',
+  'NNNNNwwwwwwwwwwwwNNNNN',
+  'NNNNNNNNwwwwwwNNNNNNNN',
+  'NNNNNNNNNwwwwNNNNNNNNN',
+  'NNNNNNNNNSwwNNNNNNNNNN',
+  'NNNNNNNNNNwwNNNNNNNNNN',
+  'NNNNNNNNNN==NNNNNNNNNN',
+];
+const JEFES_CIMA = [['mente', 8, 6], ['alma', 14, 6], ['realidad', 5, 9], ['poder', 17, 9], ['espacio', 7, 12], ['tiempo', 15, 12]];
+MAPAS.cima = {
+  nombre: 'CUMBRE DEL ACONCAGUA',
+  exterior: true,
+  grilla: desdeTexto(CIMA),
+  edificios: [],
+  salidas: [
+    { x: 10, y: 17, a: 'plaza', ax: 10, ay: 1, dir: 0 },
+    { x: 11, y: 17, a: 'plaza', ax: 11, ay: 1, dir: 0 },
+  ],
+  carteles: { '9,15': 'CUMBRE DEL ACONCAGUA, 6.961 metros. El techo de América.' },
+  objetos: { w: 'Nieve que brilla con una luz violeta muy rara...' },
+  npcs: [
+    ...JEFES_CIMA.map(([k, x, y]) => ({
+      id: 'cima_' + k, x, y, dir: [0, 0, 3, 2, 1, 1][JEFES_CIMA.findIndex(j => j[0] === k)], pal: PAL[CLANES[k].palJefe],
+      visible: () => !S.flags.clanesHuyeron,
+      hablar: async () => { await decir(`${CLANES[k].jefe}: ¡No molestes, Felipe! ¡Estamos por despertar al TITÁN!`); },
+    })),
+    {
+      id: 'regiohm', x: 11, y: 8, dir: 0, criatura: 'regiohm',
+      visible: () => S.flags.regiohmDesperto && !S.flags.regiohmAtrapado,
+      hablar: pelearRegiohm,
+    },
+  ],
+  disparadores: [
+    { prueba: (x, y) => y <= 12 && !S.flags.regiohmDesperto, accion: () => despertarRegiohm() },
+  ],
+};
+
+async function despertarRegiohm() {
+  const dec = async (k, t) => { const n = npcPorId('cima_' + k); if (n) n.dir = 0; await decir(t); };
+  for (let i = 0; i < 2; i++) await pasoForzado(1); // Felipe se acerca al círculo
+  await decir('Los jefes de los SEIS CLANES formaron un círculo perfecto en la cumbre...');
+  await dec('mente', 'CÓRTEX: ¡Llegó el momento! ¡Guardianes de las gemas, arrodíllense!');
+  await decir('REGIMENTO, REGIANIMA, REGIPULSO, REGIFRACTO, REGIÓRBITA y REGICRONO se arrodillaron, cada uno en su lugar.');
+  await dec('tiempo', 'CLEPSIDRA: Con sus gemas como llaves vamos a romper el sello de la montaña.');
+  await dec('poder', 'MAZO: ¡Todos juntos! ¡AHORA!');
+  for (let i = 0; i < 3; i++) await destello(10);
+  await decir('¡Las gemas empezaron a girar a toda velocidad! Su luz tiñó el cielo de violeta.');
+  await decir('¡Se abrió un PORTAL gigante en la cumbre!');
+  await destello(30);
+  S.flags.regiohmDesperto = true;
+  await decir('Del portal salió... ¡REGIOHM, el TITÁN PRIMIGENIO! Un coloso de mármol blanco con relieves de oro.');
+  await decir('REGIOHM extendió sus brazos con calma y empezó a absorber las seis gemas...');
+  await dec('realidad', 'ILUSIÓN: ¡No! ¡Se está llevando las gemas! ¡Teníamos que ser NOSOTROS los dueños de su poder!');
+  await dec('espacio', 'COMETA: ¡Ataquen! ¡Todas las criaturas a la vez! ¡Tiene que obedecernos!');
+  await decir('Cientos de criaturas de los clanes atacaron a REGIOHM...');
+  await destello(16);
+  await decir('...y la paciencia del TITÁN se rompió. ¡Sus ojos blancos se pusieron ROJOS como el fuego!');
+  await decir('¡REGIOHM soltó un RUGIDO PSÍQUICO que hizo temblar toda la montaña! Las máquinas de los clanes quedaron hechas chatarra.');
+  await dec('alma', 'ÁNIMA: ¡Se nos fue de las manos! ¡Corran!');
+  await fundido(1, 16);
+  S.flags.clanesHuyeron = true;
+  await esperar(10);
+  await fundido(0, 16);
+  await decir('Los jefes de los clanes escaparon montaña abajo entre las piedras...');
+  await decir('Felipe se quedó solo frente a REGIOHM. ¡Es la última defensa de toda la región!');
+  guardar();
+  await pelearRegiohm();
+}
+
+async function pelearRegiohm() {
+  if (!S.equipo.some(m => m.ps > 0)) { await decir('Tus criaturas no tienen energía. ¡Curalas en el CEMIC de PLAZA DE MULAS!'); return; }
+  await decir('REGIOHM: ¡¡GROOOOAAAAR!!');
+  const r = await batalla({ salvaje: ['regiohm', 80], legendario: true });
+  if (r === 'atrapado') {
+    S.flags.regiohmAtrapado = true;
+    await decir('Los ojos de REGIOHM volvieron a ser blancos. El TITÁN ahora está tranquilo... ¡y es tu compañero!');
+    await decir('¡Felipe salvó a toda la región! ¡Sos un verdadero CAMPEÓN de las CRIATURAS CRIOLLAS!');
+    guardar();
+  } else if (r === 'gana') {
+    await decir('REGIOHM cayó sobre la nieve y se quedó quieto, descansando...');
+    await decir('Sus ojos todavía brillan. Cuando quieras, podés volver a intentar atraparlo.');
+  } else if (r === 'huir') {
+    await decir('REGIOHM sigue en la cumbre, esperando...');
+  }
+}
+
+async function destello(cuadros = 12) {
+  for (let i = 0; i <= cuadros; i++) { ui.destello = 1 - i / cuadros; await esperar(1); }
+  ui.destello = 0;
+}
+
+// Plaza de Mulas: arriba se sube a la cumbre, pero solo con las OCHO insignias
+abrir('plaza', [[10, 0], [11, 0]], '=');
+MAPAS.plaza.salidas.push(
+  { x: 10, y: 0, a: 'cima', ax: 10, ay: 16, dir: 1 },
+  { x: 11, y: 0, a: 'cima', ax: 11, ay: 16, dir: 1 },
+);
+MAPAS.plaza.carteles['12,1'] = 'Arriba: la CUMBRE del ACONCAGUA, 6.961 metros. Solo pueden subir los que tienen las OCHO insignias. Abajo: el ASCENSO.';
+MAPAS.plaza.disparadores = (MAPAS.plaza.disparadores || []).concat([
+  {
+    prueba: (x, y) => y === 1 && (x === 10 || x === 11) && !S.flags.insignia8,
+    accion: async () => {
+      await decir('Un viento helado baja de la cumbre. Sin las OCHO insignias es muy peligroso seguir subiendo.');
+      await pasoForzado(0);
+    },
+  },
+]);
 
 
 // ===== Escenas de la historia =====

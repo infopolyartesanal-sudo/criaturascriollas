@@ -1050,7 +1050,7 @@ function dibujarMundo() {
     if (S.flags.inicial === bo.id || S.flags.inicialTomi === bo.id) continue;
     b.drawImage(spriteBoleadora(), bo.x * T - cx, bo.y * T - cy - 3);
   }
-  const entes = npcsVisibles().map(n => ({ y: n.y * T, x: n.x * T, pal: n.pal, dir: n.dir, f: 0, tx: n.x, ty: n.y }));
+  const entes = npcsVisibles().map(n => ({ y: n.y * T, x: n.x * T, pal: n.pal, dir: n.dir, f: 0, tx: n.x, ty: n.y, criatura: n.criatura }));
   let frame = 0;
   if (S.moviendo && !S.bici) frame = S.prog < 10 ? 1 + S.pasoAlt : 0;
   entes.push({ y: ppy, x: ppx, pal: PAL.felipe, dir: S.dir, f: frame, yo: true, tx: S.x, ty: S.y });
@@ -1062,6 +1062,11 @@ function dibujarMundo() {
   }
   entes.sort((a, c) => a.y - c.y);
   for (const e of entes) {
+    if (e.criatura) { // una criatura parada en el mapa (REGIOHM en la cumbre): grande y respirando
+      const img = spriteCriatura(e.criatura), tam = 40, resp = ((tick >> 4) % 2) ? 1 : 0;
+      b.drawImage(img, Math.round(e.x - cx + 8 - tam / 2), Math.round(e.y - cy + 14 - tam) + resp, tam, tam - resp);
+      continue;
+    }
     if (e.salvaje) {
       const c = e.salvaje;
       const salto = c.mov ? -Math.abs(Math.sin(c.prog / 16 * Math.PI)) * 3 : ((tick + c.x * 7) >> 4) % 2 ? -1 : 0;
@@ -1130,7 +1135,7 @@ function uiTitulo() {
   txt('CRIATURAS', 120, 14, { t: 18, c: '#f8d030', sombra: '#a04020', al: 'center' });
   txt('CRIOLLAS', 120, 38, { t: 18, c: '#6cb4ee', sombra: '#1a3a6a', al: 'center' });
   txt('Una aventura por la Argentina', 120, 62, { t: 6, c: '#203048', sombra: '#ffffff', al: 'center' });
-  txt('VERSIÓN 8 GIMNASIOS + BALSA Y PICO · 22/11', 236, 152, { t: 5, c: '#ffffff', sombra: '#203048', al: 'right' });
+  txt('VERSIÓN CLANES Y REGIOHM · 23/11', 236, 152, { t: 5, c: '#ffffff', sombra: '#203048', al: 'right' });
   if (!ui.menu && (tick >> 5) % 2 === 0) txt('APRETÁ A PARA EMPEZAR', 120, 84, { t: 7, c: '#ffffff', sombra: '#203048', al: 'center' });
 }
 function dibujarIntro() {
@@ -1710,6 +1715,22 @@ async function finDeTurno() {
     }
     if (h.ef === 'animaGlacial' && (m.et.vel || 0) < 6) { await anunciarHab(m); await cambiarEtapa(m, 'vel', 1); }
     if (h.ef === 'impulso' && (m.et.vel || 0) < 6) { await anunciarHab(m); await cambiarEtapa(m, 'vel', 1); }
+    if (h.ef === 'corona') await coronaInfinito(m);
+  }
+}
+// REGIOHM (diapositiva 197): al final de cada turno las seis gemas giran, cambia su segundo tipo y borra las mejoras del rival
+const CORONA_TIPOS = ['NORMAL', 'HADA', 'SINIESTRO', 'LUCHA', 'ELECTRICO', 'ACERO'];
+async function coronaInfinito(m) {
+  const actual = tiposDe(m)[1];
+  const opciones = CORONA_TIPOS.filter(t => t !== actual);
+  const nuevo = opciones[Math.floor(Math.random() * opciones.length)];
+  m.et.tipos = ['PSIQUICO', nuevo];
+  await anunciarHab(m);
+  await decir(`¡Las seis gemas giraron! ${nombreBatalla(m)} ahora es de tipo PSÍQUICO/${nombreTipo(nuevo)}.`, { auto: 60 });
+  const otro = m === bt.yo ? bt.rival : bt.yo;
+  if (otro && otro.ps > 0 && otro.et && ['atk', 'def', 'vel'].some(k => (otro.et[k] || 0) > 0)) {
+    for (const k of ['atk', 'def', 'vel']) if ((otro.et[k] || 0) > 0) otro.et[k] = 0;
+    await decir(`¡El destello del portal le borró las mejoras a ${nombreBatalla(otro)}!`, { auto: 50 });
   }
 }
 
@@ -1981,6 +2002,7 @@ function dibujar() {
   if (ui.tienda) dibujarTienda();
   dibujarDialogo();
   dibujarMenu();
+  if (ui.destello > 0) { sc.fillStyle = `rgba(255,255,255,${ui.destello})`; sc.fillRect(0, 0, W, H); }
   if (ui.fundido > 0) { sc.fillStyle = `rgba(0,0,0,${ui.fundido})`; sc.fillRect(0, 0, W, H); }
 }
 let ultimo = performance.now(), acumulado = 0;
