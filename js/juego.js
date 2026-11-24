@@ -2415,7 +2415,13 @@ function dibujarCompu() {
 
 // CRIADERO: la CRIADORA MIRTA (en cada CEMIC) cuida dos criaturas. Mientras Felipe camina, a veces aparece un HUEVO.
 // Los huevos se llevan en la MOCHILA y nacen después de caminar un rato. Nace la primera forma de una de las dos.
-const CRIADERO = { pasosHuevo: 180, pasosNacer: 250, maxHuevos: 6, shiny: 0.2 }; // shiny: 1 de cada 5 huevos
+// shiny: 1 de cada 5 huevos. oculta: desde el 4º huevo de la misma pareja, la mitad nace con la HABILIDAD OCULTA.
+// tope: si los niveles de los padres suman 20 o menos, el bebé nace con la SUMA; si suman más, nace al nivel del padre más alto.
+const CRIADERO = { pasosHuevo: 180, pasosNacer: 250, maxHuevos: 6, shiny: 0.2, huevosParaOculta: 3, oculta: 0.5, tope: 20 };
+function nivelDelHuevo(cria) {
+  const suma = cria.reduce((t, m) => t + m.nivel, 0);
+  return suma <= CRIADERO.tope ? suma : Math.max(...cria.map(m => m.nivel));
+}
 function criadero() { return S.flags.criadero || (S.flags.criadero = { cria: [], pasos: 0, listo: false }); }
 function huevos() { return S.flags.huevos || (S.flags.huevos = []); }
 function sincronizarHuevos() { if (huevos().length) S.bolsa.huevo = huevos().length; else delete S.bolsa.huevo; }
@@ -2427,7 +2433,9 @@ async function hablarCriadora() {
     if (huevos().length >= CRIADERO.maxHuevos) await decir('¡Apareció un HUEVO! Pero ya llevás muchos en la mochila. Hacé nacer alguno y volvé.');
     else {
       const padre = cr.cria[Math.floor(Math.random() * cr.cria.length)];
-      huevos().push({ id: familia(padre.id), pasos: CRIADERO.pasosNacer });
+      cr.puestos = (cr.puestos || 0) + 1;
+      const oculta = cr.puestos > CRIADERO.huevosParaOculta && Math.random() < CRIADERO.oculta;
+      huevos().push({ id: familia(padre.id), pasos: CRIADERO.pasosNacer, nivel: nivelDelHuevo(cr.cria), oculta });
       cr.listo = false; cr.pasos = 0; sincronizarHuevos();
       await decir('¡Mirá! ¡Tus criaturas encontraron un HUEVO! Tomalo, cuidalo mucho.');
       await decir('¡Felipe guardó el HUEVO en la MOCHILA! Va a nacer después de caminar un buen rato.');
@@ -2445,8 +2453,10 @@ async function hablarCriadora() {
     if (r === 2) {
       await decir('Me dejás DOS criaturas. Mientras vos caminás por ahí, ellas juegan juntas y a veces aparece un HUEVO.');
       await decir('Cuando haya uno, venís a cualquier CEMIC y me hablás. El huevo nace después de caminar un rato.');
-      await decir('Nace la primera forma de una de las dos, en nivel 5. ¡Los legendarios no ponen huevos!');
-      await decir('Y los huevos del criadero son ESPECIALES: a veces nace SHINY, de otro color. ¡Y si no, nace con su HABILIDAD OCULTA!');
+      await decir('Nace la primera forma de una de las dos. ¡Los legendarios no ponen huevos!');
+      await decir('El bebé nace al nivel de los padres: si suman 20 o menos, los niveles se SUMAN (uno de 13 y otro de 5: ¡nace al 18!).');
+      await decir('Si suman más de 20, nace al nivel del padre más alto.');
+      await decir('A veces nace SHINY, de otro color. Y cuando la misma pareja ya puso 3 huevos, ¡puede salir uno con su HABILIDAD OCULTA!');
       continue;
     }
     if (r === 0) {
@@ -2466,14 +2476,16 @@ async function hablarCriadora() {
     const m = cr.cria.splice(j, 1)[0];
     if (S.equipo.length < 6) { S.equipo.push(m); await decir(`¡${nombreDe(m)} volvió al equipo!`); }
     else { S.caja.push(m); await decir(`Tu equipo está lleno: ${nombreDe(m)} fue a la compu.`); }
-    if (cr.cria.length < 2) { cr.pasos = 0; cr.listo = false; }
+    if (cr.cria.length < 2) { cr.pasos = 0; cr.listo = false; cr.puestos = 0; } // pareja nueva: el contador de huevos vuelve a cero
   }
 }
 // Lo que cuenta la criadora: si ya hay huevo o cuánto falta
 async function estadoCriadero() {
   const cr = criadero();
   if (cr.cria.length < 2) { await decir(cr.cria.length ? 'Para que aparezca un huevo me tenés que dejar una criatura más.' : 'Ahora no estoy cuidando a ninguna criatura.'); return; }
-  if (cr.listo) { await decir('¡YA PUSIERON UN HUEVO! Te lo estoy guardando.'); return; }
+  const puestos = cr.puestos || 0;
+  if (puestos) await decir(`Esta pareja ya puso ${puestos} ${puestos === 1 ? 'huevo' : 'huevos'}.` + (puestos >= CRIADERO.huevosParaOculta ? ' ¡Ahora puede salir uno con HABILIDAD OCULTA!' : ` Cuando pongan ${CRIADERO.huevosParaOculta}, puede empezar a salir alguno con HABILIDAD OCULTA.`));
+  if (cr.listo) { await decir(`¡YA PUSIERON UN HUEVO! Te lo estoy guardando. Va a nacer al nivel ${nivelDelHuevo(cr.cria)}.`); return; }
   const falta = CRIADERO.pasosHuevo - cr.pasos;
   const como = falta > 120 ? 'Recién empiezan a conocerse. Todavía falta muchísimo.' : falta > 60 ? 'Ya se están haciendo amigas. Falta bastante.' : falta > 20 ? 'Juegan todo el tiempo juntas... ¡ya falta poco!' : '¡Están por poner un huevo!';
   await decir(`${como} (Faltan unos ${falta} pasos.)`);
@@ -2491,13 +2503,15 @@ function pasoHuevos() {
     const h = hs.splice(i, 1)[0]; sincronizarHuevos();
     await decir('¿Eh? ¡El HUEVO se está moviendo!');
     for (let k = 0; k < 2; k++) { ui.flash = 1; await esperar(4); ui.flash = 0; await esperar(6); }
-    const m = crearCriatura(h.id, 5);
-    // Los huevos del criadero son especiales: SHINY o, si no, con la HABILIDAD OCULTA
+    const m = crearCriatura(h.id, h.nivel || 5);
     if (Math.random() < CRIADERO.shiny) m.shiny = true;
-    else if (ESPECIES[h.id].habOculta) m.habSlot = 'o';
+    // La HABILIDAD OCULTA solo sale en los huevos que la traen (desde el 4º de la misma pareja)
+    if (h.oculta && ESPECIES[h.id].habOculta) m.habSlot = 'o';
+    else if (m.habSlot === 'o') m.habSlot = Math.floor(Math.random() * ESPECIES[h.id].habs.length);
     await decir(`¡Nació un ${ESPECIES[h.id].nombre.toUpperCase()}!`);
+    await decir(`¡Nació en el NIVEL ${m.nivel}!`);
     if (m.shiny) { for (let k = 0; k < 3; k++) { ui.flash = 1; await esperar(2); ui.flash = 0; await esperar(3); } await decir('¡¡WOW!! ¡Es SHINY: tiene un color distinto a todos los demás! ★'); }
-    else if (esHabOculta(m)) await decir(`¡Y nació con su HABILIDAD OCULTA: ${habDe(m).nombre.toUpperCase()}!`);
+    if (esHabOculta(m)) await decir(`¡Y nació con su HABILIDAD OCULTA: ${habDe(m).nombre.toUpperCase()}!`);
     if (S.equipo.length < 6) { S.equipo.push(m); await decir('¡Se sumó a tu equipo!'); }
     else { S.caja.push(m); await decir('Tu equipo está lleno: lo mandaste a la compu de la Profe Ceibo.'); }
     if (await siNo('¿Le querés poner un apodo?')) await ponerApodo(m, true);
