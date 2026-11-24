@@ -9515,7 +9515,13 @@ const PANTANO = [
 // (Zorzaliente y Yaguarabá no tienen formas anteriores todavía: nacen ellas mismas.)
 const HUEVO_REGALO = { ajolodo: 'escarchin', flamartija: 'zorzaliente', ramoa: 'yaguaraba' };
 async function regaloHuevoMirta() {
-  if (S.flags.huevoRegalo || !S.flags.yaNacioHuevo) return;
+  if (S.flags.huevoRegalo) return;
+  // Vale haber hecho nacer un huevo, o haber recibido alguno del criadero (partidas de antes de que existiera el regalo)
+  const cr = S.flags.criadero;
+  if (!S.flags.yaNacioHuevo && !(cr && cr.puestos > 0)) {
+    await decir('CRIADORA MIRTA: Cuando te nazca tu primer huevo del criadero, venite que tengo una SORPRESA para vos.');
+    return;
+  }
   const primera = S.equipo[0], fam = primera && familia(primera.id);
   await decir('CRIADORA MIRTA: ¡Me enteré de que ya te nació tu primer huevo! Entonces sos de confianza...');
   if (!fam || !HUEVO_REGALO[fam]) {
