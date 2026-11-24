@@ -9605,18 +9605,30 @@ async function coronaInfinito(m) {
   }
 }
 
+// EXP más generosa (pedido de Felipe): cada batalla da el TRIPLE que antes,
+// y las demás criaturas del equipo que no estén debilitadas se llevan la mitad (como un Repartir EXP).
+const MULT_EXP = 3, REPARTO_EXP = 0.5;
 async function darExp() {
   const f = bt.rival, m = bt.yo;
   if (!m || m.ps <= 0) return;
-  const gana = Math.max(1, Math.floor(ESPECIES[f.id].exp * f.nivel / 7 * (bt.tipo === 'entrenador' ? 1.5 : 1)));
+  const gana = Math.max(1, Math.floor(ESPECIES[f.id].exp * f.nivel / 7 * (bt.tipo === 'entrenador' ? 1.5 : 1) * MULT_EXP));
+  await sumarExp(m, gana, true);
+  const resto = (S.equipo || []).filter(c => c !== m && c.ps > 0 && c.nivel < 100);
+  if (resto.length) {
+    const parte = Math.max(1, Math.floor(gana * REPARTO_EXP));
+    await decir(`¡El resto del equipo ganó ${parte} puntos de experiencia!`);
+    for (const c of resto) await sumarExp(c, parte, false);
+  }
+}
+async function sumarExp(m, gana, peleando) {
   m.exp += gana;
-  await decir(`¡${nombreDe(m)} ganó ${gana} puntos de experiencia!`);
+  if (peleando) await decir(`¡${nombreDe(m)} ganó ${gana} puntos de experiencia!`);
   while (m.nivel < 100 && m.exp >= expPara(m.nivel + 1)) {
     const antes = m.psMax;
     m.nivel++;
     recalcular(m);
     m.ps += m.psMax - antes;
-    bt.ps.y = m.ps;
+    if (peleando) bt.ps.y = m.ps;
     await decir(`¡${nombreDe(m)} subió al nivel ${m.nivel}!`);
     for (const [nv, mv] of ESPECIES[m.id].movs) if (nv === m.nivel) await aprender(m, mv);
   }
