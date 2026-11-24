@@ -4962,7 +4962,7 @@ function crearCentro(destino, ax, ay, idCentro) {
     salidas: [{ x: 4, y: 7, a: destino, ax, ay, dir: 0 }],
     objetos: {
       k: 'Un estante con vendas, termómetros y frascos de remedios para criaturas.',
-      x: 'Un cartel que dice: "CEMIC. Cuidamos a tus criaturas como si fueran nuestras".',
+      x: () => compu(), // la COMPU de la Profe Ceibo: guardar y cambiar criaturas
       t: 'El mostrador del CEMIC.',
       p: 'Una planta de mburucuyá con flores violetas.',
     },
@@ -4981,6 +4981,8 @@ function crearCentro(destino, ax, ay, idCentro) {
       },
       // El almacén está adentro de cada CEMIC
       { id: 'almacenero', x: 2, y: 2, dir: 0, pal: PAL.almacenero, hablar: () => tienda() },
+      // El criadero de huevos
+      { id: 'criadora', x: 6, y: 4, dir: 2, pal: PAL.chica, hablar: () => hablarCriadora() },
     ],
   };
 }
@@ -8880,6 +8882,7 @@ PISTAS_CLANES.forEach(([id, clan, vez, textos], i) => {
 
 // ===== El CUADERNO DE PISTAS =====
 OBJETOS.cuaderno = { nombre: 'CUADERNO DE PISTAS', precio: 0, cuaderno: true, desc: 'Las adivinanzas de los clanes. Si adivinás de qué gema habla cada una, ¡hay premio!' };
+OBJETOS.huevo = { nombre: 'HUEVO', precio: 0, huevo: true, desc: 'Un huevo del CRIADERO. Va a nacer después de caminar un rato. Usalo para ver cuánto le falta.' };
 const NOMBRE_GEMA = { mente: 'MENTE', alma: 'ALMA', poder: 'PODER', realidad: 'REALIDAD', espacio: 'ESPACIO', tiempo: 'TIEMPO' };
 async function cuadernoPistas() {
   while (true) {
@@ -10043,6 +10046,7 @@ function pasoMundo() {
       alPisar();
       // Anomalías de los templos (temblores, saltos espaciales, mareos)
       if (!S.ocupado && typeof anomaliaPaso === 'function') { const f = anomaliaPaso(); if (f) correr(f()); }
+      if (!S.ocupado) { const f = pasoHuevos(); if (f) correr(f()); } // criadero y huevos
     }
     return;
   }
@@ -10116,7 +10120,7 @@ async function interactuar(x, y) {
   if (ch === 'S' && m.carteles && m.carteles[x + ',' + y]) { correr(decir(m.carteles[x + ',' + y])); return; }
   if (ROMPIBLE[ch]) { correr(romperRoca(x, y, ch)); return; }
   if (ch === '~' && !S.bolsa.balsa && m.exterior) { correr(decir('El agua es muy profunda para cruzar caminando. Con una BALSA se podría.')); return; }
-  if (m.objetos && m.objetos[ch]) { correr(decir(m.objetos[ch])); return; }
+  if (m.objetos && m.objetos[ch]) { const o = m.objetos[ch]; correr(typeof o === 'function' ? o() : decir(o)); return; }
 }
 
 // ---------- Criaturas salvajes visibles en el pasto alto ----------
@@ -10322,6 +10326,7 @@ async function usarObjetoMundo(obj) {
   if (o.mapa) { await pantallaMapa(); return; }
   if (o.bici) { await usarBici(); return; }
   if (o.cuaderno) { await cuadernoPistas(); return; }
+  if (o.huevo) { await mirarHuevos(); return; }
   if (o.balsa) { await decir('Caminá hacia el agua y Felipe se sube a la BALSA solo.'); return; }
   if (o.pico) { await decir('Ponete enfrente de una roca o un bloque de hielo con grietas y apretá A.'); return; }
   if (o.piedra) { await usarPiedra(obj); return; }
@@ -11808,6 +11813,7 @@ function dibujar() {
   }
   if (ui.vista) dibujarVista();
   if (ui.equipo) dibujarEquipo();
+  if (ui.compu) dibujarCompu();
   if (ui.mochila) dibujarMochila();
   if (ui.mapaArg) dibujarMapaArg();
   if (ui.teclado) dibujarTeclado();
@@ -12033,6 +12039,168 @@ function textosRaid() { // los textos van en la capa de arriba (más nítidos)
   for (const t of R.textos) txt(t.txt, t.x * T - cam.cx + 8, t.y * T - cam.cy - (50 - t.t) / 3, { t: 8, al: 'center', c: '#fff0a0', sombra: '#402040' });
   if (R.msgT > 0) txt(R.msg, W / 2, 23, { t: 6, al: 'center', sombra: null, c: '#302040' });
   txt(R.cd ? 'cargando...' : '¡A: ATACAR!', W - 8, H - 11, { t: 5, al: 'right', sombra: null, c: R.cd ? '#a0a0c0' : '#f8e040' });
+}
+
+// =====================================================================================
+// ===== COMPU DE LOS CEMIC y CRIADERO DE HUEVOS (pedido de Poly, 24/11/2026) =====
+// =====================================================================================
+// COMPU: en cada CEMIC está la compu de la Profe Ceibo. Ahí se guardan las criaturas que no van en el equipo
+// (S.caja: ahí ya caían las atrapadas con el equipo lleno). Se puede dejar, llevar y cambiar.
+async function compu() {
+  await decir('Prendiste la COMPU de la PROFE CEIBO. ¡Bip, bip!');
+  while (true) {
+    await decir('¿Qué querés hacer?', { mantener: true });
+    const r = await elegir([`VER LA CAJA (${S.caja.length})`, 'DEJAR UNA CRIATURA', 'APAGAR'], { x: 112, y: 46, w: 124 });
+    ui.dialogo = null;
+    if (r < 0 || r === 2) { await decir('Apagaste la compu.'); guardar(); return; }
+    if (r === 1) {
+      if (S.equipo.length <= 1) { await decir('¡No podés quedarte sin criaturas en el equipo!'); continue; }
+      const i = await pantallaEquipo({ msg: '¿Cuál querés dejar en la compu?' });
+      if (i < 0) continue;
+      const m = S.equipo.splice(i, 1)[0];
+      curarCriatura(m); S.caja.push(m);
+      await decir(`${nombreDe(m)} quedó guardado en la compu. ¡Ahí descansa tranquilo!`);
+      continue;
+    }
+    if (!S.caja.length) { await decir('La caja está vacía. Cuando atrapes criaturas con el equipo lleno, aparecen acá.'); continue; }
+    const j = await listaCaja();
+    if (j < 0) continue;
+    const m = S.caja[j];
+    await decir(`${nombreDe(m)} (Nv${m.nivel}). ¿Qué hacés?`, { mantener: true });
+    const o = await elegir(['LLEVAR AL EQUIPO', 'CAMBIAR', 'DATOS', 'VOLVER'], { x: 120, y: 40, w: 116 });
+    ui.dialogo = null;
+    if (o === 0) {
+      if (S.equipo.length >= 6) { await decir('Tu equipo ya tiene 6. Usá CAMBIAR para dejar una en su lugar.'); continue; }
+      S.equipo.push(S.caja.splice(j, 1)[0]);
+      await decir(`¡${nombreDe(m)} se sumó al equipo!`);
+    } else if (o === 1) {
+      const i = await pantallaEquipo({ msg: `¿Cuál cambiás por ${nombreDe(m)}?` });
+      if (i < 0) continue;
+      const sale = S.equipo[i];
+      curarCriatura(sale);
+      S.equipo[i] = m; S.caja[j] = sale;
+      await decir(`${nombreDe(m)} entró al equipo y ${nombreDe(sale)} se quedó en la compu.`);
+    } else if (o === 2) {
+      ui.equipo = { idx: 0, msg: '' };
+      await verDatos(m);
+      ui.equipo = null;
+    }
+  }
+}
+// Lista de la caja (se mueve con arriba/abajo si hay muchas)
+async function listaCaja() {
+  ui.compu = { idx: 0, top: 0 };
+  while (true) {
+    await esperar(1);
+    const c = ui.compu, n = S.caja.length;
+    if (pressed.up) c.idx = (c.idx - 1 + n) % n;
+    if (pressed.down) c.idx = (c.idx + 1) % n;
+    if (c.idx < c.top) c.top = c.idx;
+    if (c.idx >= c.top + 6) c.top = c.idx - 5;
+    if (pressed.b) { ui.compu = null; return -1; }
+    if (pressed.a) { const i = c.idx; ui.compu = null; return i; }
+  }
+}
+function dibujarCompu() {
+  const c = ui.compu;
+  sc.fillStyle = '#2a6a5a'; sc.fillRect(0, 0, W, H);
+  sc.fillStyle = '#327a68'; for (let i = 0; i < W; i += 16) sc.fillRect(i, 0, 8, H);
+  caja(4, 2, 232, 16, 'info');
+  txt(`CAJA DE LA COMPU  (${S.caja.length})`, 12, 6, { t: 7 });
+  S.caja.slice(c.top, c.top + 6).forEach((m, k) => {
+    const i = c.top + k, y = 21 + k * 22, sel = i === c.idx;
+    caja(6, y, 228, 21, sel ? 'menu' : 'info');
+    sc.imageSmoothingEnabled = false;
+    sc.drawImage(spriteCriatura(m.id), 10, y + 1, 20, 20);
+    txt(nombreDe(m), 34, y + 5, { t: nombreDe(m).length > 12 ? 6 : 7 });
+    txt('Nv' + m.nivel, 34, y + 13, { t: 6, sombra: null, c: '#606060' });
+    ESPECIES[m.id].tipos.forEach((t, j) => txt(t, 150 + j * 42, y + 8, { t: 5, sombra: null, c: COLOR_TIPO[t] || '#404040' }));
+  });
+  if (c.top > 0) txt('▲', 228, 20, { t: 6, al: 'right', c: '#ffffff', sombra: null });
+  if (c.top + 6 < S.caja.length) txt('▼', 228, 152, { t: 6, al: 'right', c: '#ffffff', sombra: null });
+}
+
+// CRIADERO: la CRIADORA MARTA (en cada CEMIC) cuida dos criaturas. Mientras Felipe camina, a veces aparece un HUEVO.
+// Los huevos se llevan en la MOCHILA y nacen después de caminar un rato. Nace la primera forma de una de las dos.
+const CRIADERO = { pasosHuevo: 180, pasosNacer: 250, maxHuevos: 6 };
+function criadero() { return S.flags.criadero || (S.flags.criadero = { cria: [], pasos: 0, listo: false }); }
+function huevos() { return S.flags.huevos || (S.flags.huevos = []); }
+function sincronizarHuevos() { if (huevos().length) S.bolsa.huevo = huevos().length; else delete S.bolsa.huevo; }
+const esLegendario = id => ESPECIES[id].captura <= 25;
+async function hablarCriadora() {
+  const cr = criadero();
+  await decir('CRIADORA MARTA: ¡Hola! Yo cuido criaturas en el CRIADERO. A veces, cuando dos se llevan bien... ¡aparece un HUEVO!');
+  if (cr.listo) {
+    if (huevos().length >= CRIADERO.maxHuevos) await decir('¡Apareció un HUEVO! Pero ya llevás muchos en la mochila. Hacé nacer alguno y volvé.');
+    else {
+      const padre = cr.cria[Math.floor(Math.random() * cr.cria.length)];
+      huevos().push({ id: familia(padre.id), pasos: CRIADERO.pasosNacer });
+      cr.listo = false; cr.pasos = 0; sincronizarHuevos();
+      await decir('¡Mirá! ¡Tus criaturas encontraron un HUEVO! Tomalo, cuidalo mucho.');
+      await decir('¡Felipe guardó el HUEVO en la MOCHILA! Va a nacer después de caminar un buen rato.');
+      guardar();
+    }
+  }
+  while (true) {
+    const nombres = cr.cria.map(nombreDe).join(' y ');
+    await decir(cr.cria.length ? `Ahora cuido a ${nombres}. ¿Qué hacemos?` : '¿Querés dejarme alguna criatura?', { mantener: true });
+    const r = await elegir(['DEJAR UNA', 'RETIRAR', '¿CÓMO FUNCIONA?', 'CHAU'], { x: 124, y: 40, w: 112 });
+    ui.dialogo = null;
+    if (r < 0 || r === 3) { await decir('CRIADORA MARTA: ¡Chau! ¡Caminá mucho que así aparecen los huevos!'); guardar(); return; }
+    if (r === 2) {
+      await decir('Me dejás DOS criaturas. Mientras vos caminás por ahí, ellas juegan juntas y a veces aparece un HUEVO.');
+      await decir('Cuando haya uno, venís a cualquier CEMIC y me hablás. El huevo nace después de caminar un rato.');
+      await decir('Nace la primera forma de una de las dos, en nivel 5. ¡Los legendarios no ponen huevos!');
+      continue;
+    }
+    if (r === 0) {
+      if (cr.cria.length >= 2) { await decir('Ya cuido a dos. ¡No me entran más!'); continue; }
+      if (S.equipo.length <= 1) { await decir('¡No podés quedarte sin criaturas en el equipo!'); continue; }
+      const i = await pantallaEquipo({ msg: '¿Cuál dejás en el criadero?' });
+      if (i < 0) continue;
+      if (esLegendario(S.equipo[i].id)) { await decir(`${nombreDe(S.equipo[i])} es una criatura legendaria. Esas no ponen huevos.`); continue; }
+      const m = S.equipo.splice(i, 1)[0];
+      curarCriatura(m); cr.cria.push(m);
+      await decir(`¡Dejaste a ${nombreDe(m)} en el criadero!` + (cr.cria.length === 1 ? ' Falta una más para que aparezcan huevos.' : ' ¡A caminar!'));
+      continue;
+    }
+    if (!cr.cria.length) { await decir('No estoy cuidando a ninguna.'); continue; }
+    const j = cr.cria.length === 1 ? 0 : await elegir([...cr.cria.map(nombreDe), 'NINGUNA'], { x: 124, y: 50, w: 112 });
+    if (j < 0 || j >= cr.cria.length) continue;
+    const m = cr.cria.splice(j, 1)[0];
+    if (S.equipo.length < 6) { S.equipo.push(m); await decir(`¡${nombreDe(m)} volvió al equipo!`); }
+    else { S.caja.push(m); await decir(`Tu equipo está lleno: ${nombreDe(m)} fue a la compu.`); }
+    if (cr.cria.length < 2) { cr.pasos = 0; cr.listo = false; }
+  }
+}
+// Cada paso: cuenta para el criadero y para los huevos
+function pasoHuevos() {
+  const cr = S.flags.criadero;
+  if (cr && cr.cria.length === 2 && !cr.listo && ++cr.pasos >= CRIADERO.pasosHuevo) cr.listo = true;
+  const hs = S.flags.huevos;
+  if (!hs || !hs.length) return null;
+  for (const h of hs) if (h.pasos > 0) h.pasos--;
+  const i = hs.findIndex(h => h.pasos <= 0);
+  if (i < 0) return null;
+  return async () => {
+    const h = hs.splice(i, 1)[0]; sincronizarHuevos();
+    await decir('¿Eh? ¡El HUEVO se está moviendo!');
+    for (let k = 0; k < 2; k++) { ui.flash = 1; await esperar(4); ui.flash = 0; await esperar(6); }
+    const m = crearCriatura(h.id, 5);
+    await decir(`¡Nació un ${ESPECIES[h.id].nombre.toUpperCase()}!`);
+    if (S.equipo.length < 6) { S.equipo.push(m); await decir('¡Se sumó a tu equipo!'); }
+    else { S.caja.push(m); await decir('Tu equipo está lleno: lo mandaste a la compu de la Profe Ceibo.'); }
+    if (await siNo('¿Le querés poner un apodo?')) await ponerApodo(m, true);
+    guardar();
+  };
+}
+async function mirarHuevos() {
+  const hs = huevos();
+  if (!hs.length) { await decir('No tenés huevos.'); return; }
+  for (const h of hs) {
+    const f = h.pasos > CRIADERO.pasosNacer * 0.66 ? 'Todavía falta muchísimo para que nazca.' : h.pasos > CRIADERO.pasosNacer * 0.33 ? 'A veces se mueve un poquito. Falta bastante.' : h.pasos > 20 ? '¡Se escuchan ruiditos adentro! Ya falta poco.' : '¡Está por nacer!';
+    await decir(`HUEVO: ${f}`);
+  }
 }
 </script>
 <script>

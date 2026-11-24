@@ -1218,7 +1218,7 @@ function crearCentro(destino, ax, ay, idCentro) {
     salidas: [{ x: 4, y: 7, a: destino, ax, ay, dir: 0 }],
     objetos: {
       k: 'Un estante con vendas, termómetros y frascos de remedios para criaturas.',
-      x: 'Un cartel que dice: "CEMIC. Cuidamos a tus criaturas como si fueran nuestras".',
+      x: () => compu(), // la COMPU de la Profe Ceibo: guardar y cambiar criaturas
       t: 'El mostrador del CEMIC.',
       p: 'Una planta de mburucuyá con flores violetas.',
     },
@@ -1237,6 +1237,8 @@ function crearCentro(destino, ax, ay, idCentro) {
       },
       // El almacén está adentro de cada CEMIC
       { id: 'almacenero', x: 2, y: 2, dir: 0, pal: PAL.almacenero, hablar: () => tienda() },
+      // El criadero de huevos
+      { id: 'criadora', x: 6, y: 4, dir: 2, pal: PAL.chica, hablar: () => hablarCriadora() },
     ],
   };
 }
@@ -5136,6 +5138,7 @@ PISTAS_CLANES.forEach(([id, clan, vez, textos], i) => {
 
 // ===== El CUADERNO DE PISTAS =====
 OBJETOS.cuaderno = { nombre: 'CUADERNO DE PISTAS', precio: 0, cuaderno: true, desc: 'Las adivinanzas de los clanes. Si adivinás de qué gema habla cada una, ¡hay premio!' };
+OBJETOS.huevo = { nombre: 'HUEVO', precio: 0, huevo: true, desc: 'Un huevo del CRIADERO. Va a nacer después de caminar un rato. Usalo para ver cuánto le falta.' };
 const NOMBRE_GEMA = { mente: 'MENTE', alma: 'ALMA', poder: 'PODER', realidad: 'REALIDAD', espacio: 'ESPACIO', tiempo: 'TIEMPO' };
 async function cuadernoPistas() {
   while (true) {
