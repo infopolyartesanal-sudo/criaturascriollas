@@ -2584,7 +2584,8 @@ function opcionesHab2(m) {
     L.push({ k, precio: conOculta ? 0 : (k === e.habOculta ? PRECIO_HAB.oculta : PRECIO_HAB.propia), tipo: k === e.habOculta ? 'OCULTA' : 'PROPIA' });
   }
   const usadas = new Set();
-  for (const es of Object.values(ESPECIES)) for (const k of [...es.habs, ...(es.habOculta ? [es.habOculta] : [])]) usadas.add(k);
+  // Solo habilidades de criaturas comunes: las que tienen únicamente los LEGENDARIOS no se pueden (pedido de Poly)
+  for (const [id, es] of Object.entries(ESPECIES)) if (!esLegendario(id)) for (const k of [...es.habs, ...(es.habOculta ? [es.habOculta] : [])]) usadas.add(k);
   [...usadas].filter(k => HABILIDADES[k] && k !== actual && !HABS_PROHIBIDAS.includes(k) && !L.some(x => x.k === k))
     .sort((a, b) => HABILIDADES[a].nombre.localeCompare(HABILIDADES[b].nombre))
     .forEach(k => L.push({ k, precio: PRECIO_HAB.ajena, tipo: 'DE OTRA' }));
