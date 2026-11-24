@@ -5180,3 +5180,438 @@ async function cuadernoPistas() {
     }
   }
 }
+
+// =====================================================================================
+// ===== LOS TEMPLOS DE LOS GUARDIANES Y LAS ANOMALÍAS (pedido de Poly, 24/11/2026) =====
+// =====================================================================================
+// Cada clan aparece TRES veces:
+//  1) te deja SOSPECHANDO (te corta el paso en un pueblo y deja una adivinanza),
+//  2) en su TEMPLO: el jefe te reta; ganes o pierdas, despierta al guardián (el REGI) y lo ENCIERRA en un cristal,
+//  3) más adelante el jefe pelea USANDO al Regi.
+// El camino al templo es OBLIGATORIO: una barrera violeta tapa la ruta hasta que vas.
+// Mientras el Regi está encerrado, en esa región pasan cosas raras (ANOMALÍAS).
+// Cuando le ganás a REGIOHM, se calma, devuelve cada Regi a su templo, se terminan las anomalías y se va por un portal.
+const TEMPLOS_GRILLAS = {
+  mente: [
+    'RRRRRRRRRRRRRRRRRRRRRR',
+    'RRRRRRRRRRRRRRRRRRRRRR',
+    'RR......RRRRRR...TT.RR',
+    'RR......RRRRRR...TT.RR',
+    'RRRR....RRRRRR......RR',
+    'RRRR....RR=RRR......RR',
+    'RR........==........RR',
+    'RR..TT....==........RR',
+    'RR..TT....========..RR',
+    'RR........========..RR',
+    'RR........========..RR',
+    'RR,,,..,,,==,.......RR',
+    'RR,,,..,,,==,,,.....RR',
+    'RR,,,....,==,,,.....RR',
+    'RR,,,=======,,,...TTRR',
+    'RR,,,=======......TTRR',
+    'RR,,,==,,,,,,,,,,...RR',
+    'RR,,,==,,,,,,,,,,,,,RR',
+    'RR...==,,,,,,,,,,,,,RR',
+    'RR...=======........RR',
+    'RR...=======.....,,,RR',
+    'RR.,,,,,,,==,,,,.,,,RR',
+    'RR.,,,,,,,==,,,,.,,,RR',
+    'RR........==........RR',
+    'RR........==........RR',
+    'RRRRRRRRRR==RRRRRRRRRR',
+  ],
+  alma: [
+    'YYYYYYYYYYYYYYYYYYYYYY',
+    'YYYYYYYYYYYYYYYYYYYYYY',
+    'YY......YYYYYY......YY',
+    'YY...YY.YYYYYY..YY..YY',
+    'YY...YY.YYYYYY..YY..YY',
+    'YYYY....YY=YYY......YY',
+    'YYYY......==........YY',
+    'YY........==........YY',
+    'YY...=======........YY',
+    'YY...=======.,,,,.YYYY',
+    'YY.,,=======.,,,,,YYYY',
+    'YY.,,,,,,.==.,,,,,,.YY',
+    'YY.,,,,,,.==........YY',
+    'YY..,,,...==,,YY,,,.YY',
+    'YY,,,=======,,YY,,,.YY',
+    'YY,,,=======,,,,,,,.YY',
+    'YY,,,==,,..,,,,.....YY',
+    'YY.,,==,,.,,,,......YY',
+    'YY...==,,,,,,....YY.YY',
+    'YY...=======,....YY.YY',
+    'YY...=======,.......YY',
+    'YY....,,,,==,.......YY',
+    'YY....YY,,==........YY',
+    'YY....YY,,==........YY',
+    'YY........==........YY',
+    'YYYYYYYYYY==YYYYYYYYYY',
+  ],
+  poder: [
+    'YYYYYYYYYYYYYYYYYYYYYY',
+    'YYYYYYYYYYYYYYYYYYYYYY',
+    'YY......YYYYYY......YY',
+    'YY......YYYYYY..YY..YY',
+    'YY.YY...YYYYYY..YY..YY',
+    'YY.YY...YYqYYY......YY',
+    'YY........qq........YY',
+    'YY........qq........YY',
+    'YY..qqqqqqqq........YY',
+    'YY..qqqqqqqq..,,,,,,YY',
+    'YY.,qqqqqqqq,,,,,,,,YY',
+    'YY.,,,,,,.qq,,,,,,,,YY',
+    'YY,,,,,...qq.,,,,,..YY',
+    'YY,,,,,,,,qq.,,,,,..YY',
+    'YY,,,YY,,,qqqqqqq...YY',
+    'YY...YY...qqqqqqq,..YY',
+    'YY..........,,,qq,..YY',
+    'YY,,,YY,.......qq,..YY',
+    'YY,,,YY,.......qq,,,YY',
+    'YY,,,,,,..qqqqqqq,,,YY',
+    'YY.....,,,qqqqqqq,,,YY',
+    'YY.....,,,qq,,,,,,..YY',
+    'YY.....,,,qq........YY',
+    'YY........qq........YY',
+    'YY........qq........YY',
+    'YYYYYYYYYYqqYYYYYYYYYY',
+  ],
+  realidad: [
+    'TTTTTTTTTTTTTTTTTTTTTT',
+    'TTTTTTTTTTTTTTTTTTTTTT',
+    'TT------TTTTTT------TT',
+    'TT-TT---TTTTTT------TT',
+    'TT-TT---TTTTTT------TT',
+    'TT------TT=TTT------TT',
+    'TT--------==--------TT',
+    'TT--------==--------TT',
+    'TT---=======--------TT',
+    'TT---=======--TT----TT',
+    'TT---=======,,TT----TT',
+    'TT---,,,,,==,,,,,,--TT',
+    'TT---,,,,,==,,,,,,--TT',
+    'TT--------==,,------TT',
+    'TT---,,,,,========--TT',
+    'TT---,,,,,========--TT',
+    'TT-----,,,------==--TT',
+    'TT----,,,,,,----==--TT',
+    'TT-,,,,,,,,,----==--TT',
+    'TT-,,,,,,,========--TT',
+    'TT-,,,,,,,========,-TT',
+    'TT---,,,,,==,,--,,,-TT',
+    'TT--------==---,,,,-TT',
+    'TT--------==---,,,,-TT',
+    'TT--------==--------TT',
+    'TTTTTTTTTT==TTTTTTTTTT',
+  ],
+  espacio: [
+    'TTTTTTTTTTTTTTTTTTTTTT',
+    'TTTTTTTTTTTTTTTTTTTTTT',
+    'TT......TTTTTT......TT',
+    'TT......TTTTTT......TT',
+    'TT...TT.TTTTTT......TT',
+    'TT...TT.TT=TTT......TT',
+    'TT........==........TT',
+    'TT........==........TT',
+    'TT..========........TT',
+    'TT..========........TT',
+    'TT..========........TT',
+    'TT........==,TT,,...TT',
+    'TT........==,TT,,...TT',
+    'TT.,,,....==........TT',
+    'TT.,,,....========..TT',
+    'TT,,,,,,,.========..TT',
+    'TT,,,,,,,.,,,,,,==,,TT',
+    'TT,,,,,,..,,,,,,==,,TT',
+    'TT,,,,,,..,,,,,,==,,TT',
+    'TT........========,.TT',
+    'TTTT......========..TT',
+    'TTTT......==........TT',
+    'TT.....TT.==,,,,,...TT',
+    'TT.....TT.==,,,,,...TT',
+    'TT........==........TT',
+    'TTTTTTTTTT==TTTTTTTTTT',
+  ],
+  tiempo: [
+    'RRRRRRRRRRRRRRRRRRRRRR',
+    'RRRRRRRRRRRRRRRRRRRRRR',
+    'RR-RR---RRRRRR------RR',
+    'RR-RR---RRRRRR------RR',
+    'RR------RRRRRR------RR',
+    'RR------RR=RRR----RRRR',
+    'RR--------==------RRRR',
+    'RR--------==--------RR',
+    'RR---=======--------RR',
+    'RR---=======--------RR',
+    'RR-uu=======--------RR',
+    'RR-uuuuuu-==--------RR',
+    'RR----uuu-==-uuuuuu-RR',
+    'RR--------==-uuuuuu-RR',
+    'RR---=======-uuuuuu-RR',
+    'RRuuu=======--------RR',
+    'RRuuu==--------RR---RR',
+    'RRuuu==----uuuuRR---RR',
+    'RR---==uuuuuuRRuu---RR',
+    'RR---=======uRRuuuuuRR',
+    'RR---=======-uuuuuuuRR',
+    'RR--uuuuuu==uuuuuuuuRR',
+    'RR--uuuuuu==uuuuuuu-RR',
+    'RR--------==uuuuuuu-RR',
+    'RR--------==--------RR',
+    'RRRRRRRRRR==RRRRRRRRRR',
+  ],
+};
+
+
+const TEMPLO_INTERIOR = [
+  '#############',
+  '#v#vvvvvvv#v#',
+  '#vvvvvvvvvvv#',
+  '#avvvvvvvvva#',
+  '#vvvvvvvvvvv#',
+  '#vvvvvvvvvvv#',
+  '#avvvvvvvvva#',
+  '#vvvvvvvvvvv#',
+  '#vvvvvvvvvvv#',
+  '######m######',
+];
+const LUGAR_GEO_EXTRA = {};
+const NOMBRE_TEMPLO = { mente: 'TEMPLO DE LA MENTE', alma: 'TEMPLO DEL ALMA', poder: 'TEMPLO DEL PODER', realidad: 'TEMPLO DE LA REALIDAD', espacio: 'TEMPLO DEL ESPACIO', tiempo: 'TEMPLO DEL TIEMPO' };
+const REGI_DE = { mente: 'regimento', alma: 'regianima', poder: 'regipulso', realidad: 'regifracto', espacio: 'regiorbita', tiempo: 'regicrono' };
+// ruta: de dónde sale el camino; abrir/celdas/llegada: costado de la ruta; barrera: las 2 baldosas antes de la salida que se tapa
+const TEMPLOS = {
+  mente: { nombre: 'CERRO URITORCO', piso: '.', ruta: 'sierras', abrir: [[20, 0], [21, 0], [20, 1], [21, 1]], celdas: [[20, 0], [21, 0]], llegada: [[20, 2], [21, 2]], dirVuelta: 0,
+    barrera: [[1, 10], [1, 11]], empuja: 3, hacia: 'el NORTE, arriba de un cerro', geo: [-64.5, -30.85], nivel: [10, 13],
+    lista: [['espejito', 14], ['lechucita', 14], ['mimetit', 10], ['condorito', 10], ['pumita', 10], ['piedrin', 8], ['spikick', 6]],
+    recluta: [['lechucita', 11], ['espejito', 12]], jefe: [['lechucita', 13], ['espejito', 14], ['mimetit', 15]], regiNivel: 59,
+    anomalia: 'Una onda PSÍQUICA rosada cubrió toda la región. Las criaturas salvajes se volvieron más raras y a Felipe le da vueltas la cabeza...',
+    sala: ['sierras', 'travesia', 'serrana', 'quebrada', 'camino_mente'] },
+  alma: { nombre: 'VALLE DE LAS ÁNIMAS', piso: '.', ruta: 'ruta4', abrir: [[20, 5], [21, 5], [20, 6], [21, 6]], celdas: [[21, 5], [21, 6]], llegada: [[19, 5], [19, 6]], dirVuelta: 2,
+    barrera: [[10, 1], [11, 1]], empuja: 0, hacia: 'el ESTE, entre la selva', geo: [-64.55, -24.25], nivel: [26, 29],
+    lista: [['anahisa', 14], ['farolito', 12], ['garkol', 10], ['cobijoso', 8], ['faeve', 8], ['lechucita', 8], ['mythfae', 3]],
+    recluta: [['farolito', 28], ['anahisa', 29]], jefe: [['anahisa', 30], ['mythfae', 31], ['lechuzonte', 32]], regiNivel: 61,
+    anomalia: 'Los colores de la región se apagaron, como si les hubieran sacado el alma. Y entre los árboles se ven FANTASMAS...',
+    sala: ['tafi', 'ruta4', 'calilegua', 'monte', 'camino_alma'] },
+  poder: { nombre: 'GARGANTA DEL DIABLO', piso: '.', ruta: 'ruta3', abrir: [[12, 0], [13, 0], [12, 1], [13, 1]], celdas: [[12, 0], [13, 0]], llegada: [[12, 2], [13, 2]], dirVuelta: 0,
+    barrera: [[32, 10], [32, 11]], empuja: 2, hacia: 'el NORTE, donde ruge el agua', geo: [-54.44, -25.69], nivel: [33, 36],
+    lista: [['pumentor', 10], ['braspuma', 8], ['pumita', 12], ['strykit', 10], ['yacarelito', 10], ['hornerito', 8], ['mosquillon', 8]],
+    recluta: [['pumentor', 35], ['braspuma', 35]], jefe: [['pumentor', 36], ['braspuma', 37], ['lechuzonte', 38]], regiNivel: 66,
+    anomalia: '¡La tierra empezó a TEMBLAR! Una fuerza enorme sacude la región y las criaturas salvajes se volvieron mucho más fuertes...',
+    sala: ['villa', 'ruta3', 'minas', 'mocona', 'camino_poder'] },
+  realidad: { nombre: 'MÉDANOS DEL ESPEJISMO', piso: '-', ruta: 'caldenal', abrir: [[20, 16], [21, 16], [20, 17], [21, 17]], celdas: [[21, 16], [21, 17]], llegada: [[19, 16], [19, 17]], dirVuelta: 2,
+    barrera: [[10, 30], [11, 30]], empuja: 1, hacia: 'el ESTE, entre los médanos', geo: [-65.3, -37.5], nivel: [37, 40],
+    lista: [['yaguaraba', 10], ['espejon', 12], ['mimetit', 12], ['garkol', 10], ['duskfae', 6], ['zorrito', 8], ['cuisito', 8]],
+    recluta: [['yaguaraba', 39], ['espejon', 40]], jefe: [['yaguaraba', 41], ['duskfae', 42], ['espejonte', 43]], regiNivel: 68,
+    anomalia: 'El mundo se dio vuelta: los colores están al revés y ya no sabés qué es real. Las criaturas salvajes son todas sombras...',
+    sala: ['puerto', 'caldenal', 'camino_realidad'] },
+  espacio: { nombre: 'OBSERVATORIO DEL CERRO OTTO', piso: '.', ruta: 'ruta13', abrir: [[20, 9], [21, 9], [20, 10], [21, 10]], celdas: [[21, 9], [21, 10]], llegada: [[19, 9], [19, 10]], dirVuelta: 2,
+    barrera: [[10, 30], [11, 30]], empuja: 1, hacia: 'el ESTE, arriba de un cerro', geo: [-71.0, -41.35], nivel: [38, 42],
+    lista: [['dynacore', 10], ['motorb', 12], ['lechuzonte', 10], ['staticub', 10], ['condorito', 10], ['escarchin', 8]],
+    recluta: [['dynacore', 44], ['staticub', 45]], jefe: [['dynacore', 46], ['lechuzonte', 47], ['turborush', 48]], regiNivel: 72,
+    anomalia: 'El espacio se arrugó como un papel: de golpe Felipe aparece en otro lugar del camino. ¡SALTOS ESPACIALES!',
+    sala: ['bariloche', 'ruta13', 'elbolson', 'nahuel', 'camino_espacio'] },
+  tiempo: { nombre: 'BOSQUE PETRIFICADO', piso: '-', ruta: 'ruta15', abrir: [[13, 0], [14, 0], [13, 1], [14, 1]], celdas: [[13, 0], [14, 0]], llegada: [[13, 2], [14, 2]], dirVuelta: 0,
+    barrera: [[30, 10], [30, 11]], empuja: 2, hacia: 'el NORTE, donde los árboles son de piedra', geo: [-67.8, -40.95], nivel: [40, 44],
+    lista: [['espejon', 10], ['umbracor', 8], ['filodrac', 8], ['patagon', 8], ['glaciolito', 10], ['howlup', 10], ['lechucita', 10]],
+    recluta: [['umbracor', 48], ['espejon', 49]], jefe: [['espejonte', 50], ['umbracor', 51], ['espadonix', 52]], regiNivel: 74,
+    anomalia: 'El sol se apagó de golpe. En toda la región el TIEMPO se quedó trabado en una noche que no termina...',
+    sala: ['jacobacci', 'ruta14', 'ruta15', 'somuncura', 'camino_tiempo'] },
+};
+const regisLibres = () => !!(S.flags.regisLiberados || S.flags.regiohmAtrapado);
+const regiEncerrado = k => !!S.flags['templo_' + k] && !regisLibres();
+
+for (const [k, t] of Object.entries(TEMPLOS)) {
+  const c = CLANES[k], id = 'camino_' + k, idT = 'templo_' + k, ruta = MAPAS[t.ruta];
+  const H = TEMPLOS_GRILLAS[k].length;
+  // --- El camino al templo (se entra por abajo) ---
+  for (const [x, y] of t.abrir) ruta.grilla[y][x] = t.piso;
+  t.celdas.forEach(([x, y], i) => ruta.salidas.push({ x, y, a: id, ax: 10 + i, ay: H - 2, dir: 1 }));
+  MAPAS[id] = {
+    nombre: `CAMINO AL ${t.nombre}`, exterior: true, grilla: desdeTexto(TEMPLOS_GRILLAS[k]),
+    edificios: [{ x: 8, y: 2, w: 6, h: 4, tipo: 'templo_' + k, puerta: 2, abre: true }],
+    salidas: [
+      { x: 10, y: H - 1, a: t.ruta, ax: t.llegada[0][0], ay: t.llegada[0][1], dir: t.dirVuelta },
+      { x: 11, y: H - 1, a: t.ruta, ax: t.llegada[1][0], ay: t.llegada[1][1], dir: t.dirVuelta },
+      { x: 10, y: 5, a: idT, ax: 6, ay: 8, dir: 1 },
+    ],
+    carteles: { [`12,${H - 3}`]: `CAMINO AL ${t.nombre}. Arriba de todo hay un TEMPLO antiguo... y se ve una luz rara.` },
+    encuentros: { lista: t.lista, min: t.nivel[0], max: t.nivel[1] },
+    npcs: [
+      entrenadorNPC({
+        id: `templo_${k}_recluta`, x: 9, y: 9, dir: 0, pal: PAL[c.pal], nombre: 'RECLUTA DEL ' + c.nombre, equipo: t.recluta,
+        antes: ['RECLUTA: ¡Shhh! El jefe está ocupado adentro del templo. Nadie puede pasar.', '¡Y menos vos!'],
+        gana: 'RECLUTA: ¡Ay! Bueno, pasá... pero el jefe te va a hacer polvo.',
+        despues: 'RECLUTA: Ya está... lo que pasó en el templo no tiene vuelta atrás.',
+      }),
+    ],
+  };
+  MAPAS[id].grilla[H - 3][12] = 'S';
+  // --- Adentro del templo ---
+  MAPAS[idT] = {
+    nombre: NOMBRE_TEMPLO[k],
+    grilla: desdeTexto(TEMPLO_INTERIOR), edificios: [],
+    salidas: [{ x: 6, y: 9, a: id, ax: 10, ay: 6, dir: 0 }],
+    objetos: { '#': 'Paredes de piedra muy antiguas, llenas de dibujos de seis gemas.', a: `Cristales del color de la ${c.gema}. Brillan despacito, como si respiraran.` },
+    npcs: [
+      { id: `jefe_templo_${k}`, x: 6, y: 4, dir: 1, pal: PAL[c.palJefe], visible: () => !S.flags['templo_' + k],
+        hablar: async () => { await escenaTemplo(k); } },
+      { id: `regi_${k}`, x: 6, y: 2, dir: 0, criatura: REGI_DE[k],
+        visible: () => (!S.flags['templo_' + k] || regisLibres()) && !S.flags['regiAtrapado_' + k],
+        hablar: async () => {
+          if (!regisLibres()) { await decir(`${c.guardian} duerme profundamente sobre el altar. La ${c.gema} brilla en su pecho.`); return; }
+          if (!S.equipo.some(m => m.ps > 0)) { await decir('Tus criaturas no tienen energía. ¡Curalas primero!'); return; }
+          await decir(`${c.guardian} abrió los ojos despacito. Esta vez está tranquilo... y te mira como pidiendo un desafío.`);
+          const r = await batalla({ salvaje: [REGI_DE[k], 70], legendario: true });
+          if (r === 'atrapado') { S.flags['regiAtrapado_' + k] = true; await decir(`¡${c.guardian} eligió acompañar a Felipe! La ${c.gema} va a estar a salvo con vos.`); guardar(); }
+          else if (r === 'gana') await decir(`${c.guardian} se volvió a dormir sobre el altar. Podés volver a intentarlo cuando quieras.`);
+          else await decir(`${c.guardian} se quedó mirándote desde el altar...`);
+        } },
+    ],
+    disparadores: [{ prueba: (x, y) => y <= 7 && !S.flags['templo_' + k], accion: () => escenaTemplo(k) }],
+  };
+  // --- La barrera violeta que tapa el camino principal hasta que vas al templo ---
+  ruta.disparadores = (ruta.disparadores || []).concat([{
+    prueba: (x, y) => !S.flags['templo_' + k] && t.barrera.some(([bx, by]) => bx === x && by === y),
+    accion: async () => {
+      ui.flash = 1; await esperar(2); ui.flash = 0;
+      await decir('¡Una BARRERA de luz violeta tapa el camino! Hace un zumbido raro... ¡no se puede pasar!');
+      await decir(`La luz viene de ${t.hacia}. ¿Habrá algo ahí que la está haciendo?`);
+      await pasoForzado(t.empuja);
+    },
+  }]);
+  // --- El 3er encuentro: el jefe pelea con el Regi ---
+  const o3 = ENCUENTROS_CLANES.find(e => e.clan === k && e.vez === 2);
+  o3.jefe.push([REGI_DE[k], t.regiNivel]);
+  const jefe3 = MAPAS[o3.mapa].npcs.find(n => n.id === `clan_${k}2_j`);
+  const hablar3 = jefe3.hablar;
+  jefe3.hablar = async () => {
+    if (!S.flags['ent_' + jefe3.id] && S.flags['templo_' + k]) await decir(`${c.jefe}: ¿Te acordás de ${c.guardian}, el del templo? Ahora pelea para MÍ. ¡Mirá!`);
+    await hablar3();
+  };
+  LUGAR_GEO_EXTRA[id] = t.geo;
+}
+
+// La escena del templo: el jefe te reta, despierta al guardián y lo encierra
+async function escenaTemplo(k) {
+  if (S.flags['templo_' + k]) return;
+  const c = CLANES[k], t = TEMPLOS[k];
+  const jefe = npcPorId('jefe_templo_' + k); if (jefe) jefe.dir = 0;
+  await decir(`${c.jefe}: ¡Felipe! ¿Me seguiste hasta acá? Llegás justo para el gran momento.`);
+  await decir(`Atrás mío duerme ${c.guardian}, el guardián de la ${c.gema}. Hace miles de años que nadie lo despierta.`);
+  await decir('Pero antes... vamos a ver si sos tan bueno como dicen. ¡En guardia!');
+  const r = await batalla({ entrenador: { nombre: 'JEFE ' + c.jefe, pal: PAL[c.palJefe], equipo: t.jefe, sinDerrota: true } });
+  if (r === 'gana') await decir(`${c.jefe}: Grr... ganaste. Pero no importa. ¡Esto ya no lo frena nadie!`);
+  else await decir(`${c.jefe}: ¡Ja! ¿Viste? Igual tranquilo, no vine a pelear con vos...`);
+  if (jefe) jefe.dir = 1;
+  await decir(`${c.jefe}: ¡${c.guardian}! ¡DESPERTATE!`);
+  for (let i = 0; i < 2; i++) await destello(10);
+  await decir(`${c.guardian} abrió los ojos. La ${c.gema} de su pecho empezó a brillar cada vez más fuerte...`);
+  await decir(`¡${c.jefe} sacó un CRISTAL enorme y lo apuntó al guardián!`);
+  await destello(24);
+  S.flags['templo_' + k] = true;
+  await decir(`¡${c.guardian} quedó ENCERRADO adentro del cristal! Y ${c.jefe} se lo llevó...`);
+  await decir(`${c.jefe} (de lejos): ¡Ahora es NUESTRO! ¡Nos vemos, Felipe!`);
+  if (!S.equipo.some(m => m.ps > 0)) { curarEquipo(); await decir('Los cristales del templo brillaron y le devolvieron la energía a tus criaturas.'); }
+  await decir('...El templo se quedó en silencio. Afuera, algo cambió.');
+  await decir(t.anomalia);
+  await decir('La BARRERA violeta del camino se apagó. Ya se puede seguir viaje... pero ¿qué va a pasar ahora?');
+  guardar();
+}
+
+// ===== ANOMALÍAS mientras un Regi está encerrado =====
+function anomaliaAca() {
+  for (const [k, t] of Object.entries(TEMPLOS)) if (t.sala.includes(S.mapa) && regiEncerrado(k)) return k;
+  return null;
+}
+// Efecto de color en la pantalla
+function filtroAnomalia() {
+  const k = anomaliaAca();
+  if (k === 'mente') return 'hue-rotate(290deg) saturate(1.4)';
+  if (k === 'alma') return 'grayscale(0.8)';
+  if (k === 'realidad') return 'invert(0.88) hue-rotate(180deg)';
+  if (k === 'espacio') return 'hue-rotate(200deg) saturate(1.3)';
+  return '';
+}
+// La región del TIEMPO se queda de noche
+for (const id of TEMPLOS.tiempo.sala) {
+  const m = MAPAS[id]; if (!m) continue;
+  const propio = m.oscuro;
+  Object.defineProperty(m, 'oscuro', { get: () => propio || (regiEncerrado('tiempo') && MAPAS[id].exterior ? true : undefined), configurable: true });
+}
+// Las criaturas salvajes cambian
+const SALVAJES_ANOMALIA = {
+  mente: [['espejito', 1], ['mimetit', 1], ['lechucita', 1]],
+  alma: [['garkol', 1], ['cobijoso', 1], ['farolito', 1], ['yaguaraba', 1]],
+  realidad: [['yaguaraba', 1], ['umbracor', 1], ['duskfae', 1], ['mimetit', 1]],
+  tiempo: [['howlup', 1], ['lechucita', 1], ['sparknight', 1]],
+  espacio: [['motorb', 1], ['dynacore', 1], ['staticub', 1]],
+};
+function anomaliaEspecie(e) {
+  const k = anomaliaAca(); if (!k) return e;
+  if (k === 'poder') return { id: e.id, nivel: Math.min(100, e.nivel + 5) };
+  if (Math.random() < 0.45 && SALVAJES_ANOMALIA[k]) { const l = SALVAJES_ANOMALIA[k]; return { id: l[Math.floor(Math.random() * l.length)][0], nivel: e.nivel }; }
+  return e;
+}
+// Cosas que pasan mientras caminás
+let pasosAnomalia = 0;
+function anomaliaPaso() {
+  const k = anomaliaAca(); if (!k || !mapa().exterior) return null;
+  pasosAnomalia++;
+  if (k === 'mente' && pasosAnomalia % 45 === 0) return async () => {
+    await decir('¡Una onda PSÍQUICA! A Felipe le da vueltas la cabeza...');
+    for (let i = 0; i < 8; i++) { S.dir = [0, 2, 1, 3][i % 4]; await esperar(4); }
+  };
+  if (k === 'poder' && pasosAnomalia % 35 === 0) return async () => {
+    for (let i = 0; i < 16; i++) { ui.temblor = (i % 2 ? 3 : -3); await esperar(2); }
+    ui.temblor = 0;
+    await decir('¡La tierra TIEMBLA! La fuerza de REGIPULSO encerrado sacude toda la región.');
+  };
+  if (k === 'espacio' && pasosAnomalia % 40 === 0) return async () => {
+    // Salto espacial: aparece en otra baldosa del mismo mapa a la que se pueda llegar caminando
+    const vis = new Set([S.x + ',' + S.y]), q = [[S.x, S.y]], llega = [];
+    while (q.length) {
+      const [x, y] = q.shift();
+      for (const d of [0, 1, 2, 3]) {
+        const nx = x + DX[d], ny = y + DY[d], kk = nx + ',' + ny;
+        if (vis.has(kk) || !transitable(nx, ny)) continue;
+        vis.add(kk); q.push([nx, ny]);
+        if (!(mapa().salidas || []).some(s => s.x === nx && s.y === ny) && Math.abs(nx - S.x) + Math.abs(ny - S.y) > 5) llega.push([nx, ny]);
+      }
+    }
+    if (!llega.length) return;
+    ui.flash = 1; await esperar(3); ui.flash = 0;
+    const [nx, ny] = llega[Math.floor(Math.random() * llega.length)];
+    S.x = nx; S.y = ny;
+    await decir('¡ZUUUM! ¡Un SALTO ESPACIAL! Felipe apareció en otra parte del camino.');
+  };
+  return null;
+}
+
+// ===== REGIOHM: el final cambia =====
+// Ya no se lo atrapa: cuando le ganás se calma, devuelve a los guardianes a sus templos y se va por un portal.
+{
+  const reg = MAPAS.cima.npcs.find(n => n.id === 'regiohm');
+  reg.visible = () => S.flags.regiohmDesperto && !S.flags.regiohmAtrapado && !S.flags.regiohmCalmado;
+  reg.hablar = async () => {
+    if (!S.equipo.some(m => m.ps > 0)) { await decir('Tus criaturas no tienen energía. ¡Curalas en el CEMIC de PLAZA DE MULAS!'); return; }
+    await decir('REGIOHM: ¡¡GROOOOAAAAR!!');
+    const r = await batalla({ salvaje: ['regiohm', 80], legendario: true, sinCaptura: true });
+    if (r !== 'gana') { await decir('REGIOHM sigue furioso en la cumbre, esperando...'); return; }
+    await decir('REGIOHM cayó de rodillas sobre la nieve... y todo quedó en silencio.');
+    await destello(16);
+    await decir('De a poco, sus ojos dejaron de ser rojos. ¡REGIOHM se DESPERTÓ de verdad! Ya no está enojado.');
+    await decir('REGIOHM levantó los brazos. Los seis cristales de los clanes se rompieron en mil pedacitos...');
+    for (let i = 0; i < 3; i++) await destello(8);
+    await decir('...y de su corona salieron SEIS LUCES, cada una volando hacia un lugar distinto del país.');
+    await decir('¡Eran los seis guardianes! REGIMENTO, REGIANIMA, REGIPULSO, REGIFRACTO, REGIÓRBITA y REGICRONO volvieron a sus TEMPLOS.');
+    S.flags.regisLiberados = true;
+    await decir('En toda la Argentina las cosas raras se terminaron: volvieron los colores, el sol y la calma.');
+    await decir('REGIOHM miró a Felipe un ratito largo... y con un dedo dibujó un círculo de luz en el aire.');
+    await destello(30);
+    await decir('¡Se abrió un PORTAL dorado! REGIOHM entró despacio... y el portal se cerró detrás de él.');
+    S.flags.regiohmCalmado = true;
+    await decir('¡Felipe salvó a toda la región! ¡Sos un verdadero CAMPEÓN de las CRIATURAS CRIOLLAS!');
+    await decir('Dicen que ahora los guardianes duermen tranquilos en sus templos... y que a veces aceptan un desafío.');
+    guardar();
+  };
+}

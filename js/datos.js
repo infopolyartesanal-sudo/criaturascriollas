@@ -2825,6 +2825,109 @@ Object.assign(ESPECIES, {
 });
 
 
+// ===== Los SEIS GUARDIANES de las gemas (diapositivas 190-195 de Felipe) =====
+// Tipos y movimiento de firma de la presentación; cuerpo de piedra con su gema (dibujo hecho con figuras, Felipe lo puede cambiar).
+Object.assign(MOVS, {
+  red_neuronal: { nombre: 'Red Neuronal', tipo: 'PSIQUICO', pot: 100, prec: 95, pp: 5 },
+  aura_espiritual: { nombre: 'Aura Espiritual', tipo: 'HADA', pot: 100, prec: 95, pp: 5 },
+  fuerza_absoluta: { nombre: 'Fuerza Absoluta', tipo: 'LUCHA', pot: 100, prec: 95, pp: 5 },
+  falla_realidad: { nombre: 'Falla en la Realidad', tipo: 'SINIESTRO', pot: 100, prec: 95, pp: 5 },
+  salto_espacial: { nombre: 'Salto Espacial', tipo: 'ELECTRICO', pot: 100, prec: 95, pp: 5 },
+  bucle_temporal: { nombre: 'Bucle Temporal', tipo: 'ACERO', pot: 100, prec: 95, pp: 5 },
+});
+Object.assign(ESPECIES, {
+  regimento: {
+    nombre: 'Regimento', tipos: ['PSIQUICO'], base: { ps: 95, atk: 100, def: 105, vel: 80 }, captura: 20, exp: 270,
+    desc: 'el guardián de la Gema de la Mente',
+    movs: [[1, 'embestida'], [1, 'mareo'], [15, 'mareo'], [30, 'vision'], [45, 'rugido_titan'], [55, 'resplandor'], [60, 'red_neuronal']],
+    sprite: [
+      ['r', 9, 23, 5, 8, '#8a78a8'], ['r', 18, 23, 5, 8, '#8a78a8'], ['r', 8, 29, 7, 3, '#8a78a8'], ['r', 17, 29, 7, 3, '#8a78a8'],
+      ['r', 2, 12, 5, 12, '#8a78a8'], ['r', 25, 12, 5, 12, '#8a78a8'],
+      ['r', 7, 9, 18, 16, '#c8b8d8'], ['r', 6, 10, 20, 3, '#c8b8d8'],
+      ['r', 8, 24, 16, 1, '#8a78a8'], ['r', 13, 9, 1, 15, '#8a78a8'], ['r', 18, 9, 1, 15, '#8a78a8'],
+      ['e', 16, 15, 3.5, 3.5, '#f070c0'], ['e', 15, 14, 1.4, 1.4, '#ffffff', 's'],
+      ['r', 10, 2, 12, 8, '#c8b8d8'], ['r', 11, 5, 3, 2, '#f070c0'], ['r', 18, 5, 3, 2, '#f070c0'],
+      ['r', 10, 2, 12, 1, '#8a78a8'],
+      ['e', 16, 4, 6, 3, '#e8a8e0', 's'], ['r', 11, 3, 1, 3, '#f070c0'], ['r', 20, 3, 1, 3, '#f070c0'], ['r', 15, 1, 2, 2, '#f070c0'],
+    ],
+  },
+  regianima: {
+    nombre: 'Regianima', tipos: ['PSIQUICO', 'HADA'], base: { ps: 95, atk: 100, def: 105, vel: 80 }, captura: 20, exp: 270,
+    desc: 'el guardián de la Gema del Alma',
+    movs: [[1, 'embestida'], [1, 'mareo'], [15, 'vision'], [30, 'polvo_lunar'], [45, 'resplandor'], [55, 'luz_mala'], [60, 'aura_espiritual']],
+    sprite: [
+      ['r', 9, 23, 5, 8, '#b8a0d8'], ['r', 18, 23, 5, 8, '#b8a0d8'], ['r', 8, 29, 7, 3, '#b8a0d8'], ['r', 17, 29, 7, 3, '#b8a0d8'],
+      ['r', 2, 12, 5, 12, '#b8a0d8'], ['r', 25, 12, 5, 12, '#b8a0d8'],
+      ['r', 7, 9, 18, 16, '#f0e8f8'], ['r', 6, 10, 20, 3, '#f0e8f8'],
+      ['r', 8, 24, 16, 1, '#b8a0d8'], ['r', 13, 9, 1, 15, '#b8a0d8'], ['r', 18, 9, 1, 15, '#b8a0d8'],
+      ['e', 16, 15, 3.5, 3.5, '#a060f0'], ['e', 15, 14, 1.4, 1.4, '#ffffff', 's'],
+      ['r', 10, 2, 12, 8, '#f0e8f8'], ['r', 11, 5, 3, 2, '#a060f0'], ['r', 18, 5, 3, 2, '#a060f0'],
+      ['r', 10, 2, 12, 1, '#b8a0d8'],
+      ['p', [[3, 12], [0, 4], [6, 9]], '#e0c8ff'], ['p', [[29, 12], [32, 4], [26, 9]], '#e0c8ff'], ['d', 2, 18, '#f8f0ff'], ['d', 30, 20, '#f8f0ff'],
+    ],
+  },
+  regipulso: {
+    nombre: 'Regipulso', tipos: ['PSIQUICO', 'LUCHA'], base: { ps: 95, atk: 100, def: 105, vel: 80 }, captura: 20, exp: 270,
+    desc: 'el guardián de la Gema del Poder',
+    movs: [[1, 'embestida'], [1, 'mareo'], [15, 'punetazo'], [30, 'troncazo'], [45, 'terremoto'], [55, 'vision'], [60, 'fuerza_absoluta']],
+    sprite: [
+      ['r', 9, 23, 5, 8, '#9a5a3a'], ['r', 18, 23, 5, 8, '#9a5a3a'], ['r', 8, 29, 7, 3, '#9a5a3a'], ['r', 17, 29, 7, 3, '#9a5a3a'],
+      ['r', 2, 12, 5, 12, '#9a5a3a'], ['r', 25, 12, 5, 12, '#9a5a3a'],
+      ['r', 7, 9, 18, 16, '#d89070'], ['r', 6, 10, 20, 3, '#d89070'],
+      ['r', 8, 24, 16, 1, '#9a5a3a'], ['r', 13, 9, 1, 15, '#9a5a3a'], ['r', 18, 9, 1, 15, '#9a5a3a'],
+      ['e', 16, 15, 3.5, 3.5, '#e03030'], ['e', 15, 14, 1.4, 1.4, '#ffffff', 's'],
+      ['r', 10, 2, 12, 8, '#d89070'], ['r', 11, 5, 3, 2, '#e03030'], ['r', 18, 5, 3, 2, '#e03030'],
+      ['r', 10, 2, 12, 1, '#9a5a3a'],
+      ['e', 4, 21, 4, 4, '#9a5a3a'], ['e', 28, 21, 4, 4, '#9a5a3a'], ['r', 1, 20, 6, 1, '#f8d040'], ['r', 25, 20, 6, 1, '#f8d040'],
+    ],
+  },
+  regifracto: {
+    nombre: 'Regifracto', tipos: ['PSIQUICO', 'SINIESTRO'], base: { ps: 95, atk: 100, def: 105, vel: 80 }, captura: 20, exp: 270,
+    desc: 'el guardián de la Gema de la Realidad',
+    movs: [[1, 'embestida'], [1, 'mareo'], [15, 'vision'], [30, 'noche_cerrada'], [45, 'mareo'], [55, 'tajo_abisal'], [60, 'falla_realidad']],
+    sprite: [
+      ['r', 9, 23, 5, 8, '#2a2030'], ['r', 18, 23, 5, 8, '#2a2030'], ['r', 8, 29, 7, 3, '#2a2030'], ['r', 17, 29, 7, 3, '#2a2030'],
+      ['r', 2, 12, 5, 12, '#2a2030'], ['r', 25, 12, 5, 12, '#2a2030'],
+      ['r', 7, 9, 18, 16, '#5a5060'], ['r', 6, 10, 20, 3, '#5a5060'],
+      ['r', 8, 24, 16, 1, '#2a2030'], ['r', 13, 9, 1, 15, '#2a2030'], ['r', 18, 9, 1, 15, '#2a2030'],
+      ['e', 16, 15, 3.5, 3.5, '#e03030'], ['e', 15, 14, 1.4, 1.4, '#ffffff', 's'],
+      ['r', 10, 2, 12, 8, '#5a5060'], ['r', 11, 5, 3, 2, '#e03030'], ['r', 18, 5, 3, 2, '#e03030'],
+      ['r', 10, 2, 12, 1, '#2a2030'],
+      ['p', [[9, 10], [13, 15], [10, 20], [14, 26]], '#e03030'], ['p', [[23, 9], [19, 14], [22, 19]], '#e03030'], ['d', 3, 6, '#e03030'], ['d', 28, 27, '#e03030'],
+    ],
+  },
+  regiorbita: {
+    nombre: 'Regiórbita', tipos: ['PSIQUICO', 'ELECTRICO'], base: { ps: 95, atk: 100, def: 105, vel: 80 }, captura: 20, exp: 270,
+    desc: 'el guardián de la Gema del Espacio',
+    movs: [[1, 'embestida'], [1, 'mareo'], [15, 'vision'], [30, 'rayo'], [45, 'chispazo'], [55, 'trueno'], [60, 'salto_espacial']],
+    sprite: [
+      ['r', 9, 23, 5, 8, '#1a2a5a'], ['r', 18, 23, 5, 8, '#1a2a5a'], ['r', 8, 29, 7, 3, '#1a2a5a'], ['r', 17, 29, 7, 3, '#1a2a5a'],
+      ['r', 2, 12, 5, 12, '#1a2a5a'], ['r', 25, 12, 5, 12, '#1a2a5a'],
+      ['r', 7, 9, 18, 16, '#3a4a8a'], ['r', 6, 10, 20, 3, '#3a4a8a'],
+      ['r', 8, 24, 16, 1, '#1a2a5a'], ['r', 13, 9, 1, 15, '#1a2a5a'], ['r', 18, 9, 1, 15, '#1a2a5a'],
+      ['e', 16, 15, 3.5, 3.5, '#f8d040'], ['e', 15, 14, 1.4, 1.4, '#ffffff', 's'],
+      ['r', 10, 2, 12, 8, '#3a4a8a'], ['r', 11, 5, 3, 2, '#f8d040'], ['r', 18, 5, 3, 2, '#f8d040'],
+      ['r', 10, 2, 12, 1, '#1a2a5a'],
+      ['e', 16, 15, 15, 3, '#80a0f0', 'c'], ['d', 2, 4, '#ffffff'], ['d', 29, 7, '#ffffff'], ['d', 5, 27, '#ffffff'], ['d', 27, 25, '#f8d040'], ['e', 28, 4, 2, 2, '#f8d040', 's'],
+    ],
+  },
+  regicrono: {
+    nombre: 'Regicrono', tipos: ['PSIQUICO', 'ACERO'], base: { ps: 95, atk: 100, def: 105, vel: 80 }, captura: 20, exp: 270,
+    desc: 'el guardián de la Gema del Tiempo',
+    movs: [[1, 'embestida'], [1, 'mareo'], [15, 'vision'], [30, 'cabeza_hierro'], [45, 'latigo_metalico'], [55, 'reflejo'], [60, 'bucle_temporal']],
+    sprite: [
+      ['r', 9, 23, 5, 8, '#6a7480'], ['r', 18, 23, 5, 8, '#6a7480'], ['r', 8, 29, 7, 3, '#6a7480'], ['r', 17, 29, 7, 3, '#6a7480'],
+      ['r', 2, 12, 5, 12, '#6a7480'], ['r', 25, 12, 5, 12, '#6a7480'],
+      ['r', 7, 9, 18, 16, '#a8b0b8'], ['r', 6, 10, 20, 3, '#a8b0b8'],
+      ['r', 8, 24, 16, 1, '#6a7480'], ['r', 13, 9, 1, 15, '#6a7480'], ['r', 18, 9, 1, 15, '#6a7480'],
+      ['e', 16, 15, 3.5, 3.5, '#40d080'], ['e', 15, 14, 1.4, 1.4, '#ffffff', 's'],
+      ['r', 10, 2, 12, 8, '#a8b0b8'], ['r', 11, 5, 3, 2, '#40d080'], ['r', 18, 5, 3, 2, '#40d080'],
+      ['r', 10, 2, 12, 1, '#6a7480'],
+      ['e', 16, 15, 5, 5, '#f0f0e0', 's'], ['r', 15.5, 11, 1, 4, '#2a2a2a'], ['r', 16, 14.5, 3, 1, '#2a2a2a'], ['p', [[2, 2], [8, 2], [5, 6]], '#c8a040'], ['p', [[2, 10], [8, 10], [5, 6]], '#c8a040'],
+    ],
+  },
+});
+
 // ===== Habilidades =====
 // Sacadas de la presentación de Felipe (las que no tenían, elegidas parecidas).
 // ef = qué hace en la batalla (lo maneja juego.js)
@@ -2976,6 +3079,14 @@ Object.assign(HAB_ESPECIE, {
   pyrefae: { n: ['veloEspejismo', 'absorbeFuego'] }, coralfae: { n: ['veloEspejismo', 'hidratacion'] },
   sylvafae: { n: ['veloEspejismo', 'clorofila'] }, spritefae: { n: ['veloEspejismo', 'cromolente'] },
   grandfae: { n: ['veloEspejismo', 'filtro'], o: 'competitivo' },
+});
+Object.assign(HAB_ESPECIE, {
+  regimento: { n: ['filtro', 'espejoMagico'] },
+  regianima: { n: ['colectorAlmas', 'veloEspejismo'] },
+  regipulso: { n: ['garraDura', 'punoFerreo'] },
+  regifracto: { n: ['ilusion', 'intimidacion'] },
+  regiorbita: { n: ['electromotor', 'vientoAfin'] },
+  regicrono: { n: ['impasible', 'cuerpoPuro'] },
 });
 for (const id in ESPECIES) {
   const h = HAB_ESPECIE[id] || 'pasoLigero';

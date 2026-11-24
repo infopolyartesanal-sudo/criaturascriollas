@@ -334,6 +334,8 @@ function pasoMundo() {
       S.x += DX[S.dir]; S.y += DY[S.dir];
       S.pasoAlt ^= 1;
       alPisar();
+      // Anomalías de los templos (temblores, saltos espaciales, mareos)
+      if (!S.ocupado && typeof anomaliaPaso === 'function') { const f = anomaliaPaso(); if (f) correr(f()); }
     }
     return;
   }
@@ -432,7 +434,8 @@ function elegirEspecie(enc) {
   const total = enc.lista.reduce((a, e) => a + e[1], 0);
   let r = Math.random() * total, id = enc.lista[0][0];
   for (const [e, p] of enc.lista) { if ((r -= p) < 0) { id = e; break; } }
-  return { id, nivel: enc.min + Math.floor(Math.random() * (enc.max - enc.min + 1)) };
+  const e = { id, nivel: enc.min + Math.floor(Math.random() * (enc.max - enc.min + 1)) };
+  return typeof anomaliaEspecie === 'function' ? anomaliaEspecie(e) : e; // las anomalías de los templos cambian las criaturas
 }
 function aparecerSalvaje(m, lejos) {
   for (let intento = 0; intento < 40; intento++) {
@@ -501,7 +504,8 @@ async function encuentroSalvaje() {
   let r = Math.random() * total, id = enc.lista[0][0];
   for (const [e, p] of enc.lista) { if ((r -= p) < 0) { id = e; break; } }
   const nivel = enc.min + Math.floor(Math.random() * (enc.max - enc.min + 1));
-  await batalla({ salvaje: [id, nivel] });
+  const e = typeof anomaliaEspecie === 'function' ? anomaliaEspecie({ id, nivel }) : { id, nivel };
+  await batalla({ salvaje: [e.id, e.nivel] });
 }
 
 // ---------- Menú principal ----------
@@ -931,6 +935,7 @@ const LUGAR_GEO = {
   quebrada: [-64.75, -31.65], quilmes: [-65.95, -26.45], mocona: [-53.9, -27.15], nahuel: [-71.55, -40.95], glaciar: [-73.05, -50.5], pomez: [-67.45, -26.6],
   ruta22: [-68.9, -28.5], rodeo: [-69.15, -30.2], ruta23: [-69.4, -31.5], uspallata: [-69.35, -32.6], ruta24: [-69.6, -32.75], plaza: [-69.88, -32.65],
 };
+if (typeof LUGAR_GEO_EXTRA !== 'undefined') Object.assign(LUGAR_GEO, LUGAR_GEO_EXTRA);
 const GIMNASIOS_GEO = [['vallefertil', 1], ['tafi', 2], ['puerto', 3], ['bariloche', 4], ['somuncura', 5], ['ushuaia', 6], ['ojos', 7], ['plaza', 8]];
 function lugarExterior(id) {
   let m = id, n = 0;
@@ -1279,6 +1284,7 @@ async function batalla(op) {
     rival: null, yo: null, rivalVis: false, yoVis: false, entVis: !!ent,
     rDX: 0, rDY: 0, yDX: 0, yDY: 0, parp: { r: 0, y: 0 }, ps: { r: 0, y: 0 },
     menu: null, idxMenu: 0, idxMov: 0, bola: null, blanco: { r: 0, y: 0 },
+    sinCaptura: !!op.sinCaptura,
   };
   S.escena = 'batalla';
   let resultado = null;
@@ -1817,6 +1823,7 @@ async function usarObjetoBatalla(obj) {
   const o = OBJETOS[obj];
   if (obj === 'boleadora') {
     if (bt.tipo === 'entrenador') { await decir('¡No se puede atrapar la criatura de otro entrenador!'); return 'nada'; }
+    if (bt.sinCaptura) { await decir('¡REGIOHM es demasiado poderoso! La BOLEADORA ni lo toca. Hay que ganarle.'); return 'nada'; }
     return await tirarBoleadora();
   }
   if (o.cura) {
@@ -2020,6 +2027,11 @@ function paso() {
 }
 function dibujar() {
   b.imageSmoothingEnabled = false;
+  // Anomalías: color raro de la pantalla y temblores
+  const fil = S.escena === 'mundo' && typeof filtroAnomalia === 'function' ? filtroAnomalia() : '';
+  if (pantalla.style.filter !== fil) pantalla.style.filter = fil;
+  const tem = ui.temblor ? `translateX(${ui.temblor}px)` : '';
+  if (pantalla.style.transform !== tem) pantalla.style.transform = tem;
   if (S.escena === 'titulo') dibujarTitulo();
   else if (S.escena === 'intro') dibujarIntro();
   else if (S.escena === 'mundo') dibujarMundo();

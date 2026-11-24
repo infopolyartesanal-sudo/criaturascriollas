@@ -437,10 +437,12 @@ function crearEdificio(tipo, w, h, puerta) {
   const R = (a, b, ww, hh, col) => { x.fillStyle = col; x.fillRect(a, b, ww, hh); };
   const ancho = w * 16, alto = h * 16;
   const techoH = (h - 2) * 16 + 4;
-  const pared = tipo === 'lab' ? '#eef2f6' : tipo.startsWith('gimnasio') ? '#ece4f4' : tipo === 'adobe' ? '#e0c08a' : '#f6eedc';
+  const pared = tipo === 'lab' ? '#eef2f6' : tipo.startsWith('gimnasio') ? '#ece4f4' : tipo === 'adobe' ? '#e0c08a' : tipo.startsWith('templo') ? '#d8d0c4' : '#f6eedc';
   R(2, techoH - 4, ancho - 4, alto - techoH + 4, pared);
   R(2, alto - 3, ancho - 4, 3, '#a89878');
-  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#d84848', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', gimnasio4: '#3a7ab0', gimnasio5: '#2a2040', gimnasio6: '#c83a3a', gimnasio7: '#e06a20', gimnasio8: '#3a3a8a', adobe: '#9a6a3a' };
+  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#d84848', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', gimnasio4: '#3a7ab0', gimnasio5: '#2a2040', gimnasio6: '#c83a3a', gimnasio7: '#e06a20', gimnasio8: '#3a3a8a', adobe: '#9a6a3a',
+    // templos de los guardianes de las gemas: techo del color de cada clan
+    templo_mente: '#c030a0', templo_alma: '#8a4ae0', templo_poder: '#c02828', templo_realidad: '#2a1a2a', templo_espacio: '#2a5ac8', templo_tiempo: '#b08a30' };
   const tc = TECHOS[tipo] || '#c8553a';
   R(0, 0, ancho, techoH, tc);
   let fila = 0;
@@ -460,8 +462,13 @@ function crearEdificio(tipo, w, h, puerta) {
     const cx = ancho / 2;
     R(cx - 9, 4, 18, 15, '#f8f0ff'); R(cx - 9, 4, 18, 1, '#4a2a6a');
     R(cx - 1, 6, 2, 11, '#f0c030'); R(cx - 5, 10, 10, 2, '#f0c030'); R(cx - 3, 8, 6, 6, '#f0c030'); R(cx - 1, 10, 2, 2, '#f85888');
+  } else if (tipo.startsWith('templo')) {
+    // Templo de un guardián: una gema en el frente y columnas de piedra
+    const cx = ancho / 2;
+    R(cx - 2, 4, 4, 14, '#f8f0ff'); R(cx - 5, 7, 10, 8, '#f8f0ff'); R(cx - 3, 6, 6, 10, tono(tc, 1.6)); R(cx - 1, 8, 2, 3, '#ffffff');
+    for (let i = 0; i < w; i++) if (i !== puerta) { R(i * 16 + 5, techoH + 1, 6, alto - techoH - 4, '#f2ece2'); R(i * 16 + 4, techoH, 8, 2, '#b8b0a4'); R(i * 16 + 4, alto - 5, 8, 2, '#b8b0a4'); }
   } else { R(ancho - 14, 3, 6, 8, '#8a6a5a'); R(ancho - 15, 2, 8, 2, '#6a4a3a'); }
-  const ventanas = tipo === 'lab' ? [1, 4] : tipo.startsWith('gimnasio') ? [1, 5] : [1, 3];
+  const ventanas = tipo === 'lab' ? [1, 4] : tipo.startsWith('gimnasio') ? [1, 5] : tipo.startsWith('templo') ? [] : [1, 3];
   for (const i of ventanas) {
     if (i === puerta) continue;
     const vx = i * 16 + 2, vy = alto - 26;
