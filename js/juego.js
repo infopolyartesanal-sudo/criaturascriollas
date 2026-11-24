@@ -1279,12 +1279,15 @@ async function batalla(op) {
   const ent = op.entrenador;
   // Un entrenador puede forzar la habilidad de una criatura: ['id', nivel, { hab: 'sequia' }]
   const equipoRival = ent ? ent.equipo.map(([id, l, extra]) => { const c = crearCriatura(id, l); if (extra && extra.hab) c.habForzada = extra.hab; return c; }) : [crearCriatura(op.salvaje[0], op.salvaje[1])];
+  // Contra TODO el equipo junto, el jefe tiene seis veces más vida
+  if (op.todos) { const r = equipoRival[0]; r.psMax *= 6; r.ps = r.psMax; }
   bt = {
     tipo: ent ? 'entrenador' : 'salvaje', ent, equipoRival,
     rival: null, yo: null, rivalVis: false, yoVis: false, entVis: !!ent,
     rDX: 0, rDY: 0, yDX: 0, yDY: 0, parp: { r: 0, y: 0 }, ps: { r: 0, y: 0 },
     menu: null, idxMenu: 0, idxMov: 0, bola: null, blanco: { r: 0, y: 0 },
     sinCaptura: !!op.sinCaptura,
+    todos: !!op.todos, turno: 0, // todos: pelea de TODO el equipo junto (REGIOHM)
   };
   S.escena = 'batalla';
   let resultado = null;
@@ -1339,6 +1342,7 @@ async function batalla(op) {
       await ejecutarMov(at, de, o.mv, o.q);
       if (de.ps <= 0) break;
     }
+    if (bt.todos) await turnoDeTodos();
     await finDeTurno();
     if (bt.rival.ps <= 0) {
       await debilitar('r');
@@ -1352,6 +1356,7 @@ async function batalla(op) {
     if (bt.yo.ps <= 0) {
       await debilitar('y');
       if (!S.equipo.some(m => m.ps > 0)) { resultado = 'pierde'; break; }
+      if (bt.todos) { await sacarPropio(S.equipo.find(m => m.ps > 0)); continue; } // todo el equipo ya está peleando: pasa adelante la que sigue
       await decir('¿Qué criatura vas a mandar?', { auto: 30 });
       let idx = -1;
       while (idx < 0 || S.equipo[idx].ps <= 0) {
@@ -1496,6 +1501,40 @@ async function menuMovs() {
       bt.menu = null;
       return mv;
     }
+  }
+}
+// ---------- Pelea de TODO el equipo junto (contra REGIOHM) ----------
+// Después de la criatura que elegiste, atacan TODAS las demás que tengan energía (cada una elige su mejor ataque).
+// REGIOHM, cada dos turnos, suelta un rugido que lastima a todo el equipo.
+function mejorMovContra(m, de) {
+  const op = m.movs.filter(x => x.pp > 0 && MOVS[x.id].pot);
+  if (!op.length) return { id: 'forcejeo', pp: 1 };
+  let mejor = op[0], val = -1;
+  for (const x of op) {
+    const M = MOVS[x.id];
+    const v = M.pot * eficacia(M.tipo, tiposDe(de)) * (tiposDe(m).includes(M.tipo) ? 1.5 : 1) * (M.prec / 100);
+    if (v > val) { val = v; mejor = x; }
+  }
+  return mejor;
+}
+async function turnoDeTodos() {
+  bt.turno++;
+  const principal = bt.yo, psPrincipal = bt.ps.y;
+  for (const m of S.equipo) {
+    if (m === principal || m.ps <= 0 || bt.rival.ps <= 0) continue;
+    if (!m.et) m.et = { atk: 0, def: 0, vel: 0 };
+    bt.yo = m; bt.ps.y = m.ps;
+    await ejecutarMov(m, bt.rival, mejorMovContra(m, bt.rival), 'yo');
+  }
+  bt.yo = principal; bt.ps.y = principal.ps;
+  if (bt.rival.ps <= 0 || bt.turno % 2) return;
+  await decir(`¡${nombreBatalla(bt.rival)} soltó un RUGIDO que sacude a todo tu equipo!`, { auto: 45 });
+  bt.parp.y = 12;
+  for (const m of S.equipo) {
+    if (m.ps <= 0) continue;
+    m.ps = Math.max(0, m.ps - Math.ceil(m.psMax * 0.12));
+    if (m === principal) await animarPS(m);
+    if (m.ps <= 0 && m !== principal) await decir(`¡${nombreDe(m)} se quedó sin energía!`, { auto: 40 });
   }
 }
 function elegirMovRival() {
@@ -1947,6 +1986,13 @@ function dibujarBatalla() {
     const rr = respiro(0); // respiran: se estiran un poquito para arriba y vuelven
     b.drawImage(bt.blanco.r > 0 ? silueta(sp) : sp, 144 + bt.rDX - rr / 2, 2 + bt.rDY - rr, 64 + rr, 64 + rr);
     b.restore();
+  }
+  if (bt.todos && bt.yoVis) { // el resto del equipo, chiquito, peleando al lado
+    S.equipo.filter(m => m !== bt.yo).forEach((m, i) => {
+      b.globalAlpha = m.ps > 0 ? 1 : 0.3;
+      b.drawImage(spriteCriatura(m.id), 4 + i * 17, 33, 16, 16);
+      b.globalAlpha = 1;
+    });
   }
   if (bt.yo && bt.yoVis && !(bt.parp.y > 0 && (bt.parp.y-- >> 1) % 2)) {
     b.save(); b.beginPath(); b.rect(0, 0, W, 112); b.clip();
