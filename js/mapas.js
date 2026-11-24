@@ -5621,3 +5621,96 @@ function anomaliaPaso() {
     guardar();
   };
 }
+
+
+// =====================================================================================
+// ===== OBJETOS EN EL PISO, CORTE y EL PANTANO ESCONDIDO (pedido de Poly, 24/11/2026) =====
+// =====================================================================================
+// Boleadoras tiradas en el piso con un objeto adentro. Se juntan mirándolas y apretando A (una sola vez cada una).
+// Si no tienen x,y, el juego busca solo un lugar a trasmano (lejos de la entrada y sin tapar ningún camino).
+const ITEMS_SUELO = [
+  ['pampa', 'mate', 2], ['banado', 'boleadora', 3], ['sierras', 'alfajor', 2], ['travesia', 'piedraFuego', 1],
+  ['talampaya', 'mate', 3], ['calchaqui', 'piedraHoja', 1], ['ruta4', 'piedraAgua', 1], ['ruta5', 'alfajor', 3],
+  ['ruta6', 'piedraTrueno', 1], ['chaco', 'boleadora', 5], ['ruta2', 'nectarFloral', 1], ['ruta3', 'farolLuz', 1],
+  ['minas', 'piedraNoche', 1], ['caldenal', 'velaAnima', 1], ['estepa', 'mate', 5], ['ruta13', 'piedraFuego', 1],
+  ['ruta14', 'alfajor', 5], ['ruta15', 'escamaLuz', 1], ['ruta16', 'piedraAgua', 1], ['ruta17', 'boleadora', 10],
+  ['ruta18', 'metalDuro', 1], ['ruta19', 'rocaDura', 1], ['ruta20', 'piedraTrueno', 1], ['ruta21', 'alfajor', 5],
+  ['ruta22', 'piedraNoche', 1], ['ruta23', 'mate', 5],
+  // Las dos DOBLE HABILIDAD que hay en todo el juego
+  ['ruta24', 'dobleHab', 1],
+  ['pantano', 'dobleHab', 1, 19, 13], ['pantano', 'piedraHoja', 1, 2, 16],
+].map(([mapa, obj, n, x, y], i) => ({ id: 'suelo' + i, mapa, obj, n, x, y }));
+
+OBJETOS.dobleHab = { nombre: 'DOBLE HABILIDAD', precio: 0, dobleHab: true, desc: 'Una gema de dos colores. La criatura que la use puede tener DOS habilidades a la vez.' };
+OBJETOS.corte = { nombre: 'CORTE', precio: 0, desc: 'Un machete que te regaló LUNA. Sirve para cortar ÁRBOLES RAROS que tapan el camino.' };
+
+// --- LUNA (Gimnasio 1) regala el CORTE ---
+{
+  const luna = MAPAS.gimnasio && MAPAS.gimnasio.npcs.find(n => n.id === 'luna');
+  if (luna) {
+    const h0 = luna.hablar;
+    luna.hablar = async () => {
+      const antes = !!S.flags.insignia1;
+      await h0();
+      if (S.flags.insignia1 && !S.bolsa.corte) {
+        if (antes) await decir('LUNA: ¡Ah, me olvidaba! Esto también es para vos.');
+        S.bolsa.corte = 1;
+        await decir('¡Felipe recibió el CORTE!');
+        await decir('LUNA: Con el CORTE podés cortar los ÁRBOLES RAROS, esos retorcidos y violetas. Dicen que en el BAÑADO DEL RÍO SALADO hay uno que esconde algo...');
+        guardar();
+      }
+    };
+  }
+}
+
+// --- El PANTANO ESCONDIDO: abajo del BAÑADO DEL RÍO SALADO, detrás de un ÁRBOL RARO ---
+const PANTANO = [
+    'TTTTTTTTTT==TTTTTTTTTT',
+    'TT........==........TT',
+    'TT,,,,....==..~~~...TT',
+    'TT,,,,....==..~~~~..TT',
+    'TT,,,,,,,,==.,,,,..FTT',
+    'TT..========.,,,,...TT',
+    'TT..========........TT',
+    'TT..==,,,,,.....F...TT',
+    'TT..==,,,,,......~~.TT',
+    'TT..==,,.........~~.TT',
+    'TT..========........TT',
+    'TT..========........TT',
+    'TT..,,,,,,==.....TT.TT',
+    'TT,,,,,,,,==....FTT.TT',
+    'TTTT,,,,,,==........TT',
+    'TTTT,,,,..========..TT',
+    'TT.~~~....========..TT',
+    'TT..~~~.........==..TT',
+    'TT..............==..TT',
+    'TT~~~~~~~~========~~TT',
+    'TT~~~~~~~~~~~~~~~~~~TT',
+    'TT~~~~~~~~~~~~~~~~~~TT',
+    'TTTTTTTTTTTTTTTTTTTTTT',
+    'TTTTTTTTTTTTTTTTTTTTTT',
+];
+{
+  const b = MAPAS.banado;
+  b.grilla[14][20] = 'A'; // el árbol raro (se corta con CORTE)
+  b.grilla[14][21] = 'T';
+  b.grilla[15][20] = '.';
+  b.salidas.push({ x: 20, y: 15, a: 'pantano', ax: 10, ay: 1, dir: 0 });
+  b.objetos = Object.assign({}, b.objetos, { A: 'Un árbol RARO, retorcido y violeta. Atrás se ve un camino... Con un CORTE se podría pasar.' });
+  MAPAS.pantano = {
+    nombre: 'PANTANO ESCONDIDO', exterior: true, grilla: desdeTexto(PANTANO), edificios: [],
+    salidas: [{ x: 10, y: 0, a: 'banado', ax: 20, ay: 14, dir: 1 }, { x: 11, y: 0, a: 'banado', ax: 20, ay: 14, dir: 1 }],
+    carteles: {},
+    objetos: { '~': 'Agua quieta y marrón. Salen burbujas de abajo... ¿habrá algo?' },
+    encuentros: { lista: [['junquito', 12], ['yacarelito', 10], ['ajolodo', 8], ['carpinchu', 10], ['boilpole', 6], ['stinglet', 6], ['mosquillon', 8], ['larvin', 8]], min: 8, max: 12 },
+    npcs: [
+      entrenadorNPC({
+        id: 'pantano_t1', x: 13, y: 9, dir: 2, pal: PAL.pescador, nombre: 'PESCADOR TITO',
+        equipo: [['yacarelito', 11], ['ajolodo', 12]],
+        antes: ['PESCADOR TITO: ¡Nadie llega hasta acá! ¿Cortaste el árbol raro? ¡Entonces sos bueno de verdad!'],
+        gana: 'PESCADOR TITO: Bueno, bueno... me ganaste limpito.',
+        despues: 'PESCADOR TITO: En el fondo del pantano brilla algo raro entre los árboles. Yo nunca me animé a ir.',
+      }),
+    ],
+  };
+}

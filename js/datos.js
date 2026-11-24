@@ -3103,7 +3103,19 @@ function habClave(m) {
   if (m.habSlot === 'o' && e.habOculta) return e.habOculta;
   return e.habs[m.habSlot] || e.habs[0];
 }
-function habDe(m) { return HABILIDADES[habClave(m)]; }
+// habDe(m): la habilidad principal, y en .efs los efectos de TODAS las que tiene activas
+// (con DOBLE HABILIDAD, m.hab2 es la segunda). Las batallas preguntan con tieneEf(h, 'efecto').
+function habDe(m) {
+  const k1 = habClave(m), k2 = m.hab2 && HABILIDADES[m.hab2] && m.hab2 !== k1 ? m.hab2 : null;
+  const claves = k2 ? [k1, k2] : [k1];
+  return Object.assign({}, HABILIDADES[k1], { claves, efs: claves.map(k => HABILIDADES[k].ef), m });
+}
+function tieneEf(h, e) {
+  const i = h.efs ? h.efs.indexOf(e) : (h.ef === e ? 0 : -1);
+  if (i < 0) return false;
+  if (h.m && h.claves) h.m._anuncio = HABILIDADES[h.claves[i]].nombre; // para decir cuál de las dos se activó
+  return true;
+}
 function esHabOculta(m) { return m.habSlot === 'o' && !!ESPECIES[m.id].habOculta; }
 function sortearHab(id) {
   const e = ESPECIES[id];

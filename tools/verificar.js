@@ -10,7 +10,7 @@ function pisable(m, x, y, npcsOk) {
   const g = m.grilla; if (y < 0 || x < 0 || y >= g.length || x >= g[0].length) return false;
   const e = edif(m, x, y);
   if (e && !(e.abre && x === e.x + e.puerta && y === e.y + e.h - 1)) return false;
-  if (!CAM.has(g[y][x]) && !'XZO~'.includes(g[y][x])) return false; // el agua (BALSA) y lo que rompe el PICO también se pasan
+  if (!CAM.has(g[y][x]) && !'XZOA~'.includes(g[y][x])) return false; // el agua (BALSA) y lo que rompe el PICO o corta el CORTE también se pasan
   if (!npcsOk && (m.npcs || []).some(n => n.x === x && n.y === y)) return false;
   return true;
 }

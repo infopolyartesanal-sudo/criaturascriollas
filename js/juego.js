@@ -297,11 +297,12 @@ function transitable(x, y) {
   const ch = m.grilla[y][x];
   if (!CAMINABLE.has(ch) && !(ch === '~' && S.bolsa.balsa)) return false;
   if (npcEn(x, y)) return false;
+  if (typeof itemSueloEn === 'function' && itemSueloEn(m, x, y)) return false;
   return true;
 }
 // ---------- Rocas y bloques de hielo que se rompen con el PICO ----------
 // Se guardan en S.flags.rocas = { mapa: ['x,y', ...] }; ROCAS_ORIG recuerda dónde estaban para empezar de nuevo
-const ROMPIBLE = { X: '-', Z: 'w', O: ':' };
+const ROMPIBLE = { X: '-', Z: 'w', O: ':', A: '.' }; // A: árbol raro (se corta con CORTE)
 const ROCAS_ORIG = [];
 for (const [id, m] of Object.entries(MAPAS)) m.grilla.forEach((f, y) => f.forEach((c, x) => { if (ROMPIBLE[c]) ROCAS_ORIG.push([id, x, y, c]); }));
 function restaurarRocas() {
@@ -314,6 +315,16 @@ function restaurarRocas() {
   }
 }
 async function romperRoca(x, y, ch) {
+  if (ch === 'A') { // ÁRBOL RARO: se corta con el CORTE que regala LUNA
+    if (!S.bolsa.corte) { await decir('Un árbol RARO, retorcido y violeta, tapa el camino. Con un CORTE se podría cortar.'); return; }
+    if (!(await siNo('Un árbol RARO tapa el camino. ¿Lo cortás con el CORTE?'))) return;
+    for (let i = 0; i < 3; i++) { ui.flash = 1; await esperar(2); ui.flash = 0; await esperar(3); }
+    mapa().grilla[y][x] = ROMPIBLE[ch];
+    S.flags.rocas = S.flags.rocas || {};
+    (S.flags.rocas[S.mapa] = S.flags.rocas[S.mapa] || []).push(x + ',' + y);
+    await decir('¡ZAS! ¡Felipe cortó el árbol raro con el CORTE! Atrás aparece un camino escondido...');
+    return;
+  }
   const hielo = ch === 'Z';
   const que = hielo ? 'un bloque de HIELO' : 'una ROCA';
   if (!S.bolsa.pico) { await decir(`Hay ${que} con grietas que tapa el camino. Con un PICO se podría romper.`); return; }
@@ -403,6 +414,8 @@ async function interactuar(x, y) {
     await correr(n.hablar());
     return;
   }
+  const it = itemSueloEn(m, x, y);
+  if (it) { correr(juntarItem(it)); return; }
   const bol = (m.boleadoras || []).find(o => o.x === x && o.y === y);
   if (bol) { correr(mirarBoleadora(bol)); return; }
   if (y < 0 || y >= m.grilla.length || x < 0 || x >= m.grilla[0].length) return;
@@ -619,6 +632,7 @@ async function usarObjetoMundo(obj) {
   if (o.bici) { await usarBici(); return; }
   if (o.cuaderno) { await cuadernoPistas(); return; }
   if (o.huevo) { await mirarHuevos(); return; }
+  if (o.dobleHab) { await usarDobleHab(); return; }
   if (o.balsa) { await decir('Caminá hacia el agua y Felipe se sube a la BALSA solo.'); return; }
   if (o.pico) { await decir('Ponete enfrente de una roca o un bloque de hielo con grietas y apretá A.'); return; }
   if (o.piedra) { await usarPiedra(obj); return; }
@@ -647,7 +661,9 @@ async function pantallaEquipo(op) {
     if (pressed.a) {
       if (op.modo === 'ver') {
         const m = S.equipo[e.idx];
-        const r = await elegir(['DATOS', 'MOVIMIENTOS', 'APODO', 'SUBIR', 'SALIR'], { x: 140, y: 60, w: 96 });
+        const ops = ['DATOS', 'MOVIMIENTOS', 'APODO', 'SUBIR', ...(m.dobleHab ? ['2ª HABILIDAD'] : []), 'SALIR'];
+        const r = await elegir(ops, { x: 140, y: 50, w: 96 });
+        if (ops[r] === '2ª HABILIDAD') { const guardaEq = ui.equipo; ui.equipo = null; await elegirHab2(m); ui.equipo = guardaEq; continue; }
         if (r === 0) { await verDatos(m); }
         else if (r === 1) { await menuMovimientos(m); }
         else if (r === 2) { await ponerApodo(m); }
@@ -841,6 +857,10 @@ function dibujarDatos(m) {
   txt('HABILIDAD:', 15, 93, { t: 6, c: '#a05020', sombra: null });
   txt(h.nombre.toUpperCase(), 80, 93, { t: 6, c: '#203048', sombra: null });
   if (esHabOculta(m)) txt('OCULTA', 224, 94, { t: 5, c: '#a040a0', sombra: null, al: 'right' });
+  if (m.hab2 && HABILIDADES[m.hab2]) { // DOBLE HABILIDAD: las dos, una por renglón
+    txt('+ ' + HABILIDADES[m.hab2].nombre.toUpperCase(), 80, 101, { t: 6, c: '#6030a0', sombra: null });
+    envolver(h.desc, 208, 4).slice(0, 1).forEach(l => txt(l, 15, 109, { t: 4, sombra: null, c: '#383838' }));
+  } else
   envolver(h.desc, 208, 5).slice(0, 2).forEach((l, i) => txt(l, 15, 102 + i * 7, { t: 5, sombra: null, c: '#383838' }));
   m.movs.forEach((mv, i) => {
     const M = MOVS[mv.id];
@@ -1085,6 +1105,7 @@ function dibujarMundo() {
     if (!EDIF[k]) EDIF[k] = crearEdificio(e.tipo, e.w, e.h, e.puerta);
     b.drawImage(EDIF[k], e.x * T - cx, e.y * T - cy);
   }
+  for (const it of m.itemsSuelo || []) if (!S.flags['item_' + it.id] && it.x !== undefined) b.drawImage(spriteBoleadora(), it.x * T - cx, it.y * T - cy - 3 + (((tick + it.x * 9) >> 5) % 2 ? -1 : 0));
   for (const bo of m.boleadoras || []) {
     if (S.flags.inicial === bo.id || S.flags.inicialTomi === bo.id) continue;
     b.drawImage(spriteBoleadora(), bo.x * T - cx, bo.y * T - cy - 3);
@@ -1237,37 +1258,37 @@ function calcularDanio(at, de, mv) {
   const a = at.atk * mult(at.et.atk), d = de.def * mult(de.et.def);
   let base = Math.floor(Math.floor(Math.floor(2 * L / 5 + 2) * mv.pot * a / d) / 50) + 2;
   const ha = habDe(at), hd = habDe(de);
-  const stab = tiposDe(at).includes(mv.tipo) ? (ha.ef === 'adaptable' ? 2 : 1.5) : 1;
+  const stab = tiposDe(at).includes(mv.tipo) ? (tieneEf(ha, 'adaptable') ? 2 : 1.5) : 1;
   let ef = eficacia(mv.tipo, tiposDe(de));
-  if (ef === 0 && ha.ef === 'audaz' && ['NORMAL', 'LUCHA'].includes(mv.tipo)) ef = eficacia(mv.tipo, tiposDe(de).filter(t => t !== 'FANTASMA'));
-  const critico = hd.ef !== 'sinCritico' && hd.ef !== 'capaGlaciar' && azar() < (ha.ef === 'critico' || mv.critAlto ? 1 / 5 : 1 / 16);
+  if (ef === 0 && tieneEf(ha, 'audaz') && ['NORMAL', 'LUCHA'].includes(mv.tipo)) ef = eficacia(mv.tipo, tiposDe(de).filter(t => t !== 'FANTASMA'));
+  const critico = !tieneEf(hd, 'sinCritico') && !tieneEf(hd, 'capaGlaciar') && azar() < (tieneEf(ha, 'critico') || mv.critAlto ? 1 / 5 : 1 / 16);
   const azarDanio = 0.85 + azar() * 0.15;
   if (ef === 0) return { danio: 0, ef, critico: false };
   let extra = 1;
-  if (ha.ef === 'fuerza') extra *= 1.25;
-  if (ha.ef === 'garra') extra *= 1.3;
-  if (ha.ef === 'poderSolar' && bt.sol > 0) extra *= 1.5;
-  if (hd.ef === 'maestroFuego') extra *= ef > 1 ? 0.7 : 0.5; // muy eficaces -30%, el resto -50%
-  if (ha.ef === 'cromolente' && ef < 1) extra *= 2;
-  if (ha.ef === 'apuro' && mv.tipo === ha.tipo && at.ps <= at.psMax / 3) extra *= 1.5;
-  if (ha.ef === 'humedal' && (mv.tipo === 'AGUA' || mv.tipo === 'PLANTA')) extra *= 1.3;
-  if (ha.ef === 'crisol' && (mv.tipo === 'FUEGO' || mv.tipo === 'ROCA')) extra *= 1.3;
+  if (tieneEf(ha, 'fuerza')) extra *= 1.25;
+  if (tieneEf(ha, 'garra')) extra *= 1.3;
+  if (tieneEf(ha, 'poderSolar') && bt.sol > 0) extra *= 1.5;
+  if (tieneEf(hd, 'maestroFuego')) extra *= ef > 1 ? 0.7 : 0.5; // muy eficaces -30%, el resto -50%
+  if (tieneEf(ha, 'cromolente') && ef < 1) extra *= 2;
+  if (tieneEf(ha, 'apuro') && mv.tipo === ha.tipo && at.ps <= at.psMax / 3) extra *= 1.5;
+  if (tieneEf(ha, 'humedal') && (mv.tipo === 'AGUA' || mv.tipo === 'PLANTA')) extra *= 1.3;
+  if (tieneEf(ha, 'crisol') && (mv.tipo === 'FUEGO' || mv.tipo === 'ROCA')) extra *= 1.3;
   if (bt.sol > 0 && ['FUEGO', 'TIERRA', 'ROCA'].includes(mv.tipo)) extra *= 1.3;
   if (bt.lluvia > 0 && mv.tipo === 'AGUA') extra *= 1.3;
   if (bt.lluvia > 0 && mv.tipo === 'FUEGO') extra *= 0.7;
-  if (hd.ef === 'filtro' && ef > 1) extra *= 0.75;
-  if (hd.ef === 'animaGlacial' && de.ps === de.psMax) extra *= 0.5;
-  if (ha.ef === 'sobrecarga') extra *= 1.3;
-  if (ha.ef === 'punoFerreo' && mv.punio) extra *= 1.3;
-  if (ha.ef === 'pielHelada' && mv.tipo === 'HIELO') extra *= 1.3;
-  if (hd.ef === 'pielHelada') extra *= 0.85;
+  if (tieneEf(hd, 'filtro') && ef > 1) extra *= 0.75;
+  if (tieneEf(hd, 'animaGlacial') && de.ps === de.psMax) extra *= 0.5;
+  if (tieneEf(ha, 'sobrecarga')) extra *= 1.3;
+  if (tieneEf(ha, 'punoFerreo') && mv.punio) extra *= 1.3;
+  if (tieneEf(ha, 'pielHelada') && mv.tipo === 'HIELO') extra *= 1.3;
+  if (tieneEf(hd, 'pielHelada')) extra *= 0.85;
   if (bt.nieve > 0 && mv.tipo === 'HIELO') extra *= 1.3;
-  if (ha.ef === 'filoRecio' && mv.corta) extra *= 1.5;
-  if (ha.ef === 'templado' && mv.tipo === 'ACERO') extra *= 1.5;
-  if (ha.ef === 'cabezaRoca' && mv.tipo === 'ROCA') extra *= 1.2;
-  if (hd.ef === 'ignifugo' && mv.tipo === 'FUEGO') extra *= 0.5;
-  if (hd.ef === 'capaGlaciar' && (mv.tipo === 'FUEGO' || mv.tipo === 'PLANTA')) extra *= 0.5;
-  if (hd.ef === 'ilusion' && !de.et.golpeado) extra *= 0.5;
+  if (tieneEf(ha, 'filoRecio') && mv.corta) extra *= 1.5;
+  if (tieneEf(ha, 'templado') && mv.tipo === 'ACERO') extra *= 1.5;
+  if (tieneEf(ha, 'cabezaRoca') && mv.tipo === 'ROCA') extra *= 1.2;
+  if (tieneEf(hd, 'ignifugo') && mv.tipo === 'FUEGO') extra *= 0.5;
+  if (tieneEf(hd, 'capaGlaciar') && (mv.tipo === 'FUEGO' || mv.tipo === 'PLANTA')) extra *= 0.5;
+  if (tieneEf(hd, 'ilusion') && !de.et.golpeado) extra *= 0.5;
   return { danio: Math.max(1, Math.floor(base * stab * ef * (critico ? 1.5 : 1) * azarDanio * extra)), ef, critico };
 }
 function nombreBatalla(m) {
@@ -1439,7 +1460,7 @@ async function debilitar(lado) {
   for (let i = 0; i < 16; i++) { if (lado === 'r') bt.rDY = (i + 1) * 4; else bt.yDY = (i + 1) * 4; await esperar(1); }
   if (lado === 'r') bt.rivalVis = false; else bt.yoVis = false;
   await decir(`¡${nombreBatalla(m)} se debilitó!`);
-  if (habDe(m).ef === 'legado') {
+  if (tieneEf(habDe(m), 'legado')) {
     bt.escudo = bt.escudo || {}; bt.escudo[lado] = true;
     await decir(`¡${habDe(m).nombre}! Dejó un escudo de hielo para el que entre después.`, { auto: 60 });
   }
@@ -1579,7 +1600,7 @@ async function ejecutarMov(at, de, slot, quien) {
   }
   bt.yDX = 0; bt.rDX = 0;
   if (!(M.lluviaSegura && bt.lluvia > 0) && !(M.nieveSegura && bt.nieve > 0) && azar() * 100 >= M.prec) { await decir('¡Pero falló!', { auto: 40 }); return; }
-  if (M.pot && habDe(de).ef === 'maestroFuego' && ['PLANTA', 'ACERO', 'BICHO', 'HIELO'].includes(M.tipo)) {
+  if (M.pot && tieneEf(habDe(de), 'maestroFuego') && ['PLANTA', 'ACERO', 'BICHO', 'HIELO'].includes(M.tipo)) {
     await anunciarHab(de);
     await decir(`¡El escudo de fuego frenó el ataque de ${nombreTipo(M.tipo)}!`, { auto: 50 });
     return;
@@ -1587,35 +1608,35 @@ async function ejecutarMov(at, de, slot, quien) {
   const ladoDe = quien === 'yo' ? 'r' : 'y';
   if (M.pot) {
     const hd = habDe(de);
-    if (hd.ef === 'absorbeFuego' && M.tipo === 'FUEGO') {
+    if (tieneEf(hd, 'absorbeFuego') && M.tipo === 'FUEGO') {
       await anunciarHab(de);
       if (de.ps < de.psMax) { de.ps = Math.min(de.psMax, de.ps + Math.ceil(de.psMax / 4)); await animarPS(de); }
       await decir(`¡El fuego no lastima a ${nombreBatalla(de)}, lo cura!`, { auto: 50 });
       return;
     }
-    if (hd.ef === 'intangible' && M.tipo === 'TIERRA') {
+    if (tieneEf(hd, 'intangible') && M.tipo === 'TIERRA') {
       await anunciarHab(de);
       await decir(`¡${nombreBatalla(de)} flota y el ataque no lo toca!`, { auto: 45 });
       return;
     }
-    if (hd.ef === 'toxicoAbsorbente' && M.tipo === 'ELECTRICO') {
+    if (tieneEf(hd, 'toxicoAbsorbente') && M.tipo === 'ELECTRICO') {
       await anunciarHab(de);
       await decir(`¡El veneno que cubre a ${nombreBatalla(de)} NEUTRALIZÓ la electricidad!`, { auto: 50 });
       return;
     }
-    if (hd.ef === 'electromotor' && M.tipo === 'ELECTRICO') {
+    if (tieneEf(hd, 'electromotor') && M.tipo === 'ELECTRICO') {
       await anunciarHab(de);
       await decir(`¡${nombreBatalla(de)} absorbió la electricidad!`, { auto: 40 });
       await cambiarEtapa(de, 'vel', 1);
       return;
     }
-    if (hd.ef === 'terruno' && M.tipo === 'TIERRA') {
+    if (tieneEf(hd, 'terruno') && M.tipo === 'TIERRA') {
       await anunciarHab(de);
       if (de.ps < de.psMax) { de.ps = Math.min(de.psMax, de.ps + Math.ceil(de.psMax / 4)); await animarPS(de); }
       await decir(`¡${nombreBatalla(de)} absorbió el barro y se curó!`, { auto: 50 });
       return;
     }
-    if (hd.ef === 'colector' && M.tipo === 'AGUA') {
+    if (tieneEf(hd, 'colector') && M.tipo === 'AGUA') {
       await anunciarHab(de);
       await decir(`¡${nombreBatalla(de)} absorbió el agua!`, { auto: 40 });
       await cambiarEtapa(de, 'atk', 1, true);
@@ -1627,7 +1648,7 @@ async function ejecutarMov(at, de, slot, quien) {
     await esperar(16);
     const lleno = de.ps === de.psMax;
     let aguanto = false;
-    if (hd.ef === 'robustez' && lleno && r.danio >= de.ps) { r.danio = de.ps - 1; aguanto = true; }
+    if (tieneEf(hd, 'robustez') && lleno && r.danio >= de.ps) { r.danio = de.ps - 1; aguanto = true; }
     de.ps = Math.max(0, de.ps - r.danio);
     de.et.golpeado = true;
     await animarPS(de);
@@ -1635,9 +1656,9 @@ async function ejecutarMov(at, de, slot, quien) {
     if (r.critico) await decir('¡Golpe crítico!', { auto: 40 });
     if (r.ef > 1) await decir('¡Es muy eficaz!', { auto: 40 });
     else if (r.ef < 1) await decir('No es muy eficaz...', { auto: 40 });
-    if (hd.ef === 'maestroFuego' && r.danio > 0) await decir('¡Maestro de Fuego! El escudo de llamas achicó el golpe.', { auto: 40 });
+    if (tieneEf(hd, 'maestroFuego') && r.danio > 0) await decir('¡Maestro de Fuego! El escudo de llamas achicó el golpe.', { auto: 40 });
     await despuesDelGolpe(at, de, M, r.danio);
-    if (slot.id === 'forcejeo' && habDe(at).ef !== 'cabezaRoca') {
+    if (slot.id === 'forcejeo' && !tieneEf(habDe(at), 'cabezaRoca')) {
       at.ps = Math.max(0, at.ps - Math.max(1, Math.floor(at.psMax / 4)));
       await animarPS(at);
       await decir(`¡${nombreBatalla(at)} también se lastimó!`, { auto: 40 });
@@ -1653,12 +1674,12 @@ async function ejecutarMov(at, de, slot, quien) {
   }
   const [stat, signo] = [M.ef.slice(0, 3), M.ef[3]];
   let objetivo = signo === '+' ? at : de;
-  if (signo === '-' && habDe(de).ef === 'espejo' && habDe(at).ef !== 'espejo') {
+  if (signo === '-' && tieneEf(habDe(de), 'espejo') && !tieneEf(habDe(at), 'espejo')) {
     await anunciarHab(de);
     await decir(`¡${nombreBatalla(de)} se lo devolvió!`, { auto: 40 });
     objetivo = at;
   }
-  if (signo === '-' && ['cuerpoPuro', 'animaGlacial', 'toxicoAbsorbente'].includes(habDe(objetivo).ef)) {
+  if (signo === '-' && ['cuerpoPuro', 'animaGlacial', 'toxicoAbsorbente'].some(e => tieneEf(habDe(objetivo), e))) {
     await anunciarHab(objetivo);
     await decir(`¡A ${nombreBatalla(objetivo)} no le pueden bajar nada!`, { auto: 50 });
     return;
@@ -1675,7 +1696,7 @@ async function ejecutarMov(at, de, slot, quien) {
   if (signo === '-' && objetivo !== at) await competitivo(objetivo);
 }
 async function competitivo(m) {
-  if (habDe(m).ef !== 'competitivo' || m.ps <= 0) return;
+  if (!tieneEf(habDe(m), 'competitivo') || m.ps <= 0) return;
   await anunciarHab(m);
   await cambiarEtapa(m, 'atk', 2);
 }
@@ -1685,12 +1706,13 @@ function velocidad(m) { return m.vel * mult(m.et.vel || 0); }
 function prioridad(m, slot) {
   const M = MOVS[slot.id];
   let p = M.prio || 0;
-  if (habDe(m).ef === 'alas' && M.tipo === 'VOLADOR' && m.ps === m.psMax) p += 1;
+  if (tieneEf(habDe(m), 'alas') && M.tipo === 'VOLADOR' && m.ps === m.psMax) p += 1;
   return p;
 }
 async function anunciarHab(m) {
   bt.parp[m === bt.yo ? 'y' : 'r'] = 8;
-  await decir(`¡${habDe(m).nombre} de ${nombreBatalla(m)}!`, { auto: 40 });
+  const nombre = m._anuncio || habDe(m).nombre; delete m._anuncio;
+  await decir(`¡${nombre} de ${nombreBatalla(m)}!`, { auto: 40 });
 }
 async function cambiarEtapa(m, stat, n, callado) {
   const nombres = { atk: 'ATAQUE', def: 'DEFENSA', vel: 'VELOCIDAD' };
@@ -1709,49 +1731,49 @@ async function alEntrar(m) {
     await decir(`¡El escudo de hielo protege a ${nombreBatalla(m)}!`, { auto: 45 });
     await cambiarEtapa(m, 'def', 2);
   }
-  if (h.ef === 'intimidacion') {
+  if (tieneEf(h, 'intimidacion')) {
     if (!otro || otro.ps <= 0) { m.et.entro = false; return; } // se activa cuando haya rival
     await anunciarHab(m);
-    if (['cuerpoPuro', 'animaGlacial', 'toxicoAbsorbente'].includes(habDe(otro).ef)) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
+    if (['cuerpoPuro', 'animaGlacial', 'toxicoAbsorbente'].some(e => tieneEf(habDe(otro), e))) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
     else { await cambiarEtapa(otro, 'atk', -1); await competitivo(otro); }
-  } else if (h.ef === 'espadaRuinosa') {
+  } else if (tieneEf(h, 'espadaRuinosa')) {
     if (!otro || otro.ps <= 0) { m.et.entro = false; return; }
     await anunciarHab(m);
-    if (['cuerpoPuro', 'animaGlacial', 'toxicoAbsorbente'].includes(habDe(otro).ef)) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
+    if (['cuerpoPuro', 'animaGlacial', 'toxicoAbsorbente'].some(e => tieneEf(habDe(otro), e))) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
     else { await cambiarEtapa(otro, 'def', -1); await competitivo(otro); }
-  } else if (h.ef === 'veloz') {
+  } else if (tieneEf(h, 'veloz')) {
     await anunciarHab(m); await cambiarEtapa(m, 'vel', 1);
-  } else if (h.ef === 'nevada') {
+  } else if (tieneEf(h, 'nevada')) {
     await anunciarHab(m);
     bt.nieve = 5; bt.sol = 0; bt.lluvia = 0;
     await decir('¡Se desató una tormenta de nieve! Los ataques de Hielo pegan más.', { auto: 60 });
-  } else if (h.ef === 'acoso') {
+  } else if (tieneEf(h, 'acoso')) {
     if (!otro || otro.ps <= 0) { m.et.entro = false; return; }
     await anunciarHab(m);
-    if (['cuerpoPuro', 'animaGlacial', 'toxicoAbsorbente'].includes(habDe(otro).ef)) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
+    if (['cuerpoPuro', 'animaGlacial', 'toxicoAbsorbente'].some(e => tieneEf(habDe(otro), e))) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
     else { await cambiarEtapa(otro, 'vel', -1); await competitivo(otro); }
-  } else if (h.ef === 'llovizna') {
+  } else if (tieneEf(h, 'llovizna')) {
     await anunciarHab(m);
     bt.lluvia = 5; bt.sol = 0; bt.nieve = 0;
     await decir('¡Se largó a llover! Los ataques de Agua pegan más y los de Fuego, menos.', { auto: 60 });
-  } else if (h.ef === 'sequia') {
+  } else if (tieneEf(h, 'sequia')) {
     await anunciarHab(m);
     bt.sol = 5; bt.lluvia = 0; bt.nieve = 0;
     await decir('¡Salió un sol que raja la tierra! Los ataques de Fuego, Tierra y Roca pegan más.', { auto: 60 });
-  } else if (h.ef === 'humedal') {
+  } else if (tieneEf(h, 'humedal')) {
     await anunciarHab(m);
     await decir('¡El campo se inundó como un humedal del Litoral!', { auto: 50 });
   }
 }
 async function despuesDelGolpe(at, de, M, danio = 0) {
   const ha = habDe(at), hd = habDe(de);
-  if (ha.ef === 'colectorAlmas' && at.ps > 0 && at.ps < at.psMax && danio > 0) {
+  if (tieneEf(ha, 'colectorAlmas') && at.ps > 0 && at.ps < at.psMax && danio > 0) {
     await anunciarHab(at);
     at.ps = Math.min(at.psMax, at.ps + Math.max(1, Math.floor(danio / 4)));
     await animarPS(at);
     await decir(`${nombreBatalla(at)} le robó energía a ${nombreBatalla(de)}.`, { auto: 40 });
   }
-  if (ha.ef === 'maldicion' && M.muerde && at.ps > 0 && at.ps < at.psMax && danio > 0) {
+  if (tieneEf(ha, 'maldicion') && M.muerde && at.ps > 0 && at.ps < at.psMax && danio > 0) {
     await anunciarHab(at);
     at.ps = Math.min(at.psMax, at.ps + Math.max(1, Math.floor(danio / 2)));
     await animarPS(at);
@@ -1759,30 +1781,30 @@ async function despuesDelGolpe(at, de, M, danio = 0) {
   }
   // TOQUE TÓXICO / TÓXICO ABSORBENTE (habilidad oculta de la familia de Ajolodo, idea de Felipe):
   // al pegar, 30% de envenenar. El envenenado pierde 1/10 de su vida al final de cada turno.
-  if (['toqueToxico', 'toxicoAbsorbente'].includes(ha.ef) && de.ps > 0 && danio > 0 && de.et && !de.et.veneno && Math.random() < 0.3) {
-    const inmune = tiposDe(de).includes('VENENO') || tiposDe(de).includes('ACERO') || habDe(de).ef === 'toxicoAbsorbente';
+  if (['toqueToxico', 'toxicoAbsorbente'].some(e => tieneEf(ha, e)) && de.ps > 0 && danio > 0 && de.et && !de.et.veneno && Math.random() < 0.3) {
+    const inmune = tiposDe(de).includes('VENENO') || tiposDe(de).includes('ACERO') || tieneEf(habDe(de), 'toxicoAbsorbente');
     if (!inmune) { await anunciarHab(at); de.et.veneno = true; await decir(`¡${nombreBatalla(de)} quedó ENVENENADO!`, { auto: 45 }); }
   }
   if (de.ps > 0) {
-    if (hd.ef === 'hervor' && (M.tipo === 'FUEGO' || M.tipo === 'AGUA')) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 2); }
-    if (hd.ef === 'cobardia' && ['BICHO', 'FANTASMA', 'SINIESTRO'].includes(M.tipo)) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 1); }
-    if (hd.ef === 'impasible' && danio > 0 && eficacia(M.tipo, tiposDe(de)) > 1) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 1); }
+    if (tieneEf(hd, 'hervor') && (M.tipo === 'FUEGO' || M.tipo === 'AGUA')) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 2); }
+    if (tieneEf(hd, 'cobardia') && ['BICHO', 'FANTASMA', 'SINIESTRO'].includes(M.tipo)) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 1); }
+    if (tieneEf(hd, 'impasible') && danio > 0 && eficacia(M.tipo, tiposDe(de)) > 1) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 1); }
   }
-  if (hd.ef === 'geotermica' && de.ps <= 0 && at.ps > 0) {
+  if (tieneEf(hd, 'geotermica') && de.ps <= 0 && at.ps > 0) {
     await anunciarHab(de);
     await decir(`¡${nombreBatalla(de)} explotó como un volcán y se llevó a ${nombreBatalla(at)}!`, { auto: 50 });
     at.ps = 0;
     await animarPS(at);
   }
-  if (ha.ef === 'sobrecarga' && at.ps > 0 && danio > 0) {
+  if (tieneEf(ha, 'sobrecarga') && at.ps > 0 && danio > 0) {
     await anunciarHab(at);
     at.ps = Math.max(0, at.ps - Math.max(1, Math.floor(at.psMax / 10)));
     await animarPS(at);
   }
-  if (hd.ef === 'justiciero' && de.ps > 0 && M.tipo === 'SINIESTRO') { await anunciarHab(de); await cambiarEtapa(de, 'atk', 1); }
-  if (ha.ef === 'furiaAndina' && de.ps <= 0 && at.ps > 0) { await anunciarHab(at); await cambiarEtapa(at, 'atk', 1); }
-  if (ha.ef === 'obrero' && at.ps > 0 && (at.et.atk || 0) < 6) { await anunciarHab(at); await cambiarEtapa(at, 'atk', 1); }
-  if (hd.ef === 'contacto' && at.ps > 0) {
+  if (tieneEf(hd, 'justiciero') && de.ps > 0 && M.tipo === 'SINIESTRO') { await anunciarHab(de); await cambiarEtapa(de, 'atk', 1); }
+  if (tieneEf(ha, 'furiaAndina') && de.ps <= 0 && at.ps > 0) { await anunciarHab(at); await cambiarEtapa(at, 'atk', 1); }
+  if (tieneEf(ha, 'obrero') && at.ps > 0 && (at.et.atk || 0) < 6) { await anunciarHab(at); await cambiarEtapa(at, 'atk', 1); }
+  if (tieneEf(hd, 'contacto') && at.ps > 0) {
     await anunciarHab(de);
     at.ps = Math.max(0, at.ps - Math.max(1, Math.floor(at.psMax / 8)));
     await animarPS(at);
@@ -1796,19 +1818,19 @@ async function finDeTurno() {
   for (const m of [bt.yo, bt.rival]) {
     if (!m || m.ps <= 0) continue;
     const h = habDe(m);
-    if (h.ef === 'regenera' && m.ps < m.psMax) {
+    if (tieneEf(h, 'regenera') && m.ps < m.psMax) {
       m.ps = Math.min(m.psMax, m.ps + Math.max(1, Math.floor(m.psMax / 16)));
       await animarPS(m);
       await decir(`¡${h.nombre}! ${nombreBatalla(m)} recuperó un poco de PS.`, { auto: 40 });
     }
-    if (h.ef === 'poderSolar' && bt.sol > 0) {
+    if (tieneEf(h, 'poderSolar') && bt.sol > 0) {
       m.ps = Math.max(0, m.ps - Math.max(1, Math.floor(m.psMax / 8)));
       await animarPS(m);
       await decir(`¡${h.nombre}! El sol fuerte le quita PS a ${nombreBatalla(m)}.`, { auto: 45 });
     }
-    if (h.ef === 'animaGlacial' && (m.et.vel || 0) < 6) { await anunciarHab(m); await cambiarEtapa(m, 'vel', 1); }
-    if (h.ef === 'impulso' && (m.et.vel || 0) < 6) { await anunciarHab(m); await cambiarEtapa(m, 'vel', 1); }
-    if (h.ef === 'corona') await coronaInfinito(m);
+    if (tieneEf(h, 'animaGlacial') && (m.et.vel || 0) < 6) { await anunciarHab(m); await cambiarEtapa(m, 'vel', 1); }
+    if (tieneEf(h, 'impulso') && (m.et.vel || 0) < 6) { await anunciarHab(m); await cambiarEtapa(m, 'vel', 1); }
+    if (tieneEf(h, 'corona')) await coronaInfinito(m);
     if (m.et && m.et.veneno && m.ps > 0) {
       m.ps = Math.max(0, m.ps - Math.max(1, Math.ceil(m.psMax / 10)));
       await animarPS(m);
@@ -2123,6 +2145,7 @@ function dibujar() {
   if (ui.vista) dibujarVista();
   if (ui.equipo) dibujarEquipo();
   if (ui.compu) dibujarCompu();
+  if (ui.lista) dibujarLista();
   if (ui.mochila) dibujarMochila();
   if (ui.mapaArg) dibujarMapaArg();
   if (ui.teclado) dibujarTeclado();
@@ -2541,4 +2564,131 @@ async function mirarHuevos() {
     const f = h.pasos > CRIADERO.pasosNacer * 0.66 ? 'Todavía falta muchísimo para que nazca.' : h.pasos > CRIADERO.pasosNacer * 0.33 ? 'A veces se mueve un poquito. Falta bastante.' : h.pasos > 20 ? '¡Se escuchan ruiditos adentro! Ya falta poco.' : '¡Está por nacer!';
     await decir(`HUEVO: ${f} (Faltan unos ${h.pasos} pasos.)`);
   }
+}
+
+// =====================================================================================
+// ===== DOBLE HABILIDAD (pedido de Poly, 24/11/2026) =====
+// =====================================================================================
+// Objeto que se usa una vez en una criatura: desde ahí puede tener DOS habilidades activas a la vez.
+// La segunda se elige (y se puede cambiar) desde EQUIPO → 2ª HABILIDAD. Precios:
+//  - Si la criatura tiene su HABILIDAD OCULTA: sus otras habilidades son GRATIS.
+//  - Si no la tiene: sus habilidades normales cuestan $1.000 y la oculta $2.000.
+//  - Habilidades de OTRAS criaturas: $2.500 (un poco más que la oculta).
+const PRECIO_HAB = { propia: 1000, oculta: 2000, ajena: 2500 };
+const HABS_PROHIBIDAS = ['corona']; // la Corona del Infinito es solo de REGIOHM
+function opcionesHab2(m) {
+  const e = ESPECIES[m.id], actual = habClave(m), conOculta = esHabOculta(m), L = [];
+  const propias = [...e.habs, ...(e.habOculta ? [e.habOculta] : [])];
+  for (const k of propias) {
+    if (k === actual || L.some(x => x.k === k)) continue;
+    L.push({ k, precio: conOculta ? 0 : (k === e.habOculta ? PRECIO_HAB.oculta : PRECIO_HAB.propia), tipo: k === e.habOculta ? 'OCULTA' : 'PROPIA' });
+  }
+  const usadas = new Set();
+  for (const es of Object.values(ESPECIES)) for (const k of [...es.habs, ...(es.habOculta ? [es.habOculta] : [])]) usadas.add(k);
+  [...usadas].filter(k => HABILIDADES[k] && k !== actual && !HABS_PROHIBIDAS.includes(k) && !L.some(x => x.k === k))
+    .sort((a, b) => HABILIDADES[a].nombre.localeCompare(HABILIDADES[b].nombre))
+    .forEach(k => L.push({ k, precio: PRECIO_HAB.ajena, tipo: 'DE OTRA' }));
+  return L;
+}
+async function usarDobleHab() {
+  if (!S.equipo.length) { await decir('No tenés criaturas.'); return; }
+  const i = await pantallaEquipo({ msg: '¿A cuál le das la DOBLE HABILIDAD?' });
+  if (i < 0) return;
+  const m = S.equipo[i];
+  if (m.dobleHab) { await decir(`${nombreDe(m)} ya puede tener dos habilidades. Elegí la segunda desde EQUIPO → 2ª HABILIDAD.`); return; }
+  if (!await siNo(`¿Usás la DOBLE HABILIDAD en ${nombreDe(m)}? Se gasta el objeto.`)) return;
+  S.bolsa.dobleHab--; if (S.bolsa.dobleHab <= 0) delete S.bolsa.dobleHab;
+  m.dobleHab = true;
+  for (let k = 0; k < 2; k++) { ui.flash = 1; await esperar(3); ui.flash = 0; await esperar(4); }
+  await decir(`¡${nombreDe(m)} ahora puede tener DOS HABILIDADES a la vez!`);
+  await elegirHab2(m);
+  guardar();
+}
+async function elegirHab2(m) {
+  const L = opcionesHab2(m);
+  if (esHabOculta(m)) await decir(`Como ${nombreDe(m)} tiene su HABILIDAD OCULTA, sus otras habilidades le salen GRATIS.`);
+  const filas = L.map(o => ({ txt: HABILIDADES[o.k].nombre.toUpperCase(), der: o.precio ? plataTxt(o.precio) : 'GRATIS', sub: o.tipo, desc: HABILIDADES[o.k].desc, actual: m.hab2 === o.k }));
+  const j = await listaScroll(`2ª HABILIDAD DE ${nombreDe(m)}`, filas);
+  if (j < 0) return;
+  const o = L[j];
+  if (m.hab2 === o.k) { await decir(`${nombreDe(m)} ya tiene ${HABILIDADES[o.k].nombre.toUpperCase()}.`); return; }
+  if (o.precio && (S.plata || 0) < o.precio) { await decir(`Cuesta ${plataTxt(o.precio)} y tenés ${plataTxt(S.plata || 0)}. ¡Ganá algunas batallas y volvé!`); return; }
+  if (!await siNo(`¿${nombreDe(m)} aprende ${HABILIDADES[o.k].nombre.toUpperCase()}${o.precio ? ' por ' + plataTxt(o.precio) : ' gratis'}?`)) return;
+  if (o.precio) S.plata -= o.precio;
+  m.hab2 = o.k;
+  await decir(`¡${nombreDe(m)} ahora tiene ${habDe(m).nombre.toUpperCase()} y ${HABILIDADES[o.k].nombre.toUpperCase()}!`);
+  guardar();
+}
+// Lista larga con flechas (se usa para elegir habilidades)
+async function listaScroll(titulo, filas) {
+  ui.lista = { titulo, filas, idx: 0, top: 0 };
+  while (true) {
+    await esperar(1);
+    const c = ui.lista, n = filas.length;
+    if (pressed.up) c.idx = (c.idx - 1 + n) % n;
+    if (pressed.down) c.idx = (c.idx + 1) % n;
+    if (pressed.left) c.idx = Math.max(0, c.idx - 5);
+    if (pressed.right) c.idx = Math.min(n - 1, c.idx + 5);
+    if (c.idx < c.top) c.top = c.idx;
+    if (c.idx >= c.top + 5) c.top = c.idx - 4;
+    if (pressed.b) { ui.lista = null; return -1; }
+    if (pressed.a) { const i = c.idx; ui.lista = null; return i; }
+  }
+}
+function dibujarLista() {
+  const c = ui.lista;
+  sc.fillStyle = '#5a3a7a'; sc.fillRect(0, 0, W, H);
+  sc.fillStyle = '#664488'; for (let i = 0; i < W; i += 16) sc.fillRect(i, 0, 8, H);
+  caja(4, 2, 232, 16, 'info');
+  txt(c.titulo, 10, 6, { t: c.titulo.length > 30 ? 5 : 6 });
+  c.filas.slice(c.top, c.top + 5).forEach((f, k) => {
+    const i = c.top + k, y = 20 + k * 19, sel = i === c.idx;
+    caja(6, y, 228, 18, sel ? 'menu' : 'info');
+    txt(f.txt + (f.actual ? ' ✓' : ''), 12, y + 3, { t: 6 });
+    txt(f.sub, 12, y + 11, { t: 4, sombra: null, c: f.sub === 'OCULTA' ? '#a040a0' : '#707070' });
+    txt(f.der, 228, y + 6, { t: 6, al: 'right', sombra: null, c: f.der === 'GRATIS' ? '#208040' : '#404040' });
+  });
+  const f = c.filas[c.idx];
+  caja(4, 116, 232, 40, 'normal');
+  envolver(f.desc, 214, 6).slice(0, 3).forEach((l, i) => txt(l, 12, 122 + i * 10, { t: 6, sombra: null }));
+  txt(`${c.idx + 1}/${c.filas.length}`, 230, 148, { t: 4, al: 'right', sombra: null, c: '#808080' });
+}
+
+// ---------- Boleadoras con objetos tiradas en el piso ----------
+// Se ubican una sola vez al cargar. Si un objeto no tiene lugar fijo, se busca uno "a trasmano":
+// una baldosa caminable lejos de la entrada que, tapada, no corta ningún camino.
+const PISO_ITEM = new Set(['.', ',', '-', ':', 'w', 'u', '_', 'v', 'F']);
+function ubicarItemsSuelo() {
+  for (const it of ITEMS_SUELO) {
+    const m = MAPAS[it.mapa]; if (!m) continue;
+    (m.itemsSuelo = m.itemsSuelo || []).push(it);
+    if (it.x !== undefined) continue;
+    const g = m.grilla, H = g.length, W = g[0].length;
+    const ocupado = new Set([...(m.npcs || []).map(n => n.x + ',' + n.y), ...(m.salidas || []).map(s => s.x + ',' + s.y),
+      ...Object.keys(m.carteles || {}), ...m.itemsSuelo.filter(o => o.x !== undefined).map(o => o.x + ',' + o.y)]);
+    const pisable = (x, y, tapado) => x >= 0 && y >= 0 && x < W && y < H && CAMINABLE.has(g[y][x]) && !edificioEn(m, x, y) &&
+      !(m.npcs || []).some(n => n.x === x && n.y === y) && tapado !== x + ',' + y;
+    const bfs = (tapado) => {
+      const s0 = m.salidas[0]; const ini = [s0.x, s0.y], dist = new Map([[ini.join(','), 0]]), q = [ini];
+      while (q.length) { const [x, y] = q.shift(); for (let d = 0; d < 4; d++) { const nx = x + DX[d], ny = y + DY[d], k = nx + ',' + ny; if (!dist.has(k) && pisable(nx, ny, tapado)) { dist.set(k, dist.get(x + ',' + y) + 1); q.push([nx, ny]); } } }
+      return dist;
+    };
+    if (!m.salidas || !m.salidas.length) continue;
+    const base = bfs(null), total = base.size;
+    const cand = [...base.entries()].filter(([k]) => { const [x, y] = k.split(',').map(Number); return PISO_ITEM.has(g[y][x]) && !ocupado.has(k) && !m.salidas.some(s => Math.abs(s.x - x) + Math.abs(s.y - y) < 3); })
+      .sort((a, b) => b[1] - a[1]);
+    for (const [k] of cand.slice(0, 40)) {
+      if (bfs(k).size === total - 1) { [it.x, it.y] = k.split(',').map(Number); break; }
+    }
+  }
+}
+ubicarItemsSuelo();
+function itemSueloEn(m, x, y) { return (m.itemsSuelo || []).find(o => o.x === x && o.y === y && !S.flags['item_' + o.id]); }
+async function juntarItem(it) {
+  S.flags['item_' + it.id] = true;
+  S.bolsa[it.obj] = (S.bolsa[it.obj] || 0) + it.n;
+  const nom = OBJETOS[it.obj].nombre;
+  await decir(`¡Felipe encontró una BOLEADORA tirada en el piso! Adentro había...`);
+  await decir(`¡${it.n > 1 ? it.n + ' ' : ''}${nom}!` + (it.obj === 'dobleHab' ? ' ¡Es rarísima! Hay solo dos en toda la Argentina.' : ''));
+  guardar();
 }
