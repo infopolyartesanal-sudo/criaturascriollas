@@ -9518,7 +9518,8 @@ async function regaloHuevoMirta() {
   // Cada huevo del criadero que nace = un HUEVO ESPECIAL más para retirar (S.flags.especiales).
   // Partidas de antes: si ya habían recibido huevos del criadero y nunca el especial, tienen uno.
   const cr = S.flags.criadero;
-  if (S.flags.especiales === undefined) S.flags.especiales = (!S.flags.huevoRegalo && (S.flags.yaNacioHuevo || (cr && cr.puestos > 0))) ? 1 : 0;
+  // (también si ya usaron el criadero: tienen criaturas dejadas o huevos en la mochila)
+  if (S.flags.especiales === undefined) S.flags.especiales = (!S.flags.huevoRegalo && (S.flags.yaNacioHuevo || (cr && (cr.puestos > 0 || cr.cria.length > 0)) || huevos().some(h => !h.regalo))) ? 1 : 0;
   if (S.flags.especiales <= 0) {
     if (!S.flags.huevoRegalo) await decir('CRIADORA MIRTA: Cuando te nazca un huevo del criadero, venite que tengo una SORPRESA para vos.');
     return;
