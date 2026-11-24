@@ -5595,7 +5595,9 @@ function anomaliaPaso() {
   reg.hablar = async () => {
     if (!S.equipo.some(m => m.ps > 0)) { await decir('Tus criaturas no tienen energía. ¡Curalas en el CEMIC de PLAZA DE MULAS!'); return; }
     await decir('REGIOHM: ¡¡GROOOOAAAAR!!');
-    const r = await batalla({ salvaje: ['regiohm', 80], legendario: true, sinCaptura: true });
+    await decir('Las SEIS gemas brillan en su corona: REGIOHM está a NIVEL 90. ¡Es muchísimo más fuerte que cualquier criatura!');
+    await decir('Solo no se puede: vas a tener que usar a las SEIS criaturas de tu equipo, una atrás de la otra. ¡Vamos, Felipe!');
+    const r = await batalla({ salvaje: ['regiohm', 90], legendario: true, sinCaptura: true });
     if (r !== 'gana') { await decir('REGIOHM sigue furioso en la cumbre, esperando...'); return; }
     await decir('REGIOHM cayó de rodillas sobre la nieve... y todo quedó en silencio.');
     await destello(16);

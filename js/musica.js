@@ -276,3 +276,62 @@ function musicaAlternar() {
   MUS.pista = undefined;
   musicaCambiar(MUS.prendida ? pistaDeseada() : null);
 }
+
+// ================= LOS GUARDIANES: un tema para cada REGI, y REGIOHM los junta a todos =====
+// Los seis temas usan los mismos acordes (re menor: Rem · Sib · Do · La · Rem · Solm · Sib · La, 8 compases)
+// y cada uno tiene su propio instrumento y su propio dibujo de melodía. Por eso se pueden tocar todos juntos:
+// el tema de REGIOHM es la suma de los seis, más un bajo y una batería más pesados.
+const ACORDES_REGI = ['Dm', 'Bb', 'C', 'A', 'Dm', 'Gm', 'Bb', 'A'];
+const VOZ_REGI = {
+  // MENTE: campanitas que dan vueltas como pensamientos
+  mente: { tipo: 'campana', vol: 0.05, compases: {
+    Dm: 'D6/2 F6/2 A6/2 F6/2 D6/2 A5/2 F6/2 A6/2', Bb: 'Bb5/2 D6/2 F6/2 D6/2 Bb5/2 F5/2 D6/2 F6/2', C: 'C6/2 E6/2 G6/2 E6/2 C6/2 G5/2 E6/2 G6/2',
+    A: 'C#6/2 E6/2 A6/2 E6/2 C#6/2 A5/2 E6/2 A6/2', Gm: 'G5/2 Bb5/2 D6/2 Bb5/2 G5/2 D5/2 Bb5/2 D6/2', A2: 'A5/2 C#6/2 E6/2 A6/2 E6/4 R/4' } },
+  // ALMA: una flauta lenta y triste
+  alma: { tipo: 'flauta', vol: 0.11, sueltos: ['A5/8 F5/4 D5/4', 'D6/8 C6/4 Bb5/4', 'C6/6 E6/2 G6/8', 'E6/12 C#6/4', 'F6/8 E6/4 D6/4', 'D6/8 Bb5/8', 'F5/4 G5/4 A5/4 Bb5/4', 'A5/16'] },
+  // PODER: un riff pesado y cortado, como golpes
+  poder: { tipo: 'square', duty: 0.5, vol: 0.075, compases: {
+    Dm: 'D4/2 D4/1 R/1 D4/2 F4/2 A4/3 G4/1 F4/2 E4/2', Bb: 'Bb3/2 Bb3/1 R/1 Bb3/2 D4/2 F4/3 E4/1 D4/2 C4/2', C: 'C4/2 C4/1 R/1 C4/2 E4/2 G4/3 F4/1 E4/2 D4/2',
+    A: 'A3/2 A3/1 R/1 A3/2 C#4/2 E4/4 E4/2 R/2', Gm: 'G3/2 G3/1 R/1 G3/2 Bb3/2 D4/3 C4/1 Bb3/2 A3/2', A2: 'A3/2 A3/2 C#4/2 E4/2 A4/4 R/4' } },
+  // REALIDAD: una melodía finita y torcida, siempre a destiempo
+  realidad: { tipo: 'square', duty: 0.125, vol: 0.06, compases: {
+    Dm: 'R/1 A5/1 R/1 G#5/1 R/1 A5/1 R/1 D6/3 C#6/1 D6/1 F6/2 E6/2', Bb: 'R/1 F5/1 R/1 E5/1 R/1 F5/1 R/1 Bb5/3 A5/1 Bb5/1 D6/2 C6/2',
+    C: 'R/1 G5/1 R/1 F#5/1 R/1 G5/1 R/1 C6/3 B5/1 C6/1 E6/2 D6/2', A: 'R/1 E5/1 R/1 D#5/1 R/1 E5/1 R/1 A5/3 G#5/1 A5/1 C#6/2 E6/2',
+    Gm: 'R/1 D5/1 R/1 C#5/1 R/1 D5/1 R/1 G5/3 F#5/1 G5/1 Bb5/2 A5/2', A2: 'R/1 E5/1 R/1 D#5/1 R/1 E5/1 R/1 A5/9' } },
+  // ESPACIO: arpegios rapidísimos que suben y bajan, como estrellas
+  espacio: { tipo: 'square', duty: 0.25, vol: 0.035, compases: {
+    Dm: rep('D4/1 F4/1 A4/1 D5/1 F5/1 A5/1 D5/1 A4/1', 2), Bb: rep('Bb3/1 D4/1 F4/1 Bb4/1 D5/1 F5/1 Bb4/1 F4/1', 2), C: rep('C4/1 E4/1 G4/1 C5/1 E5/1 G5/1 C5/1 G4/1', 2),
+    A: rep('A3/1 C#4/1 E4/1 A4/1 C#5/1 E5/1 A4/1 E4/1', 2), Gm: rep('G3/1 Bb3/1 D4/1 G4/1 Bb4/1 D5/1 G4/1 D4/1', 2), A2: rep('A3/1 C#4/1 E4/1 A4/1 C#5/1 E5/1 A4/1 E4/1', 2) } },
+  // TIEMPO: un colchón de acordes que no se apura
+  tiempo: { tipo: 'pad', vol: 0.07, sueltos: ['F4/16', 'D4/16', 'E4/16', 'C#4/16', 'F4/16', 'Bb3/16', 'D4/16', 'C#4/16'] },
+};
+function vozRegi(k) {
+  const v = VOZ_REGI[k];
+  const notas = v.sueltos || ACORDES_REGI.map((a, i) => v.compases[i === 7 && v.compases.A2 ? 'A2' : a]);
+  return { tipo: v.tipo, duty: v.duty, vol: v.vol, notas };
+}
+const BAJO_REGI = { tipo: 'triangle', vol: 0.22, notas: [rep('D2/2 D3/2', 4), rep('Bb1/2 Bb2/2', 4), rep('C2/2 C3/2', 4), rep('A1/2 A2/2', 4),
+  rep('D2/2 D3/2', 4), rep('G1/2 G2/2', 4), rep('Bb1/2 Bb2/2', 4), rep('A1/2 A2/2', 4)] };
+const RELOJ = { tipo: 'bateria', vol: 0.05, notas: ['h/4 h/4 h/4 h/4'] }; // el tic-tac de REGICRONO
+for (const k of Object.keys(VOZ_REGI)) {
+  const voz = vozRegi(k); voz.vol *= 1.5; // solo: más fuerte
+  CANCIONES['regi_' + k] = { bpm: 128, canales: [voz, BAJO_REGI, { tipo: 'bateria', vol: 0.07, notas: ['k/4 s/4 k/2 k/2 s/4'] }, ...(k === 'tiempo' ? [RELOJ] : [])] };
+}
+CANCIONES.regiohm = {
+  bpm: 138,
+  canales: [
+    ...Object.keys(VOZ_REGI).map(vozRegi),
+    { ...BAJO_REGI, vol: 0.26 },
+    { tipo: 'bateria', vol: 0.08, notas: ['k/2 h/2 s/2 h/2 k/2 k/2 s/2 h/2', 'k/2 h/2 s/2 h/2 k/2 h/1 h/1 s/2 s/1 s/1'] },
+    RELOJ,
+  ],
+};
+// Qué REGI es cada especie
+const TEMA_DE_ESPECIE = { regimento: 'regi_mente', regianima: 'regi_alma', regipulso: 'regi_poder', regifracto: 'regi_realidad', regiorbita: 'regi_espacio', regicrono: 'regi_tiempo', regiohm: 'regiohm' };
+const _pistaBase = pistaDeseada;
+pistaDeseada = function () {
+  if (S.escena === 'batalla' && bt && bt.rival && TEMA_DE_ESPECIE[bt.rival.id]) return TEMA_DE_ESPECIE[bt.rival.id];
+  if (S.escena === 'batalla' && bt && !bt.rival && MUS.pista && /^regi/.test(MUS.pista)) return MUS.pista; // entre criatura y criatura no cortar
+  if (S.escena === 'mundo' && /^templo_/.test(S.mapa)) return 'regi_' + S.mapa.slice(7);
+  return _pistaBase();
+};
