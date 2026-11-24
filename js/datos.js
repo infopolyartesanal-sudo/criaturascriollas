@@ -173,10 +173,17 @@ const OBJETOS = {
 };
 // Lo que se vende en el ALMACÉN, en orden
 // ===== Tutor de movimientos =====
-// Movimientos EXTRA que el TUTOR le puede enseñar a cada criatura (los elige Felipe).
-// El tutor ya ofrece solo los que la criatura aprende más adelante por nivel; acá van los demás.
+// El tutor COBRA (ver precioTutor en juego.js) y ofrece:
+//  1) los movimientos que la criatura aprendería más adelante por nivel,
+//  2) movimientos de SUS tipos (menos los especiales de cada criatura),
+//  3) los movimientos COMUNES de abajo, que cualquiera puede aprender,
+//  4) los EXTRA de cada especie (los elige Felipe).
 // Formato: idEspecie: ['idMovimiento', 'otroMovimiento'],   (los ids están en MOVS, más arriba)
+const TUTOR_COMUNES = ['garra_metal', 'mordisco', 'punetazo', 'pedrada', 'revolcon', 'danza_espada', 'relajo'];
 const TUTOR = {
+  ignidraxx: ['garra_metal', 'cabeza_hierro', 'troncazo'],
+  dracobrasa: ['garra_metal'],
+  flamartija: ['garra_metal'],
 };
 const TIENDA = ['boleadora', 'mate', 'alfajor', 'piedraNoche', 'nectarFloral', 'velaAnima', 'piedraAgua', 'piedraTrueno'];
 

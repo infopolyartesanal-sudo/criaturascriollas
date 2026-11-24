@@ -671,13 +671,28 @@ function movsNivel(m) {
     for (const [nv, mv] of ESPECIES[sp].movs || []) if (nv <= m.nivel && MOVS[mv] && !ids.includes(mv)) ids.push(mv);
   return ids.map(id => ({ id }));
 }
-// Los que todavía no aprendió por nivel + los extra del tutor (TUTOR en datos.js)
+// Movimientos ESPECIALES: los que aprende una sola familia de criaturas (o ninguna). Esos no se enseñan por tipo.
+function familia(id) { return [id, ...preEvos(id)].find(k => !preEvos(k).length) || id; }
+let _famMov = null;
+function familiasDeMov(mv) {
+  if (!_famMov) {
+    _famMov = {};
+    for (const [id, e] of Object.entries(ESPECIES))
+      for (const [, x] of e.movs || []) (_famMov[x] = _famMov[x] || new Set()).add(familia(id));
+  }
+  return _famMov[mv] ? _famMov[mv].size : 0;
+}
+// Lo que cobra el tutor: más caro cuanto más fuerte es el movimiento
+function precioTutor(mv) { const M = MOVS[mv]; return 300 + (M.pot || 0) * 10; }
+// Los que todavía no aprendió por nivel + los de sus tipos + los comunes + los extra de su especie
 function movsTutor(m) {
   const ya = movsNivel(m).map(x => x.id), L = [];
-  for (const [nv, mv] of ESPECIES[m.id].movs || [])
-    if (nv > m.nivel && MOVS[mv] && !ya.includes(mv) && !L.some(x => x.id === mv)) L.push({ id: mv, nv });
-  for (const mv of (typeof TUTOR !== 'undefined' && TUTOR[m.id]) || [])
-    if (MOVS[mv] && !ya.includes(mv) && !L.some(x => x.id === mv)) L.push({ id: mv });
+  const poner = (mv, nv) => { if (MOVS[mv] && mv !== 'forcejeo' && !ya.includes(mv) && !L.some(x => x.id === mv)) L.push(nv ? { id: mv, nv } : { id: mv }); };
+  for (const [nv, mv] of ESPECIES[m.id].movs || []) if (nv > m.nivel) poner(mv, nv);
+  for (const mv of TUTOR[m.id] || []) poner(mv);
+  const tipos = ESPECIES[m.id].tipos;
+  for (const [mv, M] of Object.entries(MOVS)) if (tipos.includes(M.tipo) && familiasDeMov(mv) >= 2) poner(mv);
+  for (const mv of TUTOR_COMUNES) poner(mv);
   return L;
 }
 async function menuMovimientos(m) {
@@ -708,11 +723,23 @@ async function listaMovimientos(m, modo) {
     if (pressed.a) {
       const mv = li.items[li.idx].id, M = MOVS[mv];
       if (m.movs.some(x => x.id === mv)) { await decir(`${nombreDe(m)} ya sabe ${M.nombre.toUpperCase()}.`); continue; }
-      if (m.movs.length < 4) {
+      if (m.movs.length < 4 && modo !== 'tutor') {
         const si = await siNo(`¿Querés que ${nombreDe(m)} aprenda ${M.nombre.toUpperCase()}?`);
         if (!si) continue;
       }
-      if (modo === 'tutor') await decir(`El tutor le enseña ${M.nombre.toUpperCase()} a ${nombreDe(m)}...`);
+      if (modo === 'tutor') {
+        const precio = precioTutor(mv);
+        if (S.plata < precio) { await decir(`TUTOR: Enseñar ${M.nombre.toUpperCase()} cuesta ${plataTxt(precio)}, y tenés ${plataTxt(S.plata)}. ¡Ganale a algún entrenador y volvé!`); continue; }
+        if (!await siNo(`TUTOR: Te cobro ${plataTxt(precio)} por enseñarle ${M.nombre.toUpperCase()}. ¿Dale?`)) continue;
+        const antes = m.movs.map(x => x.id).join();
+        await decir(`El tutor le enseña ${M.nombre.toUpperCase()} a ${nombreDe(m)}...`);
+        await aprender(m, mv);
+        if (m.movs.some(x => x.id === mv) && m.movs.map(x => x.id).join() !== antes) {
+          S.plata -= precio;
+          await decir(`Pagaste ${plataTxt(precio)}. Te quedan ${plataTxt(S.plata)}.`);
+        } else await decir('TUTOR: Bueno, no te cobro nada.');
+        continue;
+      }
       await aprender(m, mv);
     }
   }
@@ -746,7 +773,7 @@ function dibujarListaMovs(li) {
     txt(M.nombre.toUpperCase(), 20, y, { t: 6, c: sabe ? '#2a7a2a' : '#383838' });
     sc.fillStyle = COLOR_TIPO[M.tipo]; sc.fillRect(118, y, 40, 8);
     txt(nombreTipo(M.tipo).slice(0, 6), 138, y + 1, { t: 5, c: '#fff', sombra: null, al: 'center' });
-    const marca = sabe ? 'LO SABE' : (it.nv ? 'NV ' + it.nv : (li.modo === 'tutor' ? 'TUTOR' : ''));
+    const marca = sabe ? 'LO SABE' : (li.modo === 'tutor' ? plataTxt(precioTutor(it.id)) : (it.nv ? 'NV ' + it.nv : ''));
     txt(marca, 228, y + 1, { t: 5, al: 'right', sombra: null, c: sabe ? '#2a7a2a' : '#606060' });
     if (i === li.idx) flecha(11, y, '#383838');
   });
@@ -756,7 +783,7 @@ function dibujarListaMovs(li) {
     const [a, b2] = descMov(MOVS[li.items[li.idx].id]);
     txt(a, 12, 123, { t: 6 });
     if (b2) txt(b2, 12, 133, { t: 6 });
-    txt(li.modo === 'nivel' ? 'A: ENSEÑAR (GRATIS)   B: VOLVER' : 'A: QUE LO ENSEÑE EL TUTOR   B: VOLVER', 12, 144, { t: 5, sombra: null, c: '#606060' });
+    txt(li.modo === 'nivel' ? 'A: ENSEÑAR (GRATIS)   B: VOLVER' : `A: APRENDER (TENÉS ${plataTxt(S.plata)})   B: VOLVER`, 12, 144, { t: 5, sombra: null, c: '#606060' });
   }
 }
 async function verDatos(m) {
@@ -1734,13 +1761,14 @@ async function coronaInfinito(m) {
   }
 }
 
-// EXP más generosa (pedido de Felipe): cada batalla da el TRIPLE que antes,
-// y las demás criaturas del equipo que no estén debilitadas se llevan la mitad (como un Repartir EXP).
-const MULT_EXP = 3, REPARTO_EXP = 0.5;
+// EXP (pedido de Felipe): con unas DOS batallas contra entrenadores la criatura sube un nivel;
+// las de salvajes dan poco más que antes. Las demás criaturas del equipo que no estén
+// debilitadas se llevan la mitad (como un Repartir EXP).
+const MULT_EXP_ENTRENADOR = 1.6, MULT_EXP_SALVAJE = 1.2, REPARTO_EXP = 0.5;
 async function darExp() {
   const f = bt.rival, m = bt.yo;
   if (!m || m.ps <= 0) return;
-  const gana = Math.max(1, Math.floor(ESPECIES[f.id].exp * f.nivel / 7 * (bt.tipo === 'entrenador' ? 1.5 : 1) * MULT_EXP));
+  const gana = Math.max(1, Math.floor(ESPECIES[f.id].exp * f.nivel / 7 * (bt.tipo === 'entrenador' ? 1.5 * MULT_EXP_ENTRENADOR : MULT_EXP_SALVAJE)));
   await sumarExp(m, gana, true);
   const resto = (S.equipo || []).filter(c => c !== m && c.ps > 0 && c.nivel < 100);
   if (resto.length) {
