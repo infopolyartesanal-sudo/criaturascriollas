@@ -5735,7 +5735,7 @@ async function regaloHuevoMirta() {
   }
   if (huevos().length >= CRIADERO.maxHuevos) { await decir('Tengo un huevo especial para vos, pero ya llevás muchos en la mochila. Hacé nacer alguno y volvé.'); return; }
   await decir(`¡Qué lindo ${nombreDe(primera)}! A una criatura así le va a encantar cuidar este huevo tan especial.`);
-  huevos().push({ id: HUEVO_REGALO[fam], pasos: CRIADERO.pasosNacer, nivel: 5 });
+  huevos().push({ id: HUEVO_REGALO[fam], pasos: CRIADERO.pasosNacer, nivel: 5, regalo: true });
   sincronizarHuevos();
   S.flags.huevoRegalo = true;
   await decir('¡Felipe recibió un HUEVO ESPECIAL! Lo guardó en la MOCHILA.');

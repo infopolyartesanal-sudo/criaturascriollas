@@ -603,7 +603,12 @@ async function usarPiedra(obj) {
 
 // ---------- Almacén (tienda) ----------
 async function tienda() {
-  await decir('ALMACENERO: ¡Buenas! ¿Qué vas a llevar?');
+  await decir('ALMACENERO: ¡Buenas! ¿Venís a comprar o a vender?', { mantener: true });
+  const que = await elegir(['COMPRAR', 'VENDER', 'CHAU'], { x: 156, y: 60, w: 80 });
+  ui.dialogo = null;
+  if (que === 1) { await vender(); return; }
+  if (que !== 0) { await decir('ALMACENERO: ¡Chau, que te vaya bien!'); return; }
+  await decir('ALMACENERO: ¿Qué vas a llevar?');
   ui.tienda = { idx: 0, cant: 0 };
   while (true) {
     await esperar(1);
@@ -1073,9 +1078,9 @@ function dibujarMapaArg() {
 }
 
 // ---------- Mochila ----------
-async function pantallaMochila(enBatalla) {
+async function pantallaMochila(enBatalla, vender) {
   const lista = () => Object.keys(OBJETOS).filter(k => (S.bolsa[k] || 0) > 0);
-  ui.mochila = { idx: 0 };
+  ui.mochila = { idx: 0, vender: !!vender };
   while (true) {
     await esperar(1);
     const L = lista(), n = L.length + 1, mo = ui.mochila;
@@ -1098,15 +1103,20 @@ function dibujarMochila() {
   sc.drawImage(spriteBoleadora(), 22, 62, 48, 48);
   caja(96, 4, 140, 108, 'normal');
   const items = [...L.map(k => [OBJETOS[k].nombre, 'x' + S.bolsa[k]]), ['CERRAR', '']];
-  items.forEach(([nm, c], i) => {
-    const y = 14 + i * 16;
-    txt(nm, 112, y, { t: 7 });
+  // Se ven 6 renglones; si hay más, la lista se corre con las flechas
+  const top = Math.max(0, Math.min(mo.idx - 2, items.length - 6));
+  items.slice(top, top + 6).forEach(([nm, c], k) => {
+    const i = top + k, y = 14 + k * 16;
+    txt(nm, 112, y, { t: nm.length > 13 ? 5 : nm.length > 10 ? 6 : 7 });
     if (c) txt(c, 228, y, { t: 7, al: 'right' });
     if (i === mo.idx) flecha(103, y);
   });
+  if (top > 0) txt('▲', 230, 5, { t: 5, al: 'right', sombra: null, c: '#808080' });
+  if (top + 6 < items.length) txt('▼', 230, 102, { t: 5, al: 'right', sombra: null, c: '#808080' });
   caja(4, 116, 232, 40, 'normal');
   const sel = L[mo.idx];
-  const d = sel ? OBJETOS[sel].desc : 'Cerrar la mochila.';
+  let d = sel ? OBJETOS[sel].desc : 'Cerrar la mochila.';
+  if (mo.vender && sel) d = precioVenta(sel) ? `Te lo compran a ${plataTxt(precioVenta(sel))} cada uno.` : '¡Esto no se vende! Es muy importante para el viaje.';
   envolver(d, 212, 7).forEach((l, i) => txt(l, 12, 126 + i * 13, { t: 7 }));
 }
 
@@ -2775,4 +2785,55 @@ async function usarCopiarHab() {
   if (a.hab2 === k) delete a.hab2; // si era su 2ª habilidad, ahora es la principal
   await decir(`¡${nombreDe(a)} copió ${HABILIDADES[k].nombre.toUpperCase()} de ${nombreDe(de)}!`);
   guardar();
+}
+
+// ---------- VENDER en el almacén (pedido de Poly, 24/11/2026) ----------
+// Te compran los objetos a la mitad de lo que cuestan. Los HUEVOS valen $500.
+// Si vendés el HUEVO ESPECIAL de la criadora Mirta, ella te lo vuelve a dar.
+// Lo importante para el viaje (mapa, bici, balsa, pico, corte, cuaderno) no se vende.
+const VENTA_ESPECIAL = { huevo: 500, dobleHab: 5000 };
+function precioVenta(k) {
+  if (VENTA_ESPECIAL[k]) return VENTA_ESPECIAL[k];
+  return Math.floor((OBJETOS[k].precio || 0) / 2);
+}
+async function vender() {
+  while (true) {
+    await decir('ALMACENERO: A ver, ¿qué me querés vender?', { auto: 1 });
+    const k = await pantallaMochila(false, true);
+    if (!k) { await decir('ALMACENERO: ¡Cuando quieras! Acá estamos.'); guardar(); return; }
+    const pv = precioVenta(k), nom = OBJETOS[k].nombre;
+    if (!pv) { await decir(`ALMACENERO: ¿El ${nom}? ¡Ni loco! Eso lo vas a necesitar para el viaje.`); continue; }
+    if (k === 'huevo') { await venderHuevo(); continue; }
+    if (k === 'dobleHab' && !await siNo('¡Ojo! Hay solo DOS DOBLE HABILIDAD en todo el juego. ¿Seguro que la vendés?')) continue;
+    let cant = 1;
+    if (S.bolsa[k] > 1) {
+      const ops = [1, 5, 10].filter(n => n < S.bolsa[k]).map(n => String(n)).concat(['TODOS (' + S.bolsa[k] + ')']);
+      await decir(`¿Cuántos ${nom} vendés? Te pago ${plataTxt(pv)} cada uno.`, { mantener: true });
+      const r = await elegir(ops, { x: 150, y: 40, w: 86 });
+      ui.dialogo = null;
+      if (r < 0) continue;
+      cant = r === ops.length - 1 ? S.bolsa[k] : Number(ops[r]);
+    } else if (!await siNo(`¿Vendés ${nom} por ${plataTxt(pv)}?`)) continue;
+    S.bolsa[k] -= cant; if (S.bolsa[k] <= 0) delete S.bolsa[k];
+    S.plata = (S.plata || 0) + pv * cant;
+    await decir(`¡Vendiste ${cant} ${nom} y ganaste ${plataTxt(pv * cant)}!`);
+  }
+}
+async function venderHuevo() {
+  const hs = huevos();
+  if (!hs.length) return;
+  let i = 0;
+  if (hs.length > 1) {
+    const ops = hs.map((h, n) => (h.regalo ? 'ESPECIAL ' : 'HUEVO ') + (n + 1) + (h.pasos > CRIADERO.pasosNacer * 0.5 ? ' (NUEVO)' : ' (CASI)'));
+    await decir('¿Cuál huevo vendés?', { mantener: true });
+    i = await elegir([...ops, 'NINGUNO'], { x: 130, y: 30, w: 106 });
+    ui.dialogo = null;
+    if (i < 0 || i >= hs.length) return;
+  }
+  const h = hs[i];
+  if (!await siNo(`¿Vendés ${h.regalo ? 'el HUEVO ESPECIAL' : 'este HUEVO'} por ${plataTxt(VENTA_ESPECIAL.huevo)}?`)) return;
+  hs.splice(i, 1); sincronizarHuevos();
+  S.plata = (S.plata || 0) + VENTA_ESPECIAL.huevo;
+  await decir(`¡Vendiste el huevo y ganaste ${plataTxt(VENTA_ESPECIAL.huevo)}!`);
+  if (h.regalo) { S.flags.huevoRegalo = false; await decir('ALMACENERO: Dicen que la CRIADORA MIRTA tiene otro huevo especial como este... ¡andá a verla!'); }
 }
