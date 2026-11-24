@@ -610,6 +610,7 @@ async function usarObjetoMundo(obj) {
   const o = OBJETOS[obj];
   if (o.mapa) { await pantallaMapa(); return; }
   if (o.bici) { await usarBici(); return; }
+  if (o.cuaderno) { await cuadernoPistas(); return; }
   if (o.balsa) { await decir('Caminá hacia el agua y Felipe se sube a la BALSA solo.'); return; }
   if (o.pico) { await decir('Ponete enfrente de una roca o un bloque de hielo con grietas y apretá A.'); return; }
   if (o.piedra) { await usarPiedra(obj); return; }
@@ -927,6 +928,7 @@ const LUGAR_GEO = {
   ruta13: [-71.4, -41.6], elbolson: [-71.5, -42], ruta14: [-70.3, -41.6], jacobacci: [-69.5, -41.3], ruta15: [-68, -41.3], somuncura: [-66.9, -41.2],
   ruta16: [-64.6, -42.4], madryn: [-65.1, -42.8], ruta17: [-67, -47.3], gallegos: [-69.2, -51.6], ruta18: [-68.6, -53.1], ushuaia: [-68.3, -54.7],
   catamarca: [-65.8, -28.5], ruta19: [-66.5, -27.9], belen: [-67, -27.6], ruta20: [-67.3, -27.5], fiambala: [-67.6, -27.7], ruta21: [-68, -27.4], ojos: [-68.5, -27.1],
+  quebrada: [-64.75, -31.65], quilmes: [-65.95, -26.45], mocona: [-53.9, -27.15], nahuel: [-71.55, -40.95], glaciar: [-73.05, -50.5], pomez: [-67.45, -26.6],
   ruta22: [-68.9, -28.5], rodeo: [-69.15, -30.2], ruta23: [-69.4, -31.5], uspallata: [-69.35, -32.6], ruta24: [-69.6, -32.75], plaza: [-69.88, -32.65],
 };
 const GIMNASIOS_GEO = [['vallefertil', 1], ['tafi', 2], ['puerto', 3], ['bariloche', 4], ['somuncura', 5], ['ushuaia', 6], ['ojos', 7], ['plaza', 8]];
@@ -1226,7 +1228,7 @@ function calcularDanio(at, de, mv) {
   const stab = tiposDe(at).includes(mv.tipo) ? (ha.ef === 'adaptable' ? 2 : 1.5) : 1;
   let ef = eficacia(mv.tipo, tiposDe(de));
   if (ef === 0 && ha.ef === 'audaz' && ['NORMAL', 'LUCHA'].includes(mv.tipo)) ef = eficacia(mv.tipo, tiposDe(de).filter(t => t !== 'FANTASMA'));
-  const critico = hd.ef !== 'sinCritico' && azar() < (ha.ef === 'critico' || mv.critAlto ? 1 / 5 : 1 / 16);
+  const critico = hd.ef !== 'sinCritico' && hd.ef !== 'capaGlaciar' && azar() < (ha.ef === 'critico' || mv.critAlto ? 1 / 5 : 1 / 16);
   const azarDanio = 0.85 + azar() * 0.15;
   if (ef === 0) return { danio: 0, ef, critico: false };
   let extra = 1;
@@ -1252,6 +1254,7 @@ function calcularDanio(at, de, mv) {
   if (ha.ef === 'templado' && mv.tipo === 'ACERO') extra *= 1.5;
   if (ha.ef === 'cabezaRoca' && mv.tipo === 'ROCA') extra *= 1.2;
   if (hd.ef === 'ignifugo' && mv.tipo === 'FUEGO') extra *= 0.5;
+  if (hd.ef === 'capaGlaciar' && (mv.tipo === 'FUEGO' || mv.tipo === 'PLANTA')) extra *= 0.5;
   if (hd.ef === 'ilusion' && !de.et.golpeado) extra *= 0.5;
   return { danio: Math.max(1, Math.floor(base * stab * ef * (critico ? 1.5 : 1) * azarDanio * extra)), ef, critico };
 }
@@ -1875,7 +1878,10 @@ async function tirarBoleadora() {
 async function revisarEvoluciones() {
   for (const m of S.equipo) {
     const evo = ESPECIES[m.id].evo;
-    if (evo && m.nivel >= evo.nivel) await evolucionar(m, evo.a);
+    if (!evo || m.nivel < evo.nivel) continue;
+    // Algunas evolucionan distinto si son hembra (Sparknight → Lumisprite); se sortea una sola vez
+    if (evo.hembra && m.hembra === undefined) m.hembra = Math.random() < 0.5;
+    await evolucionar(m, evo.hembra && m.hembra ? evo.hembra : evo.a);
   }
 }
 async function evolucionar(m, nuevoId) {

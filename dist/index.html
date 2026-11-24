@@ -2834,6 +2834,622 @@ function nombreDe(m) { return m.apodo || ESPECIES[m.id].nombre.toUpperCase(); }
 function tiposDe(m) { return (m.et && m.et.tipos) || ESPECIES[m.id].tipos; } // Regiohm cambia de tipo en batalla (m.et.tipos)
 
 
+// ===== Criaturas de la presentación de Felipe que faltaban (agregadas el 24/11/2026) =====
+// Datos sacados de la presentación ("tabla de dragones", Nahuelito, Ciberco, Flambrik y las formas de Faeve).
+// Estadísticas, movimientos y niveles que la presentación no dice: elegidos por Claude (Felipe los puede cambiar).
+Object.assign(MOVS, {
+  gel_igneo: { nombre: 'Gel Ígneo', tipo: 'FUEGO', pot: 85, prec: 100, pp: 15 },
+  dardo_paralizante: { nombre: 'Dardo Paralizante', tipo: 'AGUA', pot: 80, prec: 100, pp: 15, prio: 1 },
+  chorro_escaldante: { nombre: 'Chorro Escaldante', tipo: 'AGUA', pot: 90, prec: 100, pp: 10 },
+  tunel_susurrante: { nombre: 'Túnel Susurrante', tipo: 'TIERRA', pot: 90, prec: 100, pp: 10 },
+  rafaga_escarcha: { nombre: 'Ráfaga Escarcha', tipo: 'HIELO', pot: 85, prec: 100, pp: 15 },
+  ventisca_huapi: { nombre: 'Ventisca del Huapi', tipo: 'HIELO', pot: 100, prec: 95, pp: 5 },
+  laser_tension: { nombre: 'Láser de Alta Tensión', tipo: 'ELECTRICO', pot: 90, prec: 100, pp: 10 },
+  llama_mistica: { nombre: 'Llama Mística', tipo: 'FUEGO', pot: 75, prec: 100, pp: 15 },
+  aguijon_dragon: { nombre: 'Aguijón Dragón', tipo: 'BICHO', pot: 85, prec: 100, pp: 15, critAlto: true },
+  doble_cabeza: { nombre: 'Doble Cabeza', tipo: 'VENENO', pot: 85, prec: 95, pp: 10 },
+  lluvia_puas: { nombre: 'Lluvia de Púas', tipo: 'VOLADOR', pot: 85, prec: 95, pp: 10, critAlto: true },
+});
+
+Object.assign(OBJETOS, {
+  metalDuro: { nombre: 'METAL DURO', precio: 3000, piedra: true, desc: 'Un pedazo de hierro de la cordillera. Hace evolucionar a PATAGÓN en METASAURIO.' },
+  rocaDura: { nombre: 'ROCA DURA', precio: 3000, piedra: true, desc: 'Granito volcánico de los Andes. Hace evolucionar a PATAGÓN en LITODÓN.' },
+  piedraFuego: { nombre: 'PIEDRA FUEGO', precio: 2500, piedra: true, desc: 'Una piedra tibia con una brasa adentro. Hace evolucionar a FAEVE en PYREFAE.' },
+  piedraHoja: { nombre: 'PIEDRA HOJA', precio: 2500, piedra: true, desc: 'Una piedra verde con una hoja de ceibo marcada. Hace evolucionar a FAEVE en SYLVAFAE.' },
+  farolLuz: { nombre: 'FAROL DE LUCIÉRNAGA', precio: 2500, piedra: true, desc: 'Un farolito lleno de bichitos de luz. Hace evolucionar a FAEVE en SPRITEFAE.' },
+  escamaLuz: { nombre: 'ESCAMA DE LUZ', precio: 3000, piedra: true, desc: 'Una escama que brilla sola. Hace evolucionar a SPARKNIGHT en LUMISPRITE.' },
+});
+// Piedras nuevas que también se compran en el ALMACÉN
+TIENDA.push('piedraFuego', 'piedraHoja');
+
+// Evoluciones nuevas para criaturas que ya existían
+ESPECIES.patagon.evoPiedra = { metalDuro: 'metasaurio', rocaDura: 'litodon' };
+ESPECIES.faeve.evoPiedra = Object.assign({}, ESPECIES.faeve.evoPiedra, { piedraFuego: 'pyrefae', piedraAgua: 'coralfae', piedraHoja: 'sylvafae', farolLuz: 'spritefae' });
+ESPECIES.mythfae.evo = { nivel: 50, a: 'grandfae' };
+// Sparknight: los machos evolucionan en UMBRATAIL y las hembras en LUMISPRITE (o con la ESCAMA DE LUZ)
+ESPECIES.sparknight.evo = Object.assign({}, ESPECIES.sparknight.evo, { hembra: 'lumisprite' });
+ESPECIES.sparknight.evoPiedra = { escamaLuz: 'lumisprite' };
+
+Object.assign(ESPECIES, {
+  // --- Ramas de Patagón: Metasaurio → Ferradón (Acero) y Litodón → Andidón (Roca) ---
+  metasaurio: {
+    nombre: 'Metasaurio', tipos: ['DRAGON', 'ACERO'], base: { ps: 62, atk: 78, def: 82, vel: 55 }, captura: 45, exp: 145,
+    desc: 'el saurio de armadura a medio hacer', evo: { nivel: 38, a: 'ferradon' },
+    movs: [[1, 'aranazo'], [1, 'grunido'], [6, 'garra_metal'], [11, 'aliento'], [16, 'barrazo'], [22, 'cabeza_hierro'], [28, 'garra_dragon'], [34, 'latigo_metalico']],
+    sprite: [
+      ['p', [[20, 20], [30, 24], [29, 27], [20, 25]], '#5a7a5a'],
+      ['r', 13, 22, 3, 8, '#4a6a4a'], ['r', 19, 22, 3, 8, '#4a6a4a'],
+      ['r', 12, 29, 5, 2, '#8a96a8'], ['r', 18, 29, 5, 2, '#8a96a8'],
+      ['e', 17, 18, 6, 7, '#6a8a62'],
+      ['e', 16, 21, 3.5, 4, '#c8d0a0', 's'],
+      ['e', 20, 14, 3.5, 2.5, '#a8b4c4'], ['e', 13, 14, 3, 2.2, '#a8b4c4'],
+      ['p', [[20, 12], [22, 8], [24, 12]], '#c8d2e0'], ['p', [[16, 10], [18, 6], [20, 10]], '#c8d2e0'],
+      ['e', 10, 10, 5, 4, '#6a8a62'],
+      ['p', [[3, 11], [8, 8], [9, 13]], '#6a8a62'],
+      ['p', [[8, 6], [13, 3], [12, 8]], '#c8d2e0'],
+      ['r', 6, 9, 2, 1.4, '#201010'], ['d', 6, 8, '#ffffff'],
+      ['p', [[10, 16], [6, 20], [9, 21]], '#c8d2e0'],
+      ['r', 3, 12, 4, 1, '#f0f0f0'],
+    ],
+  },
+  ferradon: {
+    nombre: 'Ferradón', tipos: ['DRAGON', 'ACERO'], base: { ps: 88, atk: 105, def: 125, vel: 60 }, captura: 45, exp: 238,
+    desc: 'el dragón acorazado de hierro andino',
+    movs: [[1, 'aranazo'], [1, 'grunido'], [6, 'garra_metal'], [11, 'aliento'], [16, 'barrazo'], [22, 'cabeza_hierro'], [28, 'garra_dragon'], [34, 'latigo_metalico'], [38, 'reflejo'], [46, 'furia_dragon'], [54, 'terremoto']],
+    sprite: [
+      ['p', [[19, 18], [31, 22], [31, 26], [19, 25]], '#5a6a7a'],
+      ['p', [[28, 20], [31, 17], [31, 22]], '#d0d8e4'],
+      ['r', 9, 23, 5, 7, '#4a5868'], ['r', 19, 23, 5, 7, '#4a5868'],
+      ['r', 8, 29, 7, 2, '#2e3846'], ['r', 18, 29, 7, 2, '#2e3846'],
+      ['e', 16, 19, 11, 8, '#7a8a9a'],
+      ['r', 8, 14, 17, 3, '#a8b4c4'], ['r', 8, 18, 17, 2, '#a8b4c4'],
+      ['p', [[11, 13], [13, 7], [15, 13]], '#e0e6f0'], ['p', [[16, 13], [18, 6], [20, 13]], '#e0e6f0'], ['p', [[21, 13], [23, 8], [25, 13]], '#e0e6f0'],
+      ['e', 16, 23, 6, 3, '#c8c8a8', 's'],
+      ['e', 7, 14, 6, 5, '#6a7a8a'],
+      ['p', [[0, 15], [5, 12], [6, 18]], '#8a96a8'],
+      ['p', [[4, 9], [9, 4], [9, 11]], '#d0d8e4'],
+      ['r', 3, 13, 3, 1.5, '#f04020'], ['d', 3, 12, '#ffffff'],
+      ['r', 0, 16, 5, 1, '#f0f0f0'],
+    ],
+  },
+  litodon: {
+    nombre: 'Litodón', tipos: ['DRAGON', 'ROCA'], base: { ps: 72, atk: 70, def: 92, vel: 38 }, captura: 45, exp: 145,
+    desc: 'el saurio que se queda quieto al sol', evo: { nivel: 38, a: 'andidon' },
+    movs: [[1, 'embestida'], [1, 'grunido'], [6, 'pedrada'], [11, 'aliento'], [16, 'adobe'], [22, 'derrumbe'], [28, 'garra_dragon'], [34, 'filo_mica']],
+    sprite: [
+      ['p', [[20, 22], [29, 24], [28, 27], [20, 27]], '#8a7a5a'],
+      ['e', 30, 25, 2.5, 2.5, '#8a8a8a'],
+      ['r', 9, 25, 4, 5, '#6a5a42'], ['r', 19, 25, 4, 5, '#6a5a42'],
+      ['e', 16, 21, 10, 7, '#9a8a6a'],
+      ['e', 16, 25, 7, 2.5, '#d8c8a0', 's'],
+      ['e', 12, 15, 3, 2.5, '#9a9a9a'], ['e', 17, 14, 3.5, 3, '#8a8a8a'], ['e', 22, 16, 3, 2.5, '#aaaaaa'],
+      ['e', 7, 18, 5, 4, '#9a8a6a'],
+      ['e', 7, 14, 2.5, 2, '#aaaaaa'],
+      ['r', 4, 17, 2, 1.4, '#201010'], ['d', 4, 16, '#ffffff'],
+      ['r', 2, 20, 4, 1, '#5a4a32'],
+    ],
+  },
+  andidon: {
+    nombre: 'Andidón', tipos: ['DRAGON', 'ROCA'], base: { ps: 95, atk: 95, def: 140, vel: 40 }, captura: 45, exp: 238,
+    desc: 'la muralla de granito de la cordillera',
+    movs: [[1, 'embestida'], [1, 'grunido'], [6, 'pedrada'], [11, 'aliento'], [16, 'adobe'], [22, 'derrumbe'], [28, 'garra_dragon'], [34, 'filo_mica'], [38, 'erupcion_geoda'], [46, 'furia_dragon'], [54, 'terremoto']],
+    sprite: [
+      ['p', [[22, 22], [30, 22], [31, 26], [22, 27]], '#6a6a6a'],
+      ['e', 30, 23, 3, 3, '#7a7a7a'], ['p', [[29, 19], [30, 16], [31.5, 20]], '#d8d8d8'],
+      ['r', 7, 24, 6, 6, '#5a4a3a'], ['r', 20, 24, 6, 6, '#5a4a3a'],
+      ['r', 6, 29, 8, 2, '#3a3028'], ['r', 19, 29, 8, 2, '#3a3028'],
+      ['e', 16, 21, 13, 7, '#7a6a5a'],
+      ['e', 9, 15, 4, 3.5, '#8a8a8a'], ['e', 15, 13, 4.5, 4, '#9a9a9a'], ['e', 21, 14, 4, 3.5, '#7a7a7a'], ['e', 26, 17, 3, 3, '#8a8a8a'],
+      ['p', [[13, 11], [15, 5], [17, 11]], '#f0f0f0'], ['p', [[19, 11], [21, 7], [23, 11]], '#f0f0f0'],
+      ['e', 16, 25, 9, 2.5, '#c8b890', 's'],
+      ['e', 4, 20, 4.5, 4, '#7a6a5a'],
+      ['e', 4, 16, 3, 2, '#9a9a9a'],
+      ['r', 1, 19, 2, 1.4, '#f8c040'],
+      ['r', 0, 22, 5, 1, '#4a3a2a'],
+    ],
+  },
+  // --- Sparknight hembra: Lumisprite (Dragón/Hada) ---
+  lumisprite: {
+    nombre: 'Lumisprite', tipos: ['DRAGON', 'HADA'], base: { ps: 72, atk: 80, def: 72, vel: 100 }, captura: 45, exp: 230,
+    desc: 'la furia luminosa de escamas espejo',
+    movs: [[1, 'aranazo'], [1, 'brillo'], [8, 'aliento'], [14, 'encanto'], [20, 'polvo_lunar'], [28, 'garra_dragon'], [36, 'resplandor'], [44, 'pulso_dragon'], [52, 'furia_dragon']],
+    sprite: [
+      ['p', [[19, 20], [31, 14], [30, 18], [20, 25]], '#e0d8f8'],
+      ['p', [[28, 12], [31, 10], [31, 15]], '#f8a8d8'],
+      ['p', [[14, 14], [28, 2], [24, 16]], '#f8d8f0'], ['p', [[16, 15], [27, 5], [23, 15]], '#ffffff', 'c'],
+      ['r', 11, 23, 3, 7, '#c8b8e8'], ['r', 18, 23, 3, 7, '#c8b8e8'],
+      ['e', 15, 20, 8, 6, '#e8e0f8'],
+      ['e', 14, 22, 4.5, 3.5, '#fff0fa', 's'],
+      ['e', 8, 12, 5, 4, '#e8e0f8'],
+      ['p', [[1, 13], [5, 10], [6, 15]], '#e8e0f8'],
+      ['p', [[7, 8], [9, 3], [11, 8]], '#f8a8d8'],
+      ['r', 5, 11, 2, 1.4, '#4080e0'], ['d', 5, 10, '#ffffff'],
+      ['d', 22, 10, '#ffffff'], ['d', 26, 6, '#ffffff'], ['d', 3, 22, '#f8d040'], ['d', 28, 22, '#f8d040'],
+    ],
+  },
+  // --- Sparkind → Pyrodrake (Dragón/Fuego) ---
+  sparkind: {
+    nombre: 'Sparkind', tipos: ['DRAGON', 'FUEGO'], base: { ps: 48, atk: 58, def: 45, vel: 60 }, captura: 45, exp: 62,
+    desc: 'el dragoncito aceitoso que se prende fuego', evo: { nivel: 32, a: 'pyrodrake' },
+    movs: [[1, 'aranazo'], [1, 'grunido'], [5, 'brasita'], [9, 'mordisco'], [14, 'aliento'], [19, 'fogon'], [25, 'garra_dragon']],
+    sprite: [
+      ['p', [[18, 22], [27, 20], [29, 23], [20, 26]], '#a8a040'],
+      ['e', 29, 18, 2.5, 3.5, '#f88020'], ['e', 29, 17, 1.4, 2.2, '#f8e040', 's'],
+      ['r', 11, 24, 3, 6, '#7a7a30'], ['r', 17, 24, 3, 6, '#7a7a30'],
+      ['e', 15, 21, 8, 5, '#b8b048'],
+      ['e', 14, 23, 5, 2.5, '#e8e0a0', 's'],
+      ['d', 12, 19, '#f8f8c0'], ['d', 16, 18, '#f8f8c0'], ['d', 19, 20, '#f8f8c0'],
+      ['e', 8, 15, 5, 4, '#b8b048'],
+      ['p', [[1, 16], [5, 13], [6, 18]], '#b8b048'],
+      ['r', 5, 14, 2, 1.4, '#201010'], ['d', 5, 13, '#ffffff'],
+      ['r', 2, 17, 4, 1, '#ffffff'], ['d', 1, 18, '#f8c020'], ['d', 0, 17, '#f88020'],
+    ],
+  },
+  pyrodrake: {
+    nombre: 'Pyrodrake', tipos: ['DRAGON', 'FUEGO'], base: { ps: 80, atk: 110, def: 78, vel: 92 }, captura: 45, exp: 235,
+    desc: 'el proyectil viviente de alas-patas',
+    movs: [[1, 'aranazo'], [1, 'grunido'], [5, 'brasita'], [9, 'mordisco'], [14, 'aliento'], [19, 'fogon'], [25, 'garra_dragon'], [32, 'gel_igneo'], [40, 'lavazo'], [48, 'furia_dragon'], [56, 'erupcion']],
+    sprite: [
+      ['p', [[20, 18], [31, 22], [30, 26], [20, 24]], '#b03020'],
+      ['e', 30, 21, 2.5, 3.5, '#f8a020'],
+      ['p', [[10, 18], [4, 30], [9, 30], [14, 21]], '#902818'], ['p', [[20, 18], [17, 30], [22, 30], [24, 20]], '#902818'],
+      ['p', [[11, 16], [25, 2], [27, 12], [20, 18]], '#d84a28'], ['p', [[14, 16], [24, 5], [24, 12]], '#f8a040', 'c'],
+      ['e', 16, 20, 9, 6, '#c83a24'],
+      ['e', 15, 23, 5.5, 2.5, '#f8c870', 's'],
+      ['e', 7, 13, 5, 4, '#c83a24'],
+      ['p', [[0, 14], [5, 11], [6, 16]], '#c83a24'],
+      ['p', [[6, 9], [7, 4], [10, 9]], '#f8d040'], ['p', [[9, 9], [12, 5], [12, 10]], '#f8d040'],
+      ['e', 8, 5, 2, 2, '#f88020'],
+      ['r', 4, 12, 2, 1.4, '#f8f040'], ['d', 4, 11, '#ffffff'],
+      ['r', 1, 15, 4, 1, '#ffffff'],
+    ],
+  },
+  // --- Sparklizar → Zipplecomb (Dragón → Dragón/Veneno, dos cabezas) ---
+  sparklizar: {
+    nombre: 'Sparklizar', tipos: ['DRAGON'], base: { ps: 45, atk: 50, def: 48, vel: 62 }, captura: 45, exp: 60,
+    desc: 'el lagartito que muerde piedras y flota', evo: { nivel: 35, a: 'zipplecomb' },
+    movs: [[1, 'aranazo'], [1, 'coletazo'], [5, 'acido'], [9, 'mordisco'], [14, 'aliento'], [19, 'polvo_toxico'], [25, 'garra_dragon']],
+    sprite: [
+      ['p', [[19, 22], [30, 24], [29, 27], [19, 26]], '#70c060'],
+      ['r', 11, 24, 3, 5, '#509040'], ['r', 18, 24, 3, 5, '#509040'],
+      ['e', 15, 22, 8, 4.5, '#80d070'],
+      ['e', 15, 24, 5, 2, '#d8f0a0', 's'],
+      ['e', 22, 17, 2, 1.5, '#e0f8e0', 's'], ['e', 25, 16, 1.5, 1.2, '#e0f8e0', 's'],
+      ['p', [[7, 22], [6, 15], [10, 15], [11, 21]], '#80d070'],
+      ['e', 7, 13, 4.5, 3.5, '#80d070'],
+      ['p', [[1, 14], [4, 12], [5, 16]], '#80d070'],
+      ['r', 5, 12, 2, 1.4, '#201010'], ['d', 5, 11, '#ffffff'],
+      ['r', 2, 15, 3, 1, '#ffffff'],
+    ],
+  },
+  zipplecomb: {
+    nombre: 'Zipplecomb', tipos: ['DRAGON', 'VENENO'], base: { ps: 70, atk: 95, def: 70, vel: 105 }, captura: 45, exp: 232,
+    desc: 'el dragón de dos cabezas: gas y chispa',
+    movs: [[1, 'aranazo'], [1, 'coletazo'], [5, 'acido'], [9, 'mordisco'], [14, 'aliento'], [19, 'polvo_toxico'], [25, 'garra_dragon'], [35, 'doble_cabeza'], [42, 'aliento_toxico'], [50, 'fogon'], [56, 'furia_dragon']],
+    sprite: [
+      ['p', [[20, 22], [31, 20], [31, 24], [21, 27]], '#4a8a4a'],
+      ['p', [[22, 20], [27, 14], [28, 20]], '#6a3a8a'],
+      ['r', 12, 25, 3, 5, '#3a6a3a'], ['r', 19, 25, 3, 5, '#3a6a3a'],
+      ['e', 16, 22, 9, 5.5, '#5a9a5a'],
+      ['e', 16, 24, 6, 2.5, '#c8e8a0', 's'],
+      ['p', [[9, 20], [5, 9], [9, 8], [13, 19]], '#5a9a5a'],
+      ['p', [[14, 18], [14, 6], [18, 6], [18, 18]], '#5a9a5a'],
+      ['e', 5, 8, 4.5, 3.5, '#5a9a5a'], ['p', [[0, 9], [3, 7], [3, 11]], '#5a9a5a'],
+      ['e', 15, 5, 4.5, 3.5, '#5a9a5a'], ['p', [[10, 6], [13, 3], [13, 8]], '#5a9a5a'],
+      ['r', 3, 7, 2, 1.4, '#a040e0'], ['d', 3, 6, '#ffffff'],
+      ['r', 13, 4, 2, 1.4, '#f8a020'], ['d', 13, 3, '#ffffff'],
+      ['e', 1, 12, 1.6, 1.2, '#b070f0', 's'], ['d', 10, 7, '#f8c020'],
+    ],
+  },
+  // --- Spikick → Mortiswift (Dragón → Dragón/Volador) ---
+  spikick: {
+    nombre: 'Spikick', tipos: ['DRAGON'], base: { ps: 45, atk: 58, def: 42, vel: 68 }, captura: 45, exp: 62,
+    desc: 'el pollito dragón que entrena la cola', evo: { nivel: 34, a: 'mortiswift' },
+    movs: [[1, 'picotazo'], [1, 'grunido'], [5, 'pique'], [9, 'aliento'], [14, 'rasante'], [19, 'aguijon'], [25, 'garra_dragon']],
+    sprite: [
+      ['p', [[18, 20], [27, 16], [28, 20], [20, 24]], '#3a8ac8'],
+      ['p', [[25, 15], [28, 11], [29, 17]], '#f8d040'], ['p', [[27, 18], [31, 17], [29, 21]], '#f8d040'],
+      ['r', 13, 24, 2, 6, '#e0a040'], ['r', 17, 24, 2, 6, '#e0a040'],
+      ['r', 11, 29, 4, 1, '#e0a040'], ['r', 15, 29, 4, 1, '#e0a040'],
+      ['e', 15, 19, 6, 6, '#4a9ad8'],
+      ['e', 14, 21, 3.5, 3.5, '#d8ecf8', 's'],
+      ['p', [[16, 16], [22, 13], [20, 20]], '#2a6aa8'],
+      ['e', 10, 12, 4.5, 4, '#4a9ad8'],
+      ['p', [[3, 13], [7, 11], [7, 15]], '#f8d040'],
+      ['p', [[10, 8], [11, 4], [13, 8]], '#2a6aa8'],
+      ['r', 7, 11, 2, 1.6, '#201010'], ['d', 7, 10, '#ffffff'],
+    ],
+  },
+  mortiswift: {
+    nombre: 'Mortiswift', tipos: ['DRAGON', 'VOLADOR'], base: { ps: 72, atk: 100, def: 70, vel: 118 }, captura: 45, exp: 235,
+    desc: 'el cazador en picada de cola de púas',
+    movs: [[1, 'picotazo'], [1, 'grunido'], [5, 'pique'], [9, 'aliento'], [14, 'rasante'], [19, 'aguijon'], [25, 'garra_dragon'], [34, 'lluvia_puas'], [40, 'vuelo_alto'], [48, 'fuego_fatuo'], [56, 'furia_dragon']],
+    sprite: [
+      ['p', [[19, 18], [31, 22], [30, 25], [20, 23]], '#2a6aa8'],
+      ['p', [[27, 19], [29, 15], [30, 20]], '#f8d040'], ['p', [[28, 22], [32, 23], [29, 25]], '#f8d040'], ['p', [[24, 21], [25, 17], [27, 21]], '#f8d040'],
+      ['p', [[11, 16], [30, 3], [26, 11], [21, 18]], '#3a8ac8'], ['p', [[13, 16], [6, 3], [9, 12]], '#2a6aa8'],
+      ['r', 12, 22, 2, 7, '#e0a040'], ['r', 17, 22, 2, 7, '#e0a040'],
+      ['e', 15, 19, 7, 5, '#4a9ad8'],
+      ['e', 14, 21, 4.5, 2.5, '#e0f0f8', 's'],
+      ['e', 7, 13, 4.5, 3.5, '#4a9ad8'],
+      ['p', [[0, 14], [4, 12], [5, 16]], '#f8d040'],
+      ['p', [[7, 10], [5, 5], [10, 9]], '#f8d040'], ['p', [[10, 10], [11, 5], [13, 10]], '#f8d040'],
+      ['r', 4, 12, 2, 1.4, '#c02020'], ['d', 4, 11, '#ffffff'],
+    ],
+  },
+  // --- Staticub → Voltdrake (Dragón → Dragón/Eléctrico) ---
+  staticub: {
+    nombre: 'Staticub', tipos: ['DRAGON'], base: { ps: 50, atk: 52, def: 52, vel: 55 }, captura: 45, exp: 62,
+    desc: 'el cachorro dragón de piel estática', evo: { nivel: 38, a: 'voltdrake' },
+    movs: [[1, 'embestida'], [1, 'grunido'], [5, 'chispazo'], [9, 'mordisco'], [14, 'aliento'], [20, 'pique'], [26, 'garra_dragon'], [32, 'rayo']],
+    sprite: [
+      ['p', [[19, 22], [28, 19], [29, 22], [21, 26]], '#5a5a7a'],
+      ['r', 10, 25, 3, 5, '#3a3a5a'], ['r', 19, 25, 3, 5, '#3a3a5a'],
+      ['e', 16, 22, 9, 6, '#6a6a8a'],
+      ['e', 15, 25, 6, 2.2, '#b8b8d0', 's'],
+      ['p', [[13, 17], [14, 13], [16, 17]], '#f8e040'], ['p', [[17, 17], [18, 12], [20, 17]], '#f8e040'], ['p', [[21, 18], [23, 14], [24, 19]], '#f8e040'],
+      ['e', 8, 17, 5.5, 4.5, '#6a6a8a'],
+      ['p', [[6, 13], [7, 9], [9, 13]], '#f8e040'],
+      ['r', 5, 16, 2, 1.6, '#f8e040'], ['d', 5, 15, '#ffffff'],
+      ['r', 3, 20, 4, 1, '#3a3a5a'],
+    ],
+  },
+  voltdrake: {
+    nombre: 'Voltdrake', tipos: ['DRAGON', 'ELECTRICO'], base: { ps: 82, atk: 108, def: 82, vel: 98 }, captura: 45, exp: 238,
+    desc: 'el depredador que bebe los rayos de la tormenta',
+    movs: [[1, 'embestida'], [1, 'grunido'], [5, 'chispazo'], [9, 'mordisco'], [14, 'aliento'], [20, 'pique'], [26, 'garra_dragon'], [32, 'rayo'], [38, 'laser_tension'], [46, 'pulso_dragon'], [54, 'trueno']],
+    sprite: [
+      ['p', [[20, 20], [31, 23], [30, 27], [20, 25]], '#3a3a5a'],
+      ['p', [[27, 19], [31, 16], [30, 22]], '#f8e040'],
+      ['p', [[12, 17], [29, 2], [28, 10], [24, 12], [26, 15], [20, 19]], '#8a96a8'], ['p', [[15, 16], [27, 5], [24, 13]], '#f8e040', 'c'],
+      ['r', 9, 24, 4, 6, '#2a2a4a'], ['r', 19, 24, 4, 6, '#2a2a4a'],
+      ['e', 16, 21, 10, 6, '#4a4a6a'],
+      ['e', 15, 24, 6, 2.2, '#a8a8c8', 's'],
+      ['e', 7, 15, 5.5, 4.5, '#4a4a6a'],
+      ['p', [[0, 16], [4, 13], [5, 19]], '#4a4a6a'],
+      ['p', [[5, 11], [4, 5], [8, 10]], '#f8e040'], ['p', [[9, 11], [11, 6], [11, 12]], '#f8e040'],
+      ['r', 4, 14, 2, 1.6, '#80f0ff'], ['d', 4, 13, '#ffffff'],
+      ['r', 1, 17, 4, 1, '#ffffff'],
+    ],
+  },
+  // --- Stinglet → Aquastinger (Dragón → Dragón/Agua) ---
+  stinglet: {
+    nombre: 'Stinglet', tipos: ['DRAGON'], base: { ps: 44, atk: 55, def: 40, vel: 75 }, captura: 45, exp: 60,
+    desc: 'el dragoncito que corre en círculos', evo: { nivel: 30, a: 'aquastinger' },
+    movs: [[1, 'pique'], [1, 'coletazo'], [5, 'burbujas'], [9, 'aguijon'], [14, 'aliento'], [19, 'chapuzon'], [25, 'garra_dragon']],
+    sprite: [
+      ['p', [[18, 21], [28, 18], [29, 21], [20, 25]], '#40b0b0'],
+      ['e', 29, 18, 2, 2, '#f8e040'],
+      ['r', 13, 24, 2, 6, '#308080'], ['r', 17, 24, 2, 6, '#308080'],
+      ['r', 11, 29, 4, 1, '#308080'], ['r', 16, 29, 4, 1, '#308080'],
+      ['e', 15, 20, 6, 5, '#50c0c0'],
+      ['e', 14, 22, 3.5, 2.5, '#d8f8f0', 's'],
+      ['e', 9, 13, 4.5, 3.5, '#50c0c0'],
+      ['p', [[2, 14], [6, 12], [6, 16]], '#50c0c0'],
+      ['r', 6, 12, 2, 1.4, '#201010'], ['d', 6, 11, '#ffffff'],
+      ['p', [[10, 10], [13, 7], [13, 11]], '#308080'],
+    ],
+  },
+  aquastinger: {
+    nombre: 'Aquastinger', tipos: ['DRAGON', 'AGUA'], base: { ps: 70, atk: 95, def: 65, vel: 120 }, captura: 45, exp: 228,
+    desc: 'el velocista que corre sobre el mar',
+    movs: [[1, 'pique'], [1, 'coletazo'], [5, 'burbujas'], [9, 'aguijon'], [14, 'aliento'], [19, 'chapuzon'], [25, 'garra_dragon'], [30, 'dardo_paralizante'], [38, 'cola_acuatica'], [46, 'pulso_dragon'], [54, 'torrente']],
+    sprite: [
+      ['p', [[19, 19], [31, 15], [31, 19], [21, 24]], '#2a8aa8'],
+      ['p', [[29, 13], [32, 11], [31, 17]], '#f8e040'],
+      ['p', [[12, 22], [9, 30], [14, 30], [15, 23]], '#1a6a88'], ['p', [[18, 22], [19, 30], [24, 30], [21, 22]], '#1a6a88'],
+      ['r', 8, 29, 7, 2, '#80d8f8'], ['r', 18, 29, 7, 2, '#80d8f8'],
+      ['e', 16, 19, 7, 5, '#3aa0c0'],
+      ['e', 15, 21, 4.5, 2.5, '#e0f8f8', 's'],
+      ['p', [[14, 16], [22, 9], [21, 17]], '#80d8f8'],
+      ['e', 8, 12, 5, 3.5, '#3aa0c0'],
+      ['p', [[0, 13], [5, 10], [5, 15]], '#3aa0c0'],
+      ['p', [[8, 9], [12, 5], [12, 10]], '#1a6a88'],
+      ['r', 4, 11, 2, 1.4, '#f8e040'], ['d', 4, 10, '#ffffff'],
+    ],
+  },
+  // --- Boilpole → Geyserdrake (Dragón/Agua) ---
+  boilpole: {
+    nombre: 'Boilpole', tipos: ['DRAGON', 'AGUA'], base: { ps: 55, atk: 45, def: 50, vel: 50 }, captura: 45, exp: 62,
+    desc: 'el renacuajo dragón que traga agua', evo: { nivel: 35, a: 'geyserdrake' },
+    movs: [[1, 'burbujas'], [1, 'coletazo'], [6, 'bolita'], [10, 'aliento'], [15, 'chapuzon'], [21, 'relajo'], [27, 'coletazo_agua']],
+    sprite: [
+      ['p', [[19, 22], [31, 20], [31, 26], [20, 27]], '#4aa890'],
+      ['p', [[27, 21], [31, 17], [31, 22]], '#8ad8c0'],
+      ['e', 16, 23, 8, 5.5, '#5ab8a0'],
+      ['e', 15, 25, 5, 2.5, '#d8f0e0', 's'],
+      ['p', [[8, 22], [7, 14], [11, 14], [12, 21]], '#5ab8a0'],
+      ['e', 8, 12, 4.5, 3.5, '#5ab8a0'],
+      ['e', 7, 16, 3, 2.5, '#f8d8a0', 's'],
+      ['r', 6, 11, 2, 1.4, '#201010'], ['d', 6, 10, '#ffffff'],
+      ['e', 3, 8, 1.4, 1.4, '#c8f0ff', 's'], ['e', 1, 5, 1, 1, '#c8f0ff', 's'],
+    ],
+  },
+  geyserdrake: {
+    nombre: 'Geyserdrake', tipos: ['DRAGON', 'AGUA'], base: { ps: 105, atk: 82, def: 88, vel: 62 }, captura: 45, exp: 235,
+    desc: 'el coloso de cuello largo que hierve el mar',
+    movs: [[1, 'burbujas'], [1, 'coletazo'], [6, 'bolita'], [10, 'aliento'], [15, 'chapuzon'], [21, 'relajo'], [27, 'coletazo_agua'], [35, 'chorro_escaldante'], [42, 'pulso_dragon'], [50, 'erupcion_termal'], [56, 'torrente']],
+    sprite: [
+      ['p', [[20, 22], [32, 21], [31, 27], [20, 28]], '#2a8a7a'],
+      ['e', 17, 24, 10, 6, '#3a9a8a'],
+      ['e', 16, 27, 7, 2.5, '#d0e8d8', 's'],
+      ['e', 18, 21, 6, 3, '#e0a070', 's'],
+      ['p', [[9, 23], [5, 7], [9, 6], [13, 22]], '#3a9a8a'],
+      ['e', 6, 5, 5, 3.5, '#3a9a8a'],
+      ['p', [[0, 6], [3, 4], [3, 8]], '#3a9a8a'],
+      ['r', 4, 4, 2, 1.4, '#f8f040'], ['d', 4, 3, '#ffffff'],
+      ['e', 3, 1, 2, 1, '#e8f8ff', 's'], ['e', 9, 1, 1.5, 1, '#e8f8ff', 's'],
+      ['p', [[10, 12], [13, 11], [12, 15]], '#8ad8c0'], ['p', [[10, 17], [13, 16], [12, 20]], '#8ad8c0'],
+    ],
+  },
+  // --- Grindslow → Sibilantor (Dragón/Tierra) ---
+  grindslow: {
+    nombre: 'Grindslow', tipos: ['DRAGON', 'TIERRA'], base: { ps: 55, atk: 62, def: 55, vel: 40 }, captura: 45, exp: 62,
+    desc: 'la víbora dragón de dientes tintineantes', evo: { nivel: 34, a: 'sibilantor' },
+    movs: [[1, 'mordisco'], [1, 'revolcon'], [6, 'disparo_lodo'], [11, 'aliento'], [16, 'barrazo'], [22, 'remolino'], [28, 'garra_dragon']],
+    sprite: [
+      ['e', 22, 26, 8, 3.5, '#a08050'], ['e', 26, 22, 4, 3, '#a08050'], ['e', 28, 18, 2.5, 2.5, '#a08050'],
+      ['e', 15, 24, 6, 4, '#b09060'],
+      ['e', 9, 18, 6.5, 5.5, '#b09060'],
+      ['r', 3, 20, 8, 2, '#5a3a2a'], ['d', 4, 19, '#f0f0f0'], ['d', 6, 19, '#f0f0f0'], ['d', 8, 19, '#f0f0f0'], ['d', 5, 22, '#f0f0f0'], ['d', 7, 22, '#f0f0f0'],
+      ['r', 7, 15, 2, 1.6, '#201010'], ['d', 7, 14, '#ffffff'],
+      ['e', 16, 27, 6, 1.5, '#d8c090', 's'],
+    ],
+  },
+  sibilantor: {
+    nombre: 'Sibilantor', tipos: ['DRAGON', 'TIERRA'], base: { ps: 85, atk: 112, def: 85, vel: 72 }, captura: 45, exp: 235,
+    desc: 'el taladro viviente bajo la arena',
+    movs: [[1, 'mordisco'], [1, 'revolcon'], [6, 'disparo_lodo'], [11, 'aliento'], [16, 'barrazo'], [22, 'remolino'], [28, 'garra_dragon'], [34, 'tunel_susurrante'], [42, 'pulso_dragon'], [50, 'terremoto'], [56, 'furia_dragon']],
+    sprite: [
+      ['e', 22, 27, 9, 3.5, '#8a6a3a'], ['e', 27, 22, 4.5, 3.5, '#8a6a3a'], ['e', 29, 17, 3, 3, '#8a6a3a'], ['e', 29, 13, 2, 2, '#8a6a3a'],
+      ['p', [[20, 24], [21, 20], [23, 24]], '#e0d0a0'], ['p', [[25, 20], [27, 16], [28, 20]], '#e0d0a0'], ['p', [[27, 14], [30, 10], [31, 14]], '#e0d0a0'],
+      ['e', 14, 23, 7, 5, '#9a7a4a'],
+      ['e', 9, 14, 7.5, 7, '#9a7a4a'],
+      ['e', 5, 15, 4.5, 5, '#4a2a1a'], ['e', 5, 15, 3, 3.5, '#c8b8a0'], ['e', 5, 15, 1.6, 2, '#4a2a1a'],
+      ['r', 10, 9, 2, 1.6, '#f8c020'], ['d', 10, 8, '#ffffff'],
+      ['p', [[11, 7], [14, 2], [15, 8]], '#e0d0a0'],
+    ],
+  },
+  // --- Frostail → Blizzwraith (Dragón/Hielo) ---
+  frostail: {
+    nombre: 'Frostail', tipos: ['DRAGON', 'HIELO'], base: { ps: 50, atk: 58, def: 48, vel: 62 }, captura: 45, exp: 62,
+    desc: 'el dragoncito ciego de los glaciares', evo: { nivel: 38, a: 'blizzwraith' },
+    movs: [[1, 'aranazo'], [1, 'nevada'], [5, 'escarcha'], [10, 'aliento'], [15, 'granizo'], [21, 'puno_hielo'], [27, 'garra_dragon'], [33, 'rayo_hielo']],
+    sprite: [
+      ['p', [[18, 22], [28, 21], [28, 24], [19, 26]], '#e0e8f0'],
+      ['r', 10, 24, 3, 6, '#c8d4e0'], ['r', 18, 24, 3, 6, '#c8d4e0'],
+      ['p', [[9, 29], [7, 31], [10, 31], [12, 29]], '#7a8a9a'], ['p', [[18, 29], [17, 31], [20, 31], [21, 29]], '#7a8a9a'],
+      ['e', 15, 21, 8, 5.5, '#f0f4f8'],
+      ['e', 14, 23, 5, 2.5, '#ffffff', 's'],
+      ['e', 8, 15, 5, 4, '#f0f4f8'],
+      ['p', [[1, 16], [5, 13], [6, 18]], '#f0f4f8'],
+      ['e', 3, 15, 1.2, 1, '#e0a0b0', 's'], ['e', 5, 16, 1, 0.8, '#e0a0b0', 's'],
+      ['r', 6, 14, 2, 0.8, '#a8b8c8'],
+      ['p', [[9, 11], [11, 7], [12, 12]], '#a0d8f8'],
+    ],
+  },
+  blizzwraith: {
+    nombre: 'Blizzwraith', tipos: ['DRAGON', 'HIELO'], base: { ps: 80, atk: 112, def: 75, vel: 100 }, captura: 45, exp: 238,
+    desc: 'el espectro de la ventisca que nadie entrena',
+    movs: [[1, 'aranazo'], [1, 'nevada'], [5, 'escarcha'], [10, 'aliento'], [15, 'granizo'], [21, 'puno_hielo'], [27, 'garra_dragon'], [33, 'rayo_hielo'], [38, 'rafaga_escarcha'], [46, 'tajo_glacial'], [54, 'ventisca']],
+    sprite: [
+      ['p', [[20, 20], [31, 26], [29, 29], [19, 25]], '#d8e4f0'],
+      ['p', [[10, 18], [30, 4], [28, 14], [22, 20]], '#e8f0f8'], ['p', [[12, 18], [27, 6], [25, 13]], '#b8d8f0', 'c'],
+      ['p', [[10, 20], [5, 30], [10, 30], [14, 22]], '#c8d4e0'],
+      ['p', [[4, 30], [3, 32], [11, 32], [11, 30]], '#7a8a9a'],
+      ['e', 16, 21, 9, 6, '#f0f4f8'],
+      ['e', 15, 24, 6, 2.5, '#ffffff', 's'],
+      ['e', 7, 13, 5, 4, '#f0f4f8'],
+      ['p', [[0, 14], [4, 11], [5, 17]], '#f0f4f8'],
+      ['p', [[6, 10], [6, 4], [9, 9]], '#80c8f0'], ['p', [[9, 10], [12, 5], [12, 11]], '#80c8f0'],
+      ['r', 4, 12, 3, 1, '#40a0f0'],
+      ['d', 2, 22, '#ffffff'], ['d', 28, 18, '#ffffff'], ['d', 24, 30, '#ffffff'],
+    ],
+  },
+  // --- Strykit → Strykros (Dragón/Bicho) ---
+  strykit: {
+    nombre: 'Strykit', tipos: ['DRAGON', 'BICHO'], base: { ps: 50, atk: 62, def: 65, vel: 40 }, captura: 45, exp: 62,
+    desc: 'el bebé dragón escorpión', evo: { nivel: 32, a: 'strykros' },
+    movs: [[1, 'aguijon'], [1, 'grunido'], [5, 'picadura'], [10, 'aliento'], [15, 'acido'], [21, 'seda'], [27, 'garra_dragon']],
+    sprite: [
+      ['p', [[20, 23], [26, 19], [26, 12], [23, 10], [24, 16], [21, 20]], '#a03a3a'],
+      ['p', [[23, 10], [20, 7], [24, 8]], '#f8d040'],
+      ['r', 8, 26, 2, 4, '#702828'], ['r', 12, 26, 2, 4, '#702828'], ['r', 16, 26, 2, 4, '#702828'],
+      ['e', 14, 23, 8, 4.5, '#c04a4a'],
+      ['r', 9, 20, 2, 2, '#e08080'], ['r', 13, 19, 2, 2, '#e08080'], ['r', 17, 20, 2, 2, '#e08080'],
+      ['e', 6, 21, 4.5, 3.5, '#c04a4a'],
+      ['p', [[0, 18], [3, 16], [3, 20]], '#702828'], ['p', [[0, 24], [3, 22], [3, 26]], '#702828'],
+      ['r', 4, 19, 2, 1.4, '#201010'], ['d', 4, 18, '#ffffff'],
+    ],
+  },
+  strykros: {
+    nombre: 'Strykros', tipos: ['DRAGON', 'BICHO'], base: { ps: 85, atk: 120, def: 130, vel: 60 }, captura: 45, exp: 238,
+    desc: 'el dragón escorpión de coraza roja',
+    movs: [[1, 'aguijon'], [1, 'grunido'], [5, 'picadura'], [10, 'aliento'], [15, 'acido'], [21, 'seda'], [27, 'garra_dragon'], [32, 'aguijon_dragon'], [40, 'toxibomba'], [48, 'cabeza_hierro'], [56, 'furia_dragon']],
+    sprite: [
+      ['p', [[22, 24], [30, 18], [30, 6], [25, 2], [26, 10], [25, 18], [21, 21]], '#801a1a'],
+      ['p', [[25, 2], [20, 1], [23, 5]], '#f8d040'], ['p', [[24, 4], [21, 6], [25, 7]], '#f8d040'],
+      ['r', 6, 26, 3, 5, '#5a1010'], ['r', 11, 26, 3, 5, '#5a1010'], ['r', 16, 26, 3, 5, '#5a1010'], ['r', 21, 26, 3, 5, '#5a1010'],
+      ['e', 15, 22, 10, 6, '#a02a2a'],
+      ['r', 8, 17, 3, 3, '#d86060'], ['r', 13, 16, 3, 3, '#d86060'], ['r', 18, 17, 3, 3, '#d86060'],
+      ['p', [[10, 16], [12, 10], [14, 16]], '#f8d040'], ['p', [[16, 16], [18, 11], [20, 16]], '#f8d040'],
+      ['e', 5, 20, 5, 4, '#a02a2a'],
+      ['p', [[0, 13], [4, 12], [5, 17], [2, 17]], '#5a1010'], ['p', [[0, 27], [4, 24], [6, 28]], '#5a1010'],
+      ['r', 2, 19, 2, 1.4, '#f8d040'], ['d', 2, 18, '#ffffff'],
+    ],
+  },
+  // --- NAHUELITO: legendario del lago Nahuel Huapi (Dragón/Hielo) ---
+  nahuelito: {
+    nombre: 'Nahuelito', tipos: ['DRAGON', 'HIELO'], base: { ps: 110, atk: 100, def: 105, vel: 85 }, captura: 25, exp: 280,
+    desc: 'el guardián ancestral del lago Nahuel Huapi',
+    movs: [[1, 'burbujas'], [1, 'escarcha'], [10, 'aliento'], [20, 'granizo'], [30, 'garra_dragon'], [40, 'rayo_hielo'], [45, 'pulso_dragon'], [50, 'ventisca_huapi'], [60, 'furia_dragon']],
+    sprite: [
+      ['r', 0, 26, 32, 6, '#3a6aa8'], ['r', 0, 26, 32, 1, '#a8d8f8'],
+      ['p', [[20, 22], [31, 24], [31, 27], [22, 27]], '#2a4a8a'],
+      ['p', [[27, 24], [31, 20], [31, 25]], '#c8ecff'],
+      ['e', 18, 24, 9, 5, '#2a4a8a'],
+      ['p', [[12, 21], [16, 16], [20, 21]], '#c8ecff'], ['p', [[18, 21], [22, 15], [25, 22]], '#c8ecff'],
+      ['p', [[10, 24], [6, 8], [10, 7], [14, 22]], '#3a5a9a'],
+      ['e', 8, 23, 3, 2, '#c8ecff', 's'],
+      ['e', 6, 6, 5, 3.5, '#3a5a9a'],
+      ['p', [[0, 7], [3, 5], [3, 9]], '#3a5a9a'],
+      ['p', [[7, 3], [9, 0], [10, 4]], '#c8ecff'], ['p', [[10, 4], [13, 1], [12, 6]], '#c8ecff'],
+      ['r', 3, 5, 2, 1.4, '#ffffff'],
+      ['d', 1, 24, '#ffffff'], ['d', 15, 28, '#ffffff'], ['d', 26, 29, '#ffffff'],
+    ],
+  },
+  // --- Ciberco → Androideño (Acero → Eléctrico/Acero) ---
+  ciberco: {
+    nombre: 'Ciberco', tipos: ['ACERO'], base: { ps: 48, atk: 50, def: 70, vel: 45 }, captura: 45, exp: 62,
+    desc: 'el muñequito robot de ojos pixelados', evo: { nivel: 30, a: 'androideno' },
+    movs: [[1, 'embestida'], [1, 'chillido'], [5, 'garra_metal'], [10, 'chispazo'], [15, 'adobe'], [21, 'reflejo'], [27, 'rayo']],
+    sprite: [
+      ['e', 16, 28, 6, 1.5, '#606878', 's'],
+      ['e', 16, 17, 10, 10, '#a8b4c4'],
+      ['e', 13, 13, 4, 3, '#d8e0ec', 's'],
+      ['r', 9, 13, 14, 8, '#203028'],
+      ['r', 11, 15, 3, 3, '#40f080'], ['r', 18, 15, 3, 3, '#40f080'],
+      ['r', 13, 19, 6, 1, '#40f080'],
+      ['r', 15, 4, 2, 4, '#606878'], ['e', 16, 3, 2, 2, '#f84040', 's'],
+      ['r', 4, 18, 3, 2, '#e0a040'], ['r', 25, 18, 3, 2, '#e0a040'],
+    ],
+  },
+  androideno: {
+    nombre: 'Androideño', tipos: ['ELECTRICO', 'ACERO'], base: { ps: 75, atk: 100, def: 105, vel: 80 }, captura: 45, exp: 232,
+    desc: 'el cíborg de titanio con cañón de plasma',
+    movs: [[1, 'embestida'], [1, 'chillido'], [5, 'garra_metal'], [10, 'chispazo'], [15, 'adobe'], [21, 'reflejo'], [27, 'rayo'], [30, 'laser_tension'], [38, 'cabeza_hierro'], [46, 'turbo_plasma'], [54, 'trueno']],
+    sprite: [
+      ['r', 11, 22, 4, 8, '#7a8698'], ['r', 18, 22, 4, 8, '#7a8698'],
+      ['r', 10, 29, 6, 2, '#3a4252'], ['r', 17, 29, 6, 2, '#3a4252'],
+      ['r', 10, 11, 13, 12, '#a8b4c4'],
+      ['r', 12, 13, 9, 5, '#d8e0ec'],
+      ['e', 16, 16, 2, 2, '#40e0f0', 's'],
+      ['r', 22, 12, 4, 8, '#8a96a8'], ['r', 23, 19, 3, 4, '#a8b4c4'],
+      ['r', 3, 13, 8, 4, '#5a6478'], ['r', 1, 14, 3, 2, '#40e0f0'], ['d', 0, 14, '#ffffff'],
+      ['r', 11, 3, 11, 8, '#a8b4c4'],
+      ['r', 12, 5, 9, 4, '#203028'],
+      ['r', 13, 6, 2, 2, '#40e0f0'], ['r', 18, 6, 2, 2, '#40e0f0'],
+      ['r', 16, 0, 1, 3, '#606878'],
+      ['r', 11, 21, 11, 1, '#40e0f0'],
+    ],
+  },
+  // --- Flambrik → Flambrill (Hada/Fuego), el duende de la varita ---
+  flambrik: {
+    nombre: 'Flambrik', tipos: ['HADA', 'FUEGO'], base: { ps: 45, atk: 50, def: 45, vel: 60 }, captura: 45, exp: 64,
+    desc: 'el duende travieso de la varita de fuego', evo: { nivel: 16, a: 'flambrill' },
+    movs: [[1, 'brillo'], [1, 'brasita'], [5, 'encanto'], [9, 'chispa'], [13, 'fogon']],
+    sprite: [
+      ['r', 13, 24, 3, 6, '#7a3a1a'], ['r', 18, 24, 3, 6, '#7a3a1a'],
+      ['e', 17, 21, 6, 5, '#d84a2a'],
+      ['e', 17, 13, 6, 5.5, '#f8d0a8'],
+      ['p', [[11, 10], [17, 0], [23, 10]], '#d84a2a'], ['e', 17, 1, 1.5, 1.5, '#f8e040', 's'],
+      ['p', [[10, 13], [6, 9], [11, 11]], '#f8d0a8'], ['p', [[24, 13], [28, 9], [23, 11]], '#f8d0a8'],
+      ['r', 14, 13, 1.6, 2, '#201010'], ['r', 19, 13, 1.6, 2, '#201010'],
+      ['r', 16, 16, 3, 1, '#c03030'],
+      ['r', 6, 18, 1, 9, '#8a5a2a'], ['e', 6.5, 16, 2, 2.5, '#f88020'], ['e', 6.5, 15.5, 1, 1.4, '#f8e040', 's'],
+    ],
+  },
+  flambrill: {
+    nombre: 'Flambrill', tipos: ['HADA', 'FUEGO'], base: { ps: 65, atk: 55, def: 50, vel: 80 }, captura: 45, exp: 165,
+    desc: 'el duende mágico de la llama eterna',
+    movs: [[1, 'brillo'], [1, 'brasita'], [5, 'encanto'], [9, 'chispa'], [13, 'fogon'], [16, 'llama_mistica'], [22, 'polvo_lunar'], [28, 'fuego_fatuo'], [34, 'resplandor'], [40, 'lavazo']],
+    sprite: [
+      ['p', [[11, 30], [14, 18], [21, 18], [24, 30]], '#a02a3a'],
+      ['r', 13, 18, 9, 3, '#f8d040'],
+      ['e', 17, 12, 6, 5.5, '#f8d0a8'],
+      ['p', [[9, 9], [17, -1], [25, 9]], '#7a1a4a'], ['r', 9, 8, 16, 2, '#f8d040'],
+      ['p', [[10, 12], [5, 7], [11, 10]], '#f8d0a8'], ['p', [[24, 12], [29, 7], [23, 10]], '#f8d0a8'],
+      ['r', 14, 12, 1.6, 2, '#201010'], ['r', 19, 12, 1.6, 2, '#201010'],
+      ['r', 4, 14, 1, 13, '#d8b070'], ['e', 4.5, 12, 3, 3.5, '#f860a0'], ['e', 4.5, 11.5, 1.6, 2, '#f8e040', 's'],
+      ['d', 1, 8, '#f8e040'], ['d', 8, 6, '#f8a0d0'], ['d', 2, 18, '#f8a0d0'],
+    ],
+  },
+  // --- Formas nuevas de FAEVE ---
+  pyrefae: {
+    nombre: 'Pyrefae', tipos: ['HADA', 'FUEGO'], base: { ps: 68, atk: 80, def: 62, vel: 88 }, captura: 45, exp: 165,
+    desc: 'el zorro fuego fatuo de melena rosa',
+    movs: [[1, 'aranazo'], [1, 'encanto'], [6, 'brillo'], [12, 'brasita'], [18, 'fuego_fatuo'], [24, 'polvo_lunar'], [32, 'llama_mistica'], [40, 'resplandor']],
+    sprite: [
+      ['p', [[20, 20], [30, 12], [31, 18], [23, 24]], '#f86090'], ['p', [[26, 14], [31, 9], [30, 15]], '#f8c0e0'],
+      ['r', 10, 23, 3, 7, '#c02a3a'], ['r', 18, 23, 3, 7, '#c02a3a'],
+      ['e', 15, 21, 8, 5, '#d83a4a'],
+      ['e', 14, 23, 5, 2.5, '#ffffff', 's'],
+      ['e', 9, 15, 5, 4.5, '#f870a0'], ['e', 7, 14, 4, 3.5, '#c080f0', 'c'],
+      ['e', 7, 13, 4, 3.5, '#d83a4a'],
+      ['p', [[0, 14], [4, 12], [4, 16]], '#d83a4a'],
+      ['p', [[6, 9], [7, 4], [10, 9]], '#d83a4a'],
+      ['r', 4, 12, 2, 1.4, '#f8c020'], ['d', 4, 11, '#ffffff'],
+      ['e', 11, 30, 1.5, 1, '#f8a0d0', 's'], ['e', 19, 30, 1.5, 1, '#f8a0d0', 's'],
+    ],
+  },
+  coralfae: {
+    nombre: 'Coralfae', tipos: ['HADA', 'AGUA'], base: { ps: 85, atk: 58, def: 70, vel: 75 }, captura: 45, exp: 165,
+    desc: 'la ninfa marina de cola de pez beta',
+    movs: [[1, 'aranazo'], [1, 'encanto'], [6, 'brillo'], [12, 'burbujas'], [18, 'chapuzon'], [24, 'polvo_lunar'], [32, 'rafaga_pluvial'], [40, 'resplandor']],
+    sprite: [
+      ['p', [[20, 22], [31, 14], [29, 22], [31, 30], [22, 26]], '#80b8f8'], ['p', [[22, 22], [29, 17], [28, 22]], '#c8e8ff', 'c'],
+      ['r', 10, 24, 3, 6, '#4a8ad0'], ['r', 17, 24, 3, 6, '#4a8ad0'],
+      ['e', 15, 21, 7, 5, '#6aa8e8'],
+      ['e', 14, 23, 4.5, 2.5, '#f0f8ff', 's'],
+      ['e', 8, 14, 5, 4.5, '#6aa8e8'],
+      ['p', [[4, 12], [2, 5], [8, 10]], '#c8e8ff'], ['p', [[10, 11], [13, 4], [13, 12]], '#c8e8ff'],
+      ['p', [[1, 15], [4, 13], [4, 17]], '#6aa8e8'],
+      ['r', 5, 13, 2, 1.4, '#f0f0ff'], ['d', 5, 12, '#2040a0'],
+      ['d', 26, 10, '#ffffff'], ['d', 3, 22, '#ffffff'],
+    ],
+  },
+  sylvafae: {
+    nombre: 'Sylvafae', tipos: ['HADA', 'PLANTA'], base: { ps: 72, atk: 70, def: 78, vel: 72 }, captura: 45, exp: 165,
+    desc: 'el guardián del bosque de alas de hojas',
+    movs: [[1, 'aranazo'], [1, 'encanto'], [6, 'brillo'], [12, 'yerbazo'], [18, 'hojarasca'], [24, 'polvo_lunar'], [32, 'semillazo'], [40, 'resplandor']],
+    sprite: [
+      ['p', [[20, 22], [26, 16], [30, 20], [27, 26], [22, 26]], '#5aa040'], ['e', 28, 18, 2, 2, '#f8a0c0', 's'], ['e', 26, 25, 1.6, 1.6, '#f8f8f8', 's'],
+      ['p', [[12, 17], [20, 5], [24, 14]], '#70c050'], ['p', [[14, 17], [14, 6], [19, 12]], '#90d870'],
+      ['r', 10, 24, 3, 6, '#8a7a50'], ['r', 17, 24, 3, 6, '#8a7a50'],
+      ['e', 15, 21, 7, 5, '#c8d8a0'],
+      ['e', 14, 23, 4.5, 2.5, '#f8f8e0', 's'],
+      ['e', 8, 14, 5, 4.5, '#b8d090'],
+      ['p', [[5, 11], [4, 5], [9, 10]], '#70c050'],
+      ['p', [[1, 15], [4, 13], [4, 17]], '#b8d090'],
+      ['r', 5, 13, 2, 1.4, '#205020'], ['d', 5, 12, '#ffffff'],
+      ['e', 9, 9, 1.4, 1.4, '#f8a0c0', 's'],
+    ],
+  },
+  spritefae: {
+    nombre: 'Spritefae', tipos: ['HADA', 'BICHO'], base: { ps: 62, atk: 72, def: 68, vel: 95 }, captura: 45, exp: 165,
+    desc: 'el escarabajo de luz de cuatro alas',
+    movs: [[1, 'aranazo'], [1, 'encanto'], [6, 'brillo'], [12, 'aguijon'], [18, 'zumbido'], [24, 'polvo_lunar'], [32, 'picadura'], [40, 'resplandor']],
+    sprite: [
+      ['p', [[16, 16], [26, 2], [30, 8]], '#d8f8f8'], ['p', [[16, 18], [30, 12], [29, 19]], '#d8f8f8'],
+      ['p', [[18, 16], [25, 5], [28, 9]], '#a0f0e0', 'c'],
+      ['r', 11, 24, 2, 6, '#2a6a4a'], ['r', 17, 24, 2, 6, '#2a6a4a'],
+      ['e', 15, 21, 7, 5, '#2aa870'],
+      ['e', 15, 19, 5, 2.5, '#e040c0', 's'],
+      ['e', 8, 15, 4.5, 4, '#2aa870'],
+      ['r', 6, 6, 1, 6, '#2a6a4a'], ['r', 10, 6, 1, 6, '#2a6a4a'], ['e', 6.5, 5, 1.4, 1.4, '#f8f040', 's'], ['e', 10.5, 5, 1.4, 1.4, '#f8f040', 's'],
+      ['r', 5, 14, 2, 1.6, '#f8f040'], ['d', 5, 13, '#ffffff'],
+      ['d', 2, 20, '#f8f040'], ['d', 24, 26, '#f8f040'],
+    ],
+  },
+  grandfae: {
+    nombre: 'Grandfae', tipos: ['HADA'], base: { ps: 100, atk: 85, def: 95, vel: 90 }, captura: 30, exp: 250,
+    desc: 'el monarca fae de la corona de cristales',
+    movs: [[1, 'aranazo'], [1, 'encanto'], [6, 'brillo'], [12, 'mareo'], [18, 'polvo_lunar'], [24, 'vision'], [50, 'resplandor'], [56, 'relajo']],
+    sprite: [
+      ['p', [[20, 20], [31, 10], [31, 22], [24, 27]], '#f8f8ff'], ['p', [[22, 21], [30, 13], [30, 21]], '#e8d8ff', 'c'],
+      ['p', [[12, 12], [26, 30], [8, 30]], '#c8a8f8'], ['p', [[14, 14], [23, 30], [11, 30]], '#e0d0ff', 'c'],
+      ['r', 10, 24, 3, 6, '#d8d0e8'], ['r', 18, 24, 3, 6, '#d8d0e8'],
+      ['e', 15, 20, 8, 6, '#ffffff'],
+      ['e', 8, 13, 5.5, 5, '#ffffff'],
+      ['p', [[3, 10], [2, 2], [8, 8]], '#ffffff'], ['p', [[10, 9], [13, 1], [13, 10]], '#ffffff'],
+      ['p', [[1, 14], [4, 12], [4, 17]], '#ffffff'],
+      ['r', 4, 13, 2, 1.4, '#6040c0'], ['d', 4, 12, '#ffffff'],
+      ['p', [[5, 6], [6, 3], [7, 6]], '#80e0f8'], ['p', [[8, 5], [9, 1], [10, 5]], '#f8a0e0'], ['p', [[11, 6], [12, 3], [13, 6]], '#80e0f8'],
+    ],
+  },
+});
+
+
 // ===== Habilidades =====
 // Sacadas de la presentación de Felipe (las que no tenían, elegidas parecidas).
 // ef = qué hace en la batalla (lo maneja juego.js)
@@ -2963,6 +3579,29 @@ const HAB_ESPECIE = {
   regiohm: 'coronaInfinito',
   duskfae: { n: ['veloEspejismo', 'cuerpoMaldito'] }, wraithfae: { n: ['cuerpoMaldito', 'veloEspejismo'] },
 };
+Object.assign(HABILIDADES, {
+  capaGlaciar: { nombre: 'Capa Glaciar', ef: 'capaGlaciar', desc: 'Su hielo milenario lo protege: sin golpes críticos y Fuego y Planta le hacen la mitad.' },
+});
+Object.assign(HAB_ESPECIE, {
+  metasaurio: { n: ['garraDura', 'aceroTemplado'], o: 'furiaAndina' }, ferradon: { n: ['aceroTemplado', 'garraDura'], o: 'furiaAndina' },
+  litodon: { n: ['robustez', 'rocaSolida'], o: 'cabezaRoca' }, andidon: { n: ['rocaSolida', 'robustez'], o: 'cabezaRoca' },
+  lumisprite: { n: ['cuerpoPuro', 'espejoMagico'], o: 'veloEspejismo' },
+  sparkind: { n: ['absorbeFuego', 'pielTosca'], o: 'impulso' }, pyrodrake: { n: ['cuerpoLlama', 'garraDura'], o: 'impulso' },
+  sparklizar: { n: ['cuerpoHumo', 'pasoLigero'] }, zipplecomb: { n: ['pielToxica', 'cuerpoHumo'], o: 'adaptable' },
+  spikick: { n: ['garraAfilada', 'pasoLigero'] }, mortiswift: { n: ['garraAfilada', 'ojoNocturno'], o: 'pielToxica' },
+  staticub: { n: ['electromotor', 'pielTosca'] }, voltdrake: { n: ['electromotor', 'sobrecarga'], o: 'sobrecarga' },
+  stinglet: { n: ['pasoLigero', 'nadoRapido'] }, aquastinger: { n: ['pasoLigero', 'nadoRapido'], o: 'garraAfilada' },
+  boilpole: { n: ['hidratacion', 'colector'], o: 'hervor' }, geyserdrake: { n: ['hidratacion', 'colector'], o: 'hervor' },
+  grindslow: { n: ['mandibulaFuerte', 'terruno'] }, sibilantor: { n: ['mandibulaFuerte', 'terruno'], o: 'furiaAndina' },
+  frostail: { n: ['gelido', 'ojoNocturno'] }, blizzwraith: { n: ['cortinaNieve', 'gelido'], o: 'pielHelada' },
+  strykit: { n: ['pielTosca', 'cromolente'], o: 'pielToxica' }, strykros: { n: ['pielTosca', 'cromolente'], o: 'pielToxica' },
+  nahuelito: 'capaGlaciar',
+  ciberco: { n: ['robustez', 'cuerpoPuro'], o: 'hervor' }, androideno: { n: ['obrero', 'electromotor'], o: 'competitivo' },
+  flambrik: { n: ['cuerpoLlama', 'veloEspejismo'] }, flambrill: { n: ['cuerpoLlama', 'veloEspejismo'], o: 'competitivo' },
+  pyrefae: { n: ['veloEspejismo', 'absorbeFuego'] }, coralfae: { n: ['veloEspejismo', 'hidratacion'] },
+  sylvafae: { n: ['veloEspejismo', 'clorofila'] }, spritefae: { n: ['veloEspejismo', 'cromolente'] },
+  grandfae: { n: ['veloEspejismo', 'filtro'], o: 'competitivo' },
+});
 for (const id in ESPECIES) {
   const h = HAB_ESPECIE[id] || 'pasoLigero';
   ESPECIES[id].habs = typeof h === 'string' ? [h] : h.n;
@@ -7592,6 +8231,581 @@ async function entregarRegalos() {
   guardar();
 }
 
+
+// =====================================================================================
+// ===== DESVÍOS OPCIONALES, CRIATURAS NUEVAS Y PISTAS DE LOS CLANES (24/11/2026) =====
+// =====================================================================================
+// Seis lugares que salen del camino principal (no hace falta entrar para terminar el juego).
+// Ahí viven las criaturas de la presentación de Felipe que faltaban y se consiguen las piedras nuevas.
+// Los clanes ya no dicen qué buscan: dejan ADIVINANZAS. Felipe las anota en el CUADERNO DE PISTAS
+// y, si adivina de qué gema habla cada una, gana premios.
+// ----- Grillas de los desvíos (generadas con un script, ver tools/areas.py) -----
+const AREAS_GRILLAS = {
+  quebrada: [
+    'RRRRRRRRRR==RRRRRRRRRR',
+    'RR......F,==,.......RR',
+    'RR,,,RR..,==,.......RR',
+    'RR,,,RR..,==,.......RR',
+    'RR,,,RR...==,,,,....RR',
+    'RRRR,RR,..========..RR',
+    'RRRR.,,,F.========..RR',
+    'RR...,,,..,,,...==..RR',
+    'RR.,,,,,,.,,,.,,==..RR',
+    'RR.TT,,,,.,,,.,,==,.RR',
+    'RR.TT,,,..========,.RR',
+    'RR........========,.RR',
+    'RR........==....,,,.RR',
+    'RR..,,,,,,==,,,.,,,.RR',
+    'RR,,,,,,,,==,,,.....RR',
+    'RR,,,,,,..========..RR',
+    'RR........========..RR',
+    'RR..............==..RR',
+    'RR..............==..RR',
+    'RR........========..RR',
+    'RR..................RR',
+    'RR..................RR',
+    'RRRRRRRRRRRRRRRRRRRRRR',
+    'RRRRRRRRRRRRRRRRRRRRRR',
+  ],
+  quilmes: [
+    'CCCCCCCCCCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCCCCCCCCCCCCC',
+    'C-------K-------------CC',
+    'C-uuu-----------------CC',
+    'C-uuu=======uu--------CC',
+    'C-CCu=======uu-=====--CC',
+    'CuCCu==uuu==uu-=====--CC',
+    'Cuuuu==uuu==---==--=--CC',
+    'Cuuuu==uuu==u--==--=--CC',
+    'Cuuuu==uuu==u--==--=--CC',
+    '=======uuu=======--=--CC',
+    '=======u--=======--=--CC',
+    'Cuuuuu-----uuuu-------CC',
+    'CuKKuu-----uuuu-------CC',
+    'C-KKuu-----uuu--------CC',
+    'C-----RR--uuuu--------CC',
+    'C-----RR--uuuu--------CC',
+    'C--------Kuuuu--------CC',
+    'C----CC---uuuu-K------CC',
+    'C----CC---uu----------CC',
+    'CCCCCCCCCCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCCCCCCCCCCCCC',
+  ],
+  mocona: [
+    'YYYYYYYYYYqqYYYYYYYYYY',
+    'YY........qq........YY',
+    'YY..,,,,F.qq,,,,,,..YY',
+    'YY..,,YY..qq,,,,,,..YY',
+    'YY....YY,,qq,,,,,,..YY',
+    'YY....,,,,qqqqqqq...YY',
+    'YY....,,,,qqqqqqq,..YY',
+    'YY,,,,,,,,.,,,,qq,..YY',
+    'YY,,,,,,,,..,,,qq,..YY',
+    'YY,,,,.......,,qq,..YY',
+    'YY.....F..qqqqqqq,..YY',
+    'YY........qqqqqqq...YY',
+    'YY......F.qq,,,,....YY',
+    'YY.....YY.qq,,,,,,,.YY',
+    'YY....,YY,qq,,,,,,,.YY',
+    'YY....,,,,qqqqqqq...YY',
+    'YY........qqqqqqq...YY',
+    'YY.............qq...YY',
+    'YY.............qq...YY',
+    'YY~~~~~~~~qqqqqqq~~~YY',
+    'YY~~~~~~~~~~~~~~~~~~YY',
+    'YY~~~~~~~~~~~~~~~~~~YY',
+    'YYYYYYYYYYYYYYYYYYYYYY',
+    'YYYYYYYYYYYYYYYYYYYYYY',
+  ],
+  nahuel: [
+    'TTTTTTTTTTTTTTTTTTTTTTTT',
+    'TTTTTTTTTTTTTTTTTTTTTTTT',
+    'TT~~~......,,..........T',
+    'TT~~~..F,,.,,..........T',
+    'TT~~~...,,.,=======....T',
+    'TT~~=====,.,=======.TT.T',
+    'TT~~=====,,,==,,.==.TT.T',
+    'TT~~=..==,,,==,,.==,,,.T',
+    'TT~~=..==,,,==,,,==,,,.T',
+    'TT~~=..==,,,==,,,==,,,.T',
+    'TT~~=..=======,,,=======',
+    'TT~~=..=======,,.=======',
+    'TT~~~......,,,,,...,,,,T',
+    'TT~~~..F...,,,,,...,,,,T',
+    'TT~~~...........,,,,,,,T',
+    'TT~~~......TTTT.,,,TT,FT',
+    'TT~~~......TTTT.,,,TT,FT',
+    'TT~~~........TT.,,,,,,.T',
+    'TT~~~........TT.,,.,,,.T',
+    'TT~~~...........,,.,,,.T',
+    'TTTTTTTTTTTTTTTTTTTTTTTT',
+    'TTTTTTTTTTTTTTTTTTTTTTTT',
+  ],
+  glaciar: [
+    'NNNNNNNNNNNNNNNNNNNNNNNN',
+    'NNNNNNNNNNNNNNNNNNNNNNNN',
+    'NNwwwwwwwwwwwwwwwuuuwwwN',
+    'NNwwwwwwwwwwwuuuwuuuwwwN',
+    'NNww=====wwwwuuuwuuuwwwN',
+    'NNww=====www=======wwwwN',
+    'NNww=ww==www=======wwwwN',
+    'NNww=ww==www==uuu==wwwwN',
+    'NNww=ww==www==uuu==wwwwN',
+    'NNww=ww==www==wwu==wwuuN',
+    'NNww=ww=======wwu=======',
+    'NNww=ww=======uuu=======',
+    'NNwwwwwwwuuwwwuuuuuwwwwN',
+    'NNwwwwwwwuuwwwuuuuuuwwwN',
+    'NNwwwwwwuuuwNNuuuuuuwuuN',
+    'NNwwwwwwuuuwNNuuuuuuwuuN',
+    'NNwwwwwwNNuuwwuuwwuuwuuN',
+    'NNwwwwwwNNuuwwwwwwuuuwwN',
+    'NNwwwwwwuuuuwwwwwwuuuwwN',
+    'NNwwwwwwuuuwwwwwwwuuuwwN',
+    'NNNNNNNNNNNNNNNNNNNNNNNN',
+    'NNNNNNNNNNNNNNNNNNNNNNNN',
+  ],
+  pomez: [
+    'CCCCCCCCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCCCCCCCCCCC',
+    'CC------------------CC',
+    'CC------------------CC',
+    'CC--========--------CC',
+    'CC--==--------------CC',
+    'CC--==--------------CC',
+    'CC--========------CCCC',
+    'CC--========uu--uuCCCC',
+    'CCuuuuu-uu==uCC-uuuuCC',
+    'CCuuuuu--u==uCC-uCCuCC',
+    'CC-uuu----==-----CC-CC',
+    'CC-uu=======--------CC',
+    'CC-uu=======u--RR-CCCC',
+    'CCuuu==---uuu--RR-CCCC',
+    'CCuuu==-uuuuuuuu----CC',
+    'CCuuu==-uuu-uuuu----CC',
+    'CC-uu=======uuuu----CC',
+    'CC-uu=======uu--uuuuCC',
+    'CC---uuuuu==uu--uuuuCC',
+    'CC-K---uuu==----uuuuCC',
+    'CC-----uuu==----K---CC',
+    'CC-----uuu==--------CC',
+    'CCCCCCCCCC==CCCCCCCCCC',
+  ],
+};
+
+// Un desvío: abre el costado de la ruta y conecta las dos puntas.
+// lado = por dónde se sale de la RUTA ('S', 'O', 'N'); celdas = las dos baldosas del borde de la ruta;
+// llegada = dónde aparece Felipe al volver a la ruta; entrada = las dos baldosas del borde del desvío.
+function desvio(o) {
+  const ruta = MAPAS[o.ruta];
+  const dirIda = { S: 0, N: 1, O: 2, E: 3 }[o.lado], dirVuelta = { S: 1, N: 0, O: 3, E: 2 }[o.lado];
+  // abrir el borde de la ruta (dos baldosas de espesor) con el piso del camino
+  for (const [x, y] of o.abrir) ruta.grilla[y][x] = o.piso;
+  const d = { S: [0, 1], N: [0, -1], O: [-1, 0], E: [1, 0] }[o.lado];
+  o.celdas.forEach(([x, y], i) => {
+    const [ex, ey] = o.entrada[i];
+    const adentro = [ex + d[0], ey + d[1]]; // la primera baldosa del desvío
+    ruta.salidas.push({ x, y, a: o.id, ax: adentro[0], ay: adentro[1], dir: dirIda });
+    o.salidas.push({ x: ex, y: ey, a: o.ruta, ax: o.llegada[i][0], ay: o.llegada[i][1], dir: dirVuelta });
+  });
+  if (o.cartelRuta) { ruta.grilla[o.cartelRuta[1]][o.cartelRuta[0]] = 'S'; ruta.carteles[o.cartelRuta.join(',')] = o.textoRuta; }
+  MAPAS[o.id] = {
+    nombre: o.nombre, exterior: true, grilla: desdeTexto(AREAS_GRILLAS[o.id]), edificios: [],
+    salidas: o.salidas, carteles: o.carteles || {}, objetos: o.objetos, encuentros: o.encuentros, npcs: o.npcs,
+  };
+}
+
+// Alguien que te regala algo una sola vez
+function regaloNPC(o) {
+  return {
+    id: o.id, x: o.x, y: o.y, dir: o.dir || 0, pal: o.pal,
+    hablar: async () => {
+      if (S.flags[o.flag]) { for (const t of o.despues) await decir(t); return; }
+      for (const t of o.antes) await decir(t);
+      for (const [obj, n] of o.da) {
+        S.bolsa[obj] = (S.bolsa[obj] || 0) + n;
+        await decir(`¡Felipe recibió ${n > 1 ? n + ' ' : ''}${OBJETOS[obj].nombre}!`);
+      }
+      S.flags[o.flag] = true;
+      for (const t of o.final || []) await decir(t);
+      guardar();
+    },
+  };
+}
+
+// Una criatura legendaria que se ve en el mapa (como REGIOHM)
+function legendarioNPC(o) {
+  return {
+    id: o.id, x: o.x, y: o.y, dir: o.dir || 0, criatura: o.especie,
+    visible: () => !S.flags[o.flag],
+    hablar: async () => {
+      if (!S.equipo.some(m => m.ps > 0)) { await decir('Tus criaturas no tienen energía. ¡Curalas primero en un CEMIC!'); return; }
+      for (const t of o.antes) await decir(t);
+      const r = await batalla({ salvaje: [o.especie, o.nivel], legendario: true });
+      if (r === 'atrapado') { S.flags[o.flag] = true; for (const t of o.atrapado) await decir(t); guardar(); }
+      else if (r === 'gana') { for (const t of o.gana) await decir(t); }
+      else await decir(o.huir);
+    },
+  };
+}
+
+PAL.guardaparque = PAL.guarda;
+PAL.geologa = PAL.chica;
+
+desvio({
+  id: 'quebrada', ruta: 'sierras', lado: 'S', piso: '.', nombre: 'QUEBRADA DEL CONDORITO',
+  abrir: [[4, 20], [5, 20], [4, 21], [5, 21]], celdas: [[4, 21], [5, 21]], llegada: [[4, 19], [5, 19]],
+  entrada: [[10, 0], [11, 0]], salidas: [],
+  cartelRuta: [6, 19], textoRuta: 'Al SUR: la QUEBRADA DEL CONDORITO. Un desvío lleno de criaturas que no se ven en ningún otro lado.',
+  carteles: {},
+  encuentros: { lista: [['flambrik', 14], ['spikick', 12], ['sparklizar', 12], ['ciberco', 10], ['strykit', 8], ['condorito', 10], ['faeve', 8], ['piedrin', 8], ['lechucita', 6]], min: 9, max: 13 },
+  npcs: [
+    entrenadorNPC({
+      id: 'quebrada_t1', x: 9, y: 11, dir: 3, pal: PAL.chica, nombre: 'EXPLORADORA JULI',
+      equipo: [['spikick', 11], ['flambrik', 12]],
+      antes: ['EXPLORADORA JULI: ¡Encontraste el desvío secreto! Acá viven dragones chiquitos. ¡A ver si te la bancás!'],
+      gana: 'EXPLORADORA JULI: ¡Uf! Sos bueno, eh.',
+      despues: 'EXPLORADORA JULI: SPIKICK entrena la puntería con la cola. Cuando crece se vuelve un cazador del cielo.',
+    }),
+    regaloNPC({
+      id: 'quebrada_guarda', x: 13, y: 18, dir: 0, pal: PAL.guardaparque, flag: 'regaloQuebrada',
+      antes: ['GUARDAPARQUE: ¡Bienvenido a la QUEBRADA DEL CONDORITO! Muy pocos chicos llegan hasta acá.',
+        'Mirá, un FAEVE dejó esto en el arroyo. Si se lo das a un FAEVE antes de que crezca, se convierte en PYREFAE, el zorro de fuego rosa.'],
+      da: [['piedraFuego', 1]],
+      despues: ['GUARDAPARQUE: En la quebrada vive FLAMBRIK, un duende con una varita de fuego. ¡Es re travieso!'],
+    }),
+    {
+      id: 'quebrada_pista', x: 16, y: 20, dir: 2, pal: PAL.abuelo,
+      hablar: async () => {
+        await decir('ANDINISTA: El otro día bajaron por acá unos tipos con capas de colores. Cada grupo de un color distinto.');
+        await decir('No dijeron qué buscaban, pero uno de capa LILA iba repitiendo: «lo que no se ve ni se toca...».');
+        await decir('¿Qué será algo que no se ve ni se toca? Me quedé pensando...');
+      },
+    },
+  ],
+});
+
+desvio({
+  id: 'quilmes', ruta: 'calchaqui', lado: 'E', piso: '-', nombre: 'RUINAS DE QUILMES',
+  abrir: [[20, 22], [21, 22], [20, 23], [21, 23]], celdas: [[21, 22], [21, 23]], llegada: [[19, 22], [19, 23]],
+  entrada: [[0, 10], [0, 11]], salidas: [],
+  cartelRuta: [19, 21], textoRuta: 'Al ESTE: las RUINAS DE QUILMES. Una ciudad de piedra de hace muchísimos años.',
+  encuentros: { lista: [['grindslow', 14], ['staticub', 12], ['sparkind', 12], ['ciberco', 10], ['stinglet', 8], ['flambrik', 6], ['cardito', 8], ['piedrin', 6]], min: 19, max: 23 },
+  npcs: [
+    entrenadorNPC({
+      id: 'quilmes_t1', x: 12, y: 7, dir: 0, pal: PAL.chica, nombre: 'ARQUEÓLOGA INÉS',
+      equipo: [['grindslow', 22], ['ciberco', 22], ['sparkind', 23]],
+      antes: ['ARQUEÓLOGA INÉS: ¡Cuidado dónde pisás! Estas piedras tienen siglos. Y mis criaturas también saben defenderlas.'],
+      gana: 'ARQUEÓLOGA INÉS: Bueno, bueno... te ganaste mi respeto.',
+      despues: 'ARQUEÓLOGA INÉS: GRINDSLOW se esconde bajo la arena. Cuando crece es un taladro viviente.',
+    }),
+    entrenadorNPC({
+      id: 'quilmes_t2', x: 17, y: 9, dir: 2, pal: PAL.ayudante, nombre: 'INVENTOR TITO',
+      equipo: [['ciberco', 23], ['staticub', 23]],
+      antes: ['INVENTOR TITO: ¡Mi CIBERCO tiene una pantalla en la cara! ¿Querés ver qué más hace?'],
+      gana: 'INVENTOR TITO: ¡Se me cortocircuitó todo!',
+      despues: 'INVENTOR TITO: Cuando CIBERCO crece se vuelve ANDROIDEÑO, un cíborg con un cañón de plasma.',
+    }),
+    {
+      id: 'quilmes_pista', x: 18, y: 4, dir: 0, pal: PAL.abuelo,
+      hablar: async () => {
+        await decir('CACIQUE DE LAS RUINAS: Mis abuelos contaban de seis piedras de luz que dormían en distintos lugares del país.');
+        await decir('Cada una guardaba algo que no se puede agarrar con las manos. ¿Algo como un pensamiento, o un recuerdo...?');
+        await decir('Hace poco vi gente rara rondando las ruinas. Buscaban algo... pero no encontraron nada acá.');
+      },
+    },
+  ],
+});
+
+desvio({
+  id: 'mocona', ruta: 'ruta3', lado: 'S', piso: '.', nombre: 'SALTOS DEL MOCONÁ',
+  abrir: [[2, 20], [3, 20], [2, 21], [3, 21]], celdas: [[2, 21], [3, 21]], llegada: [[2, 19], [3, 19]],
+  entrada: [[10, 0], [11, 0]], salidas: [],
+  cartelRuta: [4, 19], textoRuta: 'Al SUR: los SALTOS DEL MOCONÁ, donde el río cae de costado. ¡Llevá piloto!',
+  objetos: { '~': 'El agua del río Uruguay cae de costado, como una cortina larguísima. ¡Qué ruido!' },
+  encuentros: { lista: [['stinglet', 12], ['strykit', 12], ['boilpole', 12], ['faeve', 10], ['sylvafae', 5], ['spritefae', 5], ['aquastinger', 3], ['junquito', 8], ['yacarelito', 6]], min: 32, max: 36 },
+  npcs: [
+    entrenadorNPC({
+      id: 'mocona_t1', x: 9, y: 10, dir: 3, pal: PAL.pescador, nombre: 'BALSERO RAMÓN',
+      equipo: [['boilpole', 34], ['stinglet', 34], ['strykit', 35]],
+      antes: ['BALSERO RAMÓN: ¡Del Moconá no se va nadie sin un duelo! Es la ley del río.'],
+      gana: 'BALSERO RAMÓN: El río me dio una lección hoy...',
+      despues: 'BALSERO RAMÓN: STINGLET corre en círculos todo el día. De grande corre arriba del agua: ¡AQUASTINGER!',
+    }),
+    regaloNPC({
+      id: 'mocona_guarda', x: 13, y: 17, dir: 0, pal: PAL.guardaparque, flag: 'regaloMocona',
+      antes: ['GUARDAPARQUE: ¡Llegaste a los SALTOS DEL MOCONÁ! Acá la selva está llena de bichitos de luz.',
+        'Tomá estas dos cosas. Sirven para que un FAEVE se convierta en SYLVAFAE, el guardián del bosque, o en SPRITEFAE, el escarabajo de luz.'],
+      da: [['piedraHoja', 1], ['farolLuz', 1]],
+      despues: ['GUARDAPARQUE: Acordate: el FAEVE tiene que ser chiquito. Si crece solo se vuelve MYTHFAE.'],
+    }),
+    {
+      id: 'mocona_pista', x: 17, y: 17, dir: 2, pal: PAL.nene,
+      hablar: async () => {
+        await decir('NENE: ¡Vi una gente con capas NEGRAS y ROJAS! Se asustaron cuando los miré y se fueron corriendo.');
+        await decir('Uno dijo: «Lo que es verdad mientras lo mirás...». ¿Viste? ¡Por eso se fueron cuando los miré!');
+      },
+    },
+  ],
+});
+
+desvio({
+  id: 'nahuel', ruta: 'ruta13', lado: 'O', piso: '.', nombre: 'LAGO NAHUEL HUAPI',
+  abrir: [[0, 2], [1, 2], [0, 3], [1, 3]], celdas: [[0, 2], [0, 3]], llegada: [[2, 2], [2, 3]],
+  entrada: [[23, 10], [23, 11]], salidas: [],
+  cartelRuta: [3, 4], textoRuta: 'Al OESTE: la orilla escondida del LAGO NAHUEL HUAPI. Dicen que ahí vive algo enorme...',
+  objetos: { '~': 'El agua del lago es oscura y helada. Por un segundo te pareció ver un cuello larguísimo...' },
+  encuentros: { lista: [['frostail', 14], ['boilpole', 12], ['stinglet', 8], ['staticub', 8], ['coralfae', 6], ['geyserdrake', 3], ['escarchin', 8], ['pinguinoide', 6]], min: 36, max: 40 },
+  npcs: [
+    entrenadorNPC({
+      id: 'nahuel_t1', x: 19, y: 4, dir: 0, pal: PAL.nieve, nombre: 'BUZO MATÍAS',
+      equipo: [['boilpole', 38], ['coralfae', 38], ['frostail', 39]],
+      antes: ['BUZO MATÍAS: Bajé hasta el fondo del lago buscando al NAHUELITO. ¡No lo encontré, pero vos no te me escapás!'],
+      gana: 'BUZO MATÍAS: Me dejaste más helado que el agua del lago.',
+      despues: 'BUZO MATÍAS: Dicen que NAHUELITO solo sale cuando alguien llega a la orilla del fondo... ¿Te animás?',
+    }),
+    legendarioNPC({
+      id: 'nahuelito', x: 3, y: 8, dir: 3, especie: 'nahuelito', nivel: 50, flag: 'nahuelitoAtrapado',
+      antes: ['El agua del lago empezó a congelarse alrededor de la orilla...', '¡Del fondo salió NAHUELITO, el GUARDIÁN ANCESTRAL DEL SUR!'],
+      atrapado: ['¡Atrapaste a NAHUELITO! El lago se quedó tranquilo, como un espejo.', '¡Es el primer legendario de la Argentina que diseñó Felipe!'],
+      gana: ['NAHUELITO se hundió despacito en el lago...', 'Las burbujas siguen ahí. Cuando quieras, podés volver a intentar.'],
+      huir: 'NAHUELITO te mira desde el agua, esperando...',
+    }),
+  ],
+});
+
+desvio({
+  id: 'glaciar', ruta: 'ruta17', lado: 'O', piso: '-', nombre: 'GLACIAR PERITO MORENO',
+  abrir: [[0, 9], [1, 9], [0, 10], [1, 10]], celdas: [[0, 9], [0, 10]], llegada: [[2, 9], [2, 10]],
+  entrada: [[23, 10], [23, 11]], salidas: [],
+  cartelRuta: [2, 11], textoRuta: 'Al OESTE, cruzando la estepa: el GLACIAR PERITO MORENO. ¡Abrigate!',
+  encuentros: { lista: [['frostail', 12], ['staticub', 12], ['spikick', 10], ['blizzwraith', 5], ['voltdrake', 4], ['mortiswift', 5], ['glaciolito', 8], ['nevuki', 8], ['pinguinoide', 6]], min: 46, max: 50 },
+  npcs: [
+    entrenadorNPC({
+      id: 'glaciar_t1', x: 13, y: 12, dir: 1, pal: PAL.nieve, nombre: 'GUÍA DE HIELO PAULA',
+      equipo: [['frostail', 48], ['voltdrake', 48], ['blizzwraith', 49]],
+      antes: ['GUÍA DE HIELO PAULA: ¡Escuchaste ese ruido? Es el glaciar rompiéndose. ¡Y ahora vas a escuchar a mis dragones!'],
+      gana: 'GUÍA DE HIELO PAULA: Me congelaste la sonrisa...',
+      despues: 'GUÍA DE HIELO PAULA: BLIZZWRAITH no se deja entrenar por nadie. Yo tuve suerte.',
+    }),
+    regaloNPC({
+      id: 'glaciar_guarda', x: 9, y: 4, dir: 0, pal: PAL.guardaparque, flag: 'regaloGlaciar',
+      antes: ['GUARDAPARQUE: Encontré esto atrapado en el hielo hace mil años. Brilla solo, ¿ves?',
+        'Es una ESCAMA DE LUZ. Si se la das a un SPARKNIGHT, se convierte en LUMISPRITE, la furia luminosa.'],
+      da: [['escamaLuz', 1]],
+      despues: ['GUARDAPARQUE: Los SPARKNIGHT hembra se vuelven LUMISPRITE solos. Los machos, UMBRATAIL.'],
+    }),
+    {
+      id: 'glaciar_pista', x: 5, y: 3, dir: 0, pal: PAL.abuelo,
+      hablar: async () => {
+        await decir('CIENTÍFICO: Medí el hielo del glaciar y está raro... Alguien estuvo acá con un aparato que hacía tic-tac.');
+        await decir('Tenían capas VERDES y DORADAS. Uno se quejaba: «siempre se va y nunca vuelve...». ¿De qué hablaría?');
+      },
+    },
+  ],
+});
+
+desvio({
+  id: 'pomez', ruta: 'ruta20', lado: 'N', piso: '-', nombre: 'CAMPO DE PIEDRA PÓMEZ',
+  abrir: [[13, 0], [14, 0], [13, 1], [14, 1]], celdas: [[13, 0], [14, 0]], llegada: [[13, 2], [14, 2]],
+  entrada: [[10, 23], [11, 23]], salidas: [],
+  cartelRuta: [15, 2], textoRuta: 'Al NORTE: el CAMPO DE PIEDRA PÓMEZ. Un mar de piedras blancas que parecen de otro planeta.',
+  encuentros: { lista: [['patagon', 10], ['metasaurio', 6], ['litodon', 6], ['sparkind', 10], ['pyrodrake', 5], ['grindslow', 8], ['sibilantor', 5], ['androideno', 5], ['zipplecomb', 5], ['pyrefae', 4]], min: 54, max: 58 },
+  npcs: [
+    entrenadorNPC({
+      id: 'pomez_t1', x: 12, y: 12, dir: 1, pal: PAL.ayudante, nombre: 'GEÓLOGO FACU',
+      equipo: [['litodon', 56], ['metasaurio', 56], ['sibilantor', 57]],
+      antes: ['GEÓLOGO FACU: ¡Estas piedras flotan en el agua! Y mis criaturas... ¡pegan como rocas!'],
+      gana: 'GEÓLOGO FACU: Me hiciste polvo. Polvo volcánico.',
+      despues: 'GEÓLOGO FACU: PATAGÓN puede crecer de tres formas distintas. Depende de qué toque.',
+    }),
+    entrenadorNPC({
+      id: 'pomez_t2', x: 9, y: 6, dir: 0, pal: PAL.chica, nombre: 'PILOTA DE DRONES LULA',
+      equipo: [['androideno', 57], ['zipplecomb', 57], ['pyrodrake', 58]],
+      antes: ['PILOTA LULA: Vine a sacar fotos con mi dron. ¡Pero un duelo me viene bárbaro!'],
+      gana: 'PILOTA LULA: Se me cayó el dron... y la batalla.',
+      despues: 'PILOTA LULA: ZIPPLECOMB tiene dos cabezas: una tira gas y la otra chispas. ¡Juntas, explotan!',
+    }),
+    regaloNPC({
+      id: 'pomez_geologa', x: 7, y: 5, dir: 0, pal: PAL.geologa, flag: 'regaloPomez',
+      antes: ['GEÓLOGA ROMI: ¡Hola! Junto minerales de la cordillera. Te regalo dos que encontré.',
+        'Si un PATAGÓN toca el METAL DURO, se vuelve METASAURIO. Si toca la ROCA DURA, se vuelve LITODÓN.'],
+      da: [['metalDuro', 1], ['rocaDura', 1]],
+      despues: ['GEÓLOGA ROMI: METASAURIO crece hasta FERRADÓN, de hierro. LITODÓN, hasta ANDIDÓN, una muralla de granito.'],
+    }),
+    {
+      id: 'pomez_pista', x: 5, y: 3, dir: 0, pal: PAL.abuelo,
+      hablar: async () => {
+        await decir('PUESTERO: Una noche vi seis luces de colores subiendo por la cordillera, hacia el SUR. Todas juntas.');
+        await decir('Iban hacia la montaña más alta de todas... ¿Para qué querrán subir tan alto?');
+      },
+    },
+  ],
+});
+
+// ===== LOS CLANES YA NO DICEN QUÉ BUSCAN: dejan adivinanzas =====
+// Cada jefe, en la 1ª vuelta, deja una adivinanza sobre su gema. En la 2ª vuelta, cada jefe deja
+// un PEDAZO de una frase misteriosa. Todo queda anotado en el CUADERNO DE PISTAS.
+const ADIVINANZAS = {
+  mente: 'Pienso sin tener cabeza y sueño sin tener almohada. ¿Qué soy?',
+  alma: 'No se me ve ni se me toca, pero sin mí no serías vos. ¿Qué soy?',
+  poder: 'No tengo músculos, pero puedo mover montañas. ¿Qué soy?',
+  realidad: 'Soy verdad mientras me mirás. Cerrá los ojos y ya no sabés. ¿Qué soy?',
+  espacio: 'Estoy entre una estrella y la otra, y nadie me puede llenar. ¿Qué soy?',
+  tiempo: 'Siempre me voy y nunca vuelvo. Me medís, pero no me agarrás. ¿Qué soy?',
+};
+const FRASE_CLANES = [['mente', 'CUANDO LAS SEIS LUCES'], ['alma', 'SE JUNTEN EN EL TECHO'], ['poder', 'DE TODA AMÉRICA,'],
+  ['realidad', 'SE VA A ABRIR LA PUERTA'], ['espacio', 'DEL QUE DUERME'], ['tiempo', 'DEBAJO DE LA NIEVE.']];
+const ORDEN_GEMAS = ['mente', 'alma', 'poder', 'realidad', 'espacio', 'tiempo'];
+
+// Reescribir lo que dicen los clanes (los equipos y lugares no cambian)
+for (const o of ENCUENTROS_CLANES) {
+  const c = CLANES[o.clan], vez = o.vez, m = MAPAS[o.mapa];
+  const r = m.npcs.find(n => n.id === `clan_${o.clan}${vez}_r`), j = m.npcs.find(n => n.id === `clan_${o.clan}${vez}_j`);
+  const pelea = (n, nombre, equipo, antes, gana, alGanar) => {
+    const viejo = entrenadorNPC({ id: n.id, x: n.x, y: n.y, dir: n.dir, pal: n.pal, nombre, equipo, antes, gana, despues: '...' });
+    n.hablar = async () => {
+      if (S.flags['ent_' + n.id]) return;
+      await viejo.hablar();
+      if (S.flags['ent_' + n.id] && alGanar) await alGanar();
+    };
+  };
+  if (vez === 1) {
+    pelea(r, 'RECLUTA DEL ' + c.nombre, o.recluta,
+      ['RECLUTA: ¡Eh, vos! ¿Qué mirás? Por acá no se pasa.', `Somos el ${c.nombre}. ¿Que qué buscamos? ¡Eso es SECRETO!`],
+      'RECLUTA: ¡No! Si el jefe se entera de que perdí, no me deja ir a buscar la ge... ¡NADA! ¡No dije nada!');
+    pelea(j, 'JEFE ' + c.jefe, o.jefe,
+      [`${c.jefe}: Así que vos sos el famoso Felipe... Yo soy ${c.jefe}, jefe del ${c.nombre}.`,
+        '¿Querés saber qué buscamos? Te lo digo... en una adivinanza. Total, nunca la vas a sacar.',
+        `«${ADIVINANZAS[o.clan]}»`, '¡Y ahora correte del camino!'],
+      `${c.jefe}: Grr... Ganaste esta vez. Pero la adivinanza no la sacás ni en mil años. ¡Nos vamos!`,
+      async () => {
+        if (!S.flags['adiv_' + o.clan]) {
+          S.flags['adiv_' + o.clan] = true;
+          await decir(`Felipe anotó la adivinanza de ${c.jefe} en el CUADERNO DE PISTAS.`);
+          if (!S.bolsa.cuaderno) { S.bolsa.cuaderno = 1; await decir('(Lo encontrás en la BOLSA. Si adivinás de qué habla, ¡hay premio!)'); }
+        }
+      });
+  } else {
+    const pedazo = FRASE_CLANES.find(f => f[0] === o.clan)[1];
+    pelea(r, 'RECLUTA DEL ' + c.nombre, o.recluta,
+      [`RECLUTA: ¡Otra vez vos! El ${c.nombre} no se olvida de los que lo molestan.`, '¡Esta vez no pasás!'],
+      'RECLUTA: ¡Jefe! ¡Este chico es imparable!');
+    pelea(j, 'JEFE ' + c.jefe, o.jefe,
+      [`${c.jefe}: Felipe... llegás tarde. Lo que buscábamos ya es nuestro.`,
+        'Ahora falta lo más importante. Pero eso solo lo sabemos los seis jefes.', '¡No vas a llegar a tiempo!'],
+      `${c.jefe}: No importa... ya no nos podés parar. «...${pedazo}...» ¡Uy! Eso no lo tenía que decir. ¡Me voy!`,
+      async () => {
+        if (!S.flags['frase_' + o.clan]) {
+          S.flags['frase_' + o.clan] = true;
+          if (!S.bolsa.cuaderno) S.bolsa.cuaderno = 1;
+          await decir('A Felipe se le quedó grabado eso. Lo anotó en el CUADERNO DE PISTAS.');
+        }
+      });
+  }
+}
+
+// Pistas en el camino ANTES de cada encuentro, para que no sea tan de golpe
+const PISTAS_CLANES = [
+  ['pampa', 'mente', 1, ['CHACARERO: Anoche pasaron unos tipos con capas FUCSIAS para el lado de VILLA SERRANA.',
+    'Miraban un aparato que pitaba y decían: «sin cabeza... sin almohada...». ¡Qué gente más rara!']],
+  ['calchaqui', 'alma', 1, ['ARRIERO: Cuidado en TAFÍ DEL VALLE. Hay gente con capas LILAS cantando bajito frente a las piedras.',
+    'Les pregunté qué hacían y me dijeron: «buscamos lo que no se ve». ¿Y cómo vas a buscar algo que no se ve?']],
+  ['ruta2', 'poder', 1, ['PESCADOR: En VILLA CAMALOTE andan unos grandotes de capa ROJA levantando piedras enormes. ¡Con la mente!',
+    'Decían que querían «la fuerza que no tiene músculos». Yo tengo músculos y no puedo levantar ni una garrafa...']],
+  ['minas', 'realidad', 1, ['MINERO: Algo raro pasa en PUERTO WANDA. Gente de capa NEGRA y ROJA... ¡y de repente no estaban más!',
+    'Como si nunca hubieran estado. Ahora no sé si los vi de verdad o lo soñé.']],
+  ['estepa', 'espacio', 1, ['OVEJERO: En BARILOCHE hay gente de capa AZUL mirando las estrellas con un telescopio. ¡De día!',
+    'Uno dijo que buscaban «lo que hay entre las estrellas». Pero entre las estrellas no hay nada... ¿o sí?']],
+  ['ruta14', 'tiempo', 1, ['MAQUINISTA DEL TREN: En JACOBACCI se juntó gente de capa VERDE y DORADA. Todos con relojes de arena.',
+    'Me preguntaron si el tren llegaba a horario. ¡Nunca llega a horario! Se rieron y dijeron: «justamente...».']],
+  ['ruta16', 'mente', 2, ['BUZO: Volvió la gente de capa FUCSIA. Ahora están en PUERTO MADRYN y parece que ya encontraron algo...']],
+  ['ruta17', 'alma', 2, ['ESTANCIERO: En RÍO GALLEGOS hay gente de capa LILA. Dicen que tienen una criatura nueva... que brilla.']],
+  ['ruta19', 'poder', 2, ['VIAJERA: En BELÉN vi otra vez a los de capa ROJA. Estaban más fuertes que nunca. ¡Cuidate!']],
+  ['ruta20', 'realidad', 2, ['TURISTA: ¿Ves a esa gente en FIAMBALÁ? ¿O no hay nadie? Ya no sé qué es real...']],
+  ['ruta22', 'espacio', 2, ['ANDINISTA: Los de capa AZUL bajan hacia RODEO. Miran todo el tiempo para arriba, hacia la cordillera.']],
+  ['ruta23', 'tiempo', 2, ['BAQUEANO: Los seis colores de capas pasaron todos por acá, hacia el SUR. El último grupo, el VERDE y DORADO, se quedó en USPALLATA.']],
+];
+// Busca un lugar libre de la ruta, al costado del camino, cerca del medio
+function lugarLibre(id, n) {
+  const m = MAPAS[id], g = m.grilla, H = g.length, W = g[0].length;
+  const ocupado = (x, y) => (m.npcs || []).some(p => p.x === x && p.y === y) || (m.salidas || []).some(s => s.x === x && s.y === y) ||
+    (m.carteles || {})[x + ',' + y] || (m.edificios || []).some(e => x >= e.x - 1 && x < e.x + e.w + 1 && y >= e.y - 1 && y < e.y + e.h + 1);
+  const cand = [];
+  for (let y = 2; y < H - 2; y++) for (let x = 2; x < W - 2; x++) {
+    if (!'.-w:'.includes(g[y][x]) || ocupado(x, y)) continue;
+    const vecinos = [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([dx, dy]) => g[y + dy][x + dx]);
+    if (!vecinos.some(v => v === '=' || v === 'q' || v === ':')) continue;
+    if (vecinos.filter(v => v === '=' || v === 'q').length > 1) continue; // (en las cuevas todo es piso ':') // que no tape una esquina del camino
+    cand.push([x, y, Math.abs(x - W / 2) + Math.abs(y - H / 2) + (n || 0) * 3]);
+  }
+  cand.sort((a, b) => a[2] - b[2]);
+  return cand[0];
+}
+PISTAS_CLANES.forEach(([id, clan, vez, textos], i) => {
+  const lugar = lugarLibre(id, i % 3);
+  if (!lugar) return;
+  const pals = [PAL.abuelo, PAL.pescador, PAL.chica, PAL.ayudante, PAL.nene];
+  MAPAS[id].npcs.push({
+    id: `pista_${clan}${vez}`, x: lugar[0], y: lugar[1], dir: 0, pal: pals[i % pals.length],
+    hablar: async () => {
+      for (const t of textos) await decir(t);
+      if (vez === 1 && !S.bolsa.cuaderno) {
+        S.bolsa.cuaderno = 1;
+        await decir('Tomá, te regalo este cuaderno. Anotá todo lo raro que veas: a lo mejor descubrís qué traman.');
+        await decir('¡Felipe recibió el CUADERNO DE PISTAS!');
+        guardar();
+      }
+    },
+  });
+});
+
+// ===== El CUADERNO DE PISTAS =====
+OBJETOS.cuaderno = { nombre: 'CUADERNO DE PISTAS', precio: 0, cuaderno: true, desc: 'Las adivinanzas de los clanes. Si adivinás de qué gema habla cada una, ¡hay premio!' };
+const NOMBRE_GEMA = { mente: 'MENTE', alma: 'ALMA', poder: 'PODER', realidad: 'REALIDAD', espacio: 'ESPACIO', tiempo: 'TIEMPO' };
+async function cuadernoPistas() {
+  while (true) {
+    const tengo = ORDEN_GEMAS.filter(k => S.flags['adiv_' + k]);
+    const pedazos = FRASE_CLANES.filter(([k]) => S.flags['frase_' + k]);
+    if (!tengo.length && !pedazos.length) { await decir('El cuaderno está vacío. Cuando un clan diga algo raro, Felipe lo va a anotar acá.'); return; }
+    const ops = tengo.map(k => (S.flags['adivinado_' + k] ? '✓ ' : '? ') + CLANES[k].jefe);
+    if (pedazos.length) ops.push('LA FRASE');
+    ops.push('CERRAR');
+    await decir('CUADERNO DE PISTAS: ¿Qué querés leer?', { mantener: true });
+    const i = await elegir(ops, { x: 132, y: 4, w: 104 });
+    ui.dialogo = null;
+    if (i < 0 || i === ops.length - 1) return;
+    if (pedazos.length && i === ops.length - 2) {
+      await decir(`Pedazos que dijeron los jefes (${pedazos.length} de 6):`);
+      await decir(FRASE_CLANES.map(([k, t]) => (S.flags['frase_' + k] ? t : '...')).join(' '));
+      if (pedazos.length === 6) await decir('¿El TECHO DE AMÉRICA? ¿No es la montaña más alta de todas...?');
+      continue;
+    }
+    const k = tengo[i];
+    await decir(`${CLANES[k].jefe} dijo: «${ADIVINANZAS[k]}»`);
+    if (S.flags['adivinado_' + k]) { await decir(`¡Ya la adivinaste! Era la ${CLANES[k].gema}.`); continue; }
+    if (!await siNo('¿Querés adivinar de qué gema habla?')) continue;
+    await decir('¿De qué gema habla?', { mantener: true });
+    const r = await elegir([...ORDEN_GEMAS.map(g => NOMBRE_GEMA[g]), 'NO SÉ'], { x: 150, y: 4, w: 86 });
+    ui.dialogo = null;
+    if (r < 0 || r === 6) continue;
+    if (ORDEN_GEMAS[r] === k) {
+      S.flags['adivinado_' + k] = true;
+      S.plata = (S.plata || 0) + 1000;
+      S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 2;
+      await decir(`¡SÍ! ¡Es la ${CLANES[k].gema}! ¡Felipe descubrió qué busca el ${CLANES[k].nombre}!`);
+      await decir(`Premio: ${plataTxt(1000)} y 2 ALFAJORES.`);
+      if (ORDEN_GEMAS.every(g => S.flags['adivinado_' + g]) && !S.flags.cuadernoCompleto) {
+        S.flags.cuadernoCompleto = true;
+        S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 10;
+        await decir('¡Adivinaste las SEIS! ¡Sos un detective de verdad! Premio extra: 10 BOLEADORAS.');
+      }
+      guardar();
+    } else {
+      await decir('Mmm... no me cierra. Pensalo un poco más. ¡Probá de nuevo cuando quieras!');
+    }
+  }
+}
 </script>
 <script>
 // ===== musica.js =====
@@ -8488,6 +9702,7 @@ async function usarObjetoMundo(obj) {
   const o = OBJETOS[obj];
   if (o.mapa) { await pantallaMapa(); return; }
   if (o.bici) { await usarBici(); return; }
+  if (o.cuaderno) { await cuadernoPistas(); return; }
   if (o.balsa) { await decir('Caminá hacia el agua y Felipe se sube a la BALSA solo.'); return; }
   if (o.pico) { await decir('Ponete enfrente de una roca o un bloque de hielo con grietas y apretá A.'); return; }
   if (o.piedra) { await usarPiedra(obj); return; }
@@ -8805,6 +10020,7 @@ const LUGAR_GEO = {
   ruta13: [-71.4, -41.6], elbolson: [-71.5, -42], ruta14: [-70.3, -41.6], jacobacci: [-69.5, -41.3], ruta15: [-68, -41.3], somuncura: [-66.9, -41.2],
   ruta16: [-64.6, -42.4], madryn: [-65.1, -42.8], ruta17: [-67, -47.3], gallegos: [-69.2, -51.6], ruta18: [-68.6, -53.1], ushuaia: [-68.3, -54.7],
   catamarca: [-65.8, -28.5], ruta19: [-66.5, -27.9], belen: [-67, -27.6], ruta20: [-67.3, -27.5], fiambala: [-67.6, -27.7], ruta21: [-68, -27.4], ojos: [-68.5, -27.1],
+  quebrada: [-64.75, -31.65], quilmes: [-65.95, -26.45], mocona: [-53.9, -27.15], nahuel: [-71.55, -40.95], glaciar: [-73.05, -50.5], pomez: [-67.45, -26.6],
   ruta22: [-68.9, -28.5], rodeo: [-69.15, -30.2], ruta23: [-69.4, -31.5], uspallata: [-69.35, -32.6], ruta24: [-69.6, -32.75], plaza: [-69.88, -32.65],
 };
 const GIMNASIOS_GEO = [['vallefertil', 1], ['tafi', 2], ['puerto', 3], ['bariloche', 4], ['somuncura', 5], ['ushuaia', 6], ['ojos', 7], ['plaza', 8]];
@@ -9104,7 +10320,7 @@ function calcularDanio(at, de, mv) {
   const stab = tiposDe(at).includes(mv.tipo) ? (ha.ef === 'adaptable' ? 2 : 1.5) : 1;
   let ef = eficacia(mv.tipo, tiposDe(de));
   if (ef === 0 && ha.ef === 'audaz' && ['NORMAL', 'LUCHA'].includes(mv.tipo)) ef = eficacia(mv.tipo, tiposDe(de).filter(t => t !== 'FANTASMA'));
-  const critico = hd.ef !== 'sinCritico' && azar() < (ha.ef === 'critico' || mv.critAlto ? 1 / 5 : 1 / 16);
+  const critico = hd.ef !== 'sinCritico' && hd.ef !== 'capaGlaciar' && azar() < (ha.ef === 'critico' || mv.critAlto ? 1 / 5 : 1 / 16);
   const azarDanio = 0.85 + azar() * 0.15;
   if (ef === 0) return { danio: 0, ef, critico: false };
   let extra = 1;
@@ -9130,6 +10346,7 @@ function calcularDanio(at, de, mv) {
   if (ha.ef === 'templado' && mv.tipo === 'ACERO') extra *= 1.5;
   if (ha.ef === 'cabezaRoca' && mv.tipo === 'ROCA') extra *= 1.2;
   if (hd.ef === 'ignifugo' && mv.tipo === 'FUEGO') extra *= 0.5;
+  if (hd.ef === 'capaGlaciar' && (mv.tipo === 'FUEGO' || mv.tipo === 'PLANTA')) extra *= 0.5;
   if (hd.ef === 'ilusion' && !de.et.golpeado) extra *= 0.5;
   return { danio: Math.max(1, Math.floor(base * stab * ef * (critico ? 1.5 : 1) * azarDanio * extra)), ef, critico };
 }
@@ -9753,7 +10970,10 @@ async function tirarBoleadora() {
 async function revisarEvoluciones() {
   for (const m of S.equipo) {
     const evo = ESPECIES[m.id].evo;
-    if (evo && m.nivel >= evo.nivel) await evolucionar(m, evo.a);
+    if (!evo || m.nivel < evo.nivel) continue;
+    // Algunas evolucionan distinto si son hembra (Sparknight → Lumisprite); se sortea una sola vez
+    if (evo.hembra && m.hembra === undefined) m.hembra = Math.random() < 0.5;
+    await evolucionar(m, evo.hembra && m.hembra ? evo.hembra : evo.a);
   }
 }
 async function evolucionar(m, nuevoId) {

@@ -4605,3 +4605,578 @@ async function entregarRegalos() {
   guardar();
 }
 
+
+// =====================================================================================
+// ===== DESVÍOS OPCIONALES, CRIATURAS NUEVAS Y PISTAS DE LOS CLANES (24/11/2026) =====
+// =====================================================================================
+// Seis lugares que salen del camino principal (no hace falta entrar para terminar el juego).
+// Ahí viven las criaturas de la presentación de Felipe que faltaban y se consiguen las piedras nuevas.
+// Los clanes ya no dicen qué buscan: dejan ADIVINANZAS. Felipe las anota en el CUADERNO DE PISTAS
+// y, si adivina de qué gema habla cada una, gana premios.
+// ----- Grillas de los desvíos (generadas con un script, ver tools/areas.py) -----
+const AREAS_GRILLAS = {
+  quebrada: [
+    'RRRRRRRRRR==RRRRRRRRRR',
+    'RR......F,==,.......RR',
+    'RR,,,RR..,==,.......RR',
+    'RR,,,RR..,==,.......RR',
+    'RR,,,RR...==,,,,....RR',
+    'RRRR,RR,..========..RR',
+    'RRRR.,,,F.========..RR',
+    'RR...,,,..,,,...==..RR',
+    'RR.,,,,,,.,,,.,,==..RR',
+    'RR.TT,,,,.,,,.,,==,.RR',
+    'RR.TT,,,..========,.RR',
+    'RR........========,.RR',
+    'RR........==....,,,.RR',
+    'RR..,,,,,,==,,,.,,,.RR',
+    'RR,,,,,,,,==,,,.....RR',
+    'RR,,,,,,..========..RR',
+    'RR........========..RR',
+    'RR..............==..RR',
+    'RR..............==..RR',
+    'RR........========..RR',
+    'RR..................RR',
+    'RR..................RR',
+    'RRRRRRRRRRRRRRRRRRRRRR',
+    'RRRRRRRRRRRRRRRRRRRRRR',
+  ],
+  quilmes: [
+    'CCCCCCCCCCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCCCCCCCCCCCCC',
+    'C-------K-------------CC',
+    'C-uuu-----------------CC',
+    'C-uuu=======uu--------CC',
+    'C-CCu=======uu-=====--CC',
+    'CuCCu==uuu==uu-=====--CC',
+    'Cuuuu==uuu==---==--=--CC',
+    'Cuuuu==uuu==u--==--=--CC',
+    'Cuuuu==uuu==u--==--=--CC',
+    '=======uuu=======--=--CC',
+    '=======u--=======--=--CC',
+    'Cuuuuu-----uuuu-------CC',
+    'CuKKuu-----uuuu-------CC',
+    'C-KKuu-----uuu--------CC',
+    'C-----RR--uuuu--------CC',
+    'C-----RR--uuuu--------CC',
+    'C--------Kuuuu--------CC',
+    'C----CC---uuuu-K------CC',
+    'C----CC---uu----------CC',
+    'CCCCCCCCCCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCCCCCCCCCCCCC',
+  ],
+  mocona: [
+    'YYYYYYYYYYqqYYYYYYYYYY',
+    'YY........qq........YY',
+    'YY..,,,,F.qq,,,,,,..YY',
+    'YY..,,YY..qq,,,,,,..YY',
+    'YY....YY,,qq,,,,,,..YY',
+    'YY....,,,,qqqqqqq...YY',
+    'YY....,,,,qqqqqqq,..YY',
+    'YY,,,,,,,,.,,,,qq,..YY',
+    'YY,,,,,,,,..,,,qq,..YY',
+    'YY,,,,.......,,qq,..YY',
+    'YY.....F..qqqqqqq,..YY',
+    'YY........qqqqqqq...YY',
+    'YY......F.qq,,,,....YY',
+    'YY.....YY.qq,,,,,,,.YY',
+    'YY....,YY,qq,,,,,,,.YY',
+    'YY....,,,,qqqqqqq...YY',
+    'YY........qqqqqqq...YY',
+    'YY.............qq...YY',
+    'YY.............qq...YY',
+    'YY~~~~~~~~qqqqqqq~~~YY',
+    'YY~~~~~~~~~~~~~~~~~~YY',
+    'YY~~~~~~~~~~~~~~~~~~YY',
+    'YYYYYYYYYYYYYYYYYYYYYY',
+    'YYYYYYYYYYYYYYYYYYYYYY',
+  ],
+  nahuel: [
+    'TTTTTTTTTTTTTTTTTTTTTTTT',
+    'TTTTTTTTTTTTTTTTTTTTTTTT',
+    'TT~~~......,,..........T',
+    'TT~~~..F,,.,,..........T',
+    'TT~~~...,,.,=======....T',
+    'TT~~=====,.,=======.TT.T',
+    'TT~~=====,,,==,,.==.TT.T',
+    'TT~~=..==,,,==,,.==,,,.T',
+    'TT~~=..==,,,==,,,==,,,.T',
+    'TT~~=..==,,,==,,,==,,,.T',
+    'TT~~=..=======,,,=======',
+    'TT~~=..=======,,.=======',
+    'TT~~~......,,,,,...,,,,T',
+    'TT~~~..F...,,,,,...,,,,T',
+    'TT~~~...........,,,,,,,T',
+    'TT~~~......TTTT.,,,TT,FT',
+    'TT~~~......TTTT.,,,TT,FT',
+    'TT~~~........TT.,,,,,,.T',
+    'TT~~~........TT.,,.,,,.T',
+    'TT~~~...........,,.,,,.T',
+    'TTTTTTTTTTTTTTTTTTTTTTTT',
+    'TTTTTTTTTTTTTTTTTTTTTTTT',
+  ],
+  glaciar: [
+    'NNNNNNNNNNNNNNNNNNNNNNNN',
+    'NNNNNNNNNNNNNNNNNNNNNNNN',
+    'NNwwwwwwwwwwwwwwwuuuwwwN',
+    'NNwwwwwwwwwwwuuuwuuuwwwN',
+    'NNww=====wwwwuuuwuuuwwwN',
+    'NNww=====www=======wwwwN',
+    'NNww=ww==www=======wwwwN',
+    'NNww=ww==www==uuu==wwwwN',
+    'NNww=ww==www==uuu==wwwwN',
+    'NNww=ww==www==wwu==wwuuN',
+    'NNww=ww=======wwu=======',
+    'NNww=ww=======uuu=======',
+    'NNwwwwwwwuuwwwuuuuuwwwwN',
+    'NNwwwwwwwuuwwwuuuuuuwwwN',
+    'NNwwwwwwuuuwNNuuuuuuwuuN',
+    'NNwwwwwwuuuwNNuuuuuuwuuN',
+    'NNwwwwwwNNuuwwuuwwuuwuuN',
+    'NNwwwwwwNNuuwwwwwwuuuwwN',
+    'NNwwwwwwuuuuwwwwwwuuuwwN',
+    'NNwwwwwwuuuwwwwwwwuuuwwN',
+    'NNNNNNNNNNNNNNNNNNNNNNNN',
+    'NNNNNNNNNNNNNNNNNNNNNNNN',
+  ],
+  pomez: [
+    'CCCCCCCCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCCCCCCCCCCC',
+    'CC------------------CC',
+    'CC------------------CC',
+    'CC--========--------CC',
+    'CC--==--------------CC',
+    'CC--==--------------CC',
+    'CC--========------CCCC',
+    'CC--========uu--uuCCCC',
+    'CCuuuuu-uu==uCC-uuuuCC',
+    'CCuuuuu--u==uCC-uCCuCC',
+    'CC-uuu----==-----CC-CC',
+    'CC-uu=======--------CC',
+    'CC-uu=======u--RR-CCCC',
+    'CCuuu==---uuu--RR-CCCC',
+    'CCuuu==-uuuuuuuu----CC',
+    'CCuuu==-uuu-uuuu----CC',
+    'CC-uu=======uuuu----CC',
+    'CC-uu=======uu--uuuuCC',
+    'CC---uuuuu==uu--uuuuCC',
+    'CC-K---uuu==----uuuuCC',
+    'CC-----uuu==----K---CC',
+    'CC-----uuu==--------CC',
+    'CCCCCCCCCC==CCCCCCCCCC',
+  ],
+};
+
+// Un desvío: abre el costado de la ruta y conecta las dos puntas.
+// lado = por dónde se sale de la RUTA ('S', 'O', 'N'); celdas = las dos baldosas del borde de la ruta;
+// llegada = dónde aparece Felipe al volver a la ruta; entrada = las dos baldosas del borde del desvío.
+function desvio(o) {
+  const ruta = MAPAS[o.ruta];
+  const dirIda = { S: 0, N: 1, O: 2, E: 3 }[o.lado], dirVuelta = { S: 1, N: 0, O: 3, E: 2 }[o.lado];
+  // abrir el borde de la ruta (dos baldosas de espesor) con el piso del camino
+  for (const [x, y] of o.abrir) ruta.grilla[y][x] = o.piso;
+  const d = { S: [0, 1], N: [0, -1], O: [-1, 0], E: [1, 0] }[o.lado];
+  o.celdas.forEach(([x, y], i) => {
+    const [ex, ey] = o.entrada[i];
+    const adentro = [ex + d[0], ey + d[1]]; // la primera baldosa del desvío
+    ruta.salidas.push({ x, y, a: o.id, ax: adentro[0], ay: adentro[1], dir: dirIda });
+    o.salidas.push({ x: ex, y: ey, a: o.ruta, ax: o.llegada[i][0], ay: o.llegada[i][1], dir: dirVuelta });
+  });
+  if (o.cartelRuta) { ruta.grilla[o.cartelRuta[1]][o.cartelRuta[0]] = 'S'; ruta.carteles[o.cartelRuta.join(',')] = o.textoRuta; }
+  MAPAS[o.id] = {
+    nombre: o.nombre, exterior: true, grilla: desdeTexto(AREAS_GRILLAS[o.id]), edificios: [],
+    salidas: o.salidas, carteles: o.carteles || {}, objetos: o.objetos, encuentros: o.encuentros, npcs: o.npcs,
+  };
+}
+
+// Alguien que te regala algo una sola vez
+function regaloNPC(o) {
+  return {
+    id: o.id, x: o.x, y: o.y, dir: o.dir || 0, pal: o.pal,
+    hablar: async () => {
+      if (S.flags[o.flag]) { for (const t of o.despues) await decir(t); return; }
+      for (const t of o.antes) await decir(t);
+      for (const [obj, n] of o.da) {
+        S.bolsa[obj] = (S.bolsa[obj] || 0) + n;
+        await decir(`¡Felipe recibió ${n > 1 ? n + ' ' : ''}${OBJETOS[obj].nombre}!`);
+      }
+      S.flags[o.flag] = true;
+      for (const t of o.final || []) await decir(t);
+      guardar();
+    },
+  };
+}
+
+// Una criatura legendaria que se ve en el mapa (como REGIOHM)
+function legendarioNPC(o) {
+  return {
+    id: o.id, x: o.x, y: o.y, dir: o.dir || 0, criatura: o.especie,
+    visible: () => !S.flags[o.flag],
+    hablar: async () => {
+      if (!S.equipo.some(m => m.ps > 0)) { await decir('Tus criaturas no tienen energía. ¡Curalas primero en un CEMIC!'); return; }
+      for (const t of o.antes) await decir(t);
+      const r = await batalla({ salvaje: [o.especie, o.nivel], legendario: true });
+      if (r === 'atrapado') { S.flags[o.flag] = true; for (const t of o.atrapado) await decir(t); guardar(); }
+      else if (r === 'gana') { for (const t of o.gana) await decir(t); }
+      else await decir(o.huir);
+    },
+  };
+}
+
+PAL.guardaparque = PAL.guarda;
+PAL.geologa = PAL.chica;
+
+desvio({
+  id: 'quebrada', ruta: 'sierras', lado: 'S', piso: '.', nombre: 'QUEBRADA DEL CONDORITO',
+  abrir: [[4, 20], [5, 20], [4, 21], [5, 21]], celdas: [[4, 21], [5, 21]], llegada: [[4, 19], [5, 19]],
+  entrada: [[10, 0], [11, 0]], salidas: [],
+  cartelRuta: [6, 19], textoRuta: 'Al SUR: la QUEBRADA DEL CONDORITO. Un desvío lleno de criaturas que no se ven en ningún otro lado.',
+  carteles: {},
+  encuentros: { lista: [['flambrik', 14], ['spikick', 12], ['sparklizar', 12], ['ciberco', 10], ['strykit', 8], ['condorito', 10], ['faeve', 8], ['piedrin', 8], ['lechucita', 6]], min: 9, max: 13 },
+  npcs: [
+    entrenadorNPC({
+      id: 'quebrada_t1', x: 9, y: 11, dir: 3, pal: PAL.chica, nombre: 'EXPLORADORA JULI',
+      equipo: [['spikick', 11], ['flambrik', 12]],
+      antes: ['EXPLORADORA JULI: ¡Encontraste el desvío secreto! Acá viven dragones chiquitos. ¡A ver si te la bancás!'],
+      gana: 'EXPLORADORA JULI: ¡Uf! Sos bueno, eh.',
+      despues: 'EXPLORADORA JULI: SPIKICK entrena la puntería con la cola. Cuando crece se vuelve un cazador del cielo.',
+    }),
+    regaloNPC({
+      id: 'quebrada_guarda', x: 13, y: 18, dir: 0, pal: PAL.guardaparque, flag: 'regaloQuebrada',
+      antes: ['GUARDAPARQUE: ¡Bienvenido a la QUEBRADA DEL CONDORITO! Muy pocos chicos llegan hasta acá.',
+        'Mirá, un FAEVE dejó esto en el arroyo. Si se lo das a un FAEVE antes de que crezca, se convierte en PYREFAE, el zorro de fuego rosa.'],
+      da: [['piedraFuego', 1]],
+      despues: ['GUARDAPARQUE: En la quebrada vive FLAMBRIK, un duende con una varita de fuego. ¡Es re travieso!'],
+    }),
+    {
+      id: 'quebrada_pista', x: 16, y: 20, dir: 2, pal: PAL.abuelo,
+      hablar: async () => {
+        await decir('ANDINISTA: El otro día bajaron por acá unos tipos con capas de colores. Cada grupo de un color distinto.');
+        await decir('No dijeron qué buscaban, pero uno de capa LILA iba repitiendo: «lo que no se ve ni se toca...».');
+        await decir('¿Qué será algo que no se ve ni se toca? Me quedé pensando...');
+      },
+    },
+  ],
+});
+
+desvio({
+  id: 'quilmes', ruta: 'calchaqui', lado: 'E', piso: '-', nombre: 'RUINAS DE QUILMES',
+  abrir: [[20, 22], [21, 22], [20, 23], [21, 23]], celdas: [[21, 22], [21, 23]], llegada: [[19, 22], [19, 23]],
+  entrada: [[0, 10], [0, 11]], salidas: [],
+  cartelRuta: [19, 21], textoRuta: 'Al ESTE: las RUINAS DE QUILMES. Una ciudad de piedra de hace muchísimos años.',
+  encuentros: { lista: [['grindslow', 14], ['staticub', 12], ['sparkind', 12], ['ciberco', 10], ['stinglet', 8], ['flambrik', 6], ['cardito', 8], ['piedrin', 6]], min: 19, max: 23 },
+  npcs: [
+    entrenadorNPC({
+      id: 'quilmes_t1', x: 12, y: 7, dir: 0, pal: PAL.chica, nombre: 'ARQUEÓLOGA INÉS',
+      equipo: [['grindslow', 22], ['ciberco', 22], ['sparkind', 23]],
+      antes: ['ARQUEÓLOGA INÉS: ¡Cuidado dónde pisás! Estas piedras tienen siglos. Y mis criaturas también saben defenderlas.'],
+      gana: 'ARQUEÓLOGA INÉS: Bueno, bueno... te ganaste mi respeto.',
+      despues: 'ARQUEÓLOGA INÉS: GRINDSLOW se esconde bajo la arena. Cuando crece es un taladro viviente.',
+    }),
+    entrenadorNPC({
+      id: 'quilmes_t2', x: 17, y: 9, dir: 2, pal: PAL.ayudante, nombre: 'INVENTOR TITO',
+      equipo: [['ciberco', 23], ['staticub', 23]],
+      antes: ['INVENTOR TITO: ¡Mi CIBERCO tiene una pantalla en la cara! ¿Querés ver qué más hace?'],
+      gana: 'INVENTOR TITO: ¡Se me cortocircuitó todo!',
+      despues: 'INVENTOR TITO: Cuando CIBERCO crece se vuelve ANDROIDEÑO, un cíborg con un cañón de plasma.',
+    }),
+    {
+      id: 'quilmes_pista', x: 18, y: 4, dir: 0, pal: PAL.abuelo,
+      hablar: async () => {
+        await decir('CACIQUE DE LAS RUINAS: Mis abuelos contaban de seis piedras de luz que dormían en distintos lugares del país.');
+        await decir('Cada una guardaba algo que no se puede agarrar con las manos. ¿Algo como un pensamiento, o un recuerdo...?');
+        await decir('Hace poco vi gente rara rondando las ruinas. Buscaban algo... pero no encontraron nada acá.');
+      },
+    },
+  ],
+});
+
+desvio({
+  id: 'mocona', ruta: 'ruta3', lado: 'S', piso: '.', nombre: 'SALTOS DEL MOCONÁ',
+  abrir: [[2, 20], [3, 20], [2, 21], [3, 21]], celdas: [[2, 21], [3, 21]], llegada: [[2, 19], [3, 19]],
+  entrada: [[10, 0], [11, 0]], salidas: [],
+  cartelRuta: [4, 19], textoRuta: 'Al SUR: los SALTOS DEL MOCONÁ, donde el río cae de costado. ¡Llevá piloto!',
+  objetos: { '~': 'El agua del río Uruguay cae de costado, como una cortina larguísima. ¡Qué ruido!' },
+  encuentros: { lista: [['stinglet', 12], ['strykit', 12], ['boilpole', 12], ['faeve', 10], ['sylvafae', 5], ['spritefae', 5], ['aquastinger', 3], ['junquito', 8], ['yacarelito', 6]], min: 32, max: 36 },
+  npcs: [
+    entrenadorNPC({
+      id: 'mocona_t1', x: 9, y: 10, dir: 3, pal: PAL.pescador, nombre: 'BALSERO RAMÓN',
+      equipo: [['boilpole', 34], ['stinglet', 34], ['strykit', 35]],
+      antes: ['BALSERO RAMÓN: ¡Del Moconá no se va nadie sin un duelo! Es la ley del río.'],
+      gana: 'BALSERO RAMÓN: El río me dio una lección hoy...',
+      despues: 'BALSERO RAMÓN: STINGLET corre en círculos todo el día. De grande corre arriba del agua: ¡AQUASTINGER!',
+    }),
+    regaloNPC({
+      id: 'mocona_guarda', x: 13, y: 17, dir: 0, pal: PAL.guardaparque, flag: 'regaloMocona',
+      antes: ['GUARDAPARQUE: ¡Llegaste a los SALTOS DEL MOCONÁ! Acá la selva está llena de bichitos de luz.',
+        'Tomá estas dos cosas. Sirven para que un FAEVE se convierta en SYLVAFAE, el guardián del bosque, o en SPRITEFAE, el escarabajo de luz.'],
+      da: [['piedraHoja', 1], ['farolLuz', 1]],
+      despues: ['GUARDAPARQUE: Acordate: el FAEVE tiene que ser chiquito. Si crece solo se vuelve MYTHFAE.'],
+    }),
+    {
+      id: 'mocona_pista', x: 17, y: 17, dir: 2, pal: PAL.nene,
+      hablar: async () => {
+        await decir('NENE: ¡Vi una gente con capas NEGRAS y ROJAS! Se asustaron cuando los miré y se fueron corriendo.');
+        await decir('Uno dijo: «Lo que es verdad mientras lo mirás...». ¿Viste? ¡Por eso se fueron cuando los miré!');
+      },
+    },
+  ],
+});
+
+desvio({
+  id: 'nahuel', ruta: 'ruta13', lado: 'O', piso: '.', nombre: 'LAGO NAHUEL HUAPI',
+  abrir: [[0, 2], [1, 2], [0, 3], [1, 3]], celdas: [[0, 2], [0, 3]], llegada: [[2, 2], [2, 3]],
+  entrada: [[23, 10], [23, 11]], salidas: [],
+  cartelRuta: [3, 4], textoRuta: 'Al OESTE: la orilla escondida del LAGO NAHUEL HUAPI. Dicen que ahí vive algo enorme...',
+  objetos: { '~': 'El agua del lago es oscura y helada. Por un segundo te pareció ver un cuello larguísimo...' },
+  encuentros: { lista: [['frostail', 14], ['boilpole', 12], ['stinglet', 8], ['staticub', 8], ['coralfae', 6], ['geyserdrake', 3], ['escarchin', 8], ['pinguinoide', 6]], min: 36, max: 40 },
+  npcs: [
+    entrenadorNPC({
+      id: 'nahuel_t1', x: 19, y: 4, dir: 0, pal: PAL.nieve, nombre: 'BUZO MATÍAS',
+      equipo: [['boilpole', 38], ['coralfae', 38], ['frostail', 39]],
+      antes: ['BUZO MATÍAS: Bajé hasta el fondo del lago buscando al NAHUELITO. ¡No lo encontré, pero vos no te me escapás!'],
+      gana: 'BUZO MATÍAS: Me dejaste más helado que el agua del lago.',
+      despues: 'BUZO MATÍAS: Dicen que NAHUELITO solo sale cuando alguien llega a la orilla del fondo... ¿Te animás?',
+    }),
+    legendarioNPC({
+      id: 'nahuelito', x: 3, y: 8, dir: 3, especie: 'nahuelito', nivel: 50, flag: 'nahuelitoAtrapado',
+      antes: ['El agua del lago empezó a congelarse alrededor de la orilla...', '¡Del fondo salió NAHUELITO, el GUARDIÁN ANCESTRAL DEL SUR!'],
+      atrapado: ['¡Atrapaste a NAHUELITO! El lago se quedó tranquilo, como un espejo.', '¡Es el primer legendario de la Argentina que diseñó Felipe!'],
+      gana: ['NAHUELITO se hundió despacito en el lago...', 'Las burbujas siguen ahí. Cuando quieras, podés volver a intentar.'],
+      huir: 'NAHUELITO te mira desde el agua, esperando...',
+    }),
+  ],
+});
+
+desvio({
+  id: 'glaciar', ruta: 'ruta17', lado: 'O', piso: '-', nombre: 'GLACIAR PERITO MORENO',
+  abrir: [[0, 9], [1, 9], [0, 10], [1, 10]], celdas: [[0, 9], [0, 10]], llegada: [[2, 9], [2, 10]],
+  entrada: [[23, 10], [23, 11]], salidas: [],
+  cartelRuta: [2, 11], textoRuta: 'Al OESTE, cruzando la estepa: el GLACIAR PERITO MORENO. ¡Abrigate!',
+  encuentros: { lista: [['frostail', 12], ['staticub', 12], ['spikick', 10], ['blizzwraith', 5], ['voltdrake', 4], ['mortiswift', 5], ['glaciolito', 8], ['nevuki', 8], ['pinguinoide', 6]], min: 46, max: 50 },
+  npcs: [
+    entrenadorNPC({
+      id: 'glaciar_t1', x: 13, y: 12, dir: 1, pal: PAL.nieve, nombre: 'GUÍA DE HIELO PAULA',
+      equipo: [['frostail', 48], ['voltdrake', 48], ['blizzwraith', 49]],
+      antes: ['GUÍA DE HIELO PAULA: ¡Escuchaste ese ruido? Es el glaciar rompiéndose. ¡Y ahora vas a escuchar a mis dragones!'],
+      gana: 'GUÍA DE HIELO PAULA: Me congelaste la sonrisa...',
+      despues: 'GUÍA DE HIELO PAULA: BLIZZWRAITH no se deja entrenar por nadie. Yo tuve suerte.',
+    }),
+    regaloNPC({
+      id: 'glaciar_guarda', x: 9, y: 4, dir: 0, pal: PAL.guardaparque, flag: 'regaloGlaciar',
+      antes: ['GUARDAPARQUE: Encontré esto atrapado en el hielo hace mil años. Brilla solo, ¿ves?',
+        'Es una ESCAMA DE LUZ. Si se la das a un SPARKNIGHT, se convierte en LUMISPRITE, la furia luminosa.'],
+      da: [['escamaLuz', 1]],
+      despues: ['GUARDAPARQUE: Los SPARKNIGHT hembra se vuelven LUMISPRITE solos. Los machos, UMBRATAIL.'],
+    }),
+    {
+      id: 'glaciar_pista', x: 5, y: 3, dir: 0, pal: PAL.abuelo,
+      hablar: async () => {
+        await decir('CIENTÍFICO: Medí el hielo del glaciar y está raro... Alguien estuvo acá con un aparato que hacía tic-tac.');
+        await decir('Tenían capas VERDES y DORADAS. Uno se quejaba: «siempre se va y nunca vuelve...». ¿De qué hablaría?');
+      },
+    },
+  ],
+});
+
+desvio({
+  id: 'pomez', ruta: 'ruta20', lado: 'N', piso: '-', nombre: 'CAMPO DE PIEDRA PÓMEZ',
+  abrir: [[13, 0], [14, 0], [13, 1], [14, 1]], celdas: [[13, 0], [14, 0]], llegada: [[13, 2], [14, 2]],
+  entrada: [[10, 23], [11, 23]], salidas: [],
+  cartelRuta: [15, 2], textoRuta: 'Al NORTE: el CAMPO DE PIEDRA PÓMEZ. Un mar de piedras blancas que parecen de otro planeta.',
+  encuentros: { lista: [['patagon', 10], ['metasaurio', 6], ['litodon', 6], ['sparkind', 10], ['pyrodrake', 5], ['grindslow', 8], ['sibilantor', 5], ['androideno', 5], ['zipplecomb', 5], ['pyrefae', 4]], min: 54, max: 58 },
+  npcs: [
+    entrenadorNPC({
+      id: 'pomez_t1', x: 12, y: 12, dir: 1, pal: PAL.ayudante, nombre: 'GEÓLOGO FACU',
+      equipo: [['litodon', 56], ['metasaurio', 56], ['sibilantor', 57]],
+      antes: ['GEÓLOGO FACU: ¡Estas piedras flotan en el agua! Y mis criaturas... ¡pegan como rocas!'],
+      gana: 'GEÓLOGO FACU: Me hiciste polvo. Polvo volcánico.',
+      despues: 'GEÓLOGO FACU: PATAGÓN puede crecer de tres formas distintas. Depende de qué toque.',
+    }),
+    entrenadorNPC({
+      id: 'pomez_t2', x: 9, y: 6, dir: 0, pal: PAL.chica, nombre: 'PILOTA DE DRONES LULA',
+      equipo: [['androideno', 57], ['zipplecomb', 57], ['pyrodrake', 58]],
+      antes: ['PILOTA LULA: Vine a sacar fotos con mi dron. ¡Pero un duelo me viene bárbaro!'],
+      gana: 'PILOTA LULA: Se me cayó el dron... y la batalla.',
+      despues: 'PILOTA LULA: ZIPPLECOMB tiene dos cabezas: una tira gas y la otra chispas. ¡Juntas, explotan!',
+    }),
+    regaloNPC({
+      id: 'pomez_geologa', x: 7, y: 5, dir: 0, pal: PAL.geologa, flag: 'regaloPomez',
+      antes: ['GEÓLOGA ROMI: ¡Hola! Junto minerales de la cordillera. Te regalo dos que encontré.',
+        'Si un PATAGÓN toca el METAL DURO, se vuelve METASAURIO. Si toca la ROCA DURA, se vuelve LITODÓN.'],
+      da: [['metalDuro', 1], ['rocaDura', 1]],
+      despues: ['GEÓLOGA ROMI: METASAURIO crece hasta FERRADÓN, de hierro. LITODÓN, hasta ANDIDÓN, una muralla de granito.'],
+    }),
+    {
+      id: 'pomez_pista', x: 5, y: 3, dir: 0, pal: PAL.abuelo,
+      hablar: async () => {
+        await decir('PUESTERO: Una noche vi seis luces de colores subiendo por la cordillera, hacia el SUR. Todas juntas.');
+        await decir('Iban hacia la montaña más alta de todas... ¿Para qué querrán subir tan alto?');
+      },
+    },
+  ],
+});
+
+// ===== LOS CLANES YA NO DICEN QUÉ BUSCAN: dejan adivinanzas =====
+// Cada jefe, en la 1ª vuelta, deja una adivinanza sobre su gema. En la 2ª vuelta, cada jefe deja
+// un PEDAZO de una frase misteriosa. Todo queda anotado en el CUADERNO DE PISTAS.
+const ADIVINANZAS = {
+  mente: 'Pienso sin tener cabeza y sueño sin tener almohada. ¿Qué soy?',
+  alma: 'No se me ve ni se me toca, pero sin mí no serías vos. ¿Qué soy?',
+  poder: 'No tengo músculos, pero puedo mover montañas. ¿Qué soy?',
+  realidad: 'Soy verdad mientras me mirás. Cerrá los ojos y ya no sabés. ¿Qué soy?',
+  espacio: 'Estoy entre una estrella y la otra, y nadie me puede llenar. ¿Qué soy?',
+  tiempo: 'Siempre me voy y nunca vuelvo. Me medís, pero no me agarrás. ¿Qué soy?',
+};
+const FRASE_CLANES = [['mente', 'CUANDO LAS SEIS LUCES'], ['alma', 'SE JUNTEN EN EL TECHO'], ['poder', 'DE TODA AMÉRICA,'],
+  ['realidad', 'SE VA A ABRIR LA PUERTA'], ['espacio', 'DEL QUE DUERME'], ['tiempo', 'DEBAJO DE LA NIEVE.']];
+const ORDEN_GEMAS = ['mente', 'alma', 'poder', 'realidad', 'espacio', 'tiempo'];
+
+// Reescribir lo que dicen los clanes (los equipos y lugares no cambian)
+for (const o of ENCUENTROS_CLANES) {
+  const c = CLANES[o.clan], vez = o.vez, m = MAPAS[o.mapa];
+  const r = m.npcs.find(n => n.id === `clan_${o.clan}${vez}_r`), j = m.npcs.find(n => n.id === `clan_${o.clan}${vez}_j`);
+  const pelea = (n, nombre, equipo, antes, gana, alGanar) => {
+    const viejo = entrenadorNPC({ id: n.id, x: n.x, y: n.y, dir: n.dir, pal: n.pal, nombre, equipo, antes, gana, despues: '...' });
+    n.hablar = async () => {
+      if (S.flags['ent_' + n.id]) return;
+      await viejo.hablar();
+      if (S.flags['ent_' + n.id] && alGanar) await alGanar();
+    };
+  };
+  if (vez === 1) {
+    pelea(r, 'RECLUTA DEL ' + c.nombre, o.recluta,
+      ['RECLUTA: ¡Eh, vos! ¿Qué mirás? Por acá no se pasa.', `Somos el ${c.nombre}. ¿Que qué buscamos? ¡Eso es SECRETO!`],
+      'RECLUTA: ¡No! Si el jefe se entera de que perdí, no me deja ir a buscar la ge... ¡NADA! ¡No dije nada!');
+    pelea(j, 'JEFE ' + c.jefe, o.jefe,
+      [`${c.jefe}: Así que vos sos el famoso Felipe... Yo soy ${c.jefe}, jefe del ${c.nombre}.`,
+        '¿Querés saber qué buscamos? Te lo digo... en una adivinanza. Total, nunca la vas a sacar.',
+        `«${ADIVINANZAS[o.clan]}»`, '¡Y ahora correte del camino!'],
+      `${c.jefe}: Grr... Ganaste esta vez. Pero la adivinanza no la sacás ni en mil años. ¡Nos vamos!`,
+      async () => {
+        if (!S.flags['adiv_' + o.clan]) {
+          S.flags['adiv_' + o.clan] = true;
+          await decir(`Felipe anotó la adivinanza de ${c.jefe} en el CUADERNO DE PISTAS.`);
+          if (!S.bolsa.cuaderno) { S.bolsa.cuaderno = 1; await decir('(Lo encontrás en la BOLSA. Si adivinás de qué habla, ¡hay premio!)'); }
+        }
+      });
+  } else {
+    const pedazo = FRASE_CLANES.find(f => f[0] === o.clan)[1];
+    pelea(r, 'RECLUTA DEL ' + c.nombre, o.recluta,
+      [`RECLUTA: ¡Otra vez vos! El ${c.nombre} no se olvida de los que lo molestan.`, '¡Esta vez no pasás!'],
+      'RECLUTA: ¡Jefe! ¡Este chico es imparable!');
+    pelea(j, 'JEFE ' + c.jefe, o.jefe,
+      [`${c.jefe}: Felipe... llegás tarde. Lo que buscábamos ya es nuestro.`,
+        'Ahora falta lo más importante. Pero eso solo lo sabemos los seis jefes.', '¡No vas a llegar a tiempo!'],
+      `${c.jefe}: No importa... ya no nos podés parar. «...${pedazo}...» ¡Uy! Eso no lo tenía que decir. ¡Me voy!`,
+      async () => {
+        if (!S.flags['frase_' + o.clan]) {
+          S.flags['frase_' + o.clan] = true;
+          if (!S.bolsa.cuaderno) S.bolsa.cuaderno = 1;
+          await decir('A Felipe se le quedó grabado eso. Lo anotó en el CUADERNO DE PISTAS.');
+        }
+      });
+  }
+}
+
+// Pistas en el camino ANTES de cada encuentro, para que no sea tan de golpe
+const PISTAS_CLANES = [
+  ['pampa', 'mente', 1, ['CHACARERO: Anoche pasaron unos tipos con capas FUCSIAS para el lado de VILLA SERRANA.',
+    'Miraban un aparato que pitaba y decían: «sin cabeza... sin almohada...». ¡Qué gente más rara!']],
+  ['calchaqui', 'alma', 1, ['ARRIERO: Cuidado en TAFÍ DEL VALLE. Hay gente con capas LILAS cantando bajito frente a las piedras.',
+    'Les pregunté qué hacían y me dijeron: «buscamos lo que no se ve». ¿Y cómo vas a buscar algo que no se ve?']],
+  ['ruta2', 'poder', 1, ['PESCADOR: En VILLA CAMALOTE andan unos grandotes de capa ROJA levantando piedras enormes. ¡Con la mente!',
+    'Decían que querían «la fuerza que no tiene músculos». Yo tengo músculos y no puedo levantar ni una garrafa...']],
+  ['minas', 'realidad', 1, ['MINERO: Algo raro pasa en PUERTO WANDA. Gente de capa NEGRA y ROJA... ¡y de repente no estaban más!',
+    'Como si nunca hubieran estado. Ahora no sé si los vi de verdad o lo soñé.']],
+  ['estepa', 'espacio', 1, ['OVEJERO: En BARILOCHE hay gente de capa AZUL mirando las estrellas con un telescopio. ¡De día!',
+    'Uno dijo que buscaban «lo que hay entre las estrellas». Pero entre las estrellas no hay nada... ¿o sí?']],
+  ['ruta14', 'tiempo', 1, ['MAQUINISTA DEL TREN: En JACOBACCI se juntó gente de capa VERDE y DORADA. Todos con relojes de arena.',
+    'Me preguntaron si el tren llegaba a horario. ¡Nunca llega a horario! Se rieron y dijeron: «justamente...».']],
+  ['ruta16', 'mente', 2, ['BUZO: Volvió la gente de capa FUCSIA. Ahora están en PUERTO MADRYN y parece que ya encontraron algo...']],
+  ['ruta17', 'alma', 2, ['ESTANCIERO: En RÍO GALLEGOS hay gente de capa LILA. Dicen que tienen una criatura nueva... que brilla.']],
+  ['ruta19', 'poder', 2, ['VIAJERA: En BELÉN vi otra vez a los de capa ROJA. Estaban más fuertes que nunca. ¡Cuidate!']],
+  ['ruta20', 'realidad', 2, ['TURISTA: ¿Ves a esa gente en FIAMBALÁ? ¿O no hay nadie? Ya no sé qué es real...']],
+  ['ruta22', 'espacio', 2, ['ANDINISTA: Los de capa AZUL bajan hacia RODEO. Miran todo el tiempo para arriba, hacia la cordillera.']],
+  ['ruta23', 'tiempo', 2, ['BAQUEANO: Los seis colores de capas pasaron todos por acá, hacia el SUR. El último grupo, el VERDE y DORADO, se quedó en USPALLATA.']],
+];
+// Busca un lugar libre de la ruta, al costado del camino, cerca del medio
+function lugarLibre(id, n) {
+  const m = MAPAS[id], g = m.grilla, H = g.length, W = g[0].length;
+  const ocupado = (x, y) => (m.npcs || []).some(p => p.x === x && p.y === y) || (m.salidas || []).some(s => s.x === x && s.y === y) ||
+    (m.carteles || {})[x + ',' + y] || (m.edificios || []).some(e => x >= e.x - 1 && x < e.x + e.w + 1 && y >= e.y - 1 && y < e.y + e.h + 1);
+  const cand = [];
+  for (let y = 2; y < H - 2; y++) for (let x = 2; x < W - 2; x++) {
+    if (!'.-w:'.includes(g[y][x]) || ocupado(x, y)) continue;
+    const vecinos = [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([dx, dy]) => g[y + dy][x + dx]);
+    if (!vecinos.some(v => v === '=' || v === 'q' || v === ':')) continue;
+    if (vecinos.filter(v => v === '=' || v === 'q').length > 1) continue; // (en las cuevas todo es piso ':') // que no tape una esquina del camino
+    cand.push([x, y, Math.abs(x - W / 2) + Math.abs(y - H / 2) + (n || 0) * 3]);
+  }
+  cand.sort((a, b) => a[2] - b[2]);
+  return cand[0];
+}
+PISTAS_CLANES.forEach(([id, clan, vez, textos], i) => {
+  const lugar = lugarLibre(id, i % 3);
+  if (!lugar) return;
+  const pals = [PAL.abuelo, PAL.pescador, PAL.chica, PAL.ayudante, PAL.nene];
+  MAPAS[id].npcs.push({
+    id: `pista_${clan}${vez}`, x: lugar[0], y: lugar[1], dir: 0, pal: pals[i % pals.length],
+    hablar: async () => {
+      for (const t of textos) await decir(t);
+      if (vez === 1 && !S.bolsa.cuaderno) {
+        S.bolsa.cuaderno = 1;
+        await decir('Tomá, te regalo este cuaderno. Anotá todo lo raro que veas: a lo mejor descubrís qué traman.');
+        await decir('¡Felipe recibió el CUADERNO DE PISTAS!');
+        guardar();
+      }
+    },
+  });
+});
+
+// ===== El CUADERNO DE PISTAS =====
+OBJETOS.cuaderno = { nombre: 'CUADERNO DE PISTAS', precio: 0, cuaderno: true, desc: 'Las adivinanzas de los clanes. Si adivinás de qué gema habla cada una, ¡hay premio!' };
+const NOMBRE_GEMA = { mente: 'MENTE', alma: 'ALMA', poder: 'PODER', realidad: 'REALIDAD', espacio: 'ESPACIO', tiempo: 'TIEMPO' };
+async function cuadernoPistas() {
+  while (true) {
+    const tengo = ORDEN_GEMAS.filter(k => S.flags['adiv_' + k]);
+    const pedazos = FRASE_CLANES.filter(([k]) => S.flags['frase_' + k]);
+    if (!tengo.length && !pedazos.length) { await decir('El cuaderno está vacío. Cuando un clan diga algo raro, Felipe lo va a anotar acá.'); return; }
+    const ops = tengo.map(k => (S.flags['adivinado_' + k] ? '✓ ' : '? ') + CLANES[k].jefe);
+    if (pedazos.length) ops.push('LA FRASE');
+    ops.push('CERRAR');
+    await decir('CUADERNO DE PISTAS: ¿Qué querés leer?', { mantener: true });
+    const i = await elegir(ops, { x: 132, y: 4, w: 104 });
+    ui.dialogo = null;
+    if (i < 0 || i === ops.length - 1) return;
+    if (pedazos.length && i === ops.length - 2) {
+      await decir(`Pedazos que dijeron los jefes (${pedazos.length} de 6):`);
+      await decir(FRASE_CLANES.map(([k, t]) => (S.flags['frase_' + k] ? t : '...')).join(' '));
+      if (pedazos.length === 6) await decir('¿El TECHO DE AMÉRICA? ¿No es la montaña más alta de todas...?');
+      continue;
+    }
+    const k = tengo[i];
+    await decir(`${CLANES[k].jefe} dijo: «${ADIVINANZAS[k]}»`);
+    if (S.flags['adivinado_' + k]) { await decir(`¡Ya la adivinaste! Era la ${CLANES[k].gema}.`); continue; }
+    if (!await siNo('¿Querés adivinar de qué gema habla?')) continue;
+    await decir('¿De qué gema habla?', { mantener: true });
+    const r = await elegir([...ORDEN_GEMAS.map(g => NOMBRE_GEMA[g]), 'NO SÉ'], { x: 150, y: 4, w: 86 });
+    ui.dialogo = null;
+    if (r < 0 || r === 6) continue;
+    if (ORDEN_GEMAS[r] === k) {
+      S.flags['adivinado_' + k] = true;
+      S.plata = (S.plata || 0) + 1000;
+      S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 2;
+      await decir(`¡SÍ! ¡Es la ${CLANES[k].gema}! ¡Felipe descubrió qué busca el ${CLANES[k].nombre}!`);
+      await decir(`Premio: ${plataTxt(1000)} y 2 ALFAJORES.`);
+      if (ORDEN_GEMAS.every(g => S.flags['adivinado_' + g]) && !S.flags.cuadernoCompleto) {
+        S.flags.cuadernoCompleto = true;
+        S.bolsa.boleadora = (S.bolsa.boleadora || 0) + 10;
+        await decir('¡Adivinaste las SEIS! ¡Sos un detective de verdad! Premio extra: 10 BOLEADORAS.');
+      }
+      guardar();
+    } else {
+      await decir('Mmm... no me cierra. Pensalo un poco más. ¡Probá de nuevo cuando quieras!');
+    }
+  }
+}
