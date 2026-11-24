@@ -3014,7 +3014,8 @@ const HAB_ESPECIE = {
   flamartija: { n: ['fogonInterior', 'sequia'], o: 'impulso' },
   dracobrasa: { n: ['fogonInterior', 'sequia'], o: 'impulso' },
   ignidraxx: { n: ['garraDura', 'poderSolar'], o: 'maestroFuego' }, // elegidas por Felipe
-  ajolodo: 'correntada', branquiotox: 'correntada', iberaxolot: 'correntada',
+  // Habilidad oculta de la familia de Ajolodo (idea de Felipe, 24/11/2026)
+  ajolodo: { n: ['correntada'], o: 'toqueToxico' }, branquiotox: { n: ['correntada'], o: 'toqueToxico' }, iberaxolot: { n: ['correntada'], o: 'toxicoAbsorbente' },
   piquibrote: 'clorofila', piquibrasa: 'clorofila', piquillonco: 'clorofila',
   chispuna: 'absorbeFuego', volcarin: 'crisolMagma', andragon: 'impulso',
   yacarelito: 'mandibulaFuerte', yacarextro: 'mandibulaFuerte', iberadraco: 'mandibulaFuerte',
@@ -3058,6 +3059,8 @@ const HAB_ESPECIE = {
   duskfae: { n: ['veloEspejismo', 'cuerpoMaldito'] }, wraithfae: { n: ['cuerpoMaldito', 'veloEspejismo'] },
 };
 Object.assign(HABILIDADES, {
+  toqueToxico: { nombre: 'Toque Tóxico', ef: 'toqueToxico', desc: 'Cuando pega, a veces envenena al rival: pierde vida cada turno.' },
+  toxicoAbsorbente: { nombre: 'Tóxico Absorbente', ef: 'toxicoAbsorbente', desc: 'Envenena al pegar, nada le baja las estadísticas y neutraliza lo Eléctrico.' },
   capaGlaciar: { nombre: 'Capa Glaciar', ef: 'capaGlaciar', desc: 'Su hielo milenario lo protege: sin golpes críticos y Fuego y Planta le hacen la mitad.' },
 });
 Object.assign(HAB_ESPECIE, {

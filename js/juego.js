@@ -1598,6 +1598,11 @@ async function ejecutarMov(at, de, slot, quien) {
       await decir(`¡${nombreBatalla(de)} flota y el ataque no lo toca!`, { auto: 45 });
       return;
     }
+    if (hd.ef === 'toxicoAbsorbente' && M.tipo === 'ELECTRICO') {
+      await anunciarHab(de);
+      await decir(`¡El veneno que cubre a ${nombreBatalla(de)} NEUTRALIZÓ la electricidad!`, { auto: 50 });
+      return;
+    }
     if (hd.ef === 'electromotor' && M.tipo === 'ELECTRICO') {
       await anunciarHab(de);
       await decir(`¡${nombreBatalla(de)} absorbió la electricidad!`, { auto: 40 });
@@ -1653,7 +1658,7 @@ async function ejecutarMov(at, de, slot, quien) {
     await decir(`¡${nombreBatalla(de)} se lo devolvió!`, { auto: 40 });
     objetivo = at;
   }
-  if (signo === '-' && ['cuerpoPuro', 'animaGlacial'].includes(habDe(objetivo).ef)) {
+  if (signo === '-' && ['cuerpoPuro', 'animaGlacial', 'toxicoAbsorbente'].includes(habDe(objetivo).ef)) {
     await anunciarHab(objetivo);
     await decir(`¡A ${nombreBatalla(objetivo)} no le pueden bajar nada!`, { auto: 50 });
     return;
@@ -1707,12 +1712,12 @@ async function alEntrar(m) {
   if (h.ef === 'intimidacion') {
     if (!otro || otro.ps <= 0) { m.et.entro = false; return; } // se activa cuando haya rival
     await anunciarHab(m);
-    if (['cuerpoPuro', 'animaGlacial'].includes(habDe(otro).ef)) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
+    if (['cuerpoPuro', 'animaGlacial', 'toxicoAbsorbente'].includes(habDe(otro).ef)) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
     else { await cambiarEtapa(otro, 'atk', -1); await competitivo(otro); }
   } else if (h.ef === 'espadaRuinosa') {
     if (!otro || otro.ps <= 0) { m.et.entro = false; return; }
     await anunciarHab(m);
-    if (['cuerpoPuro', 'animaGlacial'].includes(habDe(otro).ef)) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
+    if (['cuerpoPuro', 'animaGlacial', 'toxicoAbsorbente'].includes(habDe(otro).ef)) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
     else { await cambiarEtapa(otro, 'def', -1); await competitivo(otro); }
   } else if (h.ef === 'veloz') {
     await anunciarHab(m); await cambiarEtapa(m, 'vel', 1);
@@ -1723,7 +1728,7 @@ async function alEntrar(m) {
   } else if (h.ef === 'acoso') {
     if (!otro || otro.ps <= 0) { m.et.entro = false; return; }
     await anunciarHab(m);
-    if (['cuerpoPuro', 'animaGlacial'].includes(habDe(otro).ef)) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
+    if (['cuerpoPuro', 'animaGlacial', 'toxicoAbsorbente'].includes(habDe(otro).ef)) await decir(`¡Pero a ${nombreBatalla(otro)} no le pueden bajar nada!`, { auto: 45 });
     else { await cambiarEtapa(otro, 'vel', -1); await competitivo(otro); }
   } else if (h.ef === 'llovizna') {
     await anunciarHab(m);
@@ -1751,6 +1756,12 @@ async function despuesDelGolpe(at, de, M, danio = 0) {
     at.ps = Math.min(at.psMax, at.ps + Math.max(1, Math.floor(danio / 2)));
     await animarPS(at);
     await decir(`${nombreBatalla(at)} recuperó PS con su mordida.`, { auto: 40 });
+  }
+  // TOQUE TÓXICO / TÓXICO ABSORBENTE (habilidad oculta de la familia de Ajolodo, idea de Felipe):
+  // al pegar, 30% de envenenar. El envenenado pierde 1/10 de su vida al final de cada turno.
+  if (['toqueToxico', 'toxicoAbsorbente'].includes(ha.ef) && de.ps > 0 && danio > 0 && de.et && !de.et.veneno && Math.random() < 0.3) {
+    const inmune = tiposDe(de).includes('VENENO') || tiposDe(de).includes('ACERO') || habDe(de).ef === 'toxicoAbsorbente';
+    if (!inmune) { await anunciarHab(at); de.et.veneno = true; await decir(`¡${nombreBatalla(de)} quedó ENVENENADO!`, { auto: 45 }); }
   }
   if (de.ps > 0) {
     if (hd.ef === 'hervor' && (M.tipo === 'FUEGO' || M.tipo === 'AGUA')) { await anunciarHab(de); await cambiarEtapa(de, 'vel', 2); }
@@ -1798,6 +1809,11 @@ async function finDeTurno() {
     if (h.ef === 'animaGlacial' && (m.et.vel || 0) < 6) { await anunciarHab(m); await cambiarEtapa(m, 'vel', 1); }
     if (h.ef === 'impulso' && (m.et.vel || 0) < 6) { await anunciarHab(m); await cambiarEtapa(m, 'vel', 1); }
     if (h.ef === 'corona') await coronaInfinito(m);
+    if (m.et && m.et.veneno && m.ps > 0) {
+      m.ps = Math.max(0, m.ps - Math.max(1, Math.ceil(m.psMax / 10)));
+      await animarPS(m);
+      await decir(`¡El VENENO lastima a ${nombreBatalla(m)}!`, { auto: 40 });
+    }
   }
 }
 // REGIOHM (diapositiva 197): al final de cada turno las seis gemas giran, cambia su segundo tipo y borra las mejoras del rival
