@@ -5726,25 +5726,30 @@ const PANTANO = [
 // (Zorzaliente y Yaguarabá no tienen formas anteriores todavía: nacen ellas mismas.)
 const HUEVO_REGALO = { ajolodo: 'escarchin', flamartija: 'zorzaliente', ramoa: 'yaguaraba' };
 async function regaloHuevoMirta() {
-  if (S.flags.huevoRegalo) return;
-  // Vale haber hecho nacer un huevo, o haber recibido alguno del criadero (partidas de antes de que existiera el regalo)
+  // Cada huevo del criadero que nace = un HUEVO ESPECIAL más para retirar (S.flags.especiales).
+  // Partidas de antes: si ya habían recibido huevos del criadero y nunca el especial, tienen uno.
   const cr = S.flags.criadero;
-  if (!S.flags.yaNacioHuevo && !(cr && cr.puestos > 0)) {
-    await decir('CRIADORA MIRTA: Cuando te nazca tu primer huevo del criadero, venite que tengo una SORPRESA para vos.');
+  if (S.flags.especiales === undefined) S.flags.especiales = (!S.flags.huevoRegalo && (S.flags.yaNacioHuevo || (cr && cr.puestos > 0))) ? 1 : 0;
+  if (S.flags.especiales <= 0) {
+    if (!S.flags.huevoRegalo) await decir('CRIADORA MIRTA: Cuando te nazca un huevo del criadero, venite que tengo una SORPRESA para vos.');
     return;
   }
   const primera = S.equipo[0], fam = primera && familia(primera.id);
-  await decir('CRIADORA MIRTA: ¡Me enteré de que ya te nació tu primer huevo! Entonces sos de confianza...');
+  await decir(S.flags.huevoRegalo ? '¡Me enteré de que te nació otro huevo! Tengo OTRO huevo especial para vos...' : 'CRIADORA MIRTA: ¡Me enteré de que ya te nació un huevo! Entonces sos de confianza...');
   if (!fam || !HUEVO_REGALO[fam]) {
-    await decir('Tengo un huevo MUY especial para vos. Pero primero mostrame a tu PRIMERA criatura, la que te dio la Profe Ceibo: ponela adelante de todo en el equipo y volvé.');
+    await decir('Pero primero mostrame a tu PRIMERA criatura, la que te dio la Profe Ceibo: ponela adelante de todo en el equipo y volvé.');
     return;
   }
-  if (huevos().length >= CRIADERO.maxHuevos) { await decir('Tengo un huevo especial para vos, pero ya llevás muchos en la mochila. Hacé nacer alguno y volvé.'); return; }
-  await decir(`¡Qué lindo ${nombreDe(primera)}! A una criatura así le va a encantar cuidar este huevo tan especial.`);
-  huevos().push({ id: HUEVO_REGALO[fam], pasos: CRIADERO.pasosNacer, nivel: 5, regalo: true });
+  const lugar = CRIADERO.maxHuevos - huevos().length;
+  if (lugar <= 0) { await decir('Pero ya llevás muchos huevos en la mochila. Hacé nacer alguno y volvé.'); return; }
+  const cuantos = Math.min(S.flags.especiales, lugar);
+  await decir(`¡Qué lindo ${nombreDe(primera)}! A una criatura así le va a encantar cuidar ${cuantos > 1 ? 'estos huevos tan especiales' : 'este huevo tan especial'}.`);
+  for (let i = 0; i < cuantos; i++) huevos().push({ id: HUEVO_REGALO[fam], pasos: CRIADERO.pasosNacer, nivel: 5, regalo: true });
+  S.flags.especiales -= cuantos;
   sincronizarHuevos();
   S.flags.huevoRegalo = true;
-  await decir('¡Felipe recibió un HUEVO ESPECIAL! Lo guardó en la MOCHILA.');
-  await decir('CRIADORA MIRTA: No te digo qué es... ¡que sea sorpresa!');
+  await decir(`¡Felipe recibió ${cuantos > 1 ? cuantos + ' HUEVOS ESPECIALES' : 'un HUEVO ESPECIAL'}! ${cuantos > 1 ? 'Los guardó' : 'Lo guardó'} en la MOCHILA.`);
+  if (S.flags.especiales > 0) await decir(`Me quedan ${S.flags.especiales} más para vos: hacé lugar en la mochila y volvé.`);
+  else await decir('CRIADORA MIRTA: ¡Cada vez que te nazca un huevo del criadero, tengo otro especial para vos!');
   guardar();
 }

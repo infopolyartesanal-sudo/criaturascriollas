@@ -2597,7 +2597,9 @@ function pasoHuevos() {
   if (i < 0) return null;
   return async () => {
     const h = hs.splice(i, 1)[0]; sincronizarHuevos();
-    S.flags.yaNacioHuevo = true; // después del primero, Mirta regala el huevo especial
+    S.flags.yaNacioHuevo = true;
+    // Cada huevo del criadero que nace (no los especiales) = Mirta tiene un HUEVO ESPECIAL más
+    if (!h.regalo) { if (S.flags.especiales === undefined) S.flags.especiales = 0; S.flags.especiales++; }
     await decir('¿Eh? ¡El HUEVO se está moviendo!');
     for (let k = 0; k < 2; k++) { ui.flash = 1; await esperar(4); ui.flash = 0; await esperar(6); }
     const m = crearCriatura(h.id, h.nivel || 5);
@@ -2835,5 +2837,5 @@ async function venderHuevo() {
   hs.splice(i, 1); sincronizarHuevos();
   S.plata = (S.plata || 0) + VENTA_ESPECIAL.huevo;
   await decir(`¡Vendiste el huevo y ganaste ${plataTxt(VENTA_ESPECIAL.huevo)}!`);
-  if (h.regalo) { S.flags.huevoRegalo = false; await decir('ALMACENERO: Dicen que la CRIADORA MIRTA tiene otro huevo especial como este... ¡andá a verla!'); }
+  if (h.regalo) { S.flags.especiales = (S.flags.especiales || 0) + 1; await decir('ALMACENERO: Dicen que la CRIADORA MIRTA tiene otro huevo especial como este... ¡andá a verla!'); }
 }
