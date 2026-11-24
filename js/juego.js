@@ -234,11 +234,51 @@ async function fundido(hacia, cuadros = 12) {
 // ---------- Guardado ----------
 function guardar() {
   try {
-    localStorage.setItem(CLAVE_GUARDADO, JSON.stringify({
+    const datos = JSON.stringify({
       mapa: S.mapa, x: S.x, y: S.y, dir: S.dir, equipo: S.equipo, caja: S.caja, bolsa: S.bolsa, flags: S.flags, plata: S.plata,
-    }));
+    });
+    localStorage.setItem(CLAVE_GUARDADO, datos);
+    anotarHistoria(datos);
     return true;
   } catch (e) { return false; }
+}
+// ---------- VOLVER ATRÁS (pedido de Poly, 24/11/2026) ----------
+// Cada vez que se guarda, si pasaron 4 minutos desde el último "recuerdo", se anota una copia de la partida.
+// Se guardan los últimos 10 y desde el menú (VOLVER ATRÁS) se puede volver a cualquiera.
+const CLAVE_HISTORIA = CLAVE_GUARDADO + '_historia', HISTORIA = { cada: 4 * 60 * 1000, max: 10 };
+function leerHistoria() { try { return JSON.parse(localStorage.getItem(CLAVE_HISTORIA)) || []; } catch (e) { return []; } }
+function anotarHistoria(datos, forzar) {
+  try {
+    const h = leerHistoria(), ahora = Date.now();
+    if (!forzar && h.length && ahora - h[0].t < HISTORIA.cada) return;
+    const m = MAPAS[S.mapa];
+    h.unshift({ t: ahora, lugar: m ? m.nombre : S.mapa, insignias: S.flags.insignias || 0, nivel: Math.max(0, ...S.equipo.map(c => c.nivel)), datos });
+    h.length = Math.min(h.length, HISTORIA.max);
+    localStorage.setItem(CLAVE_HISTORIA, JSON.stringify(h));
+  } catch (e) { /* si no entra, no pasa nada */ }
+}
+function haceCuanto(t) {
+  const min = Math.round((Date.now() - t) / 60000);
+  if (min < 1) return 'RECIÉN';
+  if (min < 60) return `HACE ${min} MIN`;
+  const hs = Math.round(min / 60);
+  if (hs < 24) return `HACE ${hs} H`;
+  const d = Math.round(hs / 24); return `HACE ${d} ${d === 1 ? 'DÍA' : 'DÍAS'}`;
+}
+async function volverAtras() {
+  const h = leerHistoria();
+  if (!h.length) { await decir('Todavía no hay momentos guardados para volver. ¡Se van anotando solos mientras jugás!'); return; }
+  const filas = h.map(e => ({ txt: e.lugar, der: haceCuanto(e.t), sub: `${e.insignias} INSIGNIAS · NIVEL MÁS ALTO ${e.nivel}`, desc: 'La partida vuelve a como estaba en ese momento: lugar, equipo, mochila y plata.' }));
+  const i = await listaScroll('¿A QUÉ MOMENTO QUERÉS VOLVER?', filas);
+  if (i < 0) return;
+  if (!await siNo(`¿Volvés a ${h[i].lugar} (${haceCuanto(h[i].t).toLowerCase()})? Lo de después se pierde... pero queda anotado por si te arrepentís.`)) return;
+  // Antes de volver, se anota cómo está ahora (así se puede "deshacer el deshacer")
+  const ahora = JSON.stringify({ mapa: S.mapa, x: S.x, y: S.y, dir: S.dir, equipo: S.equipo, caja: S.caja, bolsa: S.bolsa, flags: S.flags, plata: S.plata });
+  anotarHistoria(ahora, true);
+  const elegido = leerHistoria().find(e => e.t === h[i].t) || h[i];
+  try { localStorage.setItem(CLAVE_GUARDADO, elegido.datos); } catch (e) { await decir('No se pudo volver atrás en este navegador.'); return; }
+  await decir('¡Listo! El juego se reinicia en ese momento. Apretá CONTINUAR.');
+  location.reload();
 }
 function hayPartida() { try { return !!localStorage.getItem(CLAVE_GUARDADO); } catch (e) { return false; } }
 function cargar() {
@@ -527,10 +567,11 @@ async function encuentroSalvaje() {
 // ---------- Menú principal ----------
 async function menuPrincipal() {
   while (true) {
-    const ops = [...(mpConAmigo() && amigoCerca() ? ['PELEAR'] : []), 'EQUIPO', 'MOCHILA', ...(S.bolsa.bici ? [S.bici ? 'BAJAR BICI' : 'BICICLETA'] : []), 'MULTIJUGADOR', 'GUARDAR', MUS.prendida ? 'MÚSICA: SÍ' : 'MÚSICA: NO', 'CERRAR'];
+    const ops = [...(mpConAmigo() && amigoCerca() ? ['PELEAR'] : []), 'EQUIPO', 'MOCHILA', ...(S.bolsa.bici ? [S.bici ? 'BAJAR BICI' : 'BICICLETA'] : []), 'MULTIJUGADOR', 'GUARDAR', 'VOLVER ATRÁS', MUS.prendida ? 'MÚSICA: SÍ' : 'MÚSICA: NO', 'CERRAR'];
     const op = ops[await elegir(ops, { x: 140, y: 4, w: 96 })];
     if (op === 'PELEAR') { await retarAmigo(); return; }
     if (op === 'MULTIJUGADOR') { await menuMultijugador(); continue; }
+    if (op === 'VOLVER ATRÁS') { await volverAtras(); continue; }
     if (op === 'BICICLETA' || op === 'BAJAR BICI') { await usarBici(); if (S.bici) return; continue; }
     const r = ['EQUIPO', 'MOCHILA', 'GUARDAR', 'MÚSICA: SÍ', 'MÚSICA: NO'].indexOf(op);
     if (r === 0) {
