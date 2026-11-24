@@ -11863,7 +11863,7 @@ iniciar();
 // No es una batalla por turnos: Felipe camina por la cumbre con TODO su equipo atrás (como si los sacara a pasear).
 // Con A atacan TODAS juntas (cada una con su mejor movimiento) si REGIOHM está cerca.
 // REGIOHM se mueve y lanza ataques: las baldosas se ponen ROJAS un ratito antes del golpe. ¡Hay que esquivarlas!
-const RAID = { alcance: 4, espera: 80, jefeCada: 105, aviso: 50, golpe: 0.22, vidaJefe: 20 };
+const RAID = { alcance: 4, espera: 80, jefeCada: 105, aviso: 50, golpe: 0.2, vidaJefe: 14 };
 function danioRaid(m, de, M) {
   const base = ((2 * m.nivel / 5 + 2) * M.pot * (m.atk / Math.max(1, de.def)) / 50 + 2);
   const stab = tiposDe(m).includes(M.tipo) ? 1.5 : 1;
