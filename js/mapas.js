@@ -5636,12 +5636,16 @@ const ITEMS_SUELO = [
   ['ruta14', 'alfajor', 5], ['ruta15', 'escamaLuz', 1], ['ruta16', 'piedraAgua', 1], ['ruta17', 'boleadora', 10],
   ['ruta18', 'metalDuro', 1], ['ruta19', 'rocaDura', 1], ['ruta20', 'piedraTrueno', 1], ['ruta21', 'alfajor', 5],
   ['ruta22', 'piedraNoche', 1], ['ruta23', 'mate', 5],
+  // COPIAR HABILIDAD (también se compra en el almacén)
+  ['ruta5', 'copiarHab', 1], ['ruta16', 'copiarHab', 1], ['ruta22', 'copiarHab', 1],
   // Las dos DOBLE HABILIDAD que hay en todo el juego
   ['ruta24', 'dobleHab', 1],
   ['pantano', 'dobleHab', 1, 19, 13], ['pantano', 'piedraHoja', 1, 2, 16],
 ].map(([mapa, obj, n, x, y], i) => ({ id: 'suelo' + i, mapa, obj, n, x, y }));
 
 OBJETOS.dobleHab = { nombre: 'DOBLE HABILIDAD', precio: 0, dobleHab: true, desc: 'Una gema de dos colores. La criatura que la use puede tener DOS habilidades a la vez.' };
+OBJETOS.copiarHab = { nombre: 'COPIAR HABILIDAD', precio: 3000, copiarHab: true, desc: 'Copia la habilidad de una criatura y se la pone a otra, en lugar de la que tenía.' };
+TIENDA.push('copiarHab');
 OBJETOS.corte = { nombre: 'CORTE', precio: 0, desc: 'Un machete que te regaló LUNA. Sirve para cortar ÁRBOLES RAROS que tapan el camino.' };
 
 // --- LUNA (Gimnasio 1) regala el CORTE ---

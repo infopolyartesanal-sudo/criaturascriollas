@@ -3116,7 +3116,7 @@ function tieneEf(h, e) {
   if (h.m && h.claves) h.m._anuncio = HABILIDADES[h.claves[i]].nombre; // para decir cuál de las dos se activó
   return true;
 }
-function esHabOculta(m) { return m.habSlot === 'o' && !!ESPECIES[m.id].habOculta; }
+function esHabOculta(m) { return !m.habForzada && m.habSlot === 'o' && !!ESPECIES[m.id].habOculta; }
 function sortearHab(id) {
   const e = ESPECIES[id];
   if (e.habOculta && Math.random() < 0.1) return 'o';

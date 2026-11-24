@@ -607,12 +607,16 @@ function dibujarTienda() {
   sc.drawImage(spriteBoleadora(), 22, 62, 48, 48);
   caja(96, 4, 140, 108, 'normal');
   const items = [...TIENDA.map(k => [OBJETOS[k].nombre, plataTxt(OBJETOS[k].precio)]), ['SALIR', '']];
-  items.forEach(([nm, c], i) => {
-    const y = 13 + i * 15;
-    txt(nm, 112, y, { t: nm.length > 9 ? 6 : 7 });
+  // Se ven 6 renglones; si hay más, la lista se corre con las flechas
+  const top = Math.max(0, Math.min(t.idx - 2, items.length - 6));
+  items.slice(top, top + 6).forEach(([nm, c], k) => {
+    const i = top + k, y = 13 + k * 15;
+    txt(nm, 112, y, { t: nm.length > 13 ? 5 : nm.length > 9 ? 6 : 7 });
     if (c) txt(c, 228, y + 1, { t: 6, al: 'right', c: '#606060', sombra: null });
     if (i === t.idx) flecha(103, y);
   });
+  if (top > 0) txt('▲', 230, 5, { t: 5, al: 'right', sombra: null, c: '#808080' });
+  if (top + 6 < items.length) txt('▼', 230, 102, { t: 5, al: 'right', sombra: null, c: '#808080' });
   caja(4, 116, 232, 40, 'normal');
   const sel = TIENDA[t.idx];
   if (t.cant > 0) {
@@ -633,6 +637,7 @@ async function usarObjetoMundo(obj) {
   if (o.cuaderno) { await cuadernoPistas(); return; }
   if (o.huevo) { await mirarHuevos(); return; }
   if (o.dobleHab) { await usarDobleHab(); return; }
+  if (o.copiarHab) { await usarCopiarHab(); return; }
   if (o.balsa) { await decir('Caminá hacia el agua y Felipe se sube a la BALSA solo.'); return; }
   if (o.pico) { await decir('Ponete enfrente de una roca o un bloque de hielo con grietas y apretá A.'); return; }
   if (o.piedra) { await usarPiedra(obj); return; }
@@ -2691,5 +2696,40 @@ async function juntarItem(it) {
   const nom = OBJETOS[it.obj].nombre;
   await decir(`¡Felipe encontró una BOLEADORA tirada en el piso! Adentro había...`);
   await decir(`¡${it.n > 1 ? it.n + ' ' : ''}${nom}!` + (it.obj === 'dobleHab' ? ' ¡Es rarísima! Hay solo dos en toda la Argentina.' : ''));
+  guardar();
+}
+
+// ---------- COPIAR HABILIDAD (pedido de Poly, 24/11/2026) ----------
+// Se elige una criatura del equipo, se copia su habilidad y se le pone a otra EN LUGAR de la que tenía (m.habForzada).
+// Se gasta el objeto. Las habilidades exclusivas de los legendarios no se pueden copiar.
+function habExclusivaLegendaria(k) {
+  for (const [id, es] of Object.entries(ESPECIES)) if (!esLegendario(id) && [...es.habs, es.habOculta].includes(k)) return false;
+  return true;
+}
+async function usarCopiarHab() {
+  if (S.equipo.length < 2) { await decir('Necesitás al menos dos criaturas en el equipo: una para copiar y otra para recibir.'); return; }
+  const i = await pantallaEquipo({ msg: '¿De cuál criatura COPIÁS la habilidad?' });
+  if (i < 0) return;
+  const de = S.equipo[i], h = habDe(de);
+  let k = h.claves[0];
+  if (h.claves.length > 1) {
+    await decir(`${nombreDe(de)} tiene dos habilidades. ¿Cuál copiás?`, { mantener: true });
+    const r = await elegir(h.claves.map(c => HABILIDADES[c].nombre.toUpperCase()), { x: 120, y: 60, w: 116 });
+    ui.dialogo = null;
+    if (r < 0) return;
+    k = h.claves[r];
+  }
+  if (habExclusivaLegendaria(k)) { await decir(`${HABILIDADES[k].nombre.toUpperCase()} es de una criatura LEGENDARIA. ¡Esa no se puede copiar!`); return; }
+  const j = await pantallaEquipo({ msg: `¿A cuál le ponés ${HABILIDADES[k].nombre.toUpperCase()}?` });
+  if (j < 0) return;
+  const a = S.equipo[j];
+  if (a === de) { await decir('¡Tiene que ser otra criatura!'); return; }
+  if (habClave(a) === k) { await decir(`${nombreDe(a)} ya tiene ${HABILIDADES[k].nombre.toUpperCase()}.`); return; }
+  if (!await siNo(`${nombreDe(a)} cambia ${habDe(a).nombre.toUpperCase()} por ${HABILIDADES[k].nombre.toUpperCase()}. ¿Seguro? Se gasta el objeto.`)) return;
+  S.bolsa.copiarHab--; if (S.bolsa.copiarHab <= 0) delete S.bolsa.copiarHab;
+  for (let n = 0; n < 2; n++) { ui.flash = 1; await esperar(3); ui.flash = 0; await esperar(4); }
+  a.habForzada = k;
+  if (a.hab2 === k) delete a.hab2; // si era su 2ª habilidad, ahora es la principal
+  await decir(`¡${nombreDe(a)} copió ${HABILIDADES[k].nombre.toUpperCase()} de ${nombreDe(de)}!`);
   guardar();
 }
