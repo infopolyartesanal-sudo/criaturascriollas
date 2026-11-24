@@ -2473,6 +2473,7 @@ const esLegendario = id => ESPECIES[id].captura <= 25;
 async function hablarCriadora() {
   const cr = criadero();
   await decir('CRIADORA MIRTA: ¡Hola! Yo cuido criaturas en el CRIADERO. A veces, cuando dos se llevan bien... ¡aparece un HUEVO!');
+  await regaloHuevoMirta();
   if (cr.listo) {
     if (huevos().length >= CRIADERO.maxHuevos) await decir('¡Apareció un HUEVO! Pero ya llevás muchos en la mochila. Hacé nacer alguno y volvé.');
     else {
@@ -2545,6 +2546,7 @@ function pasoHuevos() {
   if (i < 0) return null;
   return async () => {
     const h = hs.splice(i, 1)[0]; sincronizarHuevos();
+    S.flags.yaNacioHuevo = true; // después del primero, Mirta regala el huevo especial
     await decir('¿Eh? ¡El HUEVO se está moviendo!');
     for (let k = 0; k < 2; k++) { ui.flash = 1; await esperar(4); ui.flash = 0; await esperar(6); }
     const m = crearCriatura(h.id, h.nivel || 5);

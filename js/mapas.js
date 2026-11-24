@@ -5720,31 +5720,25 @@ const PANTANO = [
 }
 
 // ===== EL HUEVO DE REGALO (pedido de Poly, 24/11/2026) =====
-// DOÑA ELVIRA, en VILLA SERRANA, regala UN huevo. Lo que nace depende del inicial que vaya PRIMERO en el equipo:
+// La CRIADORA MIRTA regala UN huevo DESPUÉS de que nazca el primer huevo del criadero.
+// Lo que nace depende del inicial que vaya PRIMERO en el equipo:
 // Ajolodo → Escarchín (primera forma de Andespectro) · Flamartija → Zorzaliente · Ramoa → Yaguarabá.
 // (Zorzaliente y Yaguarabá no tienen formas anteriores todavía: nacen ellas mismas.)
 const HUEVO_REGALO = { ajolodo: 'escarchin', flamartija: 'zorzaliente', ramoa: 'yaguaraba' };
-{
-  const lugar = lugarLibre('serrana', 1);
-  if (lugar) MAPAS.serrana.npcs.push({
-    id: 'elvira', x: lugar[0], y: lugar[1], dir: 0, pal: PAL.abuelo,
-    hablar: async () => {
-      if (S.flags.huevoRegalo) { await decir('DOÑA ELVIRA: ¿Ya nació el huevo que te di? ¡Cuidámelo mucho, eh!'); return; }
-      await decir('DOÑA ELVIRA: ¡Hola, nene! Yo encuentro huevos de criaturas por las sierras. Tengo uno guardado para vos...');
-      const primera = S.equipo[0], fam = primera && familia(primera.id);
-      if (!fam || !HUEVO_REGALO[fam]) {
-        await decir('Pero primero mostrame a tu PRIMERA criatura, la que te dio la Profe Ceibo. Ponela adelante de todo en el equipo y volvé.');
-        return;
-      }
-      if (huevos().length >= CRIADERO.maxHuevos) { await decir('¡Uy! Ya llevás muchos huevos en la mochila. Hacé nacer alguno y volvé.'); return; }
-      const id = HUEVO_REGALO[fam];
-      await decir(`¡Mirá qué lindo ${nombreDe(primera)}! A una criatura así le va a encantar cuidar este huevo.`);
-      huevos().push({ id, pasos: CRIADERO.pasosNacer, nivel: 5 });
-      sincronizarHuevos();
-      S.flags.huevoRegalo = true;
-      await decir('¡Felipe recibió un HUEVO! Lo guardó en la MOCHILA.');
-      await decir('DOÑA ELVIRA: Caminá un buen rato con él y va a nacer. ¡No te digo qué es, que sea sorpresa!');
-      guardar();
-    },
-  });
+async function regaloHuevoMirta() {
+  if (S.flags.huevoRegalo || !S.flags.yaNacioHuevo) return;
+  const primera = S.equipo[0], fam = primera && familia(primera.id);
+  await decir('CRIADORA MIRTA: ¡Me enteré de que ya te nació tu primer huevo! Entonces sos de confianza...');
+  if (!fam || !HUEVO_REGALO[fam]) {
+    await decir('Tengo un huevo MUY especial para vos. Pero primero mostrame a tu PRIMERA criatura, la que te dio la Profe Ceibo: ponela adelante de todo en el equipo y volvé.');
+    return;
+  }
+  if (huevos().length >= CRIADERO.maxHuevos) { await decir('Tengo un huevo especial para vos, pero ya llevás muchos en la mochila. Hacé nacer alguno y volvé.'); return; }
+  await decir(`¡Qué lindo ${nombreDe(primera)}! A una criatura así le va a encantar cuidar este huevo tan especial.`);
+  huevos().push({ id: HUEVO_REGALO[fam], pasos: CRIADERO.pasosNacer, nivel: 5 });
+  sincronizarHuevos();
+  S.flags.huevoRegalo = true;
+  await decir('¡Felipe recibió un HUEVO ESPECIAL! Lo guardó en la MOCHILA.');
+  await decir('CRIADORA MIRTA: No te digo qué es... ¡que sea sorpresa!');
+  guardar();
 }
