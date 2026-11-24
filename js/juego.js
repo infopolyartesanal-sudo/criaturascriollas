@@ -1090,6 +1090,7 @@ function dibujarMundo() {
   entes.push({ y: ppy, x: ppx, pal: PAL.felipe, dir: S.dir, f: frame, yo: true, tx: S.x, ty: S.y });
   if (mpConAmigo() && MP.otro.mapa === S.mapa && MP.otro.x !== undefined) entes.push({ y: MP.otro.y * T, x: MP.otro.x * T, pal: PAL_AMIGO, dir: MP.otro.dir || 0, f: 0, tx: MP.otro.x, ty: MP.otro.y });
   prepararSalvajes();
+  if (ui.raid) { dibujarRaidAbajo(cx, cy); entes.push(...seguidoresRaid()); } // pelea en el mapa contra REGIOHM
   for (const c of SALV.lista) {
     const px = c.x * T + (c.mov ? DX[c.dir] * c.prog : 0), py = c.y * T + (c.mov ? DY[c.dir] * c.prog : 0);
     entes.push({ y: py, x: px, salvaje: c, tx: c.mov && c.prog >= 8 ? c.x + DX[c.dir] : c.x, ty: c.mov && c.prog >= 8 ? c.y + DY[c.dir] : c.y });
@@ -1137,6 +1138,7 @@ function dibujarMundo() {
     gr.addColorStop(0, muy ? 'rgba(4,10,4,0)' : 'rgba(12,4,28,0)'); gr.addColorStop(1, muy ? 'rgba(4,10,4,0.97)' : 'rgba(12,4,28,0.88)');
     b.fillStyle = gr; b.fillRect(0, 0, W, H);
   }
+  if (ui.raid) dibujarRaidArriba(cx, cy);
   // Nombre del lugar al entrar
   if (S.cartelLugar && S.cartelLugar.t > 0) S.cartelLugar.t--;
 }
@@ -2092,6 +2094,7 @@ function dibujar() {
   sc.imageSmoothingEnabled = false;
   if (S.escena === 'titulo') uiTitulo();
   if (S.escena === 'batalla') uiBatalla();
+  if (S.escena === 'mundo' && ui.raid) textosRaid();
   if (S.escena === 'mundo' && S.cartelLugar && S.cartelLugar.t > 0 && !ui.dialogo) {
     caja(4, 4, 150, 22, 'normal');
     txt(S.cartelLugar.txt, 12, 11, { t: 7 });
@@ -2146,3 +2149,181 @@ async function iniciar() {
 }
 iniciar();
 
+
+// =====================================================================================
+// ===== PELEA EN EL MAPA CONTRA REGIOHM (pedido de Poly, 24/11/2026) =====
+// =====================================================================================
+// No es una batalla por turnos: Felipe camina por la cumbre con TODO su equipo atrás (como si los sacara a pasear).
+// Con A atacan TODAS juntas (cada una con su mejor movimiento) si REGIOHM está cerca.
+// REGIOHM se mueve y lanza ataques: las baldosas se ponen ROJAS un ratito antes del golpe. ¡Hay que esquivarlas!
+const RAID = { alcance: 4, espera: 80, jefeCada: 105, aviso: 50, golpe: 0.22, vidaJefe: 20 };
+function danioRaid(m, de, M) {
+  const base = ((2 * m.nivel / 5 + 2) * M.pot * (m.atk / Math.max(1, de.def)) / 50 + 2);
+  const stab = tiposDe(m).includes(M.tipo) ? 1.5 : 1;
+  return Math.max(1, Math.floor(base * stab * eficacia(M.tipo, tiposDe(de)) * (0.85 + Math.random() * 0.15)));
+}
+async function peleaMapaRegiohm(npc) {
+  const jefe = crearCriatura('regiohm', 90);
+  jefe.psMax *= RAID.vidaJefe; jefe.ps = jefe.psMax;
+  const inicio = { x: npc.x, y: npc.y };
+  const R = ui.raid = { jefe, npc, P: [], golpes: [], rayos: [], textos: [], cd: 0, tJefe: 60, tMover: 40, patron: 0, msg: '', msgT: 0 };
+  const vivos = () => S.equipo.filter(m => m.ps > 0);
+  for (let i = 0; i < 8; i++) R.P.push({ x: S.x, y: S.y });
+  const decirRapido = (t, n = 90) => { R.msg = t; R.msgT = n; };
+  const posDe = i => R.P[Math.min(i + 1, R.P.length - 1)]; // la criatura i camina atrás de Felipe
+  decirRapido('Flechas: caminar · A: ¡TODO EL EQUIPO ATACA! · Esquivá lo ROJO', 220);
+  let resultado = null;
+  while (!resultado) {
+    await esperar(1);
+    // --- Felipe camina y el equipo lo sigue ---
+    if (!S.moviendo) {
+      const d = held.up ? 1 : held.down ? 0 : held.left ? 2 : held.right ? 3 : -1;
+      if (d >= 0) {
+        S.dir = d;
+        const nx = S.x + DX[d], ny = S.y + DY[d];
+        if (transitable(nx, ny) && !(nx === npc.x && ny === npc.y)) { S.moviendo = true; S.prog = 0; }
+      }
+    } else {
+      S.prog += held.b ? 4 : 2;
+      if (S.prog >= 16) {
+        S.prog = 0; S.moviendo = false; S.pasoAlt ^= 1;
+        S.x += DX[S.dir]; S.y += DY[S.dir];
+        R.P.unshift({ x: S.x, y: S.y }); R.P.length = 8;
+      }
+    }
+    // --- El equipo ataca ---
+    if (R.cd > 0) R.cd--;
+    if (pressed.a && R.cd === 0) {
+      R.cd = RAID.espera;
+      let total = 0, lejos = 0;
+      vivos().forEach((m, i) => {
+        const p = i === 0 ? { x: S.x, y: S.y } : posDe(i - 1);
+        if (Math.abs(p.x - npc.x) + Math.abs(p.y - npc.y) > RAID.alcance) { lejos++; return; }
+        const slot = mejorMovContra(m, jefe), M = MOVS[slot.id];
+        const d = danioRaid(m, jefe, M);
+        total += d;
+        R.rayos.push({ x0: p.x, y0: p.y, t: 14 + i * 3, color: COLOR_TIPO[M.tipo] || '#ffffff', nombre: M.nombre });
+      });
+      if (total) {
+        jefe.ps = Math.max(0, jefe.ps - total);
+        R.textos.push({ x: npc.x, y: npc.y - 2, t: 50, txt: '-' + total });
+        decirRapido(lejos ? `¡Atacaron juntas! (${lejos} quedaron muy lejos)` : '¡TODO EL EQUIPO ATACÓ JUNTO!', 70);
+      } else decirRapido('¡Están muy lejos! Acercate a REGIOHM.', 70);
+      if (jefe.ps <= 0) { resultado = 'gana'; break; }
+    }
+    // --- REGIOHM se acerca ---
+    if (--R.tMover <= 0) {
+      R.tMover = 70;
+      const opciones = [0, 1, 2, 3].map(d => ({ x: npc.x + DX[d], y: npc.y + DY[d] }))
+        .filter(p => transitable(p.x, p.y) && !(p.x === S.x && p.y === S.y) && Math.abs(p.x - inicio.x) + Math.abs(p.y - inicio.y) <= 5);
+      opciones.sort((a, c) => (Math.abs(a.x - S.x) + Math.abs(a.y - S.y)) - (Math.abs(c.x - S.x) + Math.abs(c.y - S.y)));
+      const lejos = Math.abs(npc.x - S.x) + Math.abs(npc.y - S.y);
+      if (opciones.length && lejos > 2) { npc.x = opciones[0].x; npc.y = opciones[0].y; }
+    }
+    // --- REGIOHM ataca: primero avisa (rojo) y después pega ---
+    if (--R.tJefe <= 0) {
+      R.tJefe = RAID.jefeCada;
+      const zona = [];
+      const p = R.patron++ % 3;
+      const g = mapa().grilla;
+      if (p === 0) { // ONDA: un anillo alrededor de REGIOHM
+        for (let y = npc.y - 3; y <= npc.y + 3; y++) for (let x = npc.x - 3; x <= npc.x + 3; x++) { const dd = Math.abs(x - npc.x) + Math.abs(y - npc.y); if (dd >= 1 && dd <= 3) zona.push([x, y]); }
+        decirRapido('¡REGIOHM junta energía a su alrededor!', 50);
+      } else if (p === 1) { // RAYO: toda la fila y la columna de Felipe
+        for (let x = 0; x < g[0].length; x++) zona.push([x, S.y]);
+        for (let y = 0; y < g.length; y++) zona.push([S.x, y]);
+        decirRapido('¡REGIOHM apunta un RAYO de las seis gemas!', 50);
+      } else { // LLUVIA DE GEMAS: piedras que caen cerca del equipo
+        for (let i = 0; i < 10; i++) { const c = R.P[Math.floor(Math.random() * R.P.length)]; zona.push([c.x + Math.floor(Math.random() * 5) - 2, c.y + Math.floor(Math.random() * 5) - 2]); }
+        decirRapido('¡Caen GEMAS del cielo!', 50);
+      }
+      R.golpes.push({ zona: zona.filter(([x, y]) => g[y] && g[y][x] && g[y][x] !== 'N'), t: RAID.aviso });
+    }
+    for (const gl of R.golpes) {
+      if (--gl.t !== 0) continue;
+      gl.impacto = 10;
+      const dentro = (x, y) => gl.zona.some(([a, c]) => a === x && c === y);
+      const lastimados = [];
+      vivos().forEach((m, i) => {
+        const p = i === 0 ? { x: S.x, y: S.y } : posDe(i - 1);
+        if (!dentro(p.x, p.y)) return;
+        m.ps = Math.max(0, m.ps - Math.ceil(m.psMax * RAID.golpe));
+        lastimados.push(m.ps > 0 ? nombreDe(m) : nombreDe(m) + ' (¡sin energía!)');
+      });
+      if (lastimados.length) { decirRapido('¡Le pegó a ' + lastimados.join(', ') + '!', 80); ui.flash = 1; setTimeout(() => { ui.flash = 0; }, 60); }
+      if (!vivos().length) resultado = 'pierde';
+    }
+    R.golpes = R.golpes.filter(gl => gl.t > 0 || (gl.impacto && gl.impacto-- > 0));
+    R.rayos = R.rayos.filter(r => --r.t > 0);
+    R.textos = R.textos.filter(t => --t.t > 0);
+    if (R.msgT > 0) R.msgT--;
+  }
+  S.moviendo = false; S.prog = 0;
+  ui.raid = null;
+  if (resultado === 'pierde') {
+    await decir('¡A tus criaturas no les queda energía! REGIOHM es demasiado poderoso...');
+    await decir('Felipe y su equipo bajaron un poco a descansar. ¡Probá de nuevo cuando quieras!');
+    curarEquipo();
+    npc.x = inicio.x; npc.y = inicio.y;
+    S.x = 11; S.y = 15; S.dir = 1;
+  }
+  return resultado;
+}
+// Lo que se dibuja de la pelea arriba del mapa
+function dibujarRaidAbajo(cx, cy) { // las baldosas de aviso (debajo de las criaturas)
+  const R = ui.raid;
+  for (const gl of R.golpes) for (const [x, y] of gl.zona) {
+    if (gl.t > 0) { b.fillStyle = (tick >> 2) % 2 ? 'rgba(230,30,40,0.55)' : 'rgba(230,30,40,0.3)'; }
+    else b.fillStyle = 'rgba(255,240,255,0.85)';
+    b.fillRect(x * T - cx + 1, y * T - cy + 1, T - 2, T - 2);
+  }
+}
+function seguidoresRaid() { // el equipo caminando atrás de Felipe, como criaturas del mapa
+  const R = ui.raid, out = [];
+  S.equipo.filter(m => m.ps > 0).forEach((m, i) => {
+    const a = R.P[Math.min(i + 1, R.P.length - 1)], d = R.P[i];
+    let dir = d.x > a.x ? 3 : d.x < a.x ? 2 : d.y > a.y ? 0 : 1;
+    const mov = S.moviendo && (a.x !== d.x || a.y !== d.y);
+    out.push({ x: a.x * T + (mov ? (d.x - a.x) * S.prog : 0), y: a.y * T + (mov ? (d.y - a.y) * S.prog : 0), tx: a.x, ty: a.y,
+      salvaje: { id: m.id, x: a.x, y: a.y, dir, mov, prog: S.prog, nace: 0 } });
+  });
+  return out;
+}
+function dibujarRaidArriba(cx, cy) {
+  const R = ui.raid, npc = R.npc;
+  // rayos de los ataques del equipo
+  for (const r of R.rayos) {
+    const t = 1 - r.t / 20;
+    const x = r.x0 * T + 8 + (npc.x * T + 8 - r.x0 * T - 8) * Math.min(1, t * 1.6), y = r.y0 * T + 4 + (npc.y * T - 4 - r.y0 * T - 4) * Math.min(1, t * 1.6);
+    b.fillStyle = r.color; b.beginPath(); b.arc(x - cx, y - cy, 3, 0, Math.PI * 2); b.fill();
+    b.fillStyle = '#ffffff'; b.fillRect(x - cx - 1, y - cy - 1, 2, 2);
+  }
+  R.cam = { cx, cy };
+  // barra de vida de REGIOHM
+  b.fillStyle = 'rgba(20,10,30,0.85)'; b.fillRect(4, 3, W - 8, 15);
+  b.fillStyle = '#402040'; b.fillRect(84, 7, W - 92, 6);
+  const f = R.jefe.ps / R.jefe.psMax;
+  b.fillStyle = f > 0.5 ? '#c050f0' : f > 0.2 ? '#f0a030' : '#f03030'; b.fillRect(84, 7, Math.ceil((W - 92) * f), 6);
+  // el equipo, abajo
+  b.fillStyle = 'rgba(20,10,30,0.8)'; b.fillRect(4, H - 30, W - 8, 27);
+  S.equipo.forEach((m, i) => {
+    const x = 8 + i * 38;
+    b.globalAlpha = m.ps > 0 ? 1 : 0.3;
+    b.drawImage(miniCriatura(m.id), x, H - 30, 18, 18);
+    b.globalAlpha = 1;
+    b.fillStyle = '#303030'; b.fillRect(x + 19, H - 22, 15, 4);
+    const fm = m.ps / m.psMax;
+    b.fillStyle = fm > 0.5 ? '#40d060' : fm > 0.2 ? '#f0c030' : '#f04040'; b.fillRect(x + 19, H - 22, Math.ceil(15 * fm), 4);
+  });
+  // carga del ataque
+  b.fillStyle = '#303030'; b.fillRect(8, H - 9, W - 80, 3);
+  b.fillStyle = R.cd ? '#8080a0' : '#f8e040'; b.fillRect(8, H - 9, Math.ceil((W - 80) * (1 - R.cd / RAID.espera)), 3);
+  if (R.msgT > 0) { b.fillStyle = 'rgba(255,255,255,0.92)'; b.fillRect(4, 20, W - 8, 13); }
+}
+function textosRaid() { // los textos van en la capa de arriba (más nítidos)
+  const R = ui.raid, cam = R.cam || { cx: 0, cy: 0 };
+  txt('REGIOHM  Nv90', 8, 6, { t: 6, c: '#f8e8ff', sombra: null });
+  for (const t of R.textos) txt(t.txt, t.x * T - cam.cx + 8, t.y * T - cam.cy - (50 - t.t) / 3, { t: 8, al: 'center', c: '#fff0a0', sombra: '#402040' });
+  if (R.msgT > 0) txt(R.msg, W / 2, 23, { t: 6, al: 'center', sombra: null, c: '#302040' });
+  txt(R.cd ? 'cargando...' : '¡A: ATACAR!', W - 8, H - 11, { t: 5, al: 'right', sombra: null, c: R.cd ? '#a0a0c0' : '#f8e040' });
+}
