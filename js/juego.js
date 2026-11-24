@@ -491,6 +491,8 @@ async function pelearSalvajeVisible(c) {
   await batalla({ salvaje: [c.id, c.nivel] });
 }
 const _miniCriatura = {};
+// El dibujo de UNA criatura (respeta si es SHINY)
+function spriteDe(m, espalda) { return spriteCriatura(m.id, espalda, m.shiny); }
 function miniCriatura(id) {
   if (_miniCriatura[id]) return _miniCriatura[id];
   const c = nuevoCanvas(20, 20), x = c.getContext('2d');
@@ -769,7 +771,7 @@ function dibujarListaMovs(li) {
   const m = li.m;
   caja(4, 4, 232, 24, 'info');
   sc.imageSmoothingEnabled = false;
-  sc.drawImage(spriteCriatura(m.id), 8, 6, 20, 20);
+  sc.drawImage(spriteDe(m), 8, 6, 20, 20);
   txt(nombreDe(m), 32, 8, { t: 7 });
   txt('Nv' + m.nivel, 32, 17, { t: 6, sombra: null, c: '#606060' });
   txt(li.modo === 'nivel' ? 'NIVEL' : 'TUTOR', 228, 12, { t: 8, al: 'right', c: li.modo === 'nivel' ? '#2a6a2a' : '#a05020' });
@@ -809,7 +811,7 @@ function dibujarEquipo() {
     const y = 4 + i * 22, sel = i === e.idx;
     caja(6, y, 228, 21, sel ? 'menu' : 'info');
     sc.imageSmoothingEnabled = false;
-    sc.drawImage(spriteCriatura(m.id), 10, y + 1, 20, 20);
+    sc.drawImage(spriteDe(m), 10, y + 1, 20, 20);
     txt(nombreDe(m), 34, y + 5, { t: nombreDe(m).length > 12 ? 6 : 7 });
     txt('Nv' + m.nivel, 34, y + 13, { t: 6, sombra: null, c: '#606060' });
     const f = m.ps / m.psMax;
@@ -825,9 +827,10 @@ function dibujarDatos(m) {
   const esp = ESPECIES[m.id], h = habDe(m);
   caja(4, 4, 232, 152, 'info');
   sc.fillStyle = '#d8e8f8'; sc.fillRect(12, 12, 72, 72);
-  sc.drawImage(spriteCriatura(m.id), 16, 16, 64, 64);
+  sc.drawImage(spriteDe(m), 16, 16, 64, 64);
   txt(nombreDe(m), 92, 12, { t: 8 });
   txt('Nivel ' + m.nivel, 92, 24, { t: 7 });
+  if (m.shiny) txt('★ SHINY', 228, 24, { t: 6, al: 'right', c: '#e0a000', sombra: null });
   esp.tipos.forEach((t, i) => insigniaTipo(t, 92 + i * 60, 34));
   txt(`PS  ${m.ps}/${m.psMax}`, 92, 50, { t: 6 });
   txt(`ATQ ${m.atk}   DEF ${m.def}`, 92, 60, { t: 6 });
@@ -1938,7 +1941,7 @@ async function evolucionar(m, nuevoId) {
   const previa = S.escena;
   await fundido(1, 10);
   S.escena = 'evo';
-  ui.evo = { de: m.id, a: nuevoId, fase: 0 };
+  ui.evo = { de: m.id, a: nuevoId, fase: 0, shiny: m.shiny };
   await fundido(0, 10);
   await decir(`¿Qué? ¡${nombreDe(m)} está evolucionando!`);
   for (let i = 0; i < 150; i++) { ui.evo.fase = i; await esperar(1); }
@@ -1962,7 +1965,7 @@ function dibujarEvo() {
   let id = e.de, blanco = false;
   if (f >= 999) id = e.a;
   else if (f > 30) { blanco = true; const per = Math.max(4, 24 - Math.floor(f / 7)); id = Math.floor(f / per) % 2 ? e.a : e.de; }
-  const sp = spriteCriatura(id);
+  const sp = spriteCriatura(id, false, e.shiny);
   b.drawImage(blanco ? silueta(sp) : sp, 88, 30, 64, 64);
 }
 
@@ -1985,7 +1988,7 @@ function dibujarBatalla() {
   elipse(b, 64, 112, 60, 13, '#a0d080', '#70a858');
   if (bt.entVis && bt.ent) b.drawImage(spriteChar(bt.ent.pal, 0, 0), 152 + (bt.entDX || 0), 8, 48, 48);
   if (bt.rival && bt.rivalVis && !(bt.parp.r > 0 && (bt.parp.r-- >> 1) % 2)) {
-    const sp = spriteCriatura(bt.rival.id);
+    const sp = spriteDe(bt.rival);
     b.save(); b.beginPath(); b.rect(0, 0, W, 66); b.clip();
     const rr = respiro(0); // respiran: se estiran un poquito para arriba y vuelven
     b.drawImage(bt.blanco.r > 0 ? silueta(sp) : sp, 144 + bt.rDX - rr / 2, 2 + bt.rDY - rr, 64 + rr, 64 + rr);
@@ -1994,14 +1997,14 @@ function dibujarBatalla() {
   if (bt.todos && bt.yoVis) { // el resto del equipo, chiquito, peleando al lado
     S.equipo.filter(m => m !== bt.yo).forEach((m, i) => {
       b.globalAlpha = m.ps > 0 ? 1 : 0.3;
-      b.drawImage(spriteCriatura(m.id), 4 + i * 17, 33, 16, 16);
+      b.drawImage(spriteDe(m), 4 + i * 17, 33, 16, 16);
       b.globalAlpha = 1;
     });
   }
   if (bt.yo && bt.yoVis && !(bt.parp.y > 0 && (bt.parp.y-- >> 1) % 2)) {
     b.save(); b.beginPath(); b.rect(0, 0, W, 112); b.clip();
     const ry = respiro(2.2);
-    b.drawImage(spriteCriatura(bt.yo.id, true), 30 + bt.yDX - ry / 2, 50 + bt.yDY - ry, 64 + ry, 64 + ry);
+    b.drawImage(spriteDe(bt.yo, true), 30 + bt.yDX - ry / 2, 50 + bt.yDY - ry, 64 + ry, 64 + ry);
     b.restore();
   }
   if (bt.bola) {
@@ -2401,7 +2404,7 @@ function dibujarCompu() {
     const i = c.top + k, y = 21 + k * 22, sel = i === c.idx;
     caja(6, y, 228, 21, sel ? 'menu' : 'info');
     sc.imageSmoothingEnabled = false;
-    sc.drawImage(spriteCriatura(m.id), 10, y + 1, 20, 20);
+    sc.drawImage(spriteDe(m), 10, y + 1, 20, 20);
     txt(nombreDe(m), 34, y + 5, { t: nombreDe(m).length > 12 ? 6 : 7 });
     txt('Nv' + m.nivel, 34, y + 13, { t: 6, sombra: null, c: '#606060' });
     ESPECIES[m.id].tipos.forEach((t, j) => txt(t, 150 + j * 42, y + 8, { t: 5, sombra: null, c: COLOR_TIPO[t] || '#404040' }));
@@ -2410,16 +2413,16 @@ function dibujarCompu() {
   if (c.top + 6 < S.caja.length) txt('▼', 228, 152, { t: 6, al: 'right', c: '#ffffff', sombra: null });
 }
 
-// CRIADERO: la CRIADORA MARTA (en cada CEMIC) cuida dos criaturas. Mientras Felipe camina, a veces aparece un HUEVO.
+// CRIADERO: la CRIADORA MIRTA (en cada CEMIC) cuida dos criaturas. Mientras Felipe camina, a veces aparece un HUEVO.
 // Los huevos se llevan en la MOCHILA y nacen después de caminar un rato. Nace la primera forma de una de las dos.
-const CRIADERO = { pasosHuevo: 180, pasosNacer: 250, maxHuevos: 6 };
+const CRIADERO = { pasosHuevo: 180, pasosNacer: 250, maxHuevos: 6, shiny: 0.2 }; // shiny: 1 de cada 5 huevos
 function criadero() { return S.flags.criadero || (S.flags.criadero = { cria: [], pasos: 0, listo: false }); }
 function huevos() { return S.flags.huevos || (S.flags.huevos = []); }
 function sincronizarHuevos() { if (huevos().length) S.bolsa.huevo = huevos().length; else delete S.bolsa.huevo; }
 const esLegendario = id => ESPECIES[id].captura <= 25;
 async function hablarCriadora() {
   const cr = criadero();
-  await decir('CRIADORA MARTA: ¡Hola! Yo cuido criaturas en el CRIADERO. A veces, cuando dos se llevan bien... ¡aparece un HUEVO!');
+  await decir('CRIADORA MIRTA: ¡Hola! Yo cuido criaturas en el CRIADERO. A veces, cuando dos se llevan bien... ¡aparece un HUEVO!');
   if (cr.listo) {
     if (huevos().length >= CRIADERO.maxHuevos) await decir('¡Apareció un HUEVO! Pero ya llevás muchos en la mochila. Hacé nacer alguno y volvé.');
     else {
@@ -2431,16 +2434,19 @@ async function hablarCriadora() {
       guardar();
     }
   }
+  await estadoCriadero();
   while (true) {
     const nombres = cr.cria.map(nombreDe).join(' y ');
     await decir(cr.cria.length ? `Ahora cuido a ${nombres}. ¿Qué hacemos?` : '¿Querés dejarme alguna criatura?', { mantener: true });
-    const r = await elegir(['DEJAR UNA', 'RETIRAR', '¿CÓMO FUNCIONA?', 'CHAU'], { x: 124, y: 40, w: 112 });
+    const r = await elegir(['DEJAR UNA', 'RETIRAR', '¿CÓMO FUNCIONA?', 'CHAU', '¿HAY HUEVO?'], { x: 124, y: 36, w: 112 });
     ui.dialogo = null;
-    if (r < 0 || r === 3) { await decir('CRIADORA MARTA: ¡Chau! ¡Caminá mucho que así aparecen los huevos!'); guardar(); return; }
+    if (r === 4) { await estadoCriadero(); continue; }
+    if (r < 0 || r === 3) { await decir('CRIADORA MIRTA: ¡Chau! ¡Caminá mucho que así aparecen los huevos!'); guardar(); return; }
     if (r === 2) {
       await decir('Me dejás DOS criaturas. Mientras vos caminás por ahí, ellas juegan juntas y a veces aparece un HUEVO.');
       await decir('Cuando haya uno, venís a cualquier CEMIC y me hablás. El huevo nace después de caminar un rato.');
       await decir('Nace la primera forma de una de las dos, en nivel 5. ¡Los legendarios no ponen huevos!');
+      await decir('Y los huevos del criadero son ESPECIALES: a veces nace SHINY, de otro color. ¡Y si no, nace con su HABILIDAD OCULTA!');
       continue;
     }
     if (r === 0) {
@@ -2463,6 +2469,15 @@ async function hablarCriadora() {
     if (cr.cria.length < 2) { cr.pasos = 0; cr.listo = false; }
   }
 }
+// Lo que cuenta la criadora: si ya hay huevo o cuánto falta
+async function estadoCriadero() {
+  const cr = criadero();
+  if (cr.cria.length < 2) { await decir(cr.cria.length ? 'Para que aparezca un huevo me tenés que dejar una criatura más.' : 'Ahora no estoy cuidando a ninguna criatura.'); return; }
+  if (cr.listo) { await decir('¡YA PUSIERON UN HUEVO! Te lo estoy guardando.'); return; }
+  const falta = CRIADERO.pasosHuevo - cr.pasos;
+  const como = falta > 120 ? 'Recién empiezan a conocerse. Todavía falta muchísimo.' : falta > 60 ? 'Ya se están haciendo amigas. Falta bastante.' : falta > 20 ? 'Juegan todo el tiempo juntas... ¡ya falta poco!' : '¡Están por poner un huevo!';
+  await decir(`${como} (Faltan unos ${falta} pasos.)`);
+}
 // Cada paso: cuenta para el criadero y para los huevos
 function pasoHuevos() {
   const cr = S.flags.criadero;
@@ -2477,7 +2492,12 @@ function pasoHuevos() {
     await decir('¿Eh? ¡El HUEVO se está moviendo!');
     for (let k = 0; k < 2; k++) { ui.flash = 1; await esperar(4); ui.flash = 0; await esperar(6); }
     const m = crearCriatura(h.id, 5);
+    // Los huevos del criadero son especiales: SHINY o, si no, con la HABILIDAD OCULTA
+    if (Math.random() < CRIADERO.shiny) m.shiny = true;
+    else if (ESPECIES[h.id].habOculta) m.habSlot = 'o';
     await decir(`¡Nació un ${ESPECIES[h.id].nombre.toUpperCase()}!`);
+    if (m.shiny) { for (let k = 0; k < 3; k++) { ui.flash = 1; await esperar(2); ui.flash = 0; await esperar(3); } await decir('¡¡WOW!! ¡Es SHINY: tiene un color distinto a todos los demás! ★'); }
+    else if (esHabOculta(m)) await decir(`¡Y nació con su HABILIDAD OCULTA: ${habDe(m).nombre.toUpperCase()}!`);
     if (S.equipo.length < 6) { S.equipo.push(m); await decir('¡Se sumó a tu equipo!'); }
     else { S.caja.push(m); await decir('Tu equipo está lleno: lo mandaste a la compu de la Profe Ceibo.'); }
     if (await siNo('¿Le querés poner un apodo?')) await ponerApodo(m, true);
@@ -2489,6 +2509,6 @@ async function mirarHuevos() {
   if (!hs.length) { await decir('No tenés huevos.'); return; }
   for (const h of hs) {
     const f = h.pasos > CRIADERO.pasosNacer * 0.66 ? 'Todavía falta muchísimo para que nazca.' : h.pasos > CRIADERO.pasosNacer * 0.33 ? 'A veces se mueve un poquito. Falta bastante.' : h.pasos > 20 ? '¡Se escuchan ruiditos adentro! Ya falta poco.' : '¡Está por nacer!';
-    await decir(`HUEVO: ${f}`);
+    await decir(`HUEVO: ${f} (Faltan unos ${h.pasos} pasos.)`);
   }
 }

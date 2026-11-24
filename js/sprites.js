@@ -208,7 +208,31 @@ function precargarDibujos() {
   })));
 }
 const _cacheCriatura = {};
-function spriteCriatura(id, espalda) {
+// SHINY: la misma criatura con otros colores (los tonos giran en la rueda de colores)
+function variarColor(c0) {
+  const c = nuevoCanvas(c0.width, c0.height), x = c.getContext('2d');
+  x.drawImage(c0, 0, 0);
+  const d = x.getImageData(0, 0, c.width, c.height), p = d.data;
+  for (let i = 0; i < p.length; i += 4) {
+    if (!p[i + 3]) continue;
+    let r = p[i] / 255, g = p[i + 1] / 255, b = p[i + 2] / 255;
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2;
+    if (mx - mn < 0.06) continue; // blancos, grises y negros quedan iguales
+    const dd = mx - mn, s = l > 0.5 ? dd / (2 - mx - mn) : dd / (mx + mn);
+    let h = mx === r ? (g - b) / dd + (g < b ? 6 : 0) : mx === g ? (b - r) / dd + 2 : (r - g) / dd + 4;
+    h = (h / 6 + 0.42) % 1;
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s, pp = 2 * l - q;
+    const f = t => { t = (t + 1) % 1; return t < 1 / 6 ? pp + (q - pp) * 6 * t : t < 1 / 2 ? q : t < 2 / 3 ? pp + (q - pp) * (2 / 3 - t) * 6 : pp; };
+    p[i] = f(h + 1 / 3) * 255; p[i + 1] = f(h) * 255; p[i + 2] = f(h - 1 / 3) * 255;
+  }
+  x.putImageData(d, 0, 0);
+  return c;
+}
+function spriteCriatura(id, espalda, shiny) {
+  if (shiny) {
+    const k = id + (espalda ? '_b' : '') + '_shiny';
+    return _cacheCriatura[k] || (_cacheCriatura[k] = variarColor(spriteCriatura(id, espalda)));
+  }
   const clave = id + (espalda ? '_b' : '');
   if (_cacheCriatura[clave]) return _cacheCriatura[clave];
   let c;
