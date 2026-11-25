@@ -2928,6 +2928,68 @@ Object.assign(ESPECIES, {
   },
 });
 
+// ===== OMBROTO → PAMPOMBÚ → OMBUASTIÓN (diseño de Felipe, diapositivas 63-65, 24/11/2026) =====
+// Tipos, habilidades y diseño de Felipe. Niveles de evolución, estadísticas y movimientos: elegidos por Claude.
+Object.assign(MOVS, {
+  latigo_alambre: { nombre: 'Látigo de Alambre', tipo: 'ACERO', pot: 90, prec: 95, pp: 10 },
+});
+Object.assign(ESPECIES, {
+  ombroto: {
+    nombre: 'Ombroto', tipos: ['PLANTA'], base: { ps: 55, atk: 48, def: 62, vel: 35 }, captura: 45, exp: 64,
+    desc: 'el brote pampeano de penacho brillante', evo: { nivel: 18, a: 'pampombu' },
+    movs: [[1, 'embestida'], [1, 'grunido'], [4, 'yerbazo'], [8, 'bolita'], [12, 'hojarasca'], [16, 'garra_metal'], [20, 'espinas'], [24, 'matecito']],
+    sprite: [
+      ['e', 16, 29, 9, 2, '#7a8a6a', 's'],
+      ['r', 10, 25, 4, 5, '#7a8070'], ['r', 18, 25, 4, 5, '#7a8070'],
+      ['e', 16, 21, 9, 8, '#9aa088'],
+      ['e', 15, 23, 6, 4, '#c8ccb0', 's'],
+      ['p', [[13, 15], [16, 13], [19, 15], [16, 17]], '#7a8070'],
+      ['p', [[16, 14], [8, 3], [6, 9]], '#40b040'], ['p', [[16, 14], [24, 3], [26, 9]], '#38a838'], ['p', [[16, 14], [14, 1], [19, 1]], '#58c848'],
+      ['p', [[16, 14], [10, 6], [12, 4]], '#80e060', 'c'],
+      ['r', 11, 19, 2, 2, '#201810'], ['r', 18, 19, 2, 2, '#201810'], ['d', 11, 19, '#ffffff'], ['d', 18, 19, '#ffffff'],
+      ['r', 14, 23, 3, 1, '#504838'],
+    ],
+  },
+  pampombu: {
+    nombre: 'Pampombú', tipos: ['PLANTA', 'ACERO'], base: { ps: 75, atk: 70, def: 90, vel: 40 }, captura: 45, exp: 150,
+    desc: 'la hierba férrea con alambrado en el lomo', evo: { nivel: 36, a: 'ombuastion' },
+    movs: [[1, 'embestida'], [1, 'grunido'], [4, 'yerbazo'], [8, 'bolita'], [12, 'hojarasca'], [16, 'garra_metal'], [20, 'espinas'], [24, 'matecito'], [28, 'semillazo'], [32, 'cabeza_hierro']],
+    sprite: [
+      ['p', [[22, 22], [31, 20], [30, 24], [23, 26]], '#8a8a7a'],
+      ['r', 6, 22, 5, 8, '#7a7a6a'], ['r', 20, 22, 5, 8, '#7a7a6a'],
+      ['r', 6, 25, 5, 1.5, '#c8d0d8'], ['r', 20, 25, 5, 1.5, '#c8d0d8'],
+      ['e', 16, 20, 11, 6, '#9a9a88'],
+      ['e', 15, 23, 8, 2.5, '#c8c8b0', 's'],
+      ['e', 17, 12, 10, 6, '#3a9a3a'], ['e', 13, 10, 6, 4, '#50b848'], ['e', 21, 10, 5, 4, '#48a840'],
+      ['p', [[8, 14], [27, 14], [26, 16], [9, 16]], '#c8d0d8', 'c'], ['d', 12, 15, '#ffffff'], ['d', 18, 15, '#ffffff'], ['d', 24, 15, '#ffffff'],
+      ['p', [[7, 19], [1, 13], [2, 11], [8, 15]], '#9a9a88'],
+      ['e', 2, 12, 3, 2.5, '#9a9a88'],
+      ['r', 1, 11, 1.5, 1.5, '#201810'],
+    ],
+  },
+  ombuastion: {
+    nombre: 'Ombuastión', tipos: ['PLANTA', 'ACERO'], base: { ps: 100, atk: 100, def: 120, vel: 50 }, captura: 45, exp: 240,
+    desc: 'el refugio gigante de la pampa con molino en el lomo',
+    movs: [[1, 'embestida'], [1, 'grunido'], [4, 'yerbazo'], [8, 'bolita'], [12, 'hojarasca'], [16, 'garra_metal'], [20, 'espinas'], [24, 'matecito'], [28, 'semillazo'], [32, 'cabeza_hierro'], [36, 'latigo_alambre'], [44, 'raizon'], [52, 'terremoto']],
+    sprite: [
+      ['p', [[24, 24], [31, 23], [31, 26], [24, 28]], '#7a6a5a'],
+      ['p', [[3, 31], [5, 22], [10, 22], [12, 31], [9, 31], [7.5, 26], [6, 31]], '#7a6e60'],
+      ['p', [[18, 31], [20, 22], [25, 22], [27, 31], [24, 31], [22.5, 26], [21, 31]], '#7a6e60'],
+      ['r', 4, 27, 7, 1.2, '#c8d0d8'], ['r', 19, 27, 7, 1.2, '#c8d0d8'],
+      ['e', 16, 20, 13, 6, '#8a7e70'],
+      ['r', 6, 19, 20, 1, '#c8d0d8'],
+      ['e', 16, 13, 13, 6, '#2e8a32'], ['e', 9, 11, 6, 4, '#3aa040'], ['e', 23, 11, 6, 4, '#36983a'],
+      ['r', 18, 3, 1.5, 9, '#a8b0b8'],
+      ['p', [[18.7, 3], [13, 0], [14, 2]], '#d8e0e8'], ['p', [[18.7, 3], [24, 6], [22, 7]], '#d8e0e8'], ['p', [[18.7, 3], [21, -2], [22, 0]], '#d8e0e8'], ['p', [[18.7, 3], [16, 8], [15, 6]], '#d8e0e8'],
+      ['e', 18.7, 3, 1.2, 1.2, '#606870', 's'],
+      ['p', [[5, 20], [0, 15], [1, 12], [6, 15]], '#8a7e70'],
+      ['e', 2, 13, 3.5, 3, '#8a7e70'],
+      ['r', 1, 12, 1.5, 1.5, '#f8c020'],
+      ['d', 9, 23, '#c8d0d8'], ['d', 14, 24, '#c8d0d8'], ['d', 20, 23, '#c8d0d8'],
+    ],
+  },
+});
+
 // ===== Habilidades =====
 // Sacadas de la presentación de Felipe (las que no tenían, elegidas parecidas).
 // ef = qué hace en la batalla (lo maneja juego.js)
@@ -3059,6 +3121,9 @@ const HAB_ESPECIE = {
   duskfae: { n: ['veloEspejismo', 'cuerpoMaldito'] }, wraithfae: { n: ['cuerpoMaldito', 'veloEspejismo'] },
 };
 Object.assign(HABILIDADES, {
+  curaNatural: { nombre: 'Cura Natural', ef: 'curaNatural', desc: 'Sus hojas lo curan: nunca queda envenenado.' },
+  puntaAcero: { nombre: 'Punta Acero', ef: 'templado', desc: 'Sus ataques de tipo Acero pegan ×1,5.' },
+  antibalas: { nombre: 'Antibalas', ef: 'antibalas', desc: 'No le hacen nada las bolas, bombas, semillas, piedras ni burbujas.' },
   toqueToxico: { nombre: 'Toque Tóxico', ef: 'toqueToxico', desc: 'Cuando pega, a veces envenena al rival: pierde vida cada turno.' },
   toxicoAbsorbente: { nombre: 'Tóxico Absorbente', ef: 'toxicoAbsorbente', desc: 'Envenena al pegar, nada le baja las estadísticas y neutraliza lo Eléctrico.' },
   capaGlaciar: { nombre: 'Capa Glaciar', ef: 'capaGlaciar', desc: 'Su hielo milenario lo protege: sin golpes críticos y Fuego y Planta le hacen la mitad.' },
@@ -3090,6 +3155,9 @@ Object.assign(HAB_ESPECIE, {
   regifracto: { n: ['ilusion', 'intimidacion'] },
   regiorbita: { n: ['electromotor', 'vientoAfin'] },
   regicrono: { n: ['impasible', 'cuerpoPuro'] },
+});
+Object.assign(HAB_ESPECIE, {
+  ombroto: { n: ['curaNatural'], o: 'puntaAcero' }, pampombu: { n: ['curaNatural'], o: 'puntaAcero' }, ombuastion: { n: ['antibalas'], o: 'adaptable' },
 });
 for (const id in ESPECIES) {
   const h = HAB_ESPECIE[id] || 'pasoLigero';

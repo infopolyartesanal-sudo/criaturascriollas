@@ -5385,7 +5385,7 @@ const REGI_DE = { mente: 'regimento', alma: 'regianima', poder: 'regipulso', rea
 const TEMPLOS = {
   mente: { nombre: 'CERRO URITORCO', piso: '.', ruta: 'sierras', abrir: [[20, 0], [21, 0], [20, 1], [21, 1]], celdas: [[20, 0], [21, 0]], llegada: [[20, 2], [21, 2]], dirVuelta: 0,
     barrera: [[1, 10], [1, 11]], empuja: 3, hacia: 'el NORTE, arriba de un cerro', geo: [-64.5, -30.85], nivel: [10, 13],
-    lista: [['espejito', 14], ['lechucita', 14], ['mimetit', 10], ['condorito', 10], ['pumita', 10], ['piedrin', 8], ['spikick', 6]],
+    lista: [['ombroto', 14], ['espejito', 12], ['lechucita', 12], ['mimetit', 10], ['condorito', 10], ['pumita', 10], ['piedrin', 8], ['spikick', 6]], // OMBROTO: diseño de Felipe
     recluta: [['lechucita', 11], ['espejito', 12]], jefe: [['lechucita', 13], ['espejito', 14], ['mimetit', 15]], regiNivel: 59,
     anomalia: 'Una onda PSÍQUICA rosada cubrió toda la región. Las criaturas salvajes se volvieron más raras y a Felipe le da vueltas la cabeza...',
     sala: ['sierras', 'travesia', 'serrana', 'quebrada', 'camino_mente'] },

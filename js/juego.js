@@ -1675,6 +1675,12 @@ async function ejecutarMov(at, de, slot, quien) {
       await decir(`¡${nombreBatalla(de)} flota y el ataque no lo toca!`, { auto: 45 });
       return;
     }
+    // ANTIBALAS (Ombuastión): no le hacen nada los ataques que tiran algo (bolas, bombas, semillas, piedras, burbujas)
+    if (tieneEf(hd, 'antibalas') && M.pot && /bomba|bola|semill|piedra|pedrada|burbuj|granizo|disparo|dardo|gema|bala/i.test(M.nombre + ' ' + slot.id)) {
+      await anunciarHab(de);
+      await decir(`¡${nombreBatalla(de)} es ANTIBALAS! El ataque rebotó y no le hizo nada.`, { auto: 50 });
+      return;
+    }
     if (tieneEf(hd, 'toxicoAbsorbente') && M.tipo === 'ELECTRICO') {
       await anunciarHab(de);
       await decir(`¡El veneno que cubre a ${nombreBatalla(de)} NEUTRALIZÓ la electricidad!`, { auto: 50 });
@@ -1838,7 +1844,7 @@ async function despuesDelGolpe(at, de, M, danio = 0) {
   // TOQUE TÓXICO / TÓXICO ABSORBENTE (habilidad oculta de la familia de Ajolodo, idea de Felipe):
   // al pegar, 30% de envenenar. El envenenado pierde 1/10 de su vida al final de cada turno.
   if (['toqueToxico', 'toxicoAbsorbente'].some(e => tieneEf(ha, e)) && de.ps > 0 && danio > 0 && de.et && !de.et.veneno && Math.random() < 0.3) {
-    const inmune = tiposDe(de).includes('VENENO') || tiposDe(de).includes('ACERO') || tieneEf(habDe(de), 'toxicoAbsorbente');
+    const inmune = tiposDe(de).includes('VENENO') || tiposDe(de).includes('ACERO') || tieneEf(habDe(de), 'toxicoAbsorbente') || tieneEf(habDe(de), 'curaNatural');
     if (!inmune) { await anunciarHab(at); de.et.veneno = true; await decir(`¡${nombreBatalla(de)} quedó ENVENENADO!`, { auto: 45 }); }
   }
   if (de.ps > 0) {
