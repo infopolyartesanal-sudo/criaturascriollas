@@ -3769,9 +3769,9 @@ const HAB_ESPECIE = {
   turborush: { n: ['electromotor', 'cuerpoLlama'], o: 'sobrecarga' },
   calderito: { n: ['robustez', 'cuerpoHumo'], o: 'absorbeFuego' }, submaringer: { n: ['llovizna', 'cuerpoHumo'], o: 'geotermica' },
   laninger: { n: ['rocaSolida', 'cuerpoHumo'], o: 'geotermica' },
-  zorzaliente: { n: ['pasoLigero', 'cuerpoLlama'] },
+  zorzaliente: { n: ['pasoLigero', 'cuerpoLlama'], o: 'impulso' }, // oculta elegida por Claude (25/11) para el huevo especial de Mirta
   celestin: { n: ['colector', 'hidratacion'], o: 'llovizna' }, cobijoso: { n: ['acoso', 'sigiloSombrio'], o: 'colectorAlmas' },
-  yaguaraba: { n: ['cuerpoMaldito', 'intangible'] }, glaciorka: { n: ['mendicidad', 'nadoRapido'], o: 'pielHelada' },
+  yaguaraba: { n: ['cuerpoMaldito', 'intangible'], o: 'colectorAlmas' }, // oculta elegida por Claude (25/11) glaciorka: { n: ['mendicidad', 'nadoRapido'], o: 'pielHelada' },
   braspuma: { n: ['marLlamas', 'punoFerreo'], o: 'audaz' },
   carpibarro: { n: ['descansoRegio', 'caparazon'], o: 'terruno' }, glyptopampa: { n: ['descansoRegio', 'caparazon'], o: 'terruno' },
   azularza: { n: ['nadoRapido', 'vientoAfin'], o: 'llovizna' },
@@ -9607,11 +9607,12 @@ async function regaloHuevoMirta() {
   if (lugar <= 0) { await decir('Pero ya llevás muchos huevos en la mochila. Hacé nacer alguno y volvé.'); return; }
   const cuantos = Math.min(S.flags.especiales, lugar);
   await decir(`¡Qué lindo ${nombreDe(primera)}! A una criatura así le va a encantar cuidar ${cuantos > 1 ? 'estos huevos tan especiales' : 'este huevo tan especial'}.`);
-  for (let i = 0; i < cuantos; i++) huevos().push({ id: HUEVO_REGALO[fam], pasos: CRIADERO.pasosNacer, nivel: 5, regalo: true });
+  for (let i = 0; i < cuantos; i++) huevos().push({ id: HUEVO_REGALO[fam], pasos: CRIADERO.pasosNacer, nivel: 5, regalo: true, oculta: true }); // siempre con HABILIDAD OCULTA
   S.flags.especiales -= cuantos;
   sincronizarHuevos();
   S.flags.huevoRegalo = true;
   await decir(`¡Felipe recibió ${cuantos > 1 ? cuantos + ' HUEVOS ESPECIALES' : 'un HUEVO ESPECIAL'}! ${cuantos > 1 ? 'Los guardó' : 'Lo guardó'} en la MOCHILA.`);
+  await decir('CRIADORA MIRTA: No te digo qué es, ¡que sea sorpresa! Solo te adelanto que nace con su HABILIDAD OCULTA.');
   if (S.flags.especiales > 0) await decir(`Me quedan ${S.flags.especiales} más para vos: hacé lugar en la mochila y volvé.`);
   else await decir('CRIADORA MIRTA: ¡Cada vez que te nazca un huevo del criadero, tengo otro especial para vos!');
   guardar();
@@ -12571,8 +12572,8 @@ function pasoHuevos() {
     for (let k = 0; k < 2; k++) { ui.flash = 1; await esperar(4); ui.flash = 0; await esperar(6); }
     const m = crearCriatura(h.id, h.nivel || 5);
     if (Math.random() < CRIADERO.shiny) m.shiny = true;
-    // La HABILIDAD OCULTA solo sale en los huevos que la traen (desde el 4º de la misma pareja)
-    if (h.oculta && ESPECIES[h.id].habOculta) m.habSlot = 'o';
+    // La HABILIDAD OCULTA sale en los huevos que la traen (desde el 4º de la misma pareja) y SIEMPRE en el HUEVO ESPECIAL de Mirta
+    if ((h.oculta || h.regalo) && ESPECIES[h.id].habOculta) m.habSlot = 'o';
     else if (m.habSlot === 'o') m.habSlot = Math.floor(Math.random() * ESPECIES[h.id].habs.length);
     await decir(`¡Nació un ${ESPECIES[h.id].nombre.toUpperCase()}!`);
     await decir(`¡Nació en el NIVEL ${m.nivel}!`);

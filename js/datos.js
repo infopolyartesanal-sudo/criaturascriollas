@@ -3107,9 +3107,9 @@ const HAB_ESPECIE = {
   turborush: { n: ['electromotor', 'cuerpoLlama'], o: 'sobrecarga' },
   calderito: { n: ['robustez', 'cuerpoHumo'], o: 'absorbeFuego' }, submaringer: { n: ['llovizna', 'cuerpoHumo'], o: 'geotermica' },
   laninger: { n: ['rocaSolida', 'cuerpoHumo'], o: 'geotermica' },
-  zorzaliente: { n: ['pasoLigero', 'cuerpoLlama'] },
+  zorzaliente: { n: ['pasoLigero', 'cuerpoLlama'], o: 'impulso' }, // oculta elegida por Claude (25/11) para el huevo especial de Mirta
   celestin: { n: ['colector', 'hidratacion'], o: 'llovizna' }, cobijoso: { n: ['acoso', 'sigiloSombrio'], o: 'colectorAlmas' },
-  yaguaraba: { n: ['cuerpoMaldito', 'intangible'] }, glaciorka: { n: ['mendicidad', 'nadoRapido'], o: 'pielHelada' },
+  yaguaraba: { n: ['cuerpoMaldito', 'intangible'], o: 'colectorAlmas' }, // oculta elegida por Claude (25/11) glaciorka: { n: ['mendicidad', 'nadoRapido'], o: 'pielHelada' },
   braspuma: { n: ['marLlamas', 'punoFerreo'], o: 'audaz' },
   carpibarro: { n: ['descansoRegio', 'caparazon'], o: 'terruno' }, glyptopampa: { n: ['descansoRegio', 'caparazon'], o: 'terruno' },
   azularza: { n: ['nadoRapido', 'vientoAfin'], o: 'llovizna' },

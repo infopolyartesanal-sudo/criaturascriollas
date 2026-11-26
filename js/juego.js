@@ -2610,8 +2610,8 @@ function pasoHuevos() {
     for (let k = 0; k < 2; k++) { ui.flash = 1; await esperar(4); ui.flash = 0; await esperar(6); }
     const m = crearCriatura(h.id, h.nivel || 5);
     if (Math.random() < CRIADERO.shiny) m.shiny = true;
-    // La HABILIDAD OCULTA solo sale en los huevos que la traen (desde el 4º de la misma pareja)
-    if (h.oculta && ESPECIES[h.id].habOculta) m.habSlot = 'o';
+    // La HABILIDAD OCULTA sale en los huevos que la traen (desde el 4º de la misma pareja) y SIEMPRE en el HUEVO ESPECIAL de Mirta
+    if ((h.oculta || h.regalo) && ESPECIES[h.id].habOculta) m.habSlot = 'o';
     else if (m.habSlot === 'o') m.habSlot = Math.floor(Math.random() * ESPECIES[h.id].habs.length);
     await decir(`¡Nació un ${ESPECIES[h.id].nombre.toUpperCase()}!`);
     await decir(`¡Nació en el NIVEL ${m.nivel}!`);

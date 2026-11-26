@@ -5745,11 +5745,12 @@ async function regaloHuevoMirta() {
   if (lugar <= 0) { await decir('Pero ya llevás muchos huevos en la mochila. Hacé nacer alguno y volvé.'); return; }
   const cuantos = Math.min(S.flags.especiales, lugar);
   await decir(`¡Qué lindo ${nombreDe(primera)}! A una criatura así le va a encantar cuidar ${cuantos > 1 ? 'estos huevos tan especiales' : 'este huevo tan especial'}.`);
-  for (let i = 0; i < cuantos; i++) huevos().push({ id: HUEVO_REGALO[fam], pasos: CRIADERO.pasosNacer, nivel: 5, regalo: true });
+  for (let i = 0; i < cuantos; i++) huevos().push({ id: HUEVO_REGALO[fam], pasos: CRIADERO.pasosNacer, nivel: 5, regalo: true, oculta: true }); // siempre con HABILIDAD OCULTA
   S.flags.especiales -= cuantos;
   sincronizarHuevos();
   S.flags.huevoRegalo = true;
   await decir(`¡Felipe recibió ${cuantos > 1 ? cuantos + ' HUEVOS ESPECIALES' : 'un HUEVO ESPECIAL'}! ${cuantos > 1 ? 'Los guardó' : 'Lo guardó'} en la MOCHILA.`);
+  await decir('CRIADORA MIRTA: No te digo qué es, ¡que sea sorpresa! Solo te adelanto que nace con su HABILIDAD OCULTA.');
   if (S.flags.especiales > 0) await decir(`Me quedan ${S.flags.especiales} más para vos: hacé lugar en la mochila y volvé.`);
   else await decir('CRIADORA MIRTA: ¡Cada vez que te nazca un huevo del criadero, tengo otro especial para vos!');
   guardar();
