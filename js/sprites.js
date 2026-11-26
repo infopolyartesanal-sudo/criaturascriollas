@@ -466,11 +466,22 @@ function crearEdificio(tipo, w, h, puerta) {
   const c = nuevoCanvas(w * 16, h * 16), x = c.getContext('2d');
   const R = (a, b, ww, hh, col) => { x.fillStyle = col; x.fillRect(a, b, ww, hh); };
   const ancho = w * 16, alto = h * 16;
+  if (tipo === 'obelisco') {
+    // EL OBELISCO de Buenos Aires: base de piedra, fuste blanco altísimo, ventanita arriba y punta de pirámide
+    const cx = ancho / 2;
+    R(cx - 14, alto - 10, 28, 8, '#a8a090'); R(cx - 12, alto - 12, 24, 3, '#c8c0b0'); R(cx - 14, alto - 3, 28, 3, '#807868');
+    x.fillStyle = '#f2f0ea'; x.beginPath(); x.moveTo(cx - 7, alto - 12); x.lineTo(cx - 4, 14); x.lineTo(cx + 4, 14); x.lineTo(cx + 7, alto - 12); x.fill();
+    x.fillStyle = '#d6d2c8'; x.beginPath(); x.moveTo(cx + 1, alto - 12); x.lineTo(cx + 1, 14); x.lineTo(cx + 4, 14); x.lineTo(cx + 7, alto - 12); x.fill();
+    x.fillStyle = '#e8e4dc'; x.beginPath(); x.moveTo(cx - 4, 14); x.lineTo(cx, 2); x.lineTo(cx + 4, 14); x.fill();
+    R(cx - 1, 18, 2, 3, '#4a5a6a');
+    for (let yy = 30; yy < alto - 14; yy += 12) R(cx - 6, yy, 12, 1, '#e0dcd2');
+    return c;
+  }
   const techoH = (h - 2) * 16 + 4;
   const pared = tipo === 'lab' ? '#eef2f6' : tipo.startsWith('gimnasio') ? '#ece4f4' : tipo === 'adobe' ? '#e0c08a' : tipo.startsWith('templo') ? '#d8d0c4' : '#f6eedc';
   R(2, techoH - 4, ancho - 4, alto - techoH + 4, pared);
   R(2, alto - 3, ancho - 4, 3, '#a89878');
-  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#d84848', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', gimnasio4: '#3a7ab0', gimnasio5: '#2a2040', gimnasio6: '#c83a3a', gimnasio7: '#e06a20', gimnasio8: '#3a3a8a', adobe: '#9a6a3a',
+  const TECHOS = { lab: '#4f7fa8', casa2: '#3f8f6f', centro: '#d84848', gimnasio: '#7a4aa8', gimnasio2: '#7a6a5a', gimnasio3: '#3f8a3a', gimnasio4: '#3a7ab0', gimnasio5: '#2a2040', gimnasio6: '#c83a3a', gimnasio7: '#e06a20', gimnasio8: '#3a3a8a', gimnasioLiga: '#5a9ad8', adobe: '#9a6a3a',
     // templos de los guardianes de las gemas: techo del color de cada clan
     templo_mente: '#c030a0', templo_alma: '#8a4ae0', templo_poder: '#c02828', templo_realidad: '#2a1a2a', templo_espacio: '#2a5ac8', templo_tiempo: '#b08a30' };
   const tc = TECHOS[tipo] || '#c8553a';
@@ -487,6 +498,13 @@ function crearEdificio(tipo, w, h, puerta) {
     // Cartel del CEMIC: cruz roja sobre fondo blanco
     R(ancho / 2 - 8, 5, 16, 13, '#ffffff'); R(ancho / 2 - 8, 5, 16, 1, '#c03030'); R(ancho / 2 - 8, 17, 16, 1, '#c03030');
     R(ancho / 2 - 2, 7, 4, 9, '#e03a3a'); R(ancho / 2 - 5, 10, 10, 3, '#e03a3a');
+  } else if (tipo === 'gimnasioLiga') {
+    // LIGA CRIOLLA: techo celeste con una franja blanca y el SOL DE MAYO
+    const cx = ancho / 2;
+    R(0, techoH / 3, ancho, techoH / 3, '#f4f4f4');
+    for (let k = 0; k < 16; k++) { const a = k / 16 * Math.PI * 2; R(cx + Math.cos(a) * 9 - 1, techoH / 2 + Math.sin(a) * 9 - 1, 2, 2, '#e8a020'); }
+    x.fillStyle = '#f8c830'; x.beginPath(); x.arc(cx, techoH / 2, 6, 0, Math.PI * 2); x.fill();
+    R(cx - 3, techoH / 2 - 2, 2, 2, '#a86010'); R(cx + 1, techoH / 2 - 2, 2, 2, '#a86010'); R(cx - 2, techoH / 2 + 2, 4, 1, '#a86010');
   } else if (tipo.startsWith('gimnasio')) {
     // Cartel con una estrella (insignia)
     const cx = ancho / 2;

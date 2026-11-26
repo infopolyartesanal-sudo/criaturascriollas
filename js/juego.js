@@ -1455,7 +1455,7 @@ async function batalla(op) {
     bt.entVis = true; bt.entDX = 0; bt.rivalVis = false;
     await decir(`¡Le ganaste a ${bt.ent.nombre}!`);
     const nivelMax = Math.max(...bt.equipoRival.map(m => m.nivel));
-    const premio = nivelMax * (bt.ent.nombre.startsWith('LÍDER') ? 200 : bt.ent.nombre === 'TOMI' ? 120 : 60);
+    const premio = nivelMax * (bt.ent.nombre.startsWith('LÍDER') ? 200 : /^(ALTO MANDO|CAMPEÓN)/.test(bt.ent.nombre) ? 250 : bt.ent.nombre === 'TOMI' ? 120 : 60);
     S.plata = (S.plata || 0) + premio;
     await decir(`¡Felipe ganó ${plataTxt(premio)} de premio!`);
   }
@@ -1696,6 +1696,12 @@ async function ejecutarMov(at, de, slot, quien) {
       await anunciarHab(de);
       if (de.ps < de.psMax) { de.ps = Math.min(de.psMax, de.ps + Math.ceil(de.psMax / 4)); await animarPS(de); }
       await decir(`¡${nombreBatalla(de)} absorbió el barro y se curó!`, { auto: 50 });
+      return;
+    }
+    if (tieneEf(hd, 'absorbeAgua') && M.tipo === 'AGUA') {
+      await anunciarHab(de);
+      if (de.ps < de.psMax) { de.ps = Math.min(de.psMax, de.ps + Math.ceil(de.psMax / 4)); await animarPS(de); }
+      await decir(`¡${nombreBatalla(de)} se tomó el agua y se curó!`, { auto: 50 });
       return;
     }
     if (tieneEf(hd, 'colector') && M.tipo === 'AGUA') {
@@ -2017,6 +2023,7 @@ async function tirarBoleadora() {
     if (S.equipo.length < 6) S.equipo.push(f);
     else { S.caja.push(f); await decir(`${nombreDe(f)} fue enviado a la compu de la Profe Ceibo.`); }
     S.flags.atrapados = (S.flags.atrapados || 0) + 1;
+    if (!S.flags.primeraCaptura) S.flags.primeraCaptura = f.id; // para el equipo de TOMI en la LIGA
     bt.bola = null;
     return 'atrapado';
   }

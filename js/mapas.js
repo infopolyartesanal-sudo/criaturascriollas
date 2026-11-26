@@ -5755,3 +5755,694 @@ async function regaloHuevoMirta() {
   else await decir('CRIADORA MIRTA: ¡Cada vez que te nazca un huevo del criadero, tengo otro especial para vos!');
   guardar();
 }
+
+// ================= CALLE VICTORIA y LA LIGA CRIOLLA (frente al OBELISCO, Buenos Aires) =================
+// Pedido de Poly/Felipe (26/11): la CALLE VICTORIA es la ruta más larga, del ACONCAGUA hasta BUENOS AIRES.
+// Los SIETE ALTOS MANDOS son los de la presentación (diapositivas 44-113) y el OCTAVO, el más fuerte, es TOMI.
+Object.assign(PAL, {
+  rufino: { id: 'rufino', piel: '#c89068', pelo: '#202020', remera: '#2a4ab0', raya: '#f8d040', pant: '#202020' },
+  ferro: { id: 'ferro', piel: '#e8b890', pelo: '#808890', gorra: '#5a6470', remera: '#6a7480', raya: '#c8d0d8', pant: '#3a3a40' },
+  aurora: { id: 'aurora', piel: '#f4d0b8', pelo: '#f0a0d0', peloLargo: true, remera: '#f8d8f0', raya: '#ffffff', pant: '#c070b0' },
+  colorado: { id: 'colorado', piel: '#d09870', pelo: '#a03a20', gorra: '#7a5a30', remera: '#c86a30', pant: '#5a4030' },
+  marina: { id: 'marina', piel: '#e8c0a0', pelo: '#2a3a6a', peloLargo: true, gorra: '#ffffff', remera: '#2a6ad0', raya: '#ffffff', pant: '#1a2a5a' },
+  candela: { id: 'candela', piel: '#f0c098', pelo: '#e04020', peloLargo: true, remera: '#f08030', raya: '#f8e040', pant: '#802010' },
+  lautaro: { id: 'lautaro', piel: '#c89070', pelo: '#101010', peloLargo: true, remera: '#5a2aa0', raya: '#e0b040', pant: '#2a1a40' },
+  porteno: { id: 'porteno', piel: '#f0c8a0', pelo: '#3a2a1a', gorra: '#202020', remera: '#ffffff', raya: '#202020', pant: '#202020' },
+  asVictoria: { id: 'asVictoria', piel: '#e8b890', pelo: '#6a3a1a', gorra: '#74acdf', remera: '#74acdf', raya: '#ffffff', pant: '#2a3a6a' },
+});
+
+// --- La salida de PLAZA DE MULAS hacia el ESTE: la Calle Victoria ---
+for (const x of [20, 21, 22, 23]) MAPAS.plaza.grilla[10][x] = '=';
+MAPAS.plaza.salidas.push({ x: 23, y: 10, a: 'victoria1', ax: 1, ay: 2, dir: 3 });
+MAPAS.plaza.disparadores = [...(MAPAS.plaza.disparadores || []), {
+  prueba: (x, y) => x === 21 && y === 10 && !S.flags.insignia8,
+  accion: async () => {
+    await decir('GUARDIÁN DE LA CALLE VICTORIA: ¡Alto! Por acá se baja a la CALLE VICTORIA, el camino hasta la LIGA CRIOLLA en BUENOS AIRES.');
+    await decir('Solo pasan los entrenadores con las OCHO insignias. ¡Ganale primero a CUMBRE!');
+    await pasoForzado(2);
+  },
+}];
+MAPAS.plaza.carteles['12,1'] += ' Al ESTE: la CALLE VICTORIA, hasta BUENOS AIRES.';
+
+// Las grillas de la Calle Victoria (N cerro nevado · w nieve · , pasto alto · Z bloque de hielo · R roca · : piso de cueva · O roca de cueva · - arena · u paja brava · K cardón · T árbol · ~ agua · h puente)
+const VICTORIA1 = [
+  'NNNNNNNNNNNNNNNNNNNNNNNN',
+  'NNwwwww,,,,,wwwwwNN,,,NN',
+  'wwwwwwww,,,,wwRwwww,,,NN',
+  'NNwwRwwwwwwwwwwwwww,,,NN',
+  'NNwwwwwNNNNwwwwwwwwwwwNN',
+  'NN,,,wwNNNNwwwZZZwwwwwNN',
+  'NN,,,wwwwwwwwwwwwwRwwwNN',
+  'NN,,,wwwwRwwwSwwwwwwwwNN',
+  'NNwwwwwwwwwwwwww,,,,wwNN',
+  'NNNNNNwwwwwNNNNw,,,,wwNN',
+  'NN,,,,wwwwwNNNNw,,,,wwNN',
+  'NN,,,,wwRwwwwwwwwwwwwwNN',
+  'NN,,,,wwwwwwwwwwwRwwwwNN',
+  'NNwwwwwwwwNNNNNNNNwwwwNN',
+  'NNwwRwwwwwNNNNNNNNwww,NN',
+  'NN,,,,wwwwwwwwwwwwww,,NN',
+  'NN,,,,wwwwwwwwRwwwww,,NN',
+  'NN,,,,wwwZZZZwwwwwww,,NN',
+  'NNwwwwwwwwwwwwwwwwwwwwNN',
+  'NNNNNNNNwwwwwwNNNNNNNNNN',
+  'NN,,,,,,wwwwwwRww,,,,,NN',
+  'NN,,,,,,wwwwwwwww,,,,,NN',
+  'NN,,RR,,wwwwwwwww,,RR,NN',
+  'NNwwwwwwwwwwwwwwwwwwwwNN',
+  'NNwwwwwRwwwwwwwwwRwSwwNN',
+  'NNNNNNNNNNNwwNNNNNNNNNNN',
+];
+const VICTORIA2 = [
+  'RRRRRRRRRRR::RRRRRRRRRRR',
+  'RR:::::::::::::::::::aRR',
+  'RR::aa:::RRR:::RRR:::::R',
+  'RR:::::::RRR:::RRR:::::R',
+  'RRRRR::::::::::::::RRRRR',
+  'RR::::::RRRRRRRR:::::::R',
+  'RR::RR::R::::::R::RR:::R',
+  'RR::RR::R::aa::R::RR:::R',
+  'RR::::::R::::::R:::::::R',
+  'RR::::::RRRROORR:::::::R',
+  'RRRRRRR:::::::::::RRRRRR',
+  'RR:::::::::S::::::::::RR',
+  'RR::aa:::RRRRRR:::::::RR',
+  'RR:::::::RRRRRR::::aa:RR',
+  'RRRRRR::::::::::::RRRRRR',
+  'RR::::::RR::::RR::::::RR',
+  'RR::RR::RR::::RR::RR::RR',
+  'RR::RR::::::::::::RR::RR',
+  'RR::::::RRRRRRRR::::::RR',
+  'RRRRRRR:RRRRRRRR:RRRRRRR',
+  'RR:::::::::::::::::::aRR',
+  'RR:aa::RRRR::RRRR::::::R',
+  'RR:::::RRRR::RRRR::::::R',
+  'RR:::::::::::::::::::::R',
+  'RRRRRRRRRRROOORRRRRRRRRR',
+  'RR:::::::::::::::::::::R',
+  'RR::::RR:::::::::RR::::R',
+  'RR::::RR:::::S:::RR::::R',
+  'RR:::::::::::::::::::::R',
+  'RRRRRRRRRRR::RRRRRRRRRRR',
+];
+const VICTORIA3 = [
+  'KKKKKKKKKKK==KKKKKKKKKKK',
+  'KK---uuu---==---uuuu--KK',
+  'KK---uuu---==---uuuu--KK',
+  'KK--K------==------K--KK',
+  'KKuuuu-----==-----uuuuKK',
+  'KKuuuu--K--==--K--uuuuKK',
+  'KK---------==---------KK',
+  'KK---======-======----KK',
+  'KK---=--------S--=----KK',
+  'KK---=--uuuuu----=-uu-KK',
+  'KKuu-=--uuuuu-K--=-uu-KK',
+  'KKuu-=--uuuuu----=----KK',
+  'KK---=-----------=----KK',
+  'KK---======-======-K--KK',
+  'KK---------==---------KK',
+  'KK-K--uuuu-==-uuuu--K-KK',
+  'KK----uuuu-==-uuuu----KK',
+  'KK----uuuu-==-uuuu----KK',
+  'KKuu-------==-------uuKK',
+  'KKuu--K----==----K--uuKK',
+  'KK---------==---S-----KK',
+  'KKKKKKKKKKK==KKKKKKKKKKK',
+];
+const VICTORIA4 = [
+  'TTTTTTTTTTT==TTTTTTTTTTT',
+  'TT,,,,,,...==...,,,,,,TT',
+  'TT,,,,,,...==...,,,,,,TT',
+  'TT..F......==......F..TT',
+  'TT,,,,..TT.==.TT..,,,,TT',
+  'TT,,,,.....==.....,,,,TT',
+  'TT.....~~~~hh~~~~.....TT',
+  'TTjj..~~~~~hh~~~~~..jjTT',
+  'TT,,..~~~~~hh~~~~~..,,TT',
+  'TT,,...~~~~hh~~~~...,,TT',
+  'TT.........==.....S...TT',
+  'TT,,,,,,...==...,,,,,,TT',
+  'TT,,TT,,...==...,,TT,,TT',
+  'TT,,,,,,...==...,,,,,,TT',
+  'TT...F.....==.....F...TT',
+  'TTTTTT.....==.....TTTTTT',
+  'TT,,,,,,,..==..,,,,,,,TT',
+  'TT,,,,,,,..==..,,,,,,,TT',
+  'TT,,,F,,,..==..,,,F,,,TT',
+  'TT.........==.........TT',
+  'TT..S......==.........TT',
+  'TTTTTTTTTTT==TTTTTTTTTTT',
+];
+const VICTORIA5 = [
+  'TTTTTTTTTTT==TTTTTTTTTTT',
+  'TT,,,,.....==.....,,,,TT',
+  'TT,,,,.....==.....,,,,TT',
+  'TT..TT.....==.....TT..TT',
+  'TT~~~~~~~~~hh~~~~~~~~~TT',
+  'TT~~~~~~~~~hh~~~~~~~~~TT',
+  'TTjj,,,....==....,,,jjTT',
+  'TT,,,,,....==....,,,,,TT',
+  'TT,,,,,.F..==..F.,,,,,TT',
+  'TT.........==.........TT',
+  'TT..TTT....==....TTT..TT',
+  'TT,,,,,....==....,,,,,TT',
+  'TT,,,,,....==..S.,,,,,TT',
+  'TT,,,,,....==....,,,,,TT',
+  'TT.........==.........TT',
+  'TTTTTTTT...==...TTTTTTTT',
+  'TT,,,,,,...==...,,,,,,TT',
+  'TT,,,,,,...==...,,,,,,TT',
+  'TT..F......==......F..TT',
+  'TT.........==.........TT',
+  'TTTTTTTTTTT==TTTTTTTTTTT',
+];
+const BUENOS_AIRES = [
+  'TTTTTTTTTTTTTTTTTTTTTTTT',
+  'TT....................TT',
+  'TT....................TT',
+  'TT....................TT',
+  'TT....................TT',
+  'TT....................TT',
+  'TTFF.......==.......FFTT',
+  'TT.....=========......TT',
+  'TT..F..=.......=...F..TT',
+  'TT.....=.......=......TT',
+  'TT..S..=.......=..S...TT',
+  'TT.....=.......=......TT',
+  'TT.....=.......=......TT',
+  'TT======.......=======TT',
+  'TT======.......=======TT',
+  'TT.........==.........TT',
+  'TT.........==.........TT',
+  'TT.........==.........TT',
+  'TT.........==.........TT',
+  'TT.........==.........TT',
+  'TTTTTTTTTTT==TTTTTTTTTTT',
+];
+
+const AS = (o) => entrenadorNPC({ pal: PAL.asVictoria, ...o });
+Object.assign(MAPAS, {
+  victoria1: {
+    nombre: 'CALLE VICTORIA · PASO DE LOS ANDES',
+    exterior: true,
+    grilla: desdeTexto(VICTORIA1),
+    edificios: [],
+    salidas: [
+      { x: 0, y: 2, a: 'plaza', ax: 22, ay: 10, dir: 2 },
+      { x: 11, y: 25, a: 'victoria2', ax: 11, ay: 1, dir: 0 },
+      { x: 12, y: 25, a: 'victoria2', ax: 12, ay: 1, dir: 0 },
+    ],
+    carteles: {
+      '13,7': 'CALLE VICTORIA. ¡La ruta más larga de la Argentina! Baja de los ANDES, cruza CUYO y LA PAMPA y llega hasta el OBELISCO de BUENOS AIRES.',
+      '19,24': 'Abajo: la CUEVA DE LA VICTORIA. Adentro está oscuro... ¡pero las criaturas que viven ahí son fuertísimas!',
+    },
+    objetos: { R: 'Una roca enorme, dura como el hielo de los Andes.' },
+    encuentros: { lista: [['criolobo', 14], ['halcochapa', 12], ['rocapiedra', 12], ['yelmito', 10], ['minerops', 10], ['filolobo', 8], ['glaciolito', 8], ['turbihalcon', 6], ['pilarok', 6], ['arietops', 6]], min: 62, max: 66 },
+    npcs: [
+      AS({ id: 'vic_1', x: 16, y: 3, dir: 2, nombre: 'AS ENTRENADOR BAUTI',
+        equipo: [['filolobo', 70], ['turbihalcon', 70], ['glaciperador', 71]],
+        antes: ['AS BAUTI: Esta es la CALLE VICTORIA. Acá solo bajan los que tienen las OCHO insignias... ¡y los que me ganan a mí!'],
+        gana: 'AS BAUTI: ¡Bien! Vas a llegar lejos.',
+        despues: 'AS BAUTI: Los ALTOS MANDOS te esperan frente al OBELISCO. Dicen que son SIETE... y un OCTAVO que nadie conoce.' }),
+      AS({ id: 'vic_2', x: 5, y: 11, dir: 3, pal: PAL.nieve, nombre: 'ANDINISTA MAGALÍ',
+        equipo: [['pilarok', 70], ['arietops', 71], ['morenacoloso', 71]],
+        antes: ['ANDINISTA MAGALÍ: ¡Bajé del ACONCAGUA caminando! Mis criaturas de ROCA no se cansan nunca.'],
+        gana: 'ANDINISTA MAGALÍ: ¡Uf! Me ganaste en bajada.',
+        despues: 'ANDINISTA MAGALÍ: PILAROK es una columna de un templo antiguo. ¡Cuando crece se vuelve GOLEMARÁN!' }),
+      AS({ id: 'vic_3', x: 15, y: 21, dir: 2, nombre: 'AS ENTRENADORA CORAL',
+        equipo: [['yunkodrako', 71], ['escudoespectro', 71], ['glaciolobo', 72]],
+        antes: ['AS CORAL: ¡Tus criaturas tienen cara de campeonas! A ver si es cierto.'],
+        gana: 'AS CORAL: ¡Es cierto nomás!',
+        despues: 'AS CORAL: GLACIOLOBO es el As del ALTO MANDO de ACERO. ¡El hielo y el acero juntos!' }),
+    ],
+  },
+
+  victoria2: {
+    nombre: 'CUEVA DE LA VICTORIA',
+    exterior: true,
+    cueva: true,
+    oscuro: true,
+    grilla: desdeTexto(VICTORIA2),
+    edificios: [],
+    salidas: [
+      { x: 11, y: 0, a: 'victoria1', ax: 11, ay: 24, dir: 1 },
+      { x: 12, y: 0, a: 'victoria1', ax: 12, ay: 24, dir: 1 },
+      { x: 11, y: 29, a: 'victoria3', ax: 11, ay: 1, dir: 0 },
+      { x: 12, y: 29, a: 'victoria3', ax: 12, ay: 1, dir: 0 },
+    ],
+    carteles: {
+      '11,11': 'CUEVA DE LA VICTORIA. Los mineros dicen que en el fondo duermen fantasmas de antiguos luchadores...',
+      '13,27': 'Abajo: la salida a CUYO. ¡Falta mucho para BUENOS AIRES!',
+    },
+    objetos: { R: 'Roca de la cueva. Está fría y húmeda.', a: 'Cristales que brillan en la oscuridad.' },
+    encuentros: { lista: [['topometa', 14], ['espiritajo', 12], ['sombrapio', 12], ['rocapiedra', 10], ['chispdrako', 10], ['taladrotan', 8], ['geoduga', 8], ['espectropuno', 6], ['noctigarra', 6], ['yunkodrako', 6]], min: 63, max: 67 },
+    npcs: [
+      AS({ id: 'vic_4', x: 19, y: 8, dir: 2, pal: PAL.guarda, nombre: 'MINERO ALCIDES',
+        equipo: [['taladrotan', 71], ['terratunel', 72], ['laninger', 72]],
+        antes: ['MINERO ALCIDES: ¿Sentís el temblor? ¡Es mi TERRATÚNEL cavando! Es una tuneladora viva.'],
+        gana: 'MINERO ALCIDES: ¡Me dejaste enterrado!',
+        despues: 'MINERO ALCIDES: TERRATÚNEL pelea en DOS altos mandos: el de ACERO y el de TIERRA.' }),
+      AS({ id: 'vic_5', x: 3, y: 16, dir: 0, pal: PAL.vidente, nombre: 'MÉDIUM EUGENIA',
+        equipo: [['espectropuno', 71], ['noctigarra', 71], ['animaura', 72]],
+        antes: ['MÉDIUM EUGENIA: Los espíritus de los luchadores me dicen que vas a perder...'],
+        gana: 'MÉDIUM EUGENIA: Los espíritus se equivocaron. Pasa seguido.',
+        despues: 'MÉDIUM EUGENIA: ESPECTROPUÑO evoluciona en ONIMUSHA, un shogun fantasma con CUATRO puños.' }),
+      AS({ id: 'vic_6', x: 20, y: 26, dir: 2, nombre: 'AS ENTRENADOR NICANOR',
+        equipo: [['kicvoltio', 72], ['ponzonapuno', 72], ['forjadrako', 73]],
+        antes: ['AS NICANOR: ¡Entreno LUCHA en la oscuridad para no ver el miedo de mis rivales!'],
+        gana: 'AS NICANOR: ¡Qué golpe! Me quedé viendo estrellas.',
+        despues: 'AS NICANOR: El primer ALTO MANDO es de LUCHA. ¡Llevá criaturas VOLADORAS, PSÍQUICAS o HADA!' }),
+    ],
+  },
+
+  victoria3: {
+    nombre: 'CALLE VICTORIA · TRAVESÍA DE CUYO',
+    exterior: true,
+    grilla: desdeTexto(VICTORIA3),
+    edificios: [],
+    salidas: [
+      { x: 11, y: 0, a: 'victoria2', ax: 11, ay: 28, dir: 1 },
+      { x: 12, y: 0, a: 'victoria2', ax: 12, ay: 28, dir: 1 },
+      { x: 11, y: 21, a: 'victoria4', ax: 11, ay: 1, dir: 0 },
+      { x: 12, y: 21, a: 'victoria4', ax: 12, ay: 1, dir: 0 },
+    ],
+    carteles: {
+      '14,8': 'CALLE VICTORIA · TRAVESÍA DE CUYO. Arena, cardones y viento zonda. ¡Tomá agua!',
+      '16,20': 'Abajo: LA PAMPA. ¡Ya vas por la mitad de la CALLE VICTORIA!',
+    },
+    encuentros: { lista: [['rayarena', 14], ['tejobarro', 14], ['toxirruido', 12], ['geoduga', 10], ['chispaguila', 10], ['terraluna', 6], ['dunavolt', 6], ['tejopuno', 6], ['ponzonapuno', 6], ['cuarzotuga', 4], ['kicvoltio', 4]], min: 63, max: 67 },
+    npcs: [
+      AS({ id: 'vic_7', x: 4, y: 8, dir: 3, pal: PAL.coplera, nombre: 'VIÑATERA ROSALÍA',
+        equipo: [['cuarzotuga', 72], ['dunavolt', 72], ['rodcardo', 73]],
+        antes: ['VIÑATERA ROSALÍA: ¡En Mendoza las uvas crecen con el sol y el viento! Como mis criaturas.'],
+        gana: 'VIÑATERA ROSALÍA: ¡Me dejaste como pasa de uva!',
+        despues: 'VIÑATERA ROSALÍA: CUARZOTUGA tiene un jardín de cristales en el caparazón. ¡De grande es SANTUATUGA!' }),
+      AS({ id: 'vic_8', x: 19, y: 12, dir: 2, nombre: 'AS ENTRENADOR FAUSTINO',
+        equipo: [['tejopuno', 72], ['voltarraya', 73], ['ursotecton', 73]],
+        antes: ['AS FAUSTINO: Las tormentas de arena del desierto las hace mi VOLTARRAYA. ¡Mirá!'],
+        gana: 'AS FAUSTINO: ¡Se me fue la tormenta!',
+        despues: 'AS FAUSTINO: VOLTARRAYA y URSOTECTÓN pelean en el ALTO MANDO de TIERRA.' }),
+      AS({ id: 'vic_9', x: 7, y: 17, dir: 3, pal: PAL.chica, nombre: 'AS ENTRENADORA LUJÁN',
+        equipo: [['terraluna', 72], ['venenokhan', 73], ['voltibrazo', 73]],
+        antes: ['AS LUJÁN: ¡Mi TERRALUNA es una princesa! Cuando sea tu amiga del alma se vuelve la reina TERRANELLA.'],
+        gana: 'AS LUJÁN: ¡Ay, qué buena pelea!',
+        despues: 'AS LUJÁN: TERRANELLA pelea en el ALTO MANDO de HADA. ¡Con las evoluciones de FAEVE!' }),
+    ],
+  },
+
+  victoria4: {
+    nombre: 'CALLE VICTORIA · LLANURA PAMPEANA',
+    exterior: true,
+    grilla: desdeTexto(VICTORIA4),
+    edificios: [],
+    salidas: [
+      { x: 11, y: 0, a: 'victoria3', ax: 11, ay: 20, dir: 1 },
+      { x: 12, y: 0, a: 'victoria3', ax: 12, ay: 20, dir: 1 },
+      { x: 11, y: 21, a: 'victoria5', ax: 11, ay: 1, dir: 0 },
+      { x: 12, y: 21, a: 'victoria5', ax: 12, ay: 1, dir: 0 },
+    ],
+    carteles: {
+      '18,10': 'CALLE VICTORIA · LLANURA PAMPEANA. Kilómetros y kilómetros de pasto. ¡Mirá cómo corren los teros!',
+      '4,20': 'Abajo: las puertas de BUENOS AIRES. ¡Ya se ve el OBELISCO a lo lejos!',
+    },
+    encuentros: { lista: [['broteriz', 14], ['plumeluz', 12], ['ninfagua', 12], ['halcochapa', 10], ['ballenata', 8], ['chispaguila', 8], ['terraluna', 6], ['troncoraiz', 6], ['tenazagua', 6], ['danzaluz', 4]], min: 64, max: 68 },
+    npcs: [
+      AS({ id: 'vic_10', x: 4, y: 5, dir: 3, pal: PAL.beto, nombre: 'GAUCHO SEGUNDO',
+        equipo: [['troncoraiz', 73], ['tejopuno', 73], ['carayarbore', 74]],
+        antes: ['GAUCHO SEGUNDO: ¡Buenas! En la pampa crece un árbol rarísimo: el BAOBAB. ¡Y anda caminando!'],
+        gana: 'GAUCHO SEGUNDO: ¡Ah, pero mirá vos! Sabés pelear, m\'hijo.',
+        despues: 'GAUCHO SEGUNDO: TERRABAOBAB se toma el agua: los ataques de AGUA lo curan. ¡No le tires agua!' }),
+      AS({ id: 'vic_11', x: 18, y: 13, dir: 2, nombre: 'AS ENTRENADORA PILAR',
+        equipo: [['danzaluz', 73], ['tenazagua', 73], ['valquirialuz', 74]],
+        antes: ['AS PILAR: ¡En guardia! Mis criaturas de HADA pelean con espada.'],
+        gana: 'AS PILAR: ¡Touché! Ganaste.',
+        despues: 'AS PILAR: VALQUIRIALUZ es HADA y LUCHA. ¡Le ganan el VENENO, el VOLADOR, el PSÍQUICO y el ACERO!' }),
+      AS({ id: 'vic_12', x: 20, y: 17, dir: 2, pal: PAL.pescador, nombre: 'PESCADOR EUSEBIO',
+        equipo: [['submarinoz', 73], ['abismantis', 74], ['glyptopampa', 74]],
+        antes: ['PESCADOR EUSEBIO: En la laguna pesqué una cosa con pinzas gigantes... ¡y ahora es mi criatura!'],
+        gana: 'PESCADOR EUSEBIO: ¡Se me cortó la tanza!',
+        despues: 'PESCADOR EUSEBIO: ABISMANTIS es el As del ALTO MANDO de AGUA. ¡Sus pinzas son hidráulicas!' }),
+    ],
+  },
+
+  victoria5: {
+    nombre: 'CALLE VICTORIA · ACCESO A BUENOS AIRES',
+    exterior: true,
+    grilla: desdeTexto(VICTORIA5),
+    edificios: [],
+    salidas: [
+      { x: 11, y: 0, a: 'victoria4', ax: 11, ay: 20, dir: 1 },
+      { x: 12, y: 0, a: 'victoria4', ax: 12, ay: 20, dir: 1 },
+      { x: 11, y: 20, a: 'buenosaires', ax: 11, ay: 19, dir: 1 },
+      { x: 12, y: 20, a: 'buenosaires', ax: 12, ay: 19, dir: 1 },
+    ],
+    carteles: { '15,12': 'CALLE VICTORIA · ACCESO A BUENOS AIRES. ¡Bienvenido a la Capital! Seguí derecho hasta el OBELISCO.' },
+    encuentros: { lista: [['ninfagua', 10], ['plumeluz', 10], ['sombrapio', 10], ['ballenata', 10], ['tenazagua', 8], ['espiritajo', 8], ['toxirruido', 8], ['danzaluz', 6], ['kicvoltio', 6], ['chispdrako', 6], ['submarinoz', 5], ['ponzonapuno', 5], ['yunkodrako', 4]], min: 65, max: 69 },
+    npcs: [
+      AS({ id: 'vic_13', x: 5, y: 8, dir: 3, nombre: 'AS ENTRENADOR LISANDRO',
+        equipo: [['aeronavega', 74], ['hidrotitan', 74], ['espectroferro', 75]],
+        antes: ['AS LISANDRO: ¡Última pelea antes de la LIGA! Si no me ganás, volvé a empezar la CALLE VICTORIA.'],
+        gana: 'AS LISANDRO: Estás listo. ¡Andá al OBELISCO!',
+        despues: 'AS LISANDRO: Comprá muchos remedios en el CEMIC. Adentro de la LIGA no te podés curar entre pelea y pelea.' }),
+      AS({ id: 'vic_14', x: 18, y: 17, dir: 2, nombre: 'AS ENTRENADORA DELFINA',
+        equipo: [['sombrakor', 74], ['onimusha', 75], ['golemaran', 75]],
+        antes: ['AS DELFINA: ¡Entreno con el ALTO MANDO de LUCHA! Bueno... le alcanzo el agua. ¡Pero algo aprendí!'],
+        gana: 'AS DELFINA: ¡Ay! RUFINO me va a retar.',
+        despues: 'AS DELFINA: GOLEMARÁN es el As de RUFINO. Le hacen mucho el AGUA, la PLANTA, la TIERRA, el ACERO, el PSÍQUICO y el HADA.' }),
+    ],
+  },
+
+  buenosaires: {
+    nombre: 'BUENOS AIRES · EL OBELISCO',
+    exterior: true,
+    grilla: desdeTexto(BUENOS_AIRES),
+    edificios: [
+      { x: 7, y: 1, w: 10, h: 5, tipo: 'gimnasioLiga', puerta: 4, abre: true },
+      { x: 10, y: 8, w: 4, h: 5, tipo: 'obelisco', puerta: 0, abre: false },
+      { x: 2, y: 15, w: 5, h: 4, tipo: 'centro', puerta: 2, abre: true },
+      { x: 17, y: 15, w: 5, h: 4, tipo: 'adobe', puerta: 2, abre: false },
+    ],
+    salidas: [
+      { x: 11, y: 20, a: 'victoria5', ax: 11, ay: 19, dir: 0 },
+      { x: 12, y: 20, a: 'victoria5', ax: 12, ay: 19, dir: 0 },
+      { x: 11, y: 5, a: 'liga', ax: 5, ay: 9, dir: 1 },
+      { x: 4, y: 18, a: 'centroBA', ax: 4, ay: 6, dir: 1 },
+    ],
+    carteles: {
+      '4,10': 'EL OBELISCO. 67 metros de alto, en el medio de la AVENIDA 9 DE JULIO, ¡la más ancha del mundo!',
+      '18,10': 'LIGA CRIOLLA. Siete ALTOS MANDOS y un OCTAVO, el más fuerte. Quien les gane a los OCHO, es CAMPEÓN de la Argentina.',
+    },
+    objetos: {},
+    npcs: [
+      {
+        id: 'porteno', x: 8, y: 17, dir: 3, pal: PAL.porteno,
+        hablar: async () => {
+          await decir('PORTEÑO: ¡Che, pibe! ¿Llegaste caminando desde el ACONCAGUA por la CALLE VICTORIA? ¡Qué capo!');
+          await decir('Esa de ahí arriba es la LIGA CRIOLLA, frente al OBELISCO. Adentro no te dejan curar entre pelea y pelea: ¡llevá remedios!');
+        },
+      },
+      {
+        id: 'tanguera', x: 16, y: 9, dir: 2, pal: PAL.mama,
+        hablar: async () => {
+          if (S.flags.campeon) await decir('TANGUERA: ¡Sos el CAMPEÓN! Toda Buenos Aires baila un tango en tu honor.');
+          else await decir('TANGUERA: Dicen que el OCTAVO ALTO MANDO usa criaturas que te ganan justo a las tuyas... ¡Nadie sabe quién es!');
+        },
+      },
+    ],
+  },
+
+  centroBA: crearCentro('buenosaires', 4, 19, 'centroBA'),
+});
+
+// ================= ADENTRO DE LA LIGA =================
+// Sala de un ALTO MANDO: se entra por abajo y la puerta de arriba se abre recién cuando le ganás.
+const ALTOS_MANDOS = [
+  { sala: 'liga1', nombre: 'RUFINO', pal: 'rufino', tipo: 'LUCHA', deco: 'R', piso: '_',
+    titulo: 'el boxeador de La Boca', equipo: [['forjadrako', 76], ['voltibrazo', 76], ['sombrakor', 77], ['venenokhan', 77], ['onimusha', 78], ['golemaran', 79, { hab: 'armaduraRunica' }]],
+    antes: ['RUFINO: ¡Bienvenido a la LIGA CRIOLLA, pibe! Soy RUFINO, el primero de los ALTOS MANDOS.', 'Me crié boxeando en LA BOCA. ¡Mis criaturas de LUCHA pegan como un tren!'],
+    gana: 'RUFINO: ¡Qué piña me diste! Seguí, que te espera el segundo.', despues: 'RUFINO: ¡Arriba, pibe! La puerta ya está abierta.' },
+  { sala: 'liga2', nombre: 'FERRO', pal: 'ferro', tipo: 'ACERO', deco: 'c', piso: '_',
+    titulo: 'el herrero de los rieles', equipo: [['terratunel', 77], ['aeronavega', 77], ['hidrotitan', 78], ['bastionceratops', 78], ['espectroferro', 79], ['glaciolobo', 80, { hab: 'garraDura' }]],
+    antes: ['FERRO: Soy FERRO. Arreglaba los trenes del ferrocarril con mis propias manos.', 'Mis criaturas de ACERO no se doblan nunca. ¡Probá romperlas!'],
+    gana: 'FERRO: Me doblaste el acero... Increíble.', despues: 'FERRO: Seguí. AURORA te espera con su bosque mágico.' },
+  { sala: 'liga3', nombre: 'AURORA', pal: 'aurora', tipo: 'HADA', deco: 'p', piso: 'v',
+    titulo: 'el hada de los bosques de Palermo', equipo: [['wraithfae', 78], ['mythfae', 78], ['terranella', 79], ['valquirialuz', 79], ['santuatuga', 80, { hab: 'prismaTelurico' }], ['grandfae', 81]],
+    antes: ['AURORA: Hola, Felipe. Soy AURORA, la tercera ALTA MANDO.', 'Las HADAS de los bosques de Palermo me eligieron a mí. ¿Querés conocer su magia?'],
+    gana: 'AURORA: Tu corazón brilla más que mis hadas.', despues: 'AURORA: COLORADO, el de la TIERRA, es muy duro. ¡Suerte!' },
+  { sala: 'liga4', nombre: 'COLORADO', pal: 'colorado', tipo: 'TIERRA', deco: 'R', piso: '-',
+    titulo: 'el baqueano de la tierra colorada', equipo: [['arquitemplillo', 79], ['terratunel', 79], ['voltarraya', 80], ['ursotecton', 80], ['pampadon', 81], ['terrabaobab', 82, { hab: 'absorbeAgua' }]],
+    antes: ['COLORADO: Soy COLORADO, baqueano. Conozco cada pedazo de tierra de este país.', '¡Mis criaturas hacen temblar el piso! ¿Aguantás un terremoto?'],
+    gana: 'COLORADO: Te plantaste firme como un baobab.', despues: 'COLORADO: MARINA te espera. ¡Llevá algo para el AGUA!' },
+  { sala: 'liga5', nombre: 'MARINA', pal: 'marina', tipo: 'AGUA', deco: '~', piso: '_',
+    titulo: 'la capitana del Río de la Plata', equipo: [['azularza', 80], ['glyptopampa', 80], ['submaringer', 81], ['glaciorka', 81], ['iberaxolot', 82], ['abismantis', 83, { hab: 'megadisparador' }]],
+    antes: ['MARINA: ¡Ahoy! Soy MARINA, capitana del RÍO DE LA PLATA, el río más ancho del mundo.', '¡Mis criaturas de AGUA te van a llevar con la correntada!'],
+    gana: 'MARINA: Naufragué... ¡Qué bien navegás!', despues: 'MARINA: Ahora viene CANDELA. ¡Esa quema todo!' },
+  { sala: 'liga6', nombre: 'CANDELA', pal: 'candela', tipo: 'FUEGO', deco: 'L', piso: '_',
+    titulo: 'la parrillera de fuego', equipo: [['submaringer', 81], ['piquillonco', 81], ['zorzaliente', 82], ['braspuma', 82], ['turborush', 83], ['ignidraxx', 84, { hab: 'maestroFuego' }]],
+    antes: ['CANDELA: ¡Hola, hola! Soy CANDELA. Prendo el fuego más grande de la Argentina... ¡con una sola chispa!', '¡Mis criaturas de FUEGO te dejan a punto!'],
+    gana: 'CANDELA: ¡Me apagaste el fuego! Uf...', despues: 'CANDELA: El último de los siete es LAUTARO. Sus DRAGONES son los más fuertes.' },
+  { sala: 'liga7', nombre: 'LAUTARO', pal: 'lautaro', tipo: 'DRAGÓN', deco: 'a', piso: 'v',
+    titulo: 'el guardián de los dragones', equipo: [['lumisprite', 82], ['noxidragon', 82], ['latigacer', 83], ['iberadraco', 83], ['blizzwraith', 84], ['ignidraxx', 85, { hab: 'maestroFuego' }]],
+    antes: ['LAUTARO: Soy LAUTARO, el séptimo ALTO MANDO. Los DRAGONES de la Patagonia me cuidan desde que nací.', 'Si me ganás, solo te queda el OCTAVO... ¡el más fuerte de todos!'],
+    gana: 'LAUTARO: Hacía años que nadie le ganaba a mis dragones.', despues: 'LAUTARO: Arriba te espera el OCTAVO ALTO MANDO. Creo que lo conocés...' },
+];
+const LIGA_SALAS = [...ALTOS_MANDOS.map(a => a.sala), 'ligaTomi'];
+function nivelLiga(n) { return S.flags.campeon ? Math.min(100, n + 6) : n; } // la revancha es más fuerte
+
+function salaLiga(i, o) {
+  const id = LIGA_SALAS[i], antes = i === 0 ? 'liga' : LIGA_SALAS[i - 1], despues = LIGA_SALAS[i + 1] || 'ligaFama';
+  const d = o.deco, p = o.piso;
+  const grilla = desdeTexto([
+    '#####m#####',
+    '#####' + p + '#####',
+    '#' + d + d + p.repeat(5) + d + d + '#',
+    '#' + d + p.repeat(7) + d + '#',
+    '#' + p.repeat(9) + '#',
+    '#' + p + d + p.repeat(5) + d + p + '#',
+    '#' + p.repeat(9) + '#',
+    '#' + d + p.repeat(7) + d + '#',
+    '#' + p.repeat(9) + '#',
+    '#####m#####',
+  ]);
+  const clave = 'liga_' + id;
+  return {
+    nombre: o.titulo ? 'LIGA · SALA DE ' + o.nombre : 'LIGA · SALA DEL OCTAVO',
+    grilla, edificios: [],
+    salidas: [
+      { x: 5, y: 0, a: despues, ax: 5, ay: despues === 'ligaFama' ? 6 : 8, dir: 1 },
+      { x: 5, y: 9, a: antes, ax: 5, ay: i === 0 ? 8 : 1, dir: 0 },
+    ],
+    objetos: {
+      R: 'Una piedra gigante partida al medio de una piña.', c: 'Un yunque y herramientas de herrero.', p: 'Una planta con flores que brillan como estrellitas.',
+      '~': 'Una pileta de agua del Río de la Plata.', L: '¡Brasas encendidas! Mejor no tocar.', a: 'Escamas de dragón tan grandes como un plato.',
+    },
+    disparadores: [
+      { // no se puede volver para atrás
+        prueba: (x, y) => x === 5 && y === 8,
+        accion: async () => { await decir('La puerta se cerró detrás tuyo. ¡En la LIGA no se puede volver atrás!'); await pasoForzado(1); },
+      },
+      { // la puerta de arriba se abre recién cuando le ganás
+        prueba: (x, y) => x === 5 && y === 1 && !S.flags[clave],
+        accion: async () => { await decir('La puerta está cerrada con llave. ¡Primero tenés que ganarle a ' + (o.nombre || 'TOMI') + '!'); await pasoForzado(0); },
+      },
+    ],
+    npcs: [o.npc || {
+      id: 'mando_' + id, x: 5, y: 3, dir: 0, pal: PAL[o.pal],
+      hablar: async () => {
+        if (S.flags[clave]) { await decir(o.despues); return; }
+        for (const t of o.antes) await decir(t);
+        const r = await batalla({ entrenador: { nombre: 'ALTO MANDO ' + o.nombre, pal: PAL[o.pal], equipo: o.equipo.map(([e, n, x]) => x ? [e, nivelLiga(n), x] : [e, nivelLiga(n)]) } });
+        if (r === 'gana') {
+          S.flags[clave] = true;
+          await decir(o.gana);
+          await decir('¡Se escuchó un CLIC! La puerta de arriba se abrió.');
+          guardar();
+        }
+      },
+    }],
+  };
+}
+ALTOS_MANDOS.forEach((o, i) => { MAPAS[o.sala] = salaLiga(i, o); });
+
+// ---------- TOMI, el OCTAVO ALTO MANDO ----------
+// Su equipo (lo pidió Poly):
+//  1) el inicial opuesto al tuyo (el que le gana), ya evolucionado al máximo
+//  2) la criatura "opuesta" a tu PRIMERA CAPTURA (la que más le gana)
+//  3) un ATAQUE (Andespectro, Iberadraco, Umbracor...) y 4) una DEFENSA (Ombuastión, Cobijoso...)
+//  5-6) dos que cubran las debilidades que le quedan al equipo; si ya están todas cubiertas, otro ataque y otra defensa
+const FINAL_INICIAL = { flamartija: 'ignidraxx', ajolodo: 'iberaxolot', ramoa: 'carayarbore' };
+const TOMI_ATAQUE = ['andespectro', 'iberadraco', 'umbracor', 'latigacer', 'voltibrazo', 'sombrakor', 'onimusha', 'glaciolobo', 'aeronavega', 'valquirialuz', 'voltarraya', 'noxidragon'];
+const TOMI_DEFENSA = ['ombuastion', 'cobijoso', 'santuatuga', 'bastionceratops', 'hidrotitan', 'terrabaobab', 'espectroferro', 'golemaran', 'wandacoloso', 'espejonte'];
+const TOMI_CONTRAS = ['glaciorka', 'andespectro', 'iberadraco', 'umbracor', 'ombuastion', 'pampadon', 'latigacer', 'noxidragon', 'lumisprite', 'blizzwraith',
+  'espejonte', 'grandfae', 'animaura', 'morenacoloso', 'rodcardo', 'laninger', 'braspuma', 'pumentor', 'gargorrupt', 'turborush', 'zorzaliente', 'azularza',
+  'glyptopampa', 'piquillonco', 'submaringer', 'phantolycan', 'umbratail', 'yaguaraba', 'androideno', 'voltdrake', 'geyserdrake',
+  'forjadrako', 'voltibrazo', 'sombrakor', 'venenokhan', 'golemaran', 'onimusha', 'terratunel', 'aeronavega', 'hidrotitan', 'bastionceratops', 'espectroferro',
+  'glaciolobo', 'terranella', 'santuatuga', 'valquirialuz', 'terrabaobab', 'voltarraya', 'ursotecton', 'abismantis'];
+const TODOS_TIPOS = Object.keys(COLOR_TIPO);
+const poder = id => { const b = ESPECIES[id].base; return b.ps + b.atk + b.def + b.vel; };
+function mejorDe(lista, puntaje, usados) {
+  let mejor = null, mp = -Infinity;
+  for (const id of lista) {
+    if (!ESPECIES[id] || usados.includes(id)) continue;
+    const p = puntaje(id) + poder(id) / 10000;
+    if (p > mp) { mp = p; mejor = id; }
+  }
+  return mejor;
+}
+// Qué tipos de ataque le pegan "muy eficaz" a alguien del equipo y nadie del equipo los aguanta
+function debilidadesPendientes(equipo) {
+  return TODOS_TIPOS.filter(t => {
+    const efs = equipo.map(id => eficacia(t, ESPECIES[id].tipos));
+    return efs.some(e => e > 1) && !efs.some(e => e < 1);
+  });
+}
+function equipoTomiLiga(primera) {
+  const inicialTomi = FINAL_INICIAL[S.flags.inicialTomi] || 'carayarbore';
+  const tuInicial = FINAL_INICIAL[S.flags.inicial] || 'ignidraxx';
+  const finalesIniciales = Object.values(FINAL_INICIAL);
+  const usados = [...finalesIniciales]; // ningún otro inicial
+  const eq = [inicialTomi];
+  // 2) el opuesto a tu primera captura: el que más le gana (suma de lo eficaz que son sus dos tipos)
+  const tiposPrimera = ESPECIES[primera] ? ESPECIES[primera].tipos : ['NORMAL'];
+  const contra = mejorDe(TOMI_CONTRAS, id => ESPECIES[id].tipos.reduce((a, t) => a + eficacia(t, tiposPrimera), 0), [...usados, ...eq]);
+  if (contra) eq.push(contra);
+  // 3) ataque: el que más le pega a tu inicial
+  const tiposTuyos = ESPECIES[tuInicial].tipos;
+  const ataque = mejorDe(TOMI_ATAQUE, id => Math.max(...ESPECIES[id].tipos.map(t => eficacia(t, tiposTuyos))), [...usados, ...eq]);
+  if (ataque) eq.push(ataque);
+  // 4) defensa: la que mejor aguanta los ataques de tu inicial
+  const defensa = mejorDe(TOMI_DEFENSA, id => -Math.max(...tiposTuyos.map(t => eficacia(t, ESPECIES[id].tipos))), [...usados, ...eq]);
+  if (defensa) eq.push(defensa);
+  // 5-6) cubrir debilidades
+  const todos = [...new Set([...TOMI_CONTRAS, ...TOMI_ATAQUE, ...TOMI_DEFENSA])];
+  for (let k = 0; k < 2; k++) {
+    const pend = debilidadesPendientes(eq);
+    let id;
+    if (pend.length) id = mejorDe(todos, c => pend.filter(t => eficacia(t, ESPECIES[c].tipos) < 1).length * 10 - debilidadesPendientes([...eq, c]).length, [...usados, ...eq]);
+    else id = k === 0 ? mejorDe(TOMI_ATAQUE, c => poder(c), [...usados, ...eq]) : mejorDe(TOMI_DEFENSA, c => ESPECIES[c].base.def + ESPECIES[c].base.ps, [...usados, ...eq]);
+    if (id) eq.push(id);
+  }
+  // el inicial va último: es su As
+  const orden = [...eq.slice(1), eq[0]];
+  const niveles = [84, 85, 85, 86, 86, 88];
+  return orden.map((id, i) => [id, nivelLiga(niveles[i])]);
+}
+async function primeraCapturaTomi() {
+  if (S.flags.primeraCaptura && ESPECIES[S.flags.primeraCaptura]) return S.flags.primeraCaptura;
+  // Partidas viejas: no estaba anotada. Le preguntamos a Felipe.
+  const vistos = [];
+  for (const m of [...S.equipo, ...S.caja]) if (m && ESPECIES[m.id] && m.id !== S.flags.inicial && !Object.values(TOMI_FORMAS.medio).concat(Object.values(FINAL_INICIAL)).includes(m.id) && !vistos.includes(m.id)) vistos.push(m.id);
+  if (!vistos.length) return 'hornerito';
+  await decir('TOMI: Antes de pelear... ¿te acordás cuál fue la PRIMERA criatura que atrapaste? Yo sí me acuerdo de la mía.');
+  const filas = vistos.map(id => ({ txt: ESPECIES[id].nombre.toUpperCase(), sub: ESPECIES[id].tipos.map(nombreTipo).join('/'), der: '', desc: 'Si no te acordás bien, elegí la que creas. Si su forma es evolucionada, igual sirve.' }));
+  const i = await listaScroll('¿CUÁL FUE TU PRIMERA CAPTURA?', filas);
+  const id = vistos[i >= 0 ? i : 0];
+  S.flags.primeraCaptura = id;
+  return id;
+}
+const TOMI_LIGA = {
+  id: 'mando_tomi', x: 5, y: 3, dir: 0, pal: PAL.tomi,
+  hablar: async () => {
+    if (S.flags.liga_ligaTomi) { await decir('TOMI: ¡Sos el CAMPEÓN, Felipe! Andá arriba, al SALÓN DE LA FAMA. ¡Yo voy atrás tuyo!'); return; }
+    await decir('TOMI: ¡Felipe! ¡Por fin llegaste!');
+    await decir('TOMI: ¿Sorprendido? ¡Yo soy el OCTAVO ALTO MANDO! Llegué antes que vos y les gané a los otros siete.');
+    await decir('TOMI: Desde que elegimos nuestras criaturas en el laboratorio de la Profe Ceibo, armé mi equipo para ganarte A VOS.');
+    const primera = await primeraCapturaTomi();
+    const equipo = equipoTomiLiga(primera);
+    const contra = equipo[0][0];
+    await decir(`TOMI: Tengo a ${ESPECIES[equipo[5][0]].nombre.toUpperCase()}, que le gana a tu inicial. Y a ${ESPECIES[contra].nombre.toUpperCase()}, para tu primera captura, ${ESPECIES[primera].nombre.toUpperCase()}.`);
+    await decir('TOMI: ¡Y el resto cubre todas mis debilidades! Esta es la pelea más importante de nuestras vidas. ¡Con todo!');
+    const r = await batalla({ entrenador: { nombre: 'ALTO MANDO TOMI', pal: PAL.tomi, equipo } });
+    if (r === 'gana') {
+      S.flags.liga_ligaTomi = true;
+      await decir('TOMI: ...No puede ser. Te armé el equipo perfecto y igual me ganaste.');
+      await decir('TOMI: ¡Sos el mejor entrenador de la Argentina, Felipe! ¡Sos el CAMPEÓN!');
+      await decir('TOMI: Subí al SALÓN DE LA FAMA. ¡Tus criaturas se lo merecen!');
+      guardar();
+    } else await decir('TOMI: (Tomi se queda esperando que vuelvas a intentarlo)');
+  },
+};
+MAPAS.ligaTomi = salaLiga(7, { nombre: 'TOMI', deco: 'g', piso: 'v', npc: TOMI_LIGA });
+MAPAS.ligaTomi.nombre = 'LIGA · SALA DEL OCTAVO ALTO MANDO';
+MAPAS.ligaTomi.objetos.g = 'Una esfera brillante. Adentro se ve el OBELISCO de noche.';
+
+// Hall de entrada: CEMIC, almacén y la puerta a la primera sala
+MAPAS.liga = {
+  nombre: 'LIGA CRIOLLA',
+  grilla: desdeTexto([
+    '#####m#####',
+    '#k_______p#',
+    '#_________#',
+    '#p_______p#',
+    '#_________#',
+    '#__vvvvv__#',
+    '#__vvvvv__#',
+    '#p_______p#',
+    '#_________#',
+    '#_________#',
+    '#####m#####',
+  ]),
+  edificios: [],
+  salidas: [
+    { x: 5, y: 0, a: 'liga1', ax: 5, ay: 8, dir: 1 },
+    { x: 5, y: 10, a: 'buenosaires', ax: 11, ay: 6, dir: 0 },
+  ],
+  objetos: { k: 'Trofeos de los campeones de otras regiones.', t: 'El mostrador de la LIGA.', p: 'Una maceta con un ceibo en flor.' },
+  disparadores: [
+    { // al entrar a la primera sala empieza una vuelta nueva: hay que ganarle a los OCHO seguidos
+      prueba: (x, y) => x === 5 && y === 1,
+      accion: async () => { for (const s of LIGA_SALAS) delete S.flags['liga_' + s]; },
+    },
+  ],
+  npcs: [
+    {
+      id: 'enfermera_liga', x: 2, y: 2, dir: 0, pal: PAL.rosa,
+      hablar: async () => {
+        await decir('ENFERMERA DE LA LIGA: ¡Bienvenido a la LIGA CRIOLLA! Te curo a tus criaturas.');
+        curarEquipo();
+        S.flags.centro = { mapa: 'liga', x: 2, y: 4, dir: 1 };
+        await decir('¡Listo! Ojo: adentro no hay CEMIC. Si perdés, volvés acá y tenés que empezar de nuevo desde el primer ALTO MANDO.');
+      },
+    },
+    { id: 'almacenero_liga', x: 8, y: 2, dir: 0, pal: PAL.almacenero, hablar: () => tienda() },
+    {
+      id: 'guardia_liga', x: 6, y: 1, dir: 0, pal: PAL.guarda,
+      hablar: async () => {
+        await decir('GUARDIA: Arriba están las salas de los ALTOS MANDOS. Son OCHO, uno atrás del otro.');
+        await decir('Una vez que entrás, no hay vuelta atrás: ¡tenés que ganarles a todos seguidos!');
+        if (S.flags.campeon) await decir('Como ya sos CAMPEÓN, ahora pelean con todo: ¡sus criaturas están más fuertes!');
+      },
+    },
+  ],
+};
+
+// SALÓN DE LA FAMA
+MAPAS.ligaFama = {
+  nombre: 'SALÓN DE LA FAMA',
+  grilla: desdeTexto([
+    '###########',
+    '#gvvvvvvvg#',
+    '#vvvvgvvvv#',
+    '#vvvvvvvvv#',
+    '#gvvvvvvvg#',
+    '#vvvvvvvvv#',
+    '#vvvvvvvvv#',
+    '#####m#####',
+  ]),
+  edificios: [],
+  salidas: [{ x: 5, y: 7, a: 'ligaTomi', ax: 5, ay: 1, dir: 0 }],
+  objetos: { g: () => verSalonFama() },
+  npcs: [
+    {
+      id: 'ceibo_fama', x: 5, y: 3, dir: 0, pal: PAL.ceibo,
+      hablar: async () => {
+        if (!S.flags.liga_ligaTomi) { await decir('PROFE CEIBO: ...'); return; }
+        await decir('PROFE CEIBO: ¡Felipe! ¡Vine corriendo desde PUEBLO TERO apenas me enteré!');
+        await decir('PROFE CEIBO: Este es el SALÓN DE LA FAMA. Acá quedan guardadas para siempre las criaturas de los CAMPEONES.');
+        const nuevos = S.equipo.map(m => ({ id: m.id, nombre: nombreDe(m), nivel: m.nivel, shiny: !!m.shiny }));
+        S.flags.salonFama = [...(S.flags.salonFama || []), { equipo: nuevos }].slice(-5);
+        const primeraVez = !S.flags.campeon;
+        S.flags.campeon = true;
+        delete S.flags.liga_ligaTomi; // para la próxima vuelta (revancha)
+        for (const m of S.equipo) await decir(`¡${nombreDe(m)} entró al SALÓN DE LA FAMA!`, { auto: 40 });
+        await decir('¡FELIPE ES EL CAMPEÓN DE LA LIGA CRIOLLA!');
+        if (primeraVez) {
+          S.bolsa.alfajor = (S.bolsa.alfajor || 0) + 20;
+          await decir('PROFE CEIBO: Tomá 20 ALFAJORES de premio. ¡Te los ganaste!');
+          await decir('PROFE CEIBO: Los ALTOS MANDOS dicen que quieren la revancha... ¡y la próxima vez van a estar más fuertes!');
+        }
+        curarEquipo();
+        guardar();
+        await decir('PROFE CEIBO: Vamos, que afuera te está esperando toda Buenos Aires.');
+        await viajar({ a: 'buenosaires', ax: 11, ay: 6, dir: 0 });
+        await decir('¡La gente aplaude frente al OBELISCO! ¡Viva el CAMPEÓN!');
+      },
+    },
+  ],
+};
+async function verSalonFama() {
+  const lista = S.flags.salonFama || [];
+  if (!lista.length) { await decir('Una esfera vacía. Acá se guardan los equipos de los CAMPEONES.'); return; }
+  const ult = lista[lista.length - 1];
+  await decir(`El último equipo CAMPEÓN: ${ult.equipo.map(m => m.nombre + ' Nv' + m.nivel).join(', ')}.`);
+}

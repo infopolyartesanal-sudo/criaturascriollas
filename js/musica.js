@@ -335,3 +335,13 @@ pistaDeseada = function () {
   if (S.escena === 'mundo' && /^templo_/.test(S.mapa)) return 'regi_' + S.mapa.slice(7);
   return _pistaBase();
 };
+
+// ===== LIGA CRIOLLA: música de gimnasio en las salas y una canción especial para TOMI, el OCTAVO ALTO MANDO =====
+CANCIONES.campeon = { ...CANCIONES.gimnasio, bpm: 160 };
+const _pistaAntesLiga = pistaDeseada;
+pistaDeseada = function () {
+  if (S.escena === 'batalla' && bt && bt.ent && bt.ent.nombre === 'ALTO MANDO TOMI') return 'campeon';
+  if (S.escena === 'batalla' && bt && bt.ent && /^ALTO MANDO/.test(bt.ent.nombre)) return 'gimnasio';
+  if (S.escena === 'mundo' && /^liga/.test(S.mapa)) return S.mapa === 'ligaTomi' ? 'campeon' : 'gimnasio';
+  return _pistaAntesLiga();
+};

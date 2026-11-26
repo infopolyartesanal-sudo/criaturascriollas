@@ -3195,3 +3195,500 @@ function sortearHab(id) {
   if (e.habOculta && Math.random() < 0.1) return 'o';
   return Math.floor(Math.random() * e.habs.length);
 }
+
+// ===== LA LIGA CRIOLLA: criaturas de los ALTOS MANDOS (diseño de Felipe, diapositivas 44-113, 26/11/2026) =====
+// Nombres, tipos, habilidades y "para qué alto mando" son de Felipe. Dibujos, niveles exactos,
+// estadísticas que faltaban y movimientos: elegidos por Claude a partir de sus descripciones.
+Object.assign(MOVS, {
+  martillo_forja: { nombre: 'Martillo Forja', tipo: 'ACERO', pot: 130, prec: 90, pp: 5 },
+  palma_corrosiva: { nombre: 'Palma Corrosiva', tipo: 'VENENO', pot: 90, prec: 100, pp: 10, punio: true },
+  impacto_sismico: { nombre: 'Impacto Sísmico', tipo: 'ROCA', pot: 100, prec: 95, pp: 10 },
+  puno_mas_alla: { nombre: 'Puño del Más Allá', tipo: 'FANTASMA', pot: 95, prec: 100, pp: 10, punio: true },
+  embate_raices: { nombre: 'Embate de Raíces', tipo: 'PLANTA', pot: 95, prec: 100, pp: 10 },
+  golpe_karate: { nombre: 'Golpe Kárate', tipo: 'LUCHA', pot: 65, prec: 100, pp: 25, punio: true, critAlto: true },
+  zarpazo: { nombre: 'Zarpazo', tipo: 'LUCHA', pot: 75, prec: 100, pp: 20, corta: true },
+  espada_santa: { nombre: 'Espada Santa', tipo: 'LUCHA', pot: 90, prec: 100, pp: 15, corta: true },
+  patada_voltio: { nombre: 'Patada Voltio', tipo: 'ELECTRICO', pot: 80, prec: 95, pp: 15 },
+  puno_voltio: { nombre: 'Puño Voltio', tipo: 'ELECTRICO', pot: 75, prec: 100, pp: 15, punio: true },
+  descarga_duna: { nombre: 'Descarga de Duna', tipo: 'ELECTRICO', pot: 90, prec: 100, pp: 10 },
+  tajo_umbrio: { nombre: 'Tajo Umbrío', tipo: 'SINIESTRO', pot: 70, prec: 100, pp: 15, corta: true, critAlto: true },
+  taladro: { nombre: 'Taladro', tipo: 'TIERRA', pot: 80, prec: 95, pp: 20 },
+  ala_acero: { nombre: 'Ala de Acero', tipo: 'ACERO', pot: 70, prec: 95, pp: 25 },
+  hidropulso: { nombre: 'Hidropulso', tipo: 'AGUA', pot: 60, prec: 100, pp: 20 },
+  pinza_hidraulica: { nombre: 'Pinza Hidráulica', tipo: 'AGUA', pot: 95, prec: 95, pp: 10, corta: true },
+  carantona: { nombre: 'Carantoña', tipo: 'HADA', pot: 90, prec: 90, pp: 10 },
+  destello_cuarzo: { nombre: 'Destello de Cuarzo', tipo: 'HADA', pot: 80, prec: 100, pp: 15 },
+  colmillo_hielo: { nombre: 'Colmillo Hielo', tipo: 'HIELO', pot: 65, prec: 95, pp: 15 },
+});
+Object.assign(HABILIDADES, {
+  agallas: { nombre: 'Agallas', ef: 'garra', desc: 'Pelea con todas sus ganas: sus ataques pegan un 30% más.' },
+  fuerzaBruta: { nombre: 'Fuerza Bruta', ef: 'garra', desc: 'Pega con toda su fuerza: sus ataques pegan un 30% más.' },
+  templeAcero: { nombre: 'Temple de Acero', ef: 'ignifugo', desc: 'Su acero templado aguanta el calor: el Fuego le hace la mitad.' },
+  muroFerreo: { nombre: 'Muro Férreo', ef: 'filtro', desc: 'Los ataques muy eficaces le hacen menos daño.' },
+  estatica: { nombre: 'Electricidad Estática', ef: 'contacto', desc: 'El que lo golpea se electrocuta un poco.' },
+  punoVoltio: { nombre: 'Puño Voltio', ef: 'punoFerreo', desc: 'Sus puñetazos cargados de rayos pegan un 30% más.' },
+  allanamiento: { nombre: 'Allanamiento', ef: 'critico', desc: 'Se mete por cualquier hueco: hace más golpes críticos.' },
+  vistaLince: { nombre: 'Vista Lince', ef: 'critico', desc: 'Ve los puntos débiles: hace más golpes críticos.' },
+  focoInterno: { nombre: 'Foco Interno', ef: 'impasible', desc: 'Nada lo distrae: si le pegan un golpe muy eficaz, se vuelve más rápido.' },
+  tecnico: { nombre: 'Técnico', ef: 'garra', desc: 'Conoce todas las técnicas: sus ataques pegan un 30% más.' },
+  pielSeca: { nombre: 'Piel Seca', ef: 'regenera', desc: 'Su piel húmeda lo cura: recupera un poco de PS cada turno.' },
+  inmunidad: { nombre: 'Inmunidad', ef: 'curaNatural', desc: 'Nunca queda envenenado.' },
+  corrosion: { nombre: 'Corrosión', ef: 'toqueToxico', desc: 'Su ácido envenena hasta el metal: a veces envenena al pegar.' },
+  maestroToxico: { nombre: 'Maestro Tóxico', ef: 'toqueToxico', desc: 'Domina los puntos de presión venenosos: cuando pega, a veces envenena.' },
+  armaduraRunica: { nombre: 'Armadura Rúnica', ef: 'filtro', desc: 'Sus runas lo protegen: los ataques muy eficaces le hacen menos daño.' },
+  levitacion: { nombre: 'Levitación', ef: 'intangible', desc: 'Flota: los ataques de Tierra no lo tocan.' },
+  espirituIndomable: { nombre: 'Espíritu Indomable', ef: 'impasible', desc: 'Nunca se rinde: si le pegan un golpe muy eficaz, se vuelve más rápido.' },
+  impetuArena: { nombre: 'Ímpetu Arena', ef: 'veloz', desc: 'Corre por la arena: al entrar se vuelve más rápido.' },
+  poderArena: { nombre: 'Poder Arena', ef: 'garra', desc: 'La arena lo hace fuerte: sus ataques pegan un 30% más.' },
+  rompemoldes: { nombre: 'Rompemoldes', ef: 'cromolente', desc: 'Rompe cualquier defensa: sus ataques poco eficaces pegan el doble.' },
+  sacapecho: { nombre: 'Sacapecho', ef: 'cuerpoPuro', desc: 'Saca pecho: nadie le puede bajar el ATAQUE ni la DEFENSA.' },
+  armaduraBatalla: { nombre: 'Armadura Batalla', ef: 'sinCritico', desc: 'Su armadura lo protege: no recibe golpes críticos.' },
+  armaduraFragil: { nombre: 'Armadura Frágil', ef: 'robustez', desc: 'Con la vida llena, aguanta cualquier golpe con 1 PS.' },
+  muroMagico: { nombre: 'Muro Mágico', ef: 'cuerpoPuro', desc: 'Un muro mágico lo cuida: nadie le puede bajar nada.' },
+  quitanieves: { nombre: 'Quitanieves', ef: 'veloz', desc: 'Corre sobre la nieve: al entrar se vuelve más rápido.' },
+  mantoNiveo: { nombre: 'Manto Níveo', ef: 'ilusion', desc: 'Se esconde en la nieve: el primer golpe que recibe le hace la mitad.' },
+  veloArena: { nombre: 'Velo Arena', ef: 'veloz', desc: 'Se tapa con arena: al entrar se vuelve más rápido.' },
+  prismaTelurico: { nombre: 'Prisma Telúrico', ef: 'filtro', desc: 'Sus cristales absorben los golpes: los muy eficaces le hacen menos daño.' },
+  regeneracion: { nombre: 'Regeneración', ef: 'regenera', desc: 'Se regenera: recupera un poco de PS cada turno.' },
+  granEncanto: { nombre: 'Gran Encanto', ef: 'intimidacion', desc: 'Al entrar encanta al rival y le baja el ATAQUE.' },
+  absorbeAgua: { nombre: 'Absorbe Agua', ef: 'absorbeAgua', desc: 'Los ataques de Agua no lo lastiman: se los toma y se cura.' },
+  espesura: { nombre: 'Espesura', ef: 'apuro', tipo: 'PLANTA', desc: 'Con poca vida, sus ataques de Planta pegan mucho más.' },
+  raicesProfundas: { nombre: 'Raíces Profundas', ef: 'regenera', desc: 'Sus raíces chupan agua de la tierra: recupera PS cada turno.' },
+  tormentaEstatica: { nombre: 'Tormenta Estática', ef: 'adaptable', desc: 'Trae una tormenta de arena eléctrica: los ataques de su tipo pegan todavía más.' },
+  megadisparador: { nombre: 'Megadisparador', ef: 'adaptable', desc: 'Dispara ondas de agua: los ataques de su tipo pegan todavía más.' },
+});
+
+// --- Dibujos: cada familia se dibuja una vez en grande y se achica para las etapas chicas ---
+// esc(k, prims): achica el dibujo hacia el piso (16, 31). Las etapas usan k = 0.66 / 0.84 / 1.
+function escDib(k, prims) {
+  if (k === 1) return prims;
+  const X = x => 16 + (x - 16) * k, Y = y => 31 - (31 - y) * k;
+  return prims.map(p => {
+    if (p[0] === 'e') return ['e', X(p[1]), Y(p[2]), p[3] * k, p[4] * k, p[5], p[6]];
+    if (p[0] === 'r') return ['r', X(p[1]), Y(p[2]), Math.max(1, p[3] * k), Math.max(1, p[4] * k), p[5], p[6]];
+    if (p[0] === 'p') return ['p', p[1].map(([a, b]) => [X(a), Y(b)]), p[2], p[3]];
+    return ['d', Math.round(X(p[1])), Math.round(Y(p[2])), p[3], p[4]];
+  });
+}
+const ESC_ET = [0.66, 0.84, 1];
+function tonoL(h, f) {
+  const n = parseInt(h.slice(1), 16), c = [n >> 16, (n >> 8) & 255, n & 255].map(v => Math.max(0, Math.min(255, Math.round(v * f))));
+  return '#' + c.map(v => v.toString(16).padStart(2, '0')).join('');
+}
+const siL = (c, a) => (c ? a : []);
+const OJOL = (x, y, c) => [['r', x, y, 2, 2, c || '#201818'], ['d', x, y, '#ffffff']];
+
+const DIB_LIGA = {
+  // FORJADRAKO: dragón-reptil herrero, armadura de acero con vetas al rojo y la cola-martillo
+  forja: s => {
+    const piel = ['#e0603a', '#c8583a', '#a04030'][s], met = ['#e0603a', '#8a929c', '#4a4e58'][s], veta = '#ff6a20';
+    return [
+      ['p', [[20, 25], [29, 27], [29, 29], [19, 29]], piel],
+      ...siL(s > 0, [['r', 25, 19, 6, 10, met], ['r', 26, 20, 4, 2, '#c8d0d8', 'c'], ...siL(s > 1, [['r', 25, 24, 6, 1, veta]])]),
+      ['r', 11, 24, 4, 6, piel], ['r', 18, 24, 4, 6, piel], ['r', 10, 29, 6, 2, '#503028'], ['r', 17, 29, 6, 2, '#503028'],
+      ['e', 16, 19, 7, 8, piel], ['e', 14, 21, 4, 5, '#f0c070', 'c'],
+      ...siL(s > 0, [['p', [[10, 14], [22, 14], [21, 24], [11, 24]], met], ['r', 11, 15, 10, 1, tonoL(met, 1.3), 'c']]),
+      ...siL(s > 1, [['r', 15, 16, 1, 7, veta], ['r', 12, 19, 8, 1, veta], ['r', 18, 21, 1, 3, veta]]),
+      ['e', 9, 19, 2.5, 4, piel], ['e', 8, 23, 3, 2.5, s > 0 ? met : '#503028'],
+      ['e', 11, 10, 6, 5, piel], ['e', 6, 12, 3.5, 2.5, piel], ['r', 4, 12, 4, 1, '#502020'],
+      ...siL(s > 0, [['p', [[13, 6], [18, 0], [16, 7]], met], ['p', [[7, 7], [16, 5], [17, 9], [7, 9]], met, 'c']]),
+      ...siL(s === 0, [['e', 22, 12, 1.5, 2, '#ffd040', 's'], ['d', 24, 9, '#ffa030']]),
+      ...OJOL(9, 9, s > 1 ? '#ff3010' : null),
+    ];
+  },
+  // VOLTIBRAZO: luchador azul eléctrico con pico, marcas amarillas como circuitos, vendas y arco de antenas
+  rayo: s => {
+    const piel = ['#f0d030', '#4a7ae0', '#2a5ad0'][s], marca = '#ffe040', venda = '#f4f4f0';
+    if (s === 0) return [
+      ['p', [[22, 22], [30, 18], [28, 24]], '#d8b020'],
+      ['r', 13, 26, 2, 5, '#c89020'], ['r', 18, 26, 2, 5, '#c89020'],
+      ['e', 16, 21, 7, 6, piel], ['e', 15, 23, 4, 3, '#fff4b0', 'c'],
+      ['e', 13, 13, 6, 5, piel], ['p', [[8, 13], [3, 15], [8, 16]], '#e08a20'],
+      ['p', [[14, 9], [18, 2], [17, 9]], '#3a3a3a'], ['p', [[11, 9], [10, 3], [13, 8]], '#3a3a3a'],
+      ['e', 9, 21, 2.5, 2, venda], ['e', 23, 21, 2.5, 2, venda],
+      ...OJOL(10, 12),
+    ];
+    return [
+      ...siL(s > 1, [['p', [[20, 4], [26, 0], [31, 6], [29, 14], [27, 13], [28, 7], [25, 4], [21, 7]], marca]]),
+      ['p', [[12, 22], [10, 31], [14, 31], [15, 24]], piel], ['p', [[19, 22], [22, 31], [18, 31], [17, 24]], piel],
+      ['r', 10, 27, 5, 2, venda], ['r', 18, 27, 5, 2, venda],
+      ['p', [[11, 12], [21, 12], [19, 24], [13, 24]], piel], ['r', 13, 14, 6, 1, marca], ['r', 16, 15, 1, 7, marca], ['r', 13, 19, 3, 1, marca],
+      ['p', [[11, 13], [4, 17], [5, 19], [12, 16]], piel], ['e', 4, 18, 3, 2.5, venda],
+      ['p', [[21, 13], [26, 18], [24, 19], [20, 16]], piel], ['e', 25, 19, 2.5, 2.5, venda],
+      ['e', 15, 8, 5, 4.5, piel], ['p', [[11, 8], [5, 10], [11, 11]], '#ffb020'],
+      ['p', [[16, 5], [22, 1], [20, 6]], marca], ['r', 12, 6, 6, 1, venda],
+      ...OJOL(12, 7),
+    ];
+  },
+  // SOMBRAKOR: búho-ninja de las sombras con garras y bufanda roja
+  sombra: s => {
+    const pl = ['#4a3a5a', '#3a2a4a', '#2a1a38'][s], pecho = '#8a7898';
+    if (s === 0) return [
+      ['r', 13, 27, 2, 4, '#c8a040'], ['r', 17, 27, 2, 4, '#c8a040'],
+      ['e', 16, 21, 8, 7, pl], ['e', 15, 23, 4, 4, pecho, 'c'],
+      ['p', [[9, 15], [10, 9], [13, 14]], pl], ['p', [[23, 15], [22, 9], [19, 14]], pl],
+      ['e', 12, 18, 2.5, 2.5, '#f8d040'], ['e', 19, 18, 2.5, 2.5, '#f8d040'], ['r', 12, 18, 1, 1, '#000'], ['r', 19, 18, 1, 1, '#000'],
+      ['p', [[15, 20], [17, 20], [16, 23]], '#e0a030'],
+    ];
+    return [
+      ['p', [[11, 23], [9, 31], [13, 31], [14, 25]], pl], ['p', [[20, 23], [23, 31], [19, 31], [18, 25]], pl],
+      ['p', [[9, 31], [7, 31], [9, 29]], '#e8e0c8'], ['p', [[23, 31], [25, 31], [23, 29]], '#e8e0c8'],
+      ['p', [[22, 12], [30, 18], [28, 26], [21, 22]], tonoL(pl, 0.8)],
+      ['e', 16, 18, 7, 8, pl], ['e', 15, 20, 4, 5, pecho, 'c'],
+      ['p', [[10, 16], [4, 21], [6, 22], [11, 19]], pl], ['p', [[4, 21], [1, 24], [3, 21]], '#e8e0c8'], ['p', [[5, 22], [3, 26], [5, 23]], '#e8e0c8'],
+      ...siL(s > 1, [['p', [[10, 11], [22, 11], [22, 14], [10, 14]], '#c02828'], ['p', [[21, 12], [29, 9], [28, 12], [22, 14]], '#c02828']]),
+      ['e', 15, 7, 6, 5, pl], ['p', [[10, 4], [11, -1], [13, 3]], pl], ['p', [[20, 4], [20, -1], [17, 3]], pl],
+      ['r', 9, 6, 12, 2, '#181020'], ['r', 11, 6, 2, 2, '#ff3030'], ['r', 16, 6, 2, 2, '#ff3030'],
+      ['p', [[14, 8], [16, 8], [15, 11]], '#e0a030'],
+    ];
+  },
+  // VENENOKHAN: maestro de kung fu índigo con placas moradas y trenza con aguijón
+  toxi: s => {
+    const piel = ['#9a50c0', '#6a4ab0', '#3a3a9a'][s], placa = '#8a2aa8', vapor = '#c890f0';
+    if (s === 0) return [
+      ['e', 16, 26, 10, 5, piel], ['e', 15, 27, 6, 3, '#d8a8f0', 'c'],
+      ['e', 9, 25, 3, 4, piel], ['e', 23, 25, 3, 4, piel],
+      ['e', 13, 18, 6, 5, piel], ['e', 22, 20, 3, 3, '#c040e0'], ['e', 22, 20, 1.5, 1.5, '#f0a0ff', 's'],
+      ...OJOL(10, 16), ...OJOL(15, 16), ['r', 10, 21, 5, 1, '#401860'],
+    ];
+    return [
+      ['p', [[20, 7], [27, 10], [29, 18], [27, 23], [26, 18], [24, 11]], '#2a2050'], ['p', [[27, 23], [30, 27], [25, 26]], '#e040c0'],
+      ['p', [[12, 22], [9, 31], [14, 31], [15, 24]], piel], ['p', [[19, 22], [23, 31], [18, 31], [17, 24]], piel],
+      ['r', 11, 21, 10, 3, '#2a1a40'],
+      ['p', [[10, 11], [22, 11], [20, 22], [12, 22]], piel], ['e', 16, 15, 4, 3, tonoL(piel, 1.25), 'c'],
+      ['e', 10, 12, 3, 2.5, placa], ['e', 22, 12, 3, 2.5, placa],
+      ['p', [[10, 13], [4, 15], [4, 18], [11, 16]], piel], ['e', 3, 16, 2.5, 2.5, tonoL(piel, 0.8)],
+      ['p', [[22, 13], [26, 9], [27, 11], [22, 16]], piel], ['e', 27, 9, 2.5, 2.5, tonoL(piel, 0.8)],
+      ...siL(s > 1, [['e', 2, 13, 2, 1.5, vapor, 's'], ['e', 28, 6, 2, 1.5, vapor, 's'], ['d', 1, 11, vapor], ['d', 29, 4, vapor]]),
+      ['e', 15, 7, 5, 4.5, piel], ['r', 10, 4, 10, 2, '#2a2050'],
+      ...OJOL(11, 7, '#f0e040'), ...OJOL(16, 7, '#f0e040'),
+    ];
+  },
+  // GOLEMARÁN: coloso del templo, losas de basalto flotando alrededor de un núcleo dorado y runas
+  roca: s => {
+    const pi = ['#a09888', '#7a7268', '#3a3a44'][s], runa = '#f8c840';
+    if (s === 0) return [
+      ['e', 16, 24, 10, 7, pi], ['e', 13, 21, 5, 3, tonoL(pi, 1.2), 'c'], ['e', 21, 27, 3, 2, tonoL(pi, 0.8), 'c'],
+      ...OJOL(11, 22), ...OJOL(17, 22), ['r', 12, 26, 5, 1, '#403830'],
+      ['e', 9, 28, 3, 3, pi], ['e', 23, 28, 3, 3, pi],
+    ];
+    return [
+      ['r', 9, 24, 6, 7, pi], ['r', 18, 24, 6, 7, pi],
+      ['r', 8, 11, 16, 13, pi], ['r', 9, 12, 14, 2, tonoL(pi, 1.3), 'c'],
+      ...siL(s > 1, [['e', 16, 17, 3, 3, runa], ['e', 16, 17, 1.5, 1.5, '#fff8c0', 's'], ['r', 10, 22, 12, 2, '#5a4a30'], ['r', 11, 22, 10, 1, runa]]),
+      ...siL(s === 1, [['r', 11, 15, 10, 1, '#5a5048'], ['r', 15, 15, 1, 8, '#5a5048']]),
+      ['r', 2, 12, 5, 10, pi], ['r', 1, 21, 7, 5, tonoL(pi, 0.85)],
+      ['r', 25, 12, 5, 10, pi], ['r', 24, 21, 7, 5, tonoL(pi, 0.85)],
+      ...siL(s > 1, [['r', 3, 15, 3, 1, runa], ['r', 26, 15, 3, 1, runa], ['p', [[8, 11], [5, 6], [11, 8]], pi], ['p', [[24, 11], [27, 6], [21, 8]], pi]]),
+      ['r', 11, 3, 10, 8, pi], ['r', 12, 6, 8, 2, '#181820'], ['r', 13, 6, 2, 2, s > 1 ? runa : '#80c0ff'], ['r', 17, 6, 2, 2, s > 1 ? runa : '#80c0ff'],
+      ...siL(s > 1, [['p', [[11, 3], [16, 0], [21, 3]], tonoL(pi, 1.3)]]),
+    ];
+  },
+  // ONIMUSHA: shogun espectral, armadura negra con dorado y morado, llamas azules y casco con cuernos
+  espiritu: s => {
+    const llama = ['#70b0ff', '#5090f0', '#4070e0'][s], arm = '#1a1a24', oro = '#e0b040';
+    if (s === 0) return [
+      ['p', [[10, 28], [12, 16], [16, 6], [20, 16], [22, 28], [16, 31]], llama], ['p', [[12, 27], [14, 18], [16, 12], [18, 18], [20, 27], [16, 29]], '#c0e0ff', 'c'],
+      ['p', [[5, 20], [8, 17], [10, 22]], llama], ['p', [[27, 20], [24, 17], [22, 22]], llama],
+      ...OJOL(13, 19), ...OJOL(17, 19), ['r', 14, 23, 4, 1, '#203060'],
+    ];
+    return [
+      ['p', [[11, 22], [8, 31], [24, 31], [21, 22]], llama], ['p', [[12, 24], [10, 31], [22, 31], [20, 24]], '#c0e0ff', 'c'],
+      ['p', [[10, 12], [22, 12], [21, 24], [11, 24]], arm], ['r', 11, 15, 10, 1, oro], ['r', 11, 19, 10, 1, '#8a3ab0'], ['r', 15, 12, 2, 12, oro, 'c'],
+      ['p', [[7, 11], [12, 11], [11, 16], [6, 15]], arm], ['p', [[25, 11], [20, 11], [21, 16], [26, 15]], arm],
+      ['p', [[7, 15], [2, 18], [4, 20], [8, 17]], llama], ['e', 3, 19, 2.5, 2.5, arm],
+      ['p', [[25, 15], [30, 18], [28, 20], [24, 17]], llama], ['e', 29, 19, 2.5, 2.5, arm],
+      ...siL(s > 1, [['p', [[8, 18], [3, 24], [5, 25], [9, 21]], llama], ['e', 4, 25, 2.2, 2.2, arm], ['p', [[24, 18], [29, 24], [27, 25], [23, 21]], llama], ['e', 28, 25, 2.2, 2.2, arm]]),
+      ['e', 16, 8, 5, 4.5, llama], ['p', [[10, 7], [22, 7], [21, 4], [11, 4]], arm], ['r', 11, 7, 10, 1, oro],
+      ...siL(s > 1, [['p', [[11, 4], [5, 0], [8, -1], [13, 3]], oro], ['p', [[21, 4], [27, 0], [24, -1], [19, 3]], oro], ['p', [[15, 4], [16, 0], [17, 4]], '#8a3ab0']]),
+      ['r', 12, 9, 3, 1, '#ffffff'], ['r', 17, 9, 3, 1, '#ffffff'],
+    ];
+  },
+  // TERRATÚNEL: tuneladora gigante con forma de topo acorazado, bandas amarillas y brazos-taladro
+  topo: s => {
+    const met = ['#7a5a40', '#6a7078', '#3a4048'][s], band = '#f0c020';
+    const tal = (x, y, d) => ['p', [[x, y - 3], [x, y + 3], [x + 7 * d, y]], '#b8c0c8'];
+    return [
+      ['e', 16, 22, 10, 8, met], ['e', 15, 24, 6, 4, s ? tonoL(met, 1.3) : '#c8a888', 'c'],
+      ...siL(s > 0, [['r', 6, 19, 20, 2, band, 'c'], ['p', [[8, 19], [10, 19], [8, 21], [6, 21]], '#202020', 'c'], ['p', [[14, 19], [16, 19], [14, 21], [12, 21]], '#202020', 'c'], ['p', [[20, 19], [22, 19], [20, 21], [18, 21]], '#202020', 'c']]),
+      ['e', 9, 29, 4, 2, tonoL(met, 0.7)], ['e', 23, 29, 4, 2, tonoL(met, 0.7)],
+      ...(s === 0 ? [['e', 5, 22, 3, 2.5, '#f0b0a0'], ['p', [[2, 22], [0, 20], [1, 24]], '#e8e0d0'], ['p', [[25, 22], [30, 22], [27, 25]], '#e8e0d0']]
+        : [tal(4, 22, -1), ['r', 3, 20, 4, 5, met], tal(28, 22, 1), ['r', 25, 20, 4, 5, met], ['r', -2, 21, 6, 1, '#808890'], ['r', 29, 21, 4, 1, '#808890']]),
+      ['e', 14, 12, 7, 6, met], ['p', [[8, 12], [1, 14], [8, 16]], s ? '#b8c0c8' : '#f0a0a0'], ...siL(s > 0, [['r', 3, 14, 4, 1, '#808890']]),
+      ...siL(s > 1, [['r', 10, 7, 9, 2, band], ['e', 22, 12, 2, 2, '#ff5020', 's']]),
+      ['r', 10, 10, 6, 2, '#101018'], ['d', 11, 10, '#80e0ff'], ['d', 14, 10, '#80e0ff'],
+    ];
+  },
+  // AERONAVEGA: halcón caza supersónico con alas de acero y turbinas
+  halcon: s => {
+    const pl = ['#b08050', '#8a929c', '#5a6470'][s], ala = ['#906038', '#a8b0b8', '#7a8490'][s];
+    return [
+      ['p', [[18, 16], [30, 6], [31, 10], [22, 20]], ala], ['p', [[17, 18], [29, 24], [27, 27], [18, 22]], ala],
+      ...siL(s > 1, [['e', 29, 9, 2, 1.5, '#ff8030', 's'], ['e', 28, 26, 2, 1.5, '#ff8030', 's']]),
+      ['p', [[20, 20], [28, 18], [27, 21], [21, 23]], tonoL(pl, 0.8)],
+      ['e', 16, 19, 7, 5, pl], ['e', 14, 20, 4, 3, s ? '#d8dce0' : '#f0e0c0', 'c'],
+      ['r', 13, 24, 2, 5, '#e0b020'], ['r', 17, 24, 2, 5, '#e0b020'], ['p', [[11, 29], [16, 29], [13, 31]], '#e0b020'], ['p', [[15, 29], [20, 29], [17, 31]], '#e0b020'],
+      ['e', 10, 13, 5, 4, pl], ['p', [[6, 12], [1, 14], [6, 15]], '#f0c030'], ['p', [[2, 14], [6, 15], [4, 16]], '#202020'],
+      ...siL(s > 0, [['p', [[8, 10], [14, 9], [12, 11]], '#202830'], ['r', 9, 11, 3, 1, '#ffffff']]),
+      ...siL(s > 1, [['p', [[12, 9], [20, 7], [18, 10]], '#c02828']]),
+      ...OJOL(8, 12, '#202020'),
+    ];
+  },
+  // HIDROTITAN: ballena-submarino acorazada con periscopio y escotillas
+  ballena: s => {
+    const pi = ['#5a9ad8', '#6a7a90', '#3a4a64'][s], panza = '#d0e0f0';
+    return [
+      ['p', [[24, 18], [31, 12], [31, 24]], pi], ['p', [[27, 18], [31, 14], [31, 22]], tonoL(pi, 0.8), 'c'],
+      ['e', 15, 21, 12, 8, pi], ['e', 13, 25, 9, 4, panza, 'c'],
+      ...siL(s > 0, [['r', 5, 19, 20, 1, '#a8b4c0', 'c'], ['e', 15, 17, 2, 2, '#90e0ff'], ['e', 21, 17, 2, 2, '#90e0ff'], ['d', 9, 21, '#a8b4c0'], ['d', 13, 21, '#a8b4c0'], ['d', 19, 21, '#a8b4c0']]),
+      ...siL(s > 0, [['r', 15, 7, 2, 7, '#8a96a0'], ['r', 12, 6, 5, 2, '#8a96a0']]),
+      ...siL(s > 1, [['r', 18, 10, 6, 4, '#4a5a74'], ['r', 19, 11, 4, 1, '#f0d040']]),
+      ...siL(s === 0, [['e', 16, 11, 1.5, 3, '#a0e0ff', 's'], ['e', 13, 9, 1.5, 2, '#a0e0ff', 's']]),
+      ['p', [[12, 27], [8, 31], [16, 29]], tonoL(pi, 0.8)],
+      ['r', 2, 22, 7, 1, '#203048'],
+      ...OJOL(6, 18),
+    ];
+  },
+  // BASTIONCERATOPS: triceratops fortaleza con escudo de hierro y cuernos de asedio
+  ceratops: s => {
+    const pi = ['#9a8a7a', '#7a7068', '#5a5650'][s], esc = ['#b8a088', '#9aa4b0', '#707a88'][s];
+    return [
+      ['p', [[23, 18], [30, 22], [29, 25], [23, 24]], pi],
+      ['e', 18, 21, 9, 7, pi], ['e', 18, 18, 8, 3, tonoL(pi, 1.2), 'c'],
+      ...siL(s > 1, [['p', [[13, 14], [16, 10], [19, 14]], esc], ['p', [[19, 14], [22, 10], [25, 15]], esc]]),
+      ['r', 11, 25, 4, 6, pi], ['r', 21, 25, 4, 6, pi], ['r', 10, 29, 6, 2, '#3a3430'], ['r', 20, 29, 6, 2, '#3a3430'],
+      ['p', [[9, 9], [16, 13], [16, 25], [9, 25]], esc], ['p', [[10, 11], [15, 14], [15, 18], [10, 17]], tonoL(esc, 1.25), 'c'],
+      ...siL(s > 0, [['d', 11, 20, '#e0e8f0'], ['d', 14, 22, '#e0e8f0'], ['d', 11, 23, '#e0e8f0']]),
+      ['e', 7, 19, 5, 4, pi], ['p', [[3, 19], [0, 22], [5, 22]], pi],
+      ['p', [[6, 16], [s > 0 ? -2 : 1, 12], [7, 15]], '#f0e8d0'], ...siL(s > 0, [['p', [[10, 14], [6, 6], [11, 13]], '#f0e8d0']]),
+      ['p', [[3, 19], [0, 17], [3, 18]], '#f0e8d0'],
+      ...OJOL(7, 18),
+    ];
+  },
+  // ESPECTROFERRO: casco errante que se vuelve caballero maldito con escudo y espada
+  yelmo: s => {
+    const met = ['#9aa4b0', '#7a8494', '#4a5262'][s], alma = '#9a60e0';
+    if (s === 0) return [
+      ['e', 16, 28, 6, 2, alma, 's'],
+      ['p', [[8, 22], [9, 12], [16, 7], [23, 12], [24, 22], [20, 26], [12, 26]], met], ['p', [[10, 13], [16, 9], [18, 10], [11, 15]], '#d0d8e0', 'c'],
+      ['r', 10, 16, 12, 3, '#181020'], ['r', 12, 16, 2, 2, alma], ['r', 18, 16, 2, 2, alma],
+      ['p', [[16, 7], [17, 1], [20, 6]], '#c02828'],
+    ];
+    return [
+      ['p', [[12, 24], [10, 31], [22, 31], [20, 24]], alma], ['p', [[13, 26], [12, 31], [20, 31], [19, 26]], '#c8a0ff', 'c'],
+      ['p', [[10, 12], [22, 12], [21, 25], [11, 25]], met], ['r', 15, 13, 2, 11, tonoL(met, 1.3), 'c'],
+      ['p', [[1, 12], [9, 11], [9, 24], [5, 27], [1, 24]], met], ['p', [[2, 14], [8, 13], [8, 22], [5, 24], [2, 22]], '#3a2a5a', 'c'], ['e', 5, 18, 1.5, 2.5, alma, 's'],
+      ...siL(s > 1, [['r', 25, 3, 2, 20, '#c8d0d8'], ['r', 22, 18, 8, 2, '#e0b040'], ['p', [[25, 3], [26, 0], [27, 3]], '#c8d0d8']]),
+      ['p', [[22, 14], [27, 18], [25, 20], [21, 17]], met],
+      ['p', [[10, 9], [11, 3], [16, 1], [21, 3], [22, 9], [16, 12]], met], ['r', 11, 6, 10, 2, '#181020'], ['r', 12, 6, 2, 2, alma], ['r', 18, 6, 2, 2, alma],
+      ['p', [[16, 1], [18, -1], [23, 2], [18, 3]], '#c02828'],
+    ];
+  },
+  // GLACIOLOBO: lobo alfa de acero y hielo, con filos de patín en las patas
+  lobo: s => {
+    const pe = ['#d8eef8', '#a8c0d8', '#7a90b0'][s], hie = '#a0e8ff';
+    return [
+      ['p', [[22, 17], [30, 10], [31, 14], [24, 21]], pe], ...siL(s > 1, [['p', [[26, 13], [30, 8], [29, 13]], hie]]),
+      ['e', 18, 19, 9, 6, pe], ['e', 17, 22, 6, 3, '#f8fcff', 'c'],
+      ...siL(s > 0, [['p', [[13, 14], [16, 10], [19, 14]], '#c8d0d8'], ['p', [[18, 14], [21, 10], [24, 14]], '#c8d0d8']]),
+      ['r', 10, 23, 3, 7, pe], ['r', 14, 24, 3, 6, pe], ['r', 20, 23, 3, 7, pe], ['r', 24, 22, 3, 8, pe],
+      ...siL(s > 0, [['r', 8, 30, 7, 1, '#e0e8f0'], ['r', 19, 30, 9, 1, '#e0e8f0']]),
+      ['e', 9, 13, 6, 5, pe], ['p', [[5, 13], [0, 15], [5, 17]], pe], ['r', 0, 15, 2, 1, '#202838'],
+      ['p', [[8, 9], [9, 3], [12, 8]], pe], ['p', [[12, 9], [14, 3], [15, 9]], pe],
+      ...siL(s > 1, [['p', [[8, 9], [9, 1], [10, 9]], hie, 'c'], ['p', [[3, 16], [5, 18], [6, 16]], '#ffffff']]),
+      ...OJOL(6, 12, s > 1 ? '#2080ff' : '#202838'),
+    ];
+  },
+  // TERRALUNA → TERRANELLA: la princesa de la tierra (cristales rosas) que se vuelve reina con corona
+  terraluna: s => {
+    const pe = ['#d8a878', '#c89060'][s], cris = '#f8a0c8';
+    return [
+      ['p', [[22, 22], [29, 19], [30, 23]], pe], ['p', [[29, 19], [31, 16], [30, 21]], cris],
+      ['e', 17, 23, 8, 5, pe], ['e', 16, 25, 5, 3, '#f0d8b8', 'c'],
+      ['r', 11, 26, 3, 5, pe], ['r', 20, 26, 3, 5, pe], ['e', 12, 30, 2, 1, cris], ['e', 21, 30, 2, 1, cris],
+      ['e', 11, 15, 6, 5.5, pe], ['e', 9, 18, 3, 2, '#f0d8b8'],
+      ['p', [[9, 11], [7, 4], [12, 9]], pe], ['p', [[14, 10], [16, 4], [16, 11]], pe],
+      ...(s === 0 ? [['p', [[11, 10], [12, 7], [13, 10]], cris]] :
+        [['p', [[8, 10], [9, 5], [11, 8], [12, 3], [14, 8], [16, 5], [16, 10]], '#f0c040'], ['e', 12, 7, 1.2, 1.2, cris, 's'], ['e', 9, 7, 0.8, 0.8, cris, 's'],
+          ['p', [[18, 20], [17, 17], [20, 19]], cris], ['p', [[21, 19], [22, 16], [23, 20]], cris], ['p', [[24, 21], [26, 18], [26, 22]], cris]]),
+      ...OJOL(9, 14, '#6a2050'), ...OJOL(13, 14, '#6a2050'), ['r', 9, 19, 2, 1, '#a05040'],
+    ];
+  },
+  // SANTUATUGA: tortuga santuario, caparazón-geoda de cuarzo rosa con monolitos y un manantial
+  tortuga: s => {
+    const pi = ['#d8b890', '#c87a5a', '#b86a4a'][s], cap = ['#a88a68', '#c8708a', '#e0a0a8'][s];
+    return [
+      ['e', 10, 27, 3.5, 3, pi], ['e', 23, 27, 3.5, 3, pi], ['e', 19, 28, 3, 2.5, tonoL(pi, 0.85)],
+      ['e', 17, 22, 11, 7, cap], ['e', 17, 26, 11, 2.5, tonoL(cap, 0.7), 'c'],
+      ...(s === 0 ? [['e', 14, 19, 1.5, 1.5, '#f8b8d0', 's'], ['e', 20, 18, 1.2, 1.2, '#f8b8d0', 's'], ['d', 17, 21, '#ffffff']]
+        : [['e', 17, 16, 7, 3, '#7a3a6a'], ['p', [[12, 16], [13, 11], [15, 16]], '#f8c0e0'], ['p', [[16, 15], [17, 9], [19, 15]], '#d8a0ff'], ['p', [[20, 16], [22, 12], [23, 16]], '#f8c0e0']]),
+      ...siL(s > 1, [['r', 9, 14, 2, 5, '#f8f0ff'], ['r', 24, 14, 2, 5, '#f8f0ff'], ['e', 17, 16, 2.5, 1.2, '#80e0ff', 's'], ['p', [[6, 20], [28, 20], [27, 22], [7, 22]], '#e0b040', 'c']]),
+      ['e', 5, 21, 4, 3.5, pi], ['p', [[3, 23], [5, 27], [7, 23]], s > 1 ? '#e8f0ff' : pi],
+      ...OJOL(3, 20, '#302018'),
+    ];
+  },
+  // VALQUIRIALUZ: paladín de las estrellas, hada esgrimista con alas, casco alado y espada de luz
+  pluma: s => {
+    const pl = ['#f8f0f8', '#f0d0e8', '#e8b8e0'][s], oro = '#f0c840';
+    if (s === 0) return [
+      ['r', 13, 27, 2, 4, oro], ['r', 18, 27, 2, 4, oro],
+      ['e', 16, 22, 7, 6, pl], ['p', [[22, 20], [29, 15], [27, 24]], '#f8c8e8'],
+      ['e', 13, 14, 6, 5, pl], ['p', [[8, 14], [4, 16], [8, 17]], oro],
+      ['p', [[13, 9], [12, 3], [16, 8]], '#f8a8d8'], ['e', 15, 6, 1, 1, '#fff8a0', 's'],
+      ...OJOL(10, 13, '#4a2a6a'),
+    ];
+    return [
+      ['p', [[19, 12], [31, 4], [29, 16], [22, 20]], '#fff0fa'], ['p', [[21, 14], [29, 8], [28, 15]], '#f8c0e8', 'c'],
+      ['p', [[12, 22], [10, 31], [14, 31], [15, 24]], pl], ['p', [[19, 22], [22, 31], [18, 31], [17, 24]], pl],
+      ['p', [[11, 12], [21, 12], [22, 24], [10, 24]], pl], ['p', [[11, 12], [21, 12], [20, 18], [12, 18]], '#c8d0e8', 'c'], ['e', 16, 15, 1.5, 1.5, oro, 's'],
+      ['p', [[11, 14], [6, 18], [7, 19], [12, 16]], pl],
+      ['r', 2, s > 1 ? 1 : 6, 2, s > 1 ? 18 : 13, '#f8f8ff'], ['r', 0, 18, 6, 2, oro], ['e', 3, s > 1 ? 1 : 6, 1.5, 1.5, '#fff8c0', 's'],
+      ['e', 15, 7, 5, 4.5, pl], ['p', [[10, 5], [20, 5], [20, 7], [10, 7]], '#c8d0e8'],
+      ['p', [[20, 5], [25, 1], [23, 6]], oro], ['p', [[10, 5], [7, 1], [11, 4]], oro],
+      ...siL(s > 1, [['d', 27, 2, '#fff8a0'], ['d', 30, 11, '#fff8a0'], ['d', 24, 3, '#ffffff']]),
+      ...OJOL(12, 7, '#4a2a6a'),
+    ];
+  },
+  // TERRABAOBAB: titán baobab con rostro en el tronco, brazos de raíces y copa con flores naranjas
+  baobab: s => {
+    const tr = ['#a07a50', '#8a6a48', '#7a5a40'][s], hoja = '#4aa040', flor = '#f08a30';
+    return [
+      ['p', [[10, 31], [11, 26], [14, 26], [12, 31]], tr], ['p', [[6, 31], [11, 27], [12, 29], [8, 31]], tr],
+      ['p', [[22, 31], [20, 26], [23, 26], [25, 31]], tr], ['p', [[27, 31], [22, 27], [21, 29], [25, 31]], tr],
+      ['r', 9, 12, 14, 15, tr], ['r', 10, 13, 3, 13, tonoL(tr, 1.2), 'c'], ['r', 19, 14, 1, 10, tonoL(tr, 0.8), 'c'],
+      ['r', 11, 16, 3, 2, '#2a1a10'], ['r', 17, 16, 3, 2, '#2a1a10'], ['d', 12, 16, '#f8e080'], ['d', 18, 16, '#f8e080'], ['r', 13, 21, 6, 1, '#3a2a18'],
+      ...siL(s > 0, [['p', [[9, 15], [3, 19], [2, 26], [5, 26], [6, 21], [10, 19]], tr], ['p', [[23, 15], [29, 19], [30, 26], [27, 26], [26, 21], [22, 19]], tr]]),
+      ...siL(s > 1, [['e', 3, 26, 3, 2.5, '#8a8070'], ['e', 29, 26, 3, 2.5, '#8a8070']]),
+      ['e', 16, 8, s > 0 ? 12 : 8, 5, hoja], ['e', 12, 6, 5, 3, tonoL(hoja, 1.25), 'c'],
+      ...siL(s > 0, [['e', 8, 7, 1.5, 1.5, flor, 's'], ['e', 20, 5, 1.5, 1.5, flor, 's'], ['e', 25, 9, 1.5, 1.5, flor, 's']]),
+      ...siL(s > 1, [['r', 6, 10, 1, 4, '#5a8a40'], ['r', 25, 10, 1, 5, '#5a8a40'], ['e', 14, 3, 1.5, 1.5, flor, 's']]),
+      ...siL(s === 0, [['e', 16, 4, 2, 2, '#90d870']]),
+    ];
+  },
+  // VOLTARRAYA: mantarraya del desierto que flota con remolinos de arena electrificada
+  raya: s => {
+    const pi = ['#d8a850', '#8a5a38', '#5a4a40'][s], neon = ['#f8e040', '#f8e040', '#60c0ff'][s];
+    return [
+      ...siL(s > 1, [['e', 16, 29, 12, 2, '#d8b870', 's'], ['p', [[6, 28], [8, 25], [9, 28]], '#f8e040'], ['p', [[25, 28], [27, 25], [28, 28]], '#f8e040']]),
+      ['p', [[16, 10], [1, s > 0 ? 14 : 19], [6, 22], [16, 24], [26, 22], [31, s > 0 ? 14 : 19]], pi],
+      ['p', [[16, 12], [5, 17], [16, 21], [27, 17]], tonoL(pi, 1.2), 'c'],
+      ['r', 9, 16, 2, 2, neon, 'c'], ['r', 21, 16, 2, 2, neon, 'c'], ...siL(s > 0, [['r', 13, 14, 6, 1, neon, 'c'], ['r', 6, 19, 3, 1, '#4080ff', 'c'], ['r', 23, 19, 3, 1, '#4080ff', 'c']]),
+      ['p', [[16, 23], [18, 31], [17, 31], [15, 25]], tonoL(pi, 0.8)], ['e', 18, 31, 1, 1, neon, 's'],
+      ['e', 16, 13, 4, 3, pi], ...OJOL(13, 12), ...OJOL(17, 12),
+      ...siL(s > 1, [['d', 2, 11, '#f8e040'], ['d', 30, 11, '#f8e040'], ['d', 1, 13, '#60c0ff'], ['d', 31, 13, '#60c0ff']]),
+    ];
+  },
+  // URSOTECTÓN: tejón melero que se vuelve un titán del cañón, peleador con garras
+  tejon: s => {
+    const pe = ['#5a4030', '#4a3428', '#3a2a22'][s], crema = '#e8d8b0';
+    return [
+      ['p', [[22, 22], [29, 22], [27, 25]], pe],
+      ['e', 17, 21, 9, s > 0 ? 8 : 6, pe], ['p', [[10, 14], [24, 15], [25, 18], [10, 17]], crema, 'c'],
+      ['r', 10, 25, 4, 6, pe], ['r', 20, 25, 4, 6, pe],
+      ['p', [[9, 30], [6, 31], [9, 29]], '#f0f0e8'], ['p', [[19, 30], [16, 31], [19, 29]], '#f0f0e8'],
+      ...siL(s > 0, [['e', 8, 20, 3.5, 4, pe], ['p', [[5, 23], [2, 26], [5, 25], [4, 27], [7, 25]], '#f0f0e8'], ['r', 6, 20, 5, 2, '#c03030']]),
+      ['e', 9, 14, 6, 5, pe], ['p', [[5, 11], [14, 11], [14, 13], [5, 13]], crema], ['p', [[4, 14], [0, 16], [4, 17]], pe], ['d', 0, 16, '#101010'],
+      ['r', 5, 13, 7, 2, '#101010'], ['d', 6, 13, '#ffffff'], ['d', 10, 13, '#ffffff'],
+      ['e', 13, 9, 1.5, 1.5, pe],
+      ...siL(s > 1, [['r', 14, 17, 2, 6, '#c8a060'], ['r', 19, 18, 2, 5, '#c8a060']]),
+    ];
+  },
+  // ABISMANTIS: insecto de agua que se vuelve un emperador abisal con pinzas hidráulicas
+  ninfa: s => {
+    const ca = ['#5ab8b0', '#2a4a8a', '#1a2a5a'][s], neon = '#f0e040';
+    return [
+      ['p', [[20, 22], [29, 24], [30, 26], [20, 26]], ca], ['r', 28, 21, 1, 4, '#a0c0d0'],
+      ['e', 17, 22, 8, 5, ca], ['e', 17, 20, 7, 2.5, tonoL(ca, 1.3), 'c'],
+      ...siL(s > 0, [['r', 13, 22, 1, 4, neon, 'c'], ['r', 18, 22, 1, 4, neon, 'c'], ['r', 22, 21, 1, 4, '#101020', 'c']]),
+      ['p', [[12, 25], [9, 31], [11, 31], [14, 26]], tonoL(ca, 0.7)], ['p', [[18, 26], [17, 31], [19, 31], [20, 26]], tonoL(ca, 0.7)], ['p', [[22, 25], [25, 31], [26, 30], [24, 25]], tonoL(ca, 0.7)],
+      ['e', 9, 17, 4.5, 4, ca], ['e', 7, 15, 1.8, 1.8, '#202020'], ['d', 7, 14, '#a0f0ff'], ['e', 11, 14, 1.8, 1.8, '#202020'], ['d', 11, 13, '#a0f0ff'],
+      ...(s === 0 ? [['e', 4, 20, 2, 1.5, '#f0b060'], ['e', 12, 22, 2, 1.5, '#f0b060']]
+        : [['p', [[8, 20], [3, 24], [1, 19], [4, 18], [5, 21]], s > 1 ? '#3a6ab0' : '#4a6aa8'], ['p', [[1, 19], [-1, 14], [3, 17]], neon], ['p', [[4, 18], [5, 13], [5, 18]], neon],
+          ['p', [[12, 21], [9, 27], [6, 24], [9, 22]], s > 1 ? '#3a6ab0' : '#4a6aa8']]),
+      ...siL(s > 1, [['p', [[14, 16], [20, 10], [26, 14], [22, 18]], '#a0d8ff'], ['p', [[16, 16], [22, 11], [24, 14]], '#e0f4ff', 'c'], ['p', [[6, 12], [3, 6], [8, 11]], ca], ['p', [[10, 11], [11, 5], [12, 11]], ca]]),
+    ];
+  },
+};
+
+// [id, nombre, tipos, desc, base]  ·  cada familia: [dibujo, nivel 1→2, nivel 2→3, captura, [etapas], movimientos]
+const FAMILIAS_LIGA = [
+  ['forja', 24, 42, [['chispdrako', 'Chispdrako', ['LUCHA'], 'la escama ardiente que funde monedas'], ['yunkodrako', 'Yunkodrako', ['LUCHA', 'ACERO'], 'el yunque que golpea su armadura'], ['forjadrako', 'Forjadrako', ['LUCHA', 'ACERO'], 'el maestro forjador de cola-martillo']],
+    [85, 125, 105, 60], [[1, 'aranazo'], [1, 'grunido'], [5, 'brasita'], [9, 'punetazo'], [14, 'garra_metal'], [19, 'golpe_karate'], [25, 'fogon'], [31, 'cabeza_hierro'], [37, 'troncazo'], [44, 'martillo_forja'], [52, 'fuerza_absoluta']]],
+  ['rayo', 22, 38, [['chispaguila', 'Chispáguila', ['ELECTRICO'], 'la chispa ágil que no se queda quieta'], ['kicvoltio', 'Kicvoltio', ['LUCHA', 'ELECTRICO'], 'la patada relámpago'], ['voltibrazo', 'Voltibrazo', ['LUCHA', 'ELECTRICO'], 'el maestro del rayo de vendas flotantes']],
+    [75, 120, 75, 115], [[1, 'pique'], [1, 'chillido'], [5, 'chispa'], [9, 'punetazo'], [13, 'chispazo'], [18, 'golpe_karate'], [23, 'patada_voltio'], [29, 'puno_voltio'], [35, 'troncazo'], [41, 'rayo'], [49, 'fuerza_absoluta'], [56, 'trueno']]],
+  ['sombra', 25, 40, [['sombrapio', 'Sombrapío', ['SINIESTRO'], 'el polluelo oculto de la noche'], ['noctigarra', 'Noctigarra', ['LUCHA', 'SINIESTRO'], 'el acechador de garras'], ['sombrakor', 'Sombrakor', ['LUCHA', 'SINIESTRO'], 'el maestro de las sombras']],
+    [75, 125, 65, 115], [[1, 'picotazo'], [1, 'chillido'], [5, 'mordisco'], [10, 'rasante'], [15, 'emboscada'], [20, 'golpe_karate'], [26, 'tajo_umbrio'], [32, 'zarpazo'], [38, 'mordida_sombra'], [45, 'troncazo'], [52, 'noche_cerrada']]],
+  ['toxi', 23, 39, [['toxirruido', 'Toxirruido', ['VENENO'], 'la glándula tóxica'], ['ponzonapuno', 'Ponzoñapuño', ['LUCHA', 'VENENO'], 'la palma ácida'], ['venenokhan', 'Venenokhan', ['LUCHA', 'VENENO'], 'el gran maestro tóxico']],
+    [90, 120, 85, 80], [[1, 'acido'], [1, 'grunido'], [5, 'burbujas'], [9, 'punetazo'], [14, 'polvo_toxico'], [19, 'golpe_karate'], [25, 'toxibomba'], [31, 'zarpazo'], [37, 'palma_corrosiva'], [44, 'troncazo'], [51, 'aliento_toxico'], [58, 'fuerza_absoluta']]],
+  ['roca', 26, 44, [['rocapiedra', 'Rocapiedra', ['ROCA'], 'el guijarro tenaz'], ['pilarok', 'Pilarok', ['LUCHA', 'ROCA'], 'la columna antigua'], ['golemaran', 'Golemarán', ['LUCHA', 'ROCA'], 'el coloso del templo']],
+    [100, 135, 125, 45], [[1, 'embestida'], [1, 'adobe'], [6, 'pedrada'], [11, 'punetazo'], [16, 'revolcon'], [22, 'derrumbe'], [28, 'golpe_karate'], [34, 'troncazo'], [40, 'martillazo'], [46, 'impacto_sismico'], [54, 'fuerza_absoluta'], [60, 'terremoto']]],
+  ['espiritu', 25, 42, [['espiritajo', 'Espiritajo', ['FANTASMA'], 'la llama errante de los dojos'], ['espectropuno', 'Espectropuño', ['LUCHA', 'FANTASMA'], 'el guerrero etéreo'], ['onimusha', 'Onimusha', ['LUCHA', 'FANTASMA'], 'el shogun espectral de cuatro puños']],
+    [80, 125, 90, 85], [[1, 'susto'], [1, 'silbido'], [5, 'fuego_fatuo'], [10, 'punetazo'], [15, 'alarido'], [20, 'golpe_karate'], [26, 'tajo_espectral'], [32, 'troncazo'], [38, 'puno_mas_alla'], [45, 'luz_mala'], [52, 'fuerza_absoluta']]],
+  ['topo', 25, 42, [['topometa', 'Topometa', ['TIERRA'], 'el taladro novato'], ['taladrotan', 'Taladrotán', ['ACERO', 'TIERRA'], 'el excavador blindado'], ['terratunel', 'Terratúnel', ['ACERO', 'TIERRA'], 'el coloso subterráneo, una tuneladora viva']],
+    [100, 125, 120, 50], [[1, 'aranazo'], [1, 'revolcon'], [6, 'garra_metal'], [11, 'barrazo'], [16, 'taladro'], [22, 'cabeza_hierro'], [28, 'martillazo'], [34, 'latigo_metalico'], [40, 'tunel_susurrante'], [47, 'terremoto'], [55, 'martillo_forja']]],
+  ['halcon', 24, 41, [['halcochapa', 'Halcochapa', ['NORMAL', 'VOLADOR'], 'el polluelo veloz'], ['turbihalcon', 'Turbihalcón', ['ACERO', 'VOLADOR'], 'el ala cortante'], ['aeronavega', 'Aeronavega', ['ACERO', 'VOLADOR'], 'el caza supersónico']],
+    [80, 115, 90, 110], [[1, 'picotazo'], [1, 'pique'], [6, 'rasante'], [11, 'garra_metal'], [16, 'ala_acero'], [22, 'vuelo_alto'], [28, 'cabeza_hierro'], [35, 'latigo_metalico'], [42, 'aletazo_igneo'], [50, 'lluvia_puas']]],
+  ['ballena', 26, 42, [['ballenata', 'Ballenata', ['AGUA'], 'la cría que se sumerge hasta el fondo'], ['submarinoz', 'Submarinoz', ['ACERO', 'AGUA'], 'el casco férreo'], ['hidrotitan', 'Hidrotitan', ['ACERO', 'AGUA'], 'el leviatán acorazado']],
+    [115, 115, 100, 45], [[1, 'embestida'], [1, 'burbujas'], [6, 'chapuzon'], [11, 'garra_metal'], [16, 'hidropulso'], [22, 'coletazo_agua'], [28, 'cabeza_hierro'], [34, 'cola_acuatica'], [40, 'latigo_metalico'], [47, 'torrente'], [55, 'ventisca']]],
+  ['ceratops', 25, 42, [['minerops', 'Minerops', ['ROCA'], 'el cuerno de piedra'], ['arietops', 'Arietops', ['ACERO', 'ROCA'], 'el escudo de hierro'], ['bastionceratops', 'Bastionceratops', ['ACERO', 'ROCA'], 'la fortaleza de asedio']],
+    [95, 130, 115, 40], [[1, 'embestida'], [1, 'coletazo'], [6, 'pedrada'], [11, 'garra_metal'], [16, 'derrumbe'], [22, 'cabeza_hierro'], [28, 'filo_mica'], [34, 'martillazo'], [40, 'latigo_metalico'], [47, 'impacto_sismico'], [55, 'martillo_forja']]],
+  ['yelmo', 27, 43, [['yelmito', 'Yelmito', ['ACERO', 'FANTASMA'], 'el casco errante'], ['escudoespectro', 'Escudoespectro', ['ACERO', 'FANTASMA'], 'el centinela etéreo'], ['espectroferro', 'Espectroferro', ['ACERO', 'FANTASMA'], 'el caballero maldito']],
+    [80, 115, 105, 60], [[1, 'susto'], [1, 'reflejo'], [6, 'garra_metal'], [11, 'alarido'], [16, 'tajo_espejo'], [22, 'tajo_espectral'], [28, 'cabeza_hierro'], [34, 'luz_mala'], [40, 'latigo_metalico'], [47, 'envoltura'], [55, 'martillo_forja']]],
+  ['lobo', 26, 44, [['criolobo', 'Criolobo', ['HIELO'], 'el cachorro glacial'], ['filolobo', 'Filolobo', ['ACERO', 'HIELO'], 'el patín cortante'], ['glaciolobo', 'Glaciolobo', ['ACERO', 'HIELO'], 'el alfa del cero absoluto']],
+    [85, 130, 80, 105], [[1, 'mordisco'], [1, 'grunido'], [6, 'escarcha'], [11, 'garra_metal'], [16, 'colmillo_hielo'], [22, 'granizo'], [28, 'cabeza_hierro'], [34, 'tajo_glacial'], [40, 'latigo_metalico'], [47, 'rafaga_escarcha'], [55, 'ventisca']]],
+  ['tortuga', 25, 42, [['geoduga', 'Geoduga', ['TIERRA'], 'el caparazón de arena'], ['cuarzotuga', 'Cuarzotuga', ['HADA', 'TIERRA'], 'el jardín cristalino'], ['santuatuga', 'Santuatuga', ['HADA', 'TIERRA'], 'el oasis sagrado, una tortuga santuario']],
+    [110, 90, 125, 35], [[1, 'embestida'], [1, 'adobe'], [6, 'revolcon'], [11, 'brillo'], [16, 'barrazo'], [22, 'destello_cuarzo'], [28, 'erupcion_geoda'], [34, 'matecito'], [40, 'polvo_lunar'], [47, 'terremoto'], [55, 'aura_espiritual']]],
+  ['pluma', 25, 42, [['plumeluz', 'Plumeluz', ['HADA'], 'el polluelo celestial'], ['danzaluz', 'Danzaluz', ['HADA', 'LUCHA'], 'el esgrimista feérico'], ['valquirialuz', 'Valquirialuz', ['HADA', 'LUCHA'], 'el paladín de las estrellas']],
+    [80, 125, 78, 115], [[1, 'picotazo'], [1, 'encanto'], [6, 'brillo'], [11, 'rasante'], [16, 'golpe_karate'], [22, 'polvo_lunar'], [28, 'zarpazo'], [34, 'carantona'], [40, 'espada_santa'], [47, 'resplandor'], [55, 'fuerza_absoluta']]],
+  ['baobab', 24, 40, [['broteriz', 'Broteríz', ['PLANTA'], 'el brote subterráneo'], ['troncoraiz', 'Troncoraíz', ['TIERRA', 'PLANTA'], 'el guardián del oasis'], ['terrabaobab', 'Terrabaobab', ['TIERRA', 'PLANTA'], 'el coloso milenario']],
+    [115, 125, 110, 40], [[1, 'embestida'], [1, 'grunido'], [6, 'yerbazo'], [11, 'revolcon'], [16, 'hojarasca'], [22, 'barrazo'], [28, 'semillazo'], [34, 'martillazo'], [40, 'embate_raices'], [47, 'terremoto'], [55, 'raizon']]],
+  ['raya', 25, 41, [['rayarena', 'Rayarena', ['TIERRA', 'ELECTRICO'], 'la aleta estática de las dunas'], ['dunavolt', 'Dunavolt', ['TIERRA', 'ELECTRICO'], 'el planeador estático'], ['voltarraya', 'Voltarraya', ['TIERRA', 'ELECTRICO'], 'el leviatán de la tormenta']],
+    [85, 115, 80, 110], [[1, 'embestida'], [1, 'coletazo'], [6, 'chispa'], [11, 'revolcon'], [16, 'chispazo'], [22, 'barrazo'], [28, 'descarga_duna'], [34, 'remolino'], [40, 'rayo'], [47, 'terremoto'], [55, 'trueno']]],
+  ['tejon', 25, 41, [['tejobarro', 'Tejobarro', ['TIERRA'], 'el cachorro terco'], ['tejopuno', 'Tejopuño', ['TIERRA', 'LUCHA'], 'el peleador de lodo'], ['ursotecton', 'Ursotectón', ['TIERRA', 'LUCHA'], 'el titán del cañón']],
+    [110, 135, 88, 70], [[1, 'aranazo'], [1, 'grunido'], [6, 'revolcon'], [11, 'mordisco'], [16, 'punetazo'], [22, 'barrazo'], [28, 'zarpazo'], [34, 'troncazo'], [40, 'martillazo'], [47, 'terremoto'], [55, 'fuerza_absoluta']]],
+  ['ninfa', 22, 38, [['ninfagua', 'Ninfagua', ['AGUA', 'BICHO'], 'la larva de estanque'], ['tenazagua', 'Tenazagua', ['AGUA', 'BICHO'], 'el cazador de corrientes'], ['abismantis', 'Abismantis', ['AGUA', 'BICHO'], 'el emperador abisal']],
+    [90, 130, 92, 65], [[1, 'burbujas'], [1, 'aguijon'], [6, 'chapuzon'], [11, 'picadura'], [16, 'hidropulso'], [22, 'zumbido'], [28, 'coletazo_agua'], [34, 'pinza_hidraulica'], [40, 'aguijon_dragon'], [47, 'cola_acuatica'], [55, 'torrente']]],
+  ['terraluna', 30, 0, [['terraluna', 'Terraluna', ['TIERRA', 'HADA'], 'la pequeña princesa de la tierra'], ['terranella', 'Terranella', ['TIERRA', 'HADA'], 'la reina de la tierra']],
+    [85, 105, 100, 80], [[1, 'brillo'], [1, 'revolcon'], [6, 'encanto'], [11, 'barrazo'], [16, 'polvo_lunar'], [22, 'destello_cuarzo'], [28, 'erupcion_geoda'], [34, 'resplandor'], [41, 'terremoto'], [49, 'aura_espiritual']]],
+];
+for (const [dib, n1, n2, etapas, base, movs] of FAMILIAS_LIGA) {
+  const n = etapas.length;
+  etapas.forEach(([id, nombre, tipos, desc], i) => {
+    const f = n === 2 ? [0.62, 1][i] : [0.55, 0.78, 1][i];
+    const sig = etapas[i + 1];
+    const et = n === 2 ? [1, 2][i] : i; // el dibujo de 2 etapas usa 0 y 1
+    ESPECIES[id] = {
+      nombre, tipos, desc, captura: [90, 60, 45][i], exp: [64, 150, 245][i],
+      base: { ps: Math.round(base[0] * f), atk: Math.round(base[1] * f), def: Math.round(base[2] * f), vel: Math.round(base[3] * f) },
+      ...(sig ? { evo: { nivel: i === 0 ? n1 : n2, a: sig[0] } } : {}),
+      movs,
+      sprite: escDib(n === 2 ? [0.84, 1][i] : ESC_ET[i], DIB_LIGA[dib](n === 2 ? i : et)),
+    };
+  });
+}
+Object.assign(HAB_ESPECIE, {
+  chispdrako: { n: ['agallas', 'fuerzaBruta'], o: 'cuerpoPuro' }, yunkodrako: { n: ['templeAcero', 'cuerpoPuro'], o: 'muroFerreo' }, forjadrako: { n: ['templeAcero'], o: 'muroFerreo' },
+  chispaguila: { n: ['estatica'], o: 'impulso' }, kicvoltio: { n: ['punoFerreo', 'electromotor'], o: 'impulso' }, voltibrazo: { n: ['punoVoltio'], o: 'electromotor' },
+  sombrapio: { n: ['allanamiento', 'vistaLince'], o: 'ojoNocturno' }, noctigarra: { n: ['focoInterno', 'tecnico'], o: 'justiciero' }, sombrakor: { n: ['tecnico'], o: 'focoInterno' },
+  toxirruido: { n: ['toqueToxico', 'pielSeca'], o: 'maestroToxico' }, ponzonapuno: { n: ['toqueToxico', 'inmunidad'], o: 'corrosion' }, venenokhan: { n: ['maestroToxico'], o: 'agallas' },
+  rocapiedra: { n: ['robustez', 'cabezaRoca'], o: 'armaduraRunica' }, pilarok: { n: ['armaduraRunica'], o: 'robustez' }, golemaran: { n: ['armaduraRunica'], o: 'punoFerreo' },
+  espiritajo: { n: ['levitacion', 'focoInterno'], o: 'punoFerreo' }, espectropuno: { n: ['punoFerreo', 'allanamiento'], o: 'espirituIndomable' }, onimusha: { n: ['espirituIndomable'], o: 'punoFerreo' },
+  topometa: { n: ['impetuArena', 'poderArena'], o: 'rompemoldes' }, taladrotan: { n: ['rompemoldes', 'impetuArena'], o: 'robustez' }, terratunel: { n: ['rompemoldes'], o: 'robustez' },
+  halcochapa: { n: ['vistaLince', 'sacapecho'], o: 'impulso' }, turbihalcon: { n: ['impulso', 'armaduraBatalla'] }, aeronavega: { n: ['impulso', 'armaduraBatalla'], o: 'vistaLince' },
+  ballenata: { n: ['nadoRapido', 'cuerpoPuro'], o: 'antibalas' }, submarinoz: { n: ['antibalas', 'nadoRapido'] }, hidrotitan: { n: ['antibalas'], o: 'nadoRapido' },
+  minerops: { n: ['cabezaRoca', 'robustez'], o: 'filtro' }, arietops: { n: ['cabezaRoca', 'filtro'] }, bastionceratops: { n: ['filtro', 'cabezaRoca'], o: 'robustez' },
+  yelmito: { n: ['levitacion', 'focoInterno'], o: 'muroMagico' }, escudoespectro: { n: ['armaduraFragil'], o: 'muroMagico' }, espectroferro: { n: ['armaduraFragil'], o: 'muroMagico' },
+  criolobo: { n: ['quitanieves', 'mantoNiveo'], o: 'garraDura' }, filolobo: { n: ['quitanieves', 'garraDura'] }, glaciolobo: { n: ['quitanieves', 'garraDura'], o: 'intimidacion' },
+  geoduga: { n: ['veloArena', 'caparazon'], o: 'regeneracion' }, cuarzotuga: { n: ['muroMagico', 'cuerpoPuro'], o: 'regeneracion' }, santuatuga: { n: ['prismaTelurico'], o: 'regeneracion' },
+  plumeluz: { n: ['focoInterno', 'granEncanto'], o: 'justiciero' }, danzaluz: { n: ['justiciero', 'cortante'] }, valquirialuz: { n: ['justiciero', 'cortante'], o: 'granEncanto' },
+  broteriz: { n: ['absorbeAgua', 'espesura'], o: 'raicesProfundas' }, troncoraiz: { n: ['absorbeAgua', 'cuerpoPuro'], o: 'curaNatural' }, terrabaobab: { n: ['absorbeAgua'], o: 'raicesProfundas' },
+  rayarena: { n: ['estatica', 'veloArena'], o: 'levitacion' }, dunavolt: { n: ['levitacion', 'impetuArena'] }, voltarraya: { n: ['tormentaEstatica'], o: 'levitacion' },
+  tejobarro: { n: ['agallas', 'impetuArena'], o: 'punoFerreo' }, tejopuno: { n: ['agallas', 'punoFerreo'] }, ursotecton: { n: ['agallas', 'punoFerreo'], o: 'intimidacion' },
+  ninfagua: { n: ['nadoRapido', 'caparazon'], o: 'megadisparador' }, tenazagua: { n: ['megadisparador', 'garraDura'] }, abismantis: { n: ['megadisparador', 'garraDura'], o: 'nadoRapido' },
+  terraluna: { n: ['veloArena', 'curaNatural'], o: 'regeneracion' }, terranella: { n: ['prismaTelurico', 'curaNatural'], o: 'regeneracion' },
+});
+for (const [, , , etapas] of FAMILIAS_LIGA) for (const [id] of etapas) {
+  const h = HAB_ESPECIE[id];
+  ESPECIES[id].habs = typeof h === 'string' ? [h] : h.n;
+  ESPECIES[id].habOculta = typeof h === 'string' ? null : h.o || null;
+}
